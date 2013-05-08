@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - RGB LED Strip
+	Souliss - RGB LED Strip
 	
 	Control and RGB LED or a Strip using the PWM, fade in/out and flash 
 	effects are available as the Android interface.

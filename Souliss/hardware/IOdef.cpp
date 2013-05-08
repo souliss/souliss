@@ -26,8 +26,19 @@
 #include "IOdef.h"
 #include "GetConfig.h"			// need : hwBoards.h
 
-// Include drivers for Olimex MOD-IO and MOD-IO2
+// Include drivers for Olimex MOD-IO
 #if(IOBOARD_MODEL == 0x01)						
 #	include "hardware/Olimex/MODIO.cpp"
 #	include "hardware/Olimex/Souliss_MODIO.cpp"
+#endif
+
+// Include drivers for Olimex MOD-IO2
+#if(IOBOARD_MODEL == 0x02)						
+#	include "hardware/Olimex/MODIO2.cpp"
+#	include "hardware/Olimex/Souliss_MODIO.cpp"
+#endif
+
+// Include drivers for Olimex MOD-RGB
+#if(IOBOARD_MODEL == 0x03)						
+#	include "hardware/Olimex/MODRGB.cpp"
 #endif

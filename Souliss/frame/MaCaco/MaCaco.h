@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - MaCaco Communication Protocol
+	Souliss - MaCaco Communication Protocol
     Copyright (C) 2011  Veseo
 
     This program is free software: you can redistribute it and/or modify

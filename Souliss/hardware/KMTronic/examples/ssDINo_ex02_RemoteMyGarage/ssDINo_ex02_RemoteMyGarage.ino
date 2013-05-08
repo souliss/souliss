@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Remote my Garage
+	Souliss - Remote my Garage
 	
 	It control a garage door acting on the relays that drive the motor and 
 	get the limit switches, open and close command are only available via

@@ -1,10 +1,15 @@
 /**************************************************************************
-	Souliss Home Automation - Lights
+	Souliss - Lights
 	
-	It handle the MOD-IO2 relays either via GPIOs inputs or using the
-	Android interface or via Modbus TCP/RTU. Connecting the relays to 
-	lights or similar electrial appliace, you can get remote control
-	of them.
+	It handle the MOD-IO2 relays either via GPIOs inputs or using the Android
+	interface or via Modbus TCP/RTU. Connecting the relays to lights or similar
+	electrial appliace, you can get remote control of them. The use of Modbus RTU 
+	is supported RTU is supported only on ATmega328P based boards 
+	(like Olimexino-328).
+	
+	To use MOD-IO2 and a communication board (MOD-ENC28J60 or MOD-WIFI) is
+	required a ribbon cable that extend the UEXT bus to both the boards, the signal 
+	dedicated for I2C shall not be extended to the communication modules.
 	
 	Modbus Map (Register, Functional Code)
 		- Light 1 ON/OFF  Request at (R 0x00 - 0001, FC 0x01, 0x05) or (R 0x00 - 0001, FC 0x02)	
@@ -28,19 +33,19 @@
 	Run this code on one of the following boards:
 	
 		Board Conf Code			Board Model
-		0x0D					Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO2
-		0x0E					Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO2
-		0x0F					Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO2 
-		0x10					Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO2		  
-		0x11					Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO2	  
-		0x12					Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO2  	
+		0x13		Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x14		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x15		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x16		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO 2(UEXT)
+		0x17		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO 2(UEXT)
+		0x18		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO 2(UEXT) 	
 	
 	******************** Configuration Parameters *********************
 	
 		Configuration file		Parameter
 		QuickCfg.h				#define	QC_ENABLE			0x01
-		QuickCfg.h				#define	QC_BOARDTYPE		0x0D, 0x0E, 0x0F,
-															0x10, 0x11, 0x12
+		QuickCfg.h				#define	QC_BOARDTYPE		0x13, 0x14, 0x15,
+															0x16, 0x17, 0x18
 
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -93,7 +98,7 @@ void setup()
 	Souliss_SetT11(memory_map, SLOT_RELAY2);
 	
 	// Define inputs : GPIO1, GPIO0 - Outputs : GPIO6, GPIO5, the MODIO relays don't need an init
-	MODIO2_Init();
+	MODIO_Init();
 	mIO_PinMode(~(GPIO6 | GPIO5) & (GPIO1 | GPIO0));	
 
 	// Set pullups for input pins
@@ -128,6 +133,9 @@ void loop()
 		// Execute the code every 21 time_base_fast		
 		if (!(phase_fast % 21))
 		{
+			// Get all inputs states
+			Souliss_MODIO_In();
+		
 			// Inputs are pulled up at 3.3V, if placed at GND value the input will be trigged
 			// and associated to a toggle command
 			Souliss_MODIO_LowDigIn(GPIO0, Souliss_T1n_ToogleCmd, memory_map, SLOT_RELAY1);

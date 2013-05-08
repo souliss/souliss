@@ -54,7 +54,6 @@
 #define LEDRED				1				// This is the memory slot for the logic that handle the light
 #define LEDGREEN			2				// This is the memory slot for the logic that handle the light
 #define LEDBLUE				3				// This is the memory slot for the logic that handle the light
-#define SYNCCONTROL			4				// This is the memory slot for the logic that handle the sync
 
 // define the shared memory map
 U8 memory_map[MaCaco_MEMMAP];
@@ -91,7 +90,6 @@ void setup()
 	
 	// Set the typical logic to use, T11 is a ON/OFF Digital Output with Timer Option
 	Souliss_SetT16(memory_map, LEDCONTROL);
-	Souliss_SetT11(memory_map, SYNCCONTROL);
 	
 	// Define inputs, outputs pins
 	pinMode(2, INPUT);					// Hardware pulldown required
@@ -122,21 +120,6 @@ void loop()
 			// Use in inputs stored in the LEDCONTROL to control the RGB LED or Strip,
 			// it provide automatically fade in and out effect and color change.
 			Souliss_Logic_T16(memory_map, LEDCONTROL, &data_changed);
-
-			// If there is a change in the led state and the sync is enabled, then
-			// force the actual state on the twin node
-			if(Souliss_Output(memory_map, SYNCCONTROL) && (data_changed))
-			{
-				uint8_t cmd[4];
-				
-				// Define the command that shall be sent to align the state of the twin node
-				cmd[0] = Souliss_T1n_Set;
-				for(U8 i=1;i<4;i++)
-					cmd[i] = Souliss_Output(memory_map, i);
-		
-				// Send the command to twin node
-				Souliss_RemoteInputs(network_address_2, LEDCONTROL, cmd, 4);
-			}
 			
 			// Use the output from the logic to control the colors via PWM in pins 3, 5 and 6
 			//
@@ -172,12 +155,6 @@ void loop()
 			Souliss_CommunicationData(memory_map, &data_changed);
 		}	
 		
-		// Execute the code every 11 time_base_fast		  
-		if (!(phase_fast % 11))
-		{
-			// This logic if set synch the color on the twin node
-			Souliss_Logic_T11(memory_map, SYNCCONTROL, &data_changed);
-		}
 		// Execute the code every 91 time_base_fast		  
 		if (!(phase_fast % 91))
 		{   

@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Fiat Lux
+	Souliss - Fiat Lux
 	
 	Fiat Lux is a latin phrase that means Let There Be Light, this example
 	show how handle light via hardwired pushbutton geographically distributed

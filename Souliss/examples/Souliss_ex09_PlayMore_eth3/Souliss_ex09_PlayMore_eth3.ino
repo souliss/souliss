@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Play More
+	Souliss - Play More
 	
 	This is a simulation of an interaction between a node and an user interface
 	able to communicate directly via MaCaco/vNet protocols. One board is used

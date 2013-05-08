@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Analog JSON
+	Souliss - Analog JSON
 	
 	An analog value is acquired throught Souliss and available at the user
 	interfaces as raw value via JSON.
@@ -72,6 +72,9 @@ void setup()
 	
 	Souliss_SetAddress(network_address_1, network_my_subnet, network_my_supern);		
 
+	// Load the address also in the memory_map
+	Souliss_SetLocalAddress(memory_map, network_address_1);	
+	
 	// Set the typical to use in slot 0
 	Souliss_SetT51(memory_map, ANALOGDAQ);
 }

@@ -71,7 +71,13 @@ void HTTPServer(U8 *memory_map)
 			// Move data into a string for parsing
 			incomingURL = "";
 			for(U8 i=0;i<data_len;i++)
+			{
+				// Stop at next space after GET
+				if(incomingURL.startsWith("GET /") && buf[i] == 32)
+					break;
+					
 				incomingURL = incomingURL + buf[i];	
+			}
 		}	
 		else
 		{
@@ -111,7 +117,7 @@ void HTTPServer(U8 *memory_map)
 						
 				// Send a command to the node	
 				if((id < nodes) && (id != MaCaco_LOCNODE) && ((U16)memory_map[MaCaco_ADDRESSES_s+2*id] != 0x0000))	// If is a remote node, the command act as remote input				
-					Souliss_RemoteInput((U16)memory_map[MaCaco_ADDRESSES_s+2*id], slot, val_s);
+					Souliss_RemoteInput(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, val_s);
 				else if (id == MaCaco_LOCNODE)								// If is a local node (me), the command is written back
 					memory_map[MaCaco_IN_s+slot] = val_s;
 			}
@@ -131,8 +137,8 @@ void HTTPServer(U8 *memory_map)
 						if(memory_map[id*MaCaco_TYPLENGHT+MaCaco_TYP_s+slot] & 0xF0 == typ & 0xF0)	
 						{									
 							// Send a command to the node	
-							if((id != MaCaco_LOCNODE) && ((U16)memory_map[MaCaco_ADDRESSES_s+2*id] != 0x0000))	// If is a remote node, the command act as remote input
-								Souliss_RemoteInput((U16)memory_map[MaCaco_ADDRESSES_s+2*id], slot, val_s);			
+							if((id != MaCaco_LOCNODE) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)) != 0x0000))	// If is a remote node, the command act as remote input
+								Souliss_RemoteInput((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)), slot, val_s);			
 							else if (id == MaCaco_LOCNODE)												// If is a local node (me), the command is written back
 								memory_map[MaCaco_IN_s+slot] = val_s;	
 						}

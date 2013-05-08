@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - MaCaco Communication Protocol
+	Souliss - MaCaco Communication Protocol
     Copyright (C) 2011  Veseo
 
     This program is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 
 /**************************************************************************/
 U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 {
-	U8 i=0, typ_mask=0xFF;;
+	U8 i=0, typ_mask=0xFF;
 	
 	/*********** Request ************/	
 	
@@ -239,7 +239,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		if(i < MaCaco_MAXSUBSCR)
 		{
 			subscr_addr[i]  = addr;
-			subscr_funcode[i] = rx->funcode;
 			subscr_funcode[i] = rx->funcode;
 			subscr_putin[i] = rx->putin;
 			subscr_startoffset[i] = rx->startoffset;
@@ -418,6 +417,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			while ((subscr_outaddr[i] != addr) && i < MaCaco_MAXSUBSCR)
 				i++;
 			
+			// If no entry was found
+			if(i == MaCaco_MAXSUBSCR)
+				return MaCaco_FUNCODE_ERR;
+			
 			// Set the subcription status flag
 			if(subscr_outaddr[i] == addr)
 				subscr_status[i] = 1;
@@ -426,9 +429,13 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			#if(MaCaco_EXTENDED_MAP)
 				if (((rx->putin >= &memory_map[MaCaco_WRITE_s] && rx->putin <= &memory_map[MaCaco_WRITE_f]) || (rx->putin >= &memory_map[MaCaco_EXT_WRITE_s] && rx->putin <= &memory_map[MaCaco_EXT_WRITE_f])) && (rx->numberof > 0))				
 					memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address
+				else
+					return MaCaco_FUNCODE_ERR;
 			#else
 				if ((rx->putin >= &memory_map[MaCaco_WRITE_s] && rx->putin <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
-					memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address			
+					memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address
+				else
+					return MaCaco_FUNCODE_ERR;
 			#endif
 				
 			return MaCaco_FUNCODE_OK;

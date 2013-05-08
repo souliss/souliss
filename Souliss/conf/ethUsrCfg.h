@@ -143,9 +143,9 @@
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-	const uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 0, 0};
+	const uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0};
 	const uint8_t DEFAULT_SUBMASK[] 	  = {255, 255, 255, 0};
-	const uint8_t DEFAULT_GATEWAY[] 	  = {192, 168, 0, 1};
+	const uint8_t DEFAULT_GATEWAY[] 	  = {192, 168, 1, 1};
 #endif
 /**************************************************************************/
 /*!
@@ -229,8 +229,8 @@ const uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
 #	define	WiFi_WPA2				1
 
 // Network name and password
-#	define	WiFi_SSID				"P4W2"
-#	define	WiFi_Password			"dimaiointernet"	
+#	define	WiFi_SSID				"mywifi"
+#	define	WiFi_Password			"mypassword"	
 #endif
 
 #endif

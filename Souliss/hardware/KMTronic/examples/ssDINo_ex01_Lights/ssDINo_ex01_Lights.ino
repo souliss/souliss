@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Lights
+	Souliss - Lights
 	
 	It handle the four relays either via IN1 to IN4 inputs, using the
 	Android interface or via Modbus TCP. Connecting the relays to 

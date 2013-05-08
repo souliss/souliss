@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - vNet Virtualized Network
+	Souliss - vNet Virtualized Network
     
 	Porting in vNet for Souliss project by Dario Di Maio
 	

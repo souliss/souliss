@@ -28,6 +28,7 @@
 #include "MODIO.h"
 #include "src/types.h"
 
+U8 Souliss_MODIO_In();
 U8 Souliss_MODIO_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
 U8 Souliss_MODIO_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
 U8 Souliss_MODIO_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot);

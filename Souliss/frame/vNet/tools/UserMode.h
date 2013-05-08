@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - User Mode
+	Souliss - User Mode
     Copyright (C) 2012  Veseo
 
     This program is free software: you can redistribute it and/or modify

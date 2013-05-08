@@ -28,55 +28,35 @@
 
 #include "src/types.h"
 #include "src/I2C/I2C.h"
-
-#define	OLIMEX		0x48
-#define	MODIO1		0x01
-#define	MODIO2		0x02
-#define	ADDRESS		0xA0
+#include "Olimex.h"
 
 // Functional Codes for I2C Communication to MOD-IO
-#define	SET_TRIS	0x01
-#define SET_LAT		0x02
-#define	GET_PORT	0x03
-#define SET_PU		0x04
-#define GET_AN0		0x10
-#define GET_AN1		0x11
-#define GET_AN2		0x12
-#define GET_AN3		0x13
-#define GET_AN7		0x17
-#define SET_REL		0x40
+#define SET_REL		0x10
+#define	GET_IN		0x20
 #define	RELAY1		0x01
 #define	RELAY2		0x02
 #define	RELAY3		0x04
 #define	RELAY4		0x08
-#define	GPIO0		0x01
-#define	GPIO1		0x02
-#define	GPIO2		0x04
-#define	GPIO3		0x08
-#define	GPIO4		0x10
-#define	GPIO5		0x20
-#define	GPIO6		0x40
-
-// Structure for I2C messages
-#define	ADDR0		0
-#define	ADDR1		1
-#define	ADDR2		2
-#define	FUNCODE		3
-#define	CMD			4
-#define	DATA1		4
-#define	DATA2		5
+#define	IN1			0x01
+#define	IN2			0x02
+#define	IN3			0x04
+#define	IN4			0x08
+#define GET_AN1		0x30
+#define GET_AN2		0x31
+#define GET_AN3		0x32
+#define GET_AN4		0x33
 
 #define mIO_SetAddr0(addr0)			mIO_cmd[ADDR0] = addr0
 #define mIO_SetAddr1(addr1)			mIO_cmd[ADDR1] = addr1
 #define mIO_SetAddr2(addr2)			mIO_cmd[ADDR2] = addr2
 
-void MODIO1_Init();
-void MODIO2_Init();
-void mIO_PinMode(uint8_t gpio_register);
-void mIO_Pullup(uint8_t gpio_register);
+void MODIO_Init();
 void mIO_Relay(uint8_t relay_reg);
-void mIO_digitalWrite(uint8_t gpio_register);
 uint16_t mIO_analogRead(uint8_t pin);
 uint8_t mIO_digitalRead(uint8_t pin);
+
+#define MODIO_Init_wI2Cpullups()	MODIO_Init(); \
+									I2C_pullup(1)
+									
 
 #endif

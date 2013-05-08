@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - vNet Virtualized Network
+	Souliss - vNet Virtualized Network
     
 	Porting in vNet for Souliss project by Dario Di Maio
 	
@@ -42,8 +42,8 @@
 #	define SPI0_MISO_DDR            DDRB
 #	define SPI0_MISO_PORT           PORTB
 
-// Define Chip Select for Olimex AVR-T32U4 or OLIMEXINO-32U4 using MOD-WIFI (UEXT) with Microchip MRF24WB0MA
-#	if((BOARD_MODEL == 0x04 || BOARD_MODEL == 0x05) && (COMMS_MODEL == 0x05))
+// Define Chip Select for Olimex AVR-T32U4 or OLIMEXINO-32U4 using MOD-WIFI or MOD-ENC28J60 (UEXT)
+#	if((BOARD_MODEL == 0x04 || BOARD_MODEL == 0x05) && ((COMMS_MODEL == 0x04) || (COMMS_MODEL == 0x05)))
 #		define ENC28J60_CS_BIT            BIT7        // ATmega32U4 PC7 - UEXT Chip Select   
 #		define ENC28J60_CS_DDR            DDRC
 #		define ENC28J60_CS_PORT           PORTC
@@ -72,8 +72,8 @@
 #	define SPI0_MISO_DDR            DDRB
 #	define SPI0_MISO_PORT           PORTB
 
-// Define Chip Select for Olimex OLIMEXINO-328 using MOD-WIFI (UEXT) with Microchip MRF24WB0MA
-#	if((BOARD_MODEL ==0x06) && (COMMS_MODEL == 0x05))
+// Define Chip Select for Olimex OLIMEXINO-328 using MOD-WIFI or MOD-ENC28J60 (UEXT) 
+#	if((BOARD_MODEL == 0x06) && ((COMMS_MODEL == 0x04) || (COMMS_MODEL == 0x05)))
 #		define ENC28J60_CS_BIT            BIT7        // ATmega328  PD7 - UEXT Chip Select
 #		define ENC28J60_CS_DDR            DDRD
 #		define ENC28J60_CS_PORT           PORTD

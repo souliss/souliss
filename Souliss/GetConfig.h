@@ -26,6 +26,15 @@
 #ifndef GENCONF_H
 #define GENCONF_H
 
+/**
+
+	DO NOT MODIFY THIS FILE
+	
+	Configuration parameters shall be set in conf/QuickCfg.h, if you will to do a 
+	full configuration manually use the dedicated files located in the same folder
+	
+**/
+
 // Get Configuration
 //
 //	This file is referred as in the whole framework as the configuration one,
@@ -235,6 +244,127 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x13)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x04
+#		define	BOARD_MODEL				0x04
+#		define	IOBOARD_MODEL			0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x14)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x04
+#		define	BOARD_MODEL				0x05
+#		define	IOBOARD_MODEL			0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x15)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x04
+#		define	BOARD_MODEL				0x06
+#		define	IOBOARD_MODEL			0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x16)
+#		define	WIFI_MRF24				1	
+#		define	COMMS_MODEL				0x05
+#		define	BOARD_MODEL				0x04
+#		define	IOBOARD_MODEL			0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x17)
+#		define	WIFI_MRF24				1
+#		define	COMMS_MODEL				0x05
+#		define	BOARD_MODEL				0x05
+#		define	IOBOARD_MODEL			0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x18)
+#		define	WIFI_MRF24				1	
+#		define	COMMS_MODEL				0x05																
+#		define	BOARD_MODEL				0x06
+#		define	IOBOARD_MODEL			0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x19)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x04
+#		define	BOARD_MODEL				0x04
+#		define	IOBOARD_MODEL			0x03
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x1A)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x04
+#		define	BOARD_MODEL				0x05
+#		define	IOBOARD_MODEL			0x03
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x1B)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x04
+#		define	BOARD_MODEL				0x06
+#		define	IOBOARD_MODEL			0x03
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x1C)
+#		define	WIFI_MRF24				1	
+#		define	COMMS_MODEL				0x05
+#		define	BOARD_MODEL				0x04
+#		define	IOBOARD_MODEL			0x03
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x1D)
+#		define	WIFI_MRF24				1
+#		define	COMMS_MODEL				0x05
+#		define	BOARD_MODEL				0x05
+#		define	IOBOARD_MODEL			0x03
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x1E)
+#		define	WIFI_MRF24				1	
+#		define	COMMS_MODEL				0x05																
+#		define	BOARD_MODEL				0x06
+#		define	IOBOARD_MODEL			0x03
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x01)

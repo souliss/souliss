@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - vNet Virtualized Network
+	Souliss - vNet Virtualized Network
     
 	Porting in vNet for Souliss project by Dario Di Maio
 	
@@ -186,6 +186,8 @@ void enc28j60clkout(uint8_t clk)
 
 void enc28j60Init( uint8_t* macaddr)
 {
+	ENC28J60_CSInit();
+
 	ENC28J60_SpiInit();
     
     // use clk/8 (2x 1/16th) to avoid exceeding RF12's SPI specs of 2.5 MHz

@@ -690,8 +690,8 @@ void Souliss_T16_Timer(U8 *memory_map, U8 slot)
 		
 		// Bright down the light
 		for(U8 i=1;i<4;i++)
-			if(memory_map[MaCaco_OUT_s + slot + i] > Souliss_T1n_BrightValue) 
-				memory_map[MaCaco_OUT_s + slot + i] -= Souliss_T1n_BrightValue;
+			if(memory_map[MaCaco_OUT_s + slot + i])
+				memory_map[MaCaco_OUT_s + slot + i]--;
 			else
 				memory_map[MaCaco_OUT_s + slot + i] = 0;
 		

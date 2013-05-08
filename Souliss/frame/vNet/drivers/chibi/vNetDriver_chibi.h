@@ -32,7 +32,7 @@
 
 *******************************************************************/
 /**************************************************************************
-	Souliss Home Automation - vNet Virtualized Network
+	Souliss - vNet Virtualized Network
     Copyright (C) 2011  Veseo
 
     This program is free software: you can redistribute it and/or modify

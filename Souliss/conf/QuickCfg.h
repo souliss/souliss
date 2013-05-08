@@ -76,17 +76,29 @@
 		0x0A		Olimex AVR-T32U4 		with MOD-WIFI	  (UEXT)	
 		0x0B		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  (UEXT)
 		0x0C		Olimex OLIMEXINO-328 	with MOD-WIFI	  (UEXT)
-		0x0D		Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO / MOD-IO 2(UEXT)
-		0x0E		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO / MOD-IO 2(UEXT)
-		0x0F		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO / MOD-IO 2(UEXT)
-		0x10		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO / MOD-IO 2(UEXT)
-		0x11		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO / MOD-IO 2(UEXT)
-		0x12		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO / MOD-IO 2(UEXT)	
+		0x0D		Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO (UEXT)
+		0x0E		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO (UEXT)
+		0x0F		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO (UEXT)
+		0x10		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO (UEXT)
+		0x11		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO (UEXT)
+		0x12		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO (UEXT)		
+		0x13		Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x14		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x15		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x16		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO 2(UEXT)
+		0x17		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO 2(UEXT)
+		0x18		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO 2(UEXT)			
+		0x19		Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-RGB(UEXT)
+		0x1A		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-RGB(UEXT)
+		0x1B		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-RGB(UEXT)
+		0x1C		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-RGB(UEXT)
+		0x1D		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-RGB(UEXT)
+		0x1E		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-RGB(UEXT)		
 		
 */
 /**************************************************************************/
 #if(QC_ENABLE)
-#	define	QC_BOARDTYPE			0x02
+#	define	QC_BOARDTYPE			0x00
 #endif
 /**************************************************************************/
 /*!
@@ -105,7 +117,7 @@
 */
 /**************************************************************************/
 #if(QC_ENABLE)
-#	define	QC_GATEWAYTYPE			0x05
+#	define	QC_GATEWAYTYPE			0x00
 #endif
 /**************************************************************************/
 /*!
@@ -131,9 +143,9 @@
 */
 /**************************************************************************/
 #if(QC_ENABLE)
-const uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 0, 0};
+const uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0};
 const uint8_t DEFAULT_SUBMASK[] = {255, 255, 255, 0};
-const uint8_t DEFAULT_GATEWAY[] = {192, 168, 0, 1};
+const uint8_t DEFAULT_GATEWAY[] = {192, 168, 1, 1};
 #endif
 /**************************************************************************/
 /*!

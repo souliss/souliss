@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Anti-theft Integration (Peer Node)
+	Souliss - Anti-theft Integration (Peer Node)
 
 	The anti-theft integration allow the handling of sensors distributed in the
 	home, reporting if an alarm is raised to a standard anti-theft system.

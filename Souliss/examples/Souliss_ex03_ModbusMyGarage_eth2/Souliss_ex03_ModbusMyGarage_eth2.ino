@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Modbus my Garage
+	Souliss - Modbus my Garage
 	
 	It control a garage door with two devices: one device act on the relays
 	that drive the motor and get the limit switches, the other has one 

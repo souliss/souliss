@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Curtains (Bridge Node)
+	Souliss - Curtains (Bridge Node)
 	
 	It control a curtain with two devices: one device act on the relays
 	that drive the motor and get the limit switches, the other has one 

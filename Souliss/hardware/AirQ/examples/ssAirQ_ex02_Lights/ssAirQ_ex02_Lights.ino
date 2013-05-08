@@ -76,7 +76,7 @@
 #include <SPI.h>
 
 // Init the sNET library
-sNET snet(1);								// Create an sNET object
+sNET snet(1, 5, 6);							// Create an sNET object
 AIRQ305 *board;								// Objects instance of AIRQ305 class allow to interact with an AirQ 305 board
 
 // Souliss Network Addresses
@@ -92,12 +92,8 @@ AIRQ305 *board;								// Objects instance of AIRQ305 class allow to interact wi
 #define SLOT_RELAY3			2				// This is the memory slot used for the execution of the logic
 #define SLOT_RELAY4			3				// This is the memory slot used for the execution of the logic
 
-// Set all relays with one message, without command execution check
-#define	risingIN1()			risingIOStatus(AIRQ305_IN1_MASK)
-#define	risingIN2()			risingIOStatus(AIRQ305_IN2_MASK)
-#define	risingIN3()			risingIOStatus(AIRQ305_IN3_MASK)
-#define	risingIN4()			risingIOStatus(AIRQ305_IN4_MASK)
-#define setRELAYS(m)		setIO(0x1, &m, 1, false, -1)
+  // Set all relays with one message
+#define setRELAYS(m)		setIO(0x1, &m, 1, true, -1)
 
 // define the shared memory map
 U8 memory_map[MaCaco_MEMMAP];
@@ -186,13 +182,17 @@ void loop()
 			Souliss_Logic_T11(memory_map, SLOT_RELAY3, &data_changed);
 			Souliss_Logic_T11(memory_map, SLOT_RELAY4, &data_changed);	
 			
-			// Act on the relays
-			uint8_t relays=(AIRQ305_RELAY1_MASK*Souliss_Output(memory_map, SLOT_RELAY1) + 
-							AIRQ305_RELAY2_MASK*Souliss_Output(memory_map, SLOT_RELAY2) + 
-							AIRQ305_RELAY3_MASK*Souliss_Output(memory_map, SLOT_RELAY3) + 
-							AIRQ305_RELAY4_MASK*Souliss_Output(memory_map, SLOT_RELAY4));
-
-			board->setRELAYS(relays);
+			// If there is a change, force data to the AirQ board
+			if(data_changed) 
+			{
+				uint8_t relays=(AIRQ305_RELAY1_MASK*Souliss_Output(memory_map, SLOT_RELAY1) + 
+								AIRQ305_RELAY2_MASK*Souliss_Output(memory_map, SLOT_RELAY2) + 
+								AIRQ305_RELAY3_MASK*Souliss_Output(memory_map, SLOT_RELAY3) + 
+								AIRQ305_RELAY4_MASK*Souliss_Output(memory_map, SLOT_RELAY4));
+				
+				// Send data
+				board->setRELAYS(relays);
+			}
 		} 			
 	}
 } 

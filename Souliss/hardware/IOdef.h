@@ -32,10 +32,23 @@
 #	include "hardware/KMTronic/DINo.h"
 #endif
 
-// Include drivers for Olimex MOD-IO and MOD-IO2
+// Include drivers for Olimex MOD-IO
 #if(IOBOARD_MODEL == 0x01)						
 #	include "hardware/Olimex/MODIO.h"
 #	include "hardware/Olimex/Souliss_MODIO.h"
 #endif
+
+// Include drivers for Olimex MOD-IO2
+#if(IOBOARD_MODEL == 0x02)						
+#	include "hardware/Olimex/MODIO2.h"
+#	include "hardware/Olimex/Souliss_MODIO.h"
+#endif
+
+// Include drivers for Olimex MOD-RGB
+#if(IOBOARD_MODEL == 0x03)						
+#	include "hardware/Olimex/MODRGB.h"
+#	include "hardware/Olimex/Souliss_MODRGB.h"
+#endif
+
 
 #endif

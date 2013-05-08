@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Follow Me
+	Souliss - Follow Me
 	
 	A couple of DINo boards acts as ON/OFF driver for the four available relays,
 	with remote and local control. Relays can be controlled locally using the 

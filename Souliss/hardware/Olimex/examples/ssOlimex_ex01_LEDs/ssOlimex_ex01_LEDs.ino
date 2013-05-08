@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - LEDs
+	Souliss - LEDs
 	
 	It control via Android the two embedded LEDs of the OLIMEXINO-328 board,
 	this is the simplest example and can be used as starting point for be

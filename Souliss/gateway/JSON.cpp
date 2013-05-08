@@ -53,7 +53,9 @@ const char* json[] = {"({[", "{\"id\" : \"", "\", \"hlt\" : \"", "\", \"slot\" :
 */	
 /**************************************************************************/
 void JSONServer(U8 *memory_map)
-{
+{	
+	U8 typ_mask=0xFF;
+	
 	// Set the socket
 	srvcln_setsocket(SRV_SOCK1);
 	
@@ -63,7 +65,6 @@ void JSONServer(U8 *memory_map)
 	// If there are incoming data on the listened port
 	if(data_len) 
 	{	
-
 		// If the socket is connected and the data size doesn't exceed the buffer
 		if (srvcln_connected(ETH_JSON))													// If data are available
 		{
@@ -80,7 +81,13 @@ void JSONServer(U8 *memory_map)
 			// Move data into a string for parsing
 			incomingURL = "";
 			for(U8 i=0;i<data_len;i++)
+			{
+				// Stop at next space after GET
+				if(incomingURL.startsWith("GET /") && buf[i] == 32)
+					break;
+					
 				incomingURL = incomingURL + buf[i];	
+			}
 		}	
 		else
 		{
@@ -92,7 +99,6 @@ void JSONServer(U8 *memory_map)
 	// Parse the incoming data
 	if(indata)
     {
-	
 		// Count the number of nodes
 		nodes = 0;	
 		while(*(U16*)(memory_map+(MaCaco_ADDRESSES_s+nodes*2)) != 0x0000)
@@ -246,7 +252,7 @@ void JSONServer(U8 *memory_map)
 						
 				// Send a command to the node	
 				if((id < nodes) && (id != MaCaco_LOCNODE) && (U16)(memory_map[MaCaco_ADDRESSES_s+2*id] != 0x0000))	// If is a remote node, the command act as remote input				
-					Souliss_RemoteInput((U16)(memory_map[MaCaco_ADDRESSES_s+2*id]), slot, val_s);
+					Souliss_RemoteInput(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, val_s);
 				else if (id == MaCaco_LOCNODE)								// If is a local node (me), the command is written back
 					memory_map[MaCaco_IN_s+slot] = val_s;
 
@@ -261,32 +267,28 @@ void JSONServer(U8 *memory_map)
 				typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum lenght of "?typ="
 				val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum lenght of "&val="								
 				
-				// Look for all slot assigned to this typical and put value in
+				// Send a multicast command to all typicals, first identify if the command is issued
+				// for a typical or a typical class
+				if((typ & 0x0F) == 0x00)
+					typ_mask = 0xF0;	// We look only to the typical class value
+				else
+					typ_mask = 0xFF;	// We look to whole typical value
+				
 				for(U8 id=0;id<nodes;id++)
 				{
 					for(U8 slot=0;slot<MaCaco_SLOT;slot++)
 					{						
-						if(memory_map[id*MaCaco_TYPLENGHT+MaCaco_TYP_s+slot] & 0xF0 == typ & 0xF0)	
+						if(memory_map[id*MaCaco_TYPLENGHT+MaCaco_TYP_s+slot] & typ_mask == typ & typ_mask)	
 						{									
 							// Send a command to the node	
-							if((id != MaCaco_LOCNODE) && (U16)(memory_map[MaCaco_ADDRESSES_s+2*id] != 0x0000))	// If is a remote node, the command act as remote input
-								Souliss_RemoteInput((U16)(memory_map[MaCaco_ADDRESSES_s+2*id]), slot, val_s);			
+							if((id != MaCaco_LOCNODE) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)) != 0x0000))	// If is a remote node, the command act as remote input
+								Souliss_RemoteInput((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)), slot, val_s);			
 							else if (id == MaCaco_LOCNODE)												// If is a local node (me), the command is written back
 								memory_map[MaCaco_IN_s+slot] = val_s;	
 						}
 					}			
 				}	
 			}
-			else if(incomingURL.indexOf("?rst",force) > 0)
-			{				
-				// Reset healty values
-				for(U8 id=0;id<nodes;id++)
-				{
-					if(memory_map[MaCaco_HEALTY_s+id] <= MaCaco_SUBSCRHEALTY)
-						memory_map[MaCaco_HEALTY_s+id] = MaCaco_SUBINITHEALTY;		
-				}	
-			}
-			
 		}
 	
 		// Close the connection

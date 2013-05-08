@@ -96,7 +96,7 @@
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define	MODBUS					0
+#	define	MODBUS					1
 #	define 	MODBUS_TCP  			1
 #	define 	MODBUS_RTU  			0
 #endif

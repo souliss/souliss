@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Hello World
+	Souliss - Hello World
 	
 	Is simply handle one LED remotely via an Android (or any equivalent
 	direct interface) and via an hardwired pushbutton.

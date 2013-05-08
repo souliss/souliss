@@ -543,7 +543,7 @@ U8 ModbusVerify()
 			// Verify for each group of the memory map if the address is within the memory size
 			if((modbusframe->startingaddress >= REGISTER_INPUT_START_ADDRESS) && (modbusframe->startingaddress <= REGISTER_INPUT_END_ADDRESS))
 			{
-				if((bytenumber + byteqty + MaCaco_IN_s) > MaCaco_TYP_f)
+				if((bytenumber + byteqty + MaCaco_IN_s) > MaCaco_IN_f)
 				{
 					// Prepare an execption answer
 					modbusreply->functionalcode += 0x80;
@@ -846,7 +846,7 @@ void ModbusSend()
 #	endif		
 
 #	if(MODBUS_RTU)
-
+		// No action required
 #	elif(MODBUS_TCP)
 		// Swap again from little-endian to big-endian
 		modbusreply->transactionid = HTONS(modbusframe->transactionid);
@@ -881,6 +881,7 @@ void ModbusSend()
 #	endif
 
 #if(MODBUS_RTU)
+
 	// Send the frame
 	while(oFrame_Available())
 		Serial.write(oFrame_GetByte());			// Get the next byte
@@ -1122,8 +1123,12 @@ U8 Modbus(U8 *memory_map)
 	
 	In case of Modbus, after a write request an answer to the Modbus Master is
 	required, so in the same cycle the write request cannot be forwarded to
-	a remote node. The request is so loaded into the memory map and parsed
+	a remote node. The request is so loaded into the memory map and then parsed
 	with this function.
+	
+	In case of MaCaco, a command that is not relevant to the node it-self is 
+	redirected without be loaded into the memory map, because MaCaco doesn't
+	need a confirmation message for commands.
 */	
 /**************************************************************************/
 void ModbusRemoteInput(U8 *memory_map)
@@ -1137,12 +1142,13 @@ void ModbusRemoteInput(U8 *memory_map)
 		if(*(memory_map+i))
 		{
 			// Calculate the id and slot for the remote node
-			U8 id = (i-MaCaco_IN_s)%MaCaco_SLOT; 
-			U8 slot = i-id*MaCaco_SLOT;
+			U8 id = (i-MaCaco_IN_s)/MaCaco_SLOT; 
+			U8 slot = (i-MaCaco_IN_s)-id*MaCaco_SLOT;
+			// or U8 slot = (i-MaCaco_IN_s)%MaCaco_SLOT;
 			
 			// Send the remote command
-			Souliss_RemoteInput(*(U16*)(memory_map[MaCaco_ADDRESSES_s+2*id]), slot, *(memory_map+i));
-			
+			Souliss_RemoteInput(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*id), slot, *(memory_map+i));		
+
 			// Reset the input area
 			*(memory_map+i)=0;
 			

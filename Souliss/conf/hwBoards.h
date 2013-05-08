@@ -68,17 +68,19 @@
 /**************************************************************************/
 /*!
 	Select the used (if any) I/O extension board, it include drivers and
-	methods for selected device
+	methods for selected device. Not all extension boards and shield need
+	this setup.
 	        
 		Value       Media
         0x00        No selection (Default)
-		0x01		Olimex MOD-IO and MOD-IO2 (UEXT)
- 
+		0x01		Olimex MOD-IO  (UEXT)
+		0x02		Olimex MOD-IO2 (UEXT)		
+		0x03		Olimex MOD-RGB (UEXT)
+		
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
 #	define	IOBOARD_MODEL		0x00
 #endif
-
 
 #endif

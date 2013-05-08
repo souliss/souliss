@@ -27,94 +27,26 @@
 #include "src/I2C/I2C.c"
 
 // Define the I2C data buffer
-uint8_t	mIO_cmd[6] = {OLIMEX, 0, ADDRESS, 0, 0, 0};
+uint8_t	mIO_cmd[7] = {OLIMEX, 0, ADDRESS, 0, 0, 0};
 
 /**************************************************************************
 /*!
 	Init the MOD-IO driver for model 01	(4 relays, 4 opto-insulated inputs)
 */	
 /**************************************************************************/
-void MODIO1_Init()
+void MODIO_Init()
 {
 	// Init the I2C
 	I2C_begin();	
 		
-	mIO_cmd[ADDR0] = OLIMEX;				// I2C Slave Address (aka ADDR0)	
-	mIO_cmd[ADDR1] = MODIO1;				// I2C Register		 (aka ADDR1)
-	mIO_cmd[ADDR2] = ADDRESS;				// I2C Register		 (aka ADDR2)
+	mIO_cmd[ADDR0] = NONE;				// Not used
+	mIO_cmd[ADDR1] = NONE;				// Not used
+	mIO_cmd[ADDR2] = MODIO1;			// I2C Slave Address
 }	
 
 /**************************************************************************
 /*!
-	Init the MOD-IO driver for model 02	(2 relays, 7 GPIOs)	
-*/	
-/**************************************************************************/
-void MODIO2_Init()
-{
-	// Init the I2C
-	I2C_begin();	
-	
-	mIO_cmd[ADDR0] = OLIMEX;				// I2C Slave Address (aka ADDR0)
-	mIO_cmd[ADDR1] = MODIO2;	            // I2C Register		 (aka ADDR1)
-	mIO_cmd[ADDR2] = ADDRESS;	            // I2C Register		 (aka ADDR2)
-}
-
-/**************************************************************************
-/*!
-	Set GPIO pin modes for MOD-IO2
-	
-		Pins associated to a 0 are set as outputs rather 1 set as input.
-	
-		Is not allowed to read the register value, so configuration have to 
-		be done for all pins in one shot, use GPIO0...GPIO7 defines to get 
-		the register value.
-		
-		Example, set GPIO0/1 as inputs and GPIO6/7 as outputs
-			gpio_register = (~(GPIO7 | GPIO6) & (GPIO1 | GPIO0))
-*/	
-/**************************************************************************/
-void mIO_PinMode(uint8_t gpio_register)			
-{
-	// Addresses was set previously, only require functional code and
-	// command	
-	mIO_cmd[FUNCODE] = SET_TRIS;				// Set TRIS register in MOD-IO2	
-	mIO_cmd[CMD]	 = gpio_register;			// Register value
-	
-	// Write data on I2C bus
-	I2C_write(mIO_cmd, 5);
-	
-}
-
-/**************************************************************************
-/*!
-	Set GPIO pullups for MOD-IO2
-	
-		Pins associated to a 0 has no pullps rather 1 set has it.
-	
-		Is not allowed to read the register value, so configuration have to 
-		be done for all pins in one shot, use GPIO0...GPIO7 defines to get 
-		the register value.
-		
-		Example, set pullup for GPIO0/1 and remove for all others
-			gpio_register = (~(GPIO7 | GPIO6 | GPIO5 | GPIO4 
-									 | GPIO3 | GPIO2) & (GPIO1 | GPIO0))
-*/	
-/**************************************************************************/
-void mIO_Pullup(uint8_t gpio_register)				
-{
-	// Addresses was set previously, only require functional code and
-	// command	
-	mIO_cmd[FUNCODE] = SET_PU;				// Set pullup register
-	mIO_cmd[CMD]	 = gpio_register;		// Register value
-
-	// Write data on I2C bus	
-	I2C_write(mIO_cmd, 5);	
-	
-}
-
-/**************************************************************************
-/*!
-	Set relay state for MOD-IO and MOD-IO2
+	Set relay state for MOD-IO
 	
 		Set or reset relay state. Is not allowed to read the register value, 
 		so configuration have to be done for all pins in one shot, use 
@@ -132,31 +64,8 @@ void mIO_Relay(uint8_t relay_reg)
 	mIO_cmd[CMD]	 = relay_reg;			// Register value
 
 	// Write data on I2C bus	
-	I2C_write(mIO_cmd, 5);				
+	I2C_write(&mIO_cmd[ADDR2], 3);				
 }									
-
-/**************************************************************************
-/*!
-	Set digital output for MOD-IO2
-	
-		Set or reset digital output state. Is not allowed to read the register
-		value, so configuration have to be done for all pins in one shot, use 
-		GPIO0...7 defines to get the register value.
-		
-		Example, set digital outputs GPIO0 and GPIO1
-			gpio_register = (GPIO1 | GPIO0)
-*/	
-/**************************************************************************/	
-void mIO_digitalWrite(uint8_t gpio_register)		
-{
-	// Addresses was set previously, only require functional code and
-	// command	
-	mIO_cmd[FUNCODE] = SET_LAT;				// Set pullup register
-	mIO_cmd[CMD]	 = gpio_register;	    // Register value
-
-	// Write data on I2C bus		
-	I2C_write(mIO_cmd, 5);				
-}
 
 /**************************************************************************
 /*!
@@ -166,11 +75,11 @@ void mIO_digitalWrite(uint8_t gpio_register)
 uint16_t mIO_analogRead(uint8_t pin)		
 {
 	// Addresses was set previously, only require functional code
-	mIO_cmd[FUNCODE] = (GET_AN0+pin);	
-	I2C_write(mIO_cmd, 4);				// Write I2C read request on the bus
+	mIO_cmd[FUNCODE] = (GET_AN1+pin-1);	
+	I2C_write(&mIO_cmd[ADDR2], 2);				// Write I2C read request on the bus
 	
 	//Prepare the read on the I2C bus
-	mIO_cmd[CMD]	 = mIO_cmd[ADDR0];	
+	mIO_cmd[CMD]	 = mIO_cmd[ADDR2];	
 	I2C_read(&mIO_cmd[CMD], 2);	
 
 	// Return actual pin value
@@ -185,13 +94,13 @@ uint16_t mIO_analogRead(uint8_t pin)
 uint8_t mIO_digitalRead(uint8_t pin)	
 {
 	// Addresses was set previously, only require functional code
-	mIO_cmd[FUNCODE] = GET_PORT;		
-	I2C_write(mIO_cmd, 4);				// Write I2C read request on the bus
+	mIO_cmd[FUNCODE] = GET_IN;		
+	I2C_write(&mIO_cmd[ADDR2], 2);				// Write I2C read request on the bus
 	
 	//Prepare the read on the I2C bus
-	mIO_cmd[CMD]	 = mIO_cmd[ADDR0];	
+	mIO_cmd[CMD]	 = mIO_cmd[ADDR2];	
 	I2C_read(&mIO_cmd[CMD], 1);		
-
+	
 	// Return actual pin value
 	return (mIO_cmd[CMD] & (pin));	 	
 }

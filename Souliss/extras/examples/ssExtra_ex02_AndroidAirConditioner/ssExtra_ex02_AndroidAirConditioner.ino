@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Android Control for Air Conditioner
+	Souliss - Android Control for Air Conditioner
 	
 	Control an air conditioner using the Android user interface, communication
 	between the board and Android is via Ethernet and MaCaco/vNet protocol.

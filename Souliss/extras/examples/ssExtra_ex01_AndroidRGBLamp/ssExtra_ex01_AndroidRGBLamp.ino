@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Android RGB Lamp
+	Souliss - Android RGB Lamp
 	
 	Control an RGB Led Lamp using the Android user interface, communication
 	between the board and Android is via Ethernet and MaCaco/vNet protocol.

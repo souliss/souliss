@@ -2,7 +2,7 @@
 #define __NIC_H__
 
 /**************************************************************************
-	Souliss Home Automation - vNet Virtualized Network
+	Souliss - vNet Virtualized Network
     Copyright (C) 2012  Veseo
 
     This program is free software: you can redistribute it and/or modify

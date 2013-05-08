@@ -183,38 +183,38 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 
 #define MaCaco_ADDRESSES_s		0												// First byte of the addresses for the remote nodes
 #define MaCaco_ADDRESSES_f		(2*MaCaco_NODES-1)								// Last byte of the addresses for the remote nodes
-#define MaCaco_HEALTY_s			MaCaco_ADDRESSES_f+1							// First byte of the healty for the remote nodes
-#define MaCaco_HEALTY_f			MaCaco_HEALTY_s+MaCaco_NODES-1					// Last byte of the healty for the remote nodes
-#define MaCaco_CONF_s			MaCaco_HEALTY_f+1								// First byte of the configuration parameters
-#define MaCaco_CONF_f			MaCaco_CONF_s+MaCaco_CONFPARAM-1				// Last byte of the configuration parameters
-#define MaCaco_AUXIN_s			MaCaco_CONF_f+1									// First byte of the auxiliary inputs
-#define MaCaco_AUXIN_f			MaCaco_AUXIN_s+MaCaco_SLOT-1					// Last byte of the auxiliary inputs
+#define MaCaco_HEALTY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healty for the remote nodes
+#define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last byte of the healty for the remote nodes
+#define MaCaco_CONF_s			(MaCaco_HEALTY_f+1)								// First byte of the configuration parameters
+#define MaCaco_CONF_f			(MaCaco_CONF_s+MaCaco_CONFPARAM-1)				// Last byte of the configuration parameters
+#define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)								// First byte of the auxiliary inputs
+#define MaCaco_AUXIN_f			(MaCaco_AUXIN_s+MaCaco_SLOT-1)					// Last byte of the auxiliary inputs
 
 #if(MaCaco_EXTENDED_MAP)
-	#define MaCaco_IN_s			MaCaco_AUXIN_f+1								// First byte for input data
+	#define MaCaco_IN_s			(MaCaco_AUXIN_f+1)								// First byte for input data
 	#define MaCaco_IN_f			(MaCaco_IN_s+(MaCaco_NODES*MaCaco_SLOT)-1)		// Last  byte for input data
-	#define MaCaco_TYP_s		MaCaco_IN_f+1									// First byte for typical logic definitions
+	#define MaCaco_TYP_s		(MaCaco_IN_f+1)									// First byte for typical logic definitions
 	#define MaCaco_TYP_f		(MaCaco_TYP_s+(MaCaco_NODES*MaCaco_SLOT)-1)		// Last  byte for typical logic definitions
-	#define MaCaco_OUT_s		MaCaco_TYP_f+1									// First byte for output data
+	#define MaCaco_OUT_s		(MaCaco_TYP_f+1)								// First byte for output data
 	#define MaCaco_OUT_f		(MaCaco_OUT_s+(MaCaco_NODES*MaCaco_SLOT)-1)		// Last  byte for output data
 #else
-	#define MaCaco_IN_s			MaCaco_AUXIN_f+1								// First byte for input data
-	#define MaCaco_IN_f			MaCaco_IN_s+MaCaco_SLOT-1						// Last  byte for input data
-	#define MaCaco_TYP_s		MaCaco_IN_f+1									// First byte for typical logic definitions
-	#define MaCaco_TYP_f		MaCaco_TYP_s+MaCaco_SLOT-1						// Last  byte for typical logic definitions
-	#define MaCaco_OUT_s		MaCaco_TYP_f+1									// First byte for output data
-	#define MaCaco_OUT_f		MaCaco_OUT_s+MaCaco_SLOT-1						// Last  byte for output data
+	#define MaCaco_IN_s			(MaCaco_AUXIN_f+1)								// First byte for input data
+	#define MaCaco_IN_f			(MaCaco_IN_s+MaCaco_SLOT-1)						// Last  byte for input data
+	#define MaCaco_TYP_s		(MaCaco_IN_f+1)									// First byte for typical logic definitions
+	#define MaCaco_TYP_f		(MaCaco_TYP_s+MaCaco_SLOT-1)					// Last  byte for typical logic definitions
+	#define MaCaco_OUT_s		(MaCaco_TYP_f+1)								// First byte for output data
+	#define MaCaco_OUT_f		(MaCaco_OUT_s+MaCaco_SLOT-1)					// Last  byte for output data
 #endif
 
-#define MaCaco_WRITE_s			MaCaco_AUXIN_s									// First writeble data by a remote device
-#define MaCaco_WRITE_f			MaCaco_IN_f										// Last  writeble data by a remote device
-#define MaCaco_EXT_WRITE_s		MaCaco_TYP_s+1									// First writeble data by a remote device in case of extended memory map
-#define MaCaco_EXT_WRITE_f		MaCaco_OUT_f									// Last  writeble data by a remote device in case of extended memory map
+#define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeble data by a remote device
+#define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeble data by a remote device
+#define MaCaco_EXT_WRITE_s		(MaCaco_TYP_s+1)								// First writeble data by a remote device in case of extended memory map
+#define MaCaco_EXT_WRITE_f		(MaCaco_OUT_f)									// Last  writeble data by a remote device in case of extended memory map
 
 #if(MaCaco_EXTENDED_MAP)
-	#define MaCaco_MEMMAP		MaCaco_OUT_f+1									// Lenght of the whole memory map
+	#define MaCaco_MEMMAP		(MaCaco_OUT_f+1)								// Lenght of the whole memory map
 #else
-	#define MaCaco_MEMMAP		MaCaco_EXT_WRITE_f+1							// Lenght of the whole extended memory map
+	#define MaCaco_MEMMAP		(MaCaco_EXT_WRITE_f+1)							// Lenght of the whole extended memory map
 #endif
 
 /**************************************************************************/

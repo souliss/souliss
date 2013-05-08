@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Output Frame
+	Souliss - Output Frame
     Copyright (C) 2012  Veseo
 
     This program is free software: you can redistribute it and/or modify

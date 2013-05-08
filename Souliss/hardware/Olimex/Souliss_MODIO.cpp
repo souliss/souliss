@@ -22,19 +22,33 @@
     \file 
     \ingroup
 */
-#include "Souliss_MODIO.h"
-#include "MODIO.h"
-
 #include "Souliss.h"
 #include "Typicals.h"
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
-#include "GetConfig.h"			// need : SoulissCfg.h
+#include "GetConfig.h"			// need : SoulissCfg.h and hwBoards.h
 #include <Arduino.h>
 
-bool mIO_InPin[MAXINPIN] = {false};
-uint8_t mIO_Out=0;
+#include "Souliss_MODIO.h"
+#if(IOBOARD_MODEL == 0x01)
+	#include "MODIO.h"
+#elif(IOBOARD_MODEL == 0x02)
+	#include "MODIO2.h"
+#endif
+
+uint8_t mIO_DigIn=0, mIO_In=0, mIO_Out=0;
 static unsigned long mIO_time;
+
+/**************************************************************************
+/*!
+	Read state for all digital inputs
+*/	
+/**************************************************************************/
+U8 Souliss_MODIO_In()
+{
+	// Read state for all pins using a full mask
+	mIO_DigIn = mIO_digitalRead(0xFF);
+}
 
 /**************************************************************************
 /*!
@@ -46,17 +60,17 @@ static unsigned long mIO_time;
 /**************************************************************************/
 U8 Souliss_MODIO_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 {
-	// If pin is on, set the "value"
-	if(mIO_digitalRead(pin) && !mIO_InPin[pin])
+	// If pin is ON and isn't yet processed
+	if((mIO_DigIn & pin) && !(mIO_In & pin))
 	{	
 		memory_map[MaCaco_IN_s + slot] = value;
 		
-		mIO_InPin[pin] = true;
+		mIO_In |= pin;
 		return MaCaco_DATACHANGED;
 	}
-	else if(!mIO_digitalRead(pin))
+	else if(!(mIO_DigIn & pin))
 	{
-		mIO_InPin[pin] = false;
+		mIO_In &= ~pin;
 		return MaCaco_NODATACHANGED;
 	}
 }
@@ -71,17 +85,17 @@ U8 Souliss_MODIO_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 /**************************************************************************/
 U8 Souliss_MODIO_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 {
-	// If pin is on, set the "value"
-	if(mIO_digitalRead(pin)==0 && !mIO_InPin[pin])
+	// If pin is OFF and isn't yet processed
+	if(!(mIO_DigIn & pin) && !(mIO_In & pin))
 	{	
 		memory_map[MaCaco_IN_s + slot] = value;
 		
-		mIO_InPin[pin] = true;
+		mIO_In |= pin;
 		return MaCaco_DATACHANGED;
 	}
-	else if(mIO_digitalRead(pin))
+	else if((mIO_DigIn & pin))
 	{
-		mIO_InPin[pin] = false;
+		mIO_In &= ~pin;
 		return MaCaco_NODATACHANGED;
 	}
 }
@@ -94,19 +108,19 @@ U8 Souliss_MODIO_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 /**************************************************************************/
 U8 Souliss_MODIO_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot)
 {
-	// If pin is on, set the "value"
-	if(mIO_digitalRead(pin) && !mIO_InPin[pin])
+	// If pin is ON and isn't yet processed
+	if((mIO_DigIn & pin) && !(mIO_In & pin))
 	{	
 		memory_map[MaCaco_IN_s + slot] = value_state_on;
 		
-		mIO_InPin[pin] = true;
+		mIO_In |= pin;
 		return MaCaco_DATACHANGED;
 	}
-	else if(!mIO_digitalRead(pin) && mIO_InPin[pin])
+	else if(!(mIO_DigIn & pin) && (mIO_In & pin))
 	{
 		memory_map[MaCaco_IN_s + slot] = value_state_off;
 		
-		mIO_InPin[pin] = false;
+		mIO_In &= ~pin;
 		return MaCaco_DATACHANGED;
 	}
 	
@@ -121,26 +135,26 @@ U8 Souliss_MODIO_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *
 /**************************************************************************/
 U8 Souliss_MODIO_DigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map, U8 slot)
 {
-	// If pin is on, set the "value"
-	if(mIO_digitalRead(pin) && !mIO_InPin[pin])
+	// If pin is ON and isn't yet processed
+	if((mIO_DigIn & pin) && !(mIO_In & pin))
 	{
 		// Write input value in memory map
 		memory_map[MaCaco_IN_s + slot] = value_state1;
 		mIO_time = millis();								// Record time
 		
-		mIO_InPin[pin] = true;
+		mIO_In |= pin;
 		return MaCaco_DATACHANGED;
 	}
-	else if(mIO_digitalRead(pin) && (abs(millis()-mIO_time) > 1500))
+	else if((mIO_DigIn & pin) && (abs(millis()-mIO_time) > 1500))
 	{
 		mIO_time = millis();								// Record time
 		
 		// Write timer value in memory map
 		memory_map[MaCaco_IN_s + slot] = value_state2;	
 	}
-	else if(!mIO_digitalRead(pin))
+	else if(!(mIO_DigIn & pin))
 	{
-		mIO_InPin[pin] = false;
+		mIO_In &= ~pin;
 		return MaCaco_NODATACHANGED;
 	}
 }
@@ -154,26 +168,26 @@ U8 Souliss_MODIO_DigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_
 /**************************************************************************/
 U8 Souliss_MODIO_LowDigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map, U8 slot)
 {
-	// If pin is on, set the "value"
-	if(!mIO_digitalRead(pin) && !mIO_InPin[pin])
+	// If pin is OFF and isn't yet processed
+	if(!(mIO_DigIn & pin) && !(mIO_In & pin))
 	{
 		// Write input value in memory map
 		memory_map[MaCaco_IN_s + slot] = value_state1;
 		mIO_time = millis();								// Record time
 		
-		mIO_InPin[pin] = true;
+		mIO_In |= pin;
 		return MaCaco_DATACHANGED;
 	}
-	else if(!mIO_digitalRead(pin) && abs(millis()-mIO_time) > 1500)
+	else if(!(mIO_DigIn & pin) && abs(millis()-mIO_time) > 1500)
 	{
 		mIO_time = millis();								// Record time
 		
 		// Write timer value in memory map
 		memory_map[MaCaco_IN_s + slot] = value_state2;
 	}
-	else if(mIO_digitalRead(pin))
+	else if((mIO_DigIn & pin))
 	{
-		mIO_InPin[pin] = false;
+		mIO_In &= ~pin;
 		return MaCaco_NODATACHANGED;
 	}
 }
@@ -266,14 +280,16 @@ void Souliss_MODIO_SetOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_m
 
 /**************************************************************************
 /*!
-	Force digital outputs based on values from previous "Set" methods
+	Force digital outputs based on values from previous "Set" methods,
+	valid only MOD-IO2
 */	
 /**************************************************************************/
+#if(IOBOARD_MODEL == 0x02)			// MOD-IO2
 void Souliss_MODIO_DigOut()
 {
 	mIO_digitalWrite(mIO_Out);
 }
-
+#endif
 /**************************************************************************
 /*!
 	Force relays based on values from previous "Set" methods	

@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Wireless my Garage (Bridge)
+	Souliss - Wireless my Garage (Bridge)
 	
 	It control a garage door with three devices: one device act on the relays
 	that drive the motor and get the limit switches, the other has one 
