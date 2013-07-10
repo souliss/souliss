@@ -56,9 +56,12 @@ void chb_buf_init()
 /**************************************************************************/
 void chb_buf_write(U8 data)
 {
-    chb_buf[wr_ptr] = data;
-    wr_ptr = (wr_ptr + 1) % CHB_BUF_SZ;
-    len++;
+	if (len < CHB_BUF_SZ)
+	{
+		chb_buf[wr_ptr] = data;
+		wr_ptr = (wr_ptr + 1) % CHB_BUF_SZ;
+		len++;
+	} 
 }
 
 /**************************************************************************/
@@ -69,10 +72,17 @@ void chb_buf_write(U8 data)
 U8 chb_buf_read()
 {
     U8 data;
+	if (len > 0)
+	{
+		data = chb_buf[rd_ptr];
+		rd_ptr = (rd_ptr + 1) % CHB_BUF_SZ;
+ 
+		// protect the len update. otherwise it could get corrupted if an intp occurs here
+		cli();
+		len--;
+		sei();
+	} 
 
-    data = chb_buf[rd_ptr];
-    rd_ptr = (rd_ptr + 1) % CHB_BUF_SZ;
-    len--;
     return data;
 }
 

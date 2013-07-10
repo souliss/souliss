@@ -176,10 +176,10 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define	MaCaco_NODES			10												// Number of remote nodes
 #define MaCaco_LOCNODE			0												// Node number for local data
 #define	MaCaco_CONFPARAM		5												// Define the number of configuration parameters
-#define MaCaco_SUBSCRLEN		8												// Lenght  byte for subscription data
-#define MaCaco_TYPLENGHT		8												// Number of slot
-#define MaCaco_OUTLENGHT		8												// Number of slot
 #define MaCaco_SLOT				8												// Number of slot
+#define MaCaco_SUBSCRLEN		MaCaco_SLOT										// Lenght  byte for subscription data
+#define MaCaco_TYPLENGHT		MaCaco_SLOT										// Number of slot
+#define MaCaco_OUTLENGHT		MaCaco_SLOT										// Number of slot
 
 #define MaCaco_ADDRESSES_s		0												// First byte of the addresses for the remote nodes
 #define MaCaco_ADDRESSES_f		(2*MaCaco_NODES-1)								// Last byte of the addresses for the remote nodes

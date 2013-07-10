@@ -36,6 +36,9 @@
 
 #include "frame/vNet/drivers/ethW5100/ServerClient.cpp"
 
+#if (VNET_DEBUG)
+	#define VNET_LOG Serial.print
+#endif
 
 unsigned long start_time;
 
@@ -106,6 +109,32 @@ void vNet_SetAddress_M1(uint16_t addr)
 	
 	vNet_Begin_M1(UDP_SOCK);								// Start listen on socket
 
+	// Include debug functionalities, if required
+	#if(VNET_DEBUG)
+	uint8_t addrval[6];
+	
+	// Print MAC address 
+	W5100.getMACAddress(addrval);
+    VNET_LOG("(MAC)<");
+	for(U8 i=0; i<6; i++)
+	{
+		VNET_LOG(addrval[i],HEX);
+		VNET_LOG(",");
+	}
+	VNET_LOG(">\r\n");
+
+	// Print IP address 
+	W5100.getIPAddress(addrval);
+    VNET_LOG("(IP)<");
+	for(U8 i=0; i<4; i++)
+	{
+		VNET_LOG(addrval[i],HEX);
+		VNET_LOG(",");
+	}
+	
+	VNET_LOG(">\r\n");
+	#endif	
+	
 }
 
 /**************************************************************************/
@@ -128,14 +157,11 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	// Verify the User Mode	
 	#if(UMODE_ENABLE)
 	if ((addr & 0xFF00) != 0x0000)
-	{
-		// The first byte is the User Mode Index, if not zero
-		// the User Mode shall be used
-		
-		UserMode_Get(addr, &ip_addr[0]);
-		
-		// Use the User Mode
-		vNet_port = USR_PORT;
+	{	
+		// The first byte is the User Mode Index, if in range 0x01 - 0x64
+		// a standard client/server connection is used with the user interface
+		// this give rounting and NATting passthrough
+		UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
 	}
 	else
 	#endif
@@ -146,27 +172,9 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	oFrame_Define(&vNetM1_oFrame);
 	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
 
-	// In case of user interface, data are sent more than once	
-	#if(UMODE_ENABLE)
-	if ((addr & 0xFF00) != 0x0000)
-		s = UMODE_SENDS;
-	else
-	#endif
-		s = 1;
-	
-	// Send data s times
-	while(s)
-	{
-		oFrame Send_oFrame;
-		oFrame_Copy(&Send_oFrame, &vNetM1_oFrame);
-		
-		// Send data
-		//if(!sendto(UDP_SOCK, (U8*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
-		if(!sendto(UDP_SOCK, (U8*)&Send_oFrame, 0, &ip_addr[0], vNet_port))
-			return ETH_FAIL;	// If data sent fail, return
-		
-		s--;
-	}
+	// Send data	
+	if(!sendto(UDP_SOCK, (uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
+		return ETH_FAIL;	// If data sent fail, return
 	
 	return ETH_SUCCESS;
 }
@@ -229,7 +237,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	// but is required to record the IP address in case of User Mode addresses
 	#if(UMODE_ENABLE)
 	if(((*(U16*)&data_pnt[5]) & 0xFF00) != 0x0000)
-		UserMode_Record((*(U16*)&data_pnt[5]), dataframe.ip);
+		UserMode_Record((*(U16*)&data_pnt[5]), dataframe.ip, (uint8_t *)(&dataframe.port));
 	#endif
 	
 	// Remove the header

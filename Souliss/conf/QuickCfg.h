@@ -119,6 +119,27 @@
 #if(QC_ENABLE)
 #	define	QC_GATEWAYTYPE			0x00
 #endif
+
+/**************************************************************************/
+/*!
+	Select the sensor used to include automatically proper drivers, multiple
+	selection is allowed.
+	        
+		Value       Media
+        0x00        No selection (Default)
+		0x01		Selected
+ 
+	List of available sensors and relevant description,
+		
+		Name			Description
+		DHT_SENSOR		Temperature and humidity DHT11, DHT21, DHT22
+ 
+*/
+/**************************************************************************/
+#if(QC_ENABLE)				
+#	define	DHT_SENSOR				0x00
+#endif
+
 /**************************************************************************/
 /*!
     IP Base Configuration 
@@ -191,5 +212,6 @@ const uint8_t DEFAULT_GATEWAY[] = {192, 168, 1, 1};
 #	define	WiFi_SSID				"mywifi"
 #	define	WiFi_Password			"mypassword"	
 #endif
+
 
 #endif

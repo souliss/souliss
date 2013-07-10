@@ -43,16 +43,18 @@
 
 #define UMODE_LOG 		Serial.print
 #define	IPADDRESS_BYTES	4
+#define PPORT_BYTES	2
 
 U16 in_vNet_Addresses[UMODE_USERS];
-U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES];
+U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES], 
+	in_P_Port[UMODE_USERS*PPORT_BYTES];
 
 /**************************************************************************/
 /*!
     Record the incoming IP address and link it with a vNet address
 */
 /**************************************************************************/
-void UserMode_Record(U16 addr, U8* ip_addr)
+void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 {
 	U8 i=0;
 
@@ -72,8 +74,8 @@ void UserMode_Record(U16 addr, U8* ip_addr)
 	
 	// Store the IP address
 	in_vNet_Addresses[i] = addr;
-	memmove(in_IP_Addresses + i*(IPADDRESS_BYTES), ip_addr, IPADDRESS_BYTES);
-	
+	memmove(in_IP_Addresses + i*(IPADDRESS_BYTES), ip_addr, IPADDRESS_BYTES);	// Store the IP address
+	memmove(in_P_Port + i*(PPORT_BYTES), p_port, PPORT_BYTES);				// Store the IP port
 }
 
 /**************************************************************************/
@@ -118,7 +120,7 @@ void UserMode_Reset()
     Get an IP address from the table starting from the vNet one
 */
 /**************************************************************************/
-void UserMode_Get(U16 addr, U8* ip_addr)
+void UserMode_Get(U16 addr, U8* ip_addr, U8* p_port)
 {
 	U8 i=0;
 
@@ -133,7 +135,7 @@ void UserMode_Get(U16 addr, U8* ip_addr)
 	
 	// Return the IP address pointer
 	memmove(ip_addr, in_IP_Addresses + i*(IPADDRESS_BYTES), IPADDRESS_BYTES);
-	
+	memmove(p_port, in_P_Port + i*(PPORT_BYTES), PPORT_BYTES);	
 }
 
 #endif

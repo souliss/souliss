@@ -48,6 +48,12 @@
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.cpp"
 
+// Include methods for half-precision floating points
+#include "src/IEEE754/float16.c"
+
+// Include drivers for supported sensors
+#include "sensors/sensors.cpp"
+
 bool InPin[MAXINPIN] = {false};
 bool FirstInit = {false};
 static unsigned long time;
@@ -495,6 +501,35 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map
 		InPin[pin] = false;
 		return MaCaco_NODATACHANGED;
 	}
+}
+
+/**************************************************************************
+/*!
+	Read a single precision floating point and store it into the memory_map 
+	as half-precision floating point
+*/	
+/**************************************************************************/
+void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue)
+{
+	float16((U16*)(memory_map + MaCaco_IN_s + slot), analogvalue);
+}
+
+/**************************************************************************
+/*!
+	Read an analog input and store it into the memory_map as half-precision
+	floating point
+*/	
+/**************************************************************************/
+void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias)
+{
+	float inval = analogRead(pin);
+	
+	// Scale and add bias
+	inval = bias + scaling * inval;
+	
+	// Convert from single-precision to half-precision
+	float16((U16*)(memory_map + MaCaco_IN_s + slot), &inval);
+	
 }
 
 /**************************************************************************

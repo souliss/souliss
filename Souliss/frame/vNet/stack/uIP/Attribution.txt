@@ -24,8 +24,6 @@
 * 
 *  May, 2012 - Included in vNet virtualization layer
 *
-*
-*
 *  May 09, 2004 - Version 0.90 - port of uIP 0.90
 *                 Added Imagecraft compiler support
 *                 Extended rtl8019.c rtl8019Init function to set config
@@ -42,7 +40,6 @@
 *                 uIP has updated uip_arp code which fixes several problems
 *                   found in 0.60
 *                 A more accurate delay function is included
-*
 *
 *  Sept 30 2002 - Version 0.60.1 - port of uIP 0.60
 *                 Fixed errors in rtl8019.c - the Next Page pointer read from
@@ -68,6 +65,5 @@
 *                   SRAM interface
 *                 Drivers for RTL8019AS (EDTP's Packet Whacker Module - 
 *                   www.edtp.com)
-*
 *
 *****************************************************************************/

@@ -112,13 +112,28 @@
 // General defines for T3n
 #define Souliss_T3n_InSetPoint			0x01		// Increase Setpoint Command
 #define Souliss_T3n_OutSetPoint			0x02		// Decrease Setpoint Command
-#define Souliss_T3n_LowRange			0x10		// Low Range from Input Analog Value
-#define Souliss_T3n_MaxRange			0x7F		// Max Range from Input Analog Value
-#define Souliss_T3n_MinSetPoint			0x10		// Min Range Setpoint
-#define Souliss_T3n_MaxSetPoint			0x7F		// Max Range Setpoint
-#define Souliss_T3n_ZeroSetPoint		0x80		// Setpoint Zero Value
-#define Souliss_T3n_DeadBand			0x05		
-#define Souliss_T3n_RstCmd				0x00
+#define Souliss_T3n_AsMeasured			0x03		// Setpoint equal to actual measure
+#define Souliss_T3n_Cooling				0x04		// Set cooling mode
+#define Souliss_T3n_Heating				0x05		// Set heating mode
+#define Souliss_T3n_FanOff				0x06		// Heating / Cooling Fan Off
+#define Souliss_T3n_FanLow				0x07		// Heating / Cooling Fan Low
+#define Souliss_T3n_FanMed				0x08		// Heating / Cooling Fan Medium
+#define Souliss_T3n_FanHigh				0x09		// Heating / Cooling Fan High
+#define Souliss_T3n_FanAuto				0x0A		// Heating / Cooling Fan Automatic
+#define Souliss_T3n_FanManual			0x0B		// Heating / Cooling Fan Manual
+#define Souliss_T3n_DeadBand			0.05		// Percentage Deadband
+#define Souliss_T3n_ThMed				0.10		// Threshold for medium speed
+#define Souliss_T3n_ThHigh				0.15		// Threshold for high speed
+
+#define Souliss_T3n_RstCmd				0x0000
+#define Souliss_T3n_HeatingOn			0x02		// Heating Active
+#define Souliss_T3n_CoolingOn			0x03		// Cooling Active
+#define Souliss_T3n_FanOn1				0x08		// Fan 1 Running
+#define Souliss_T3n_FanOn2				0x10		// Fan 2 Running
+#define Souliss_T3n_FanOn3				0x20		// Fan 3 Running
+#define Souliss_T3n_FanAutoState		0x40		// Fan set in Automatic
+#define Souliss_T3n_HeatingMode			0x80		// State set as heating
+#define Souliss_T3n_CoolingMode			0x80		// State set as cooling
 
 #define Souliss_T3n_AirCon_OnCmd		0xF0 
 #define Souliss_T3n_AirCon_OffCmd 		0xFC
@@ -162,7 +177,6 @@
 #define Souliss_T4n_Antitheft			0x01		// Anti-theft Armed Feedback
 #define Souliss_T4n_NoAntitheft			0x00		// Anti-theft not Armed Feedback
 #define Souliss_T4n_InAlarm				0x03		// Anti-theft in Alarm
-
 
 #define Souliss_RstCmd					0x00
 #define Souliss_NOTTRIGGED				0x00
@@ -212,13 +226,28 @@ void Souliss_SetT42(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_T42(U8 *memory_map, U8 slot, U8 *trigger, U16 main_antitheft_address);
 
 void Souliss_SetT51(U8 *memory_map, U8 slot);
-U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const U8 deadband, U8 *trigger);
+U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger);
 
-void Souliss_SetT52(U8 *memory_map, U8 slot);
-U8 Souliss_Logic_T52(U8 *memory_map, U8 slot, const U8 deadband, U8 *trigger);
+void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ);
 
-void Souliss_SetT53(U8 *memory_map, U8 slot);
-U8 Souliss_Logic_T53(U8 *memory_map, U8 slot, const U8 deadband, U8 *trigger);
+#define Souliss_SetT52(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x52)
+#define Souliss_SetT53(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x53)
+#define Souliss_SetT54(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x54)
+#define Souliss_SetT55(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x55)
+#define Souliss_SetT56(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x56)
+#define Souliss_SetT57(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x57)
+#define Souliss_SetT58(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x58)
+#define Souliss_SetT59(memory_map, slot) Souliss_SetT5n(memory_map, slot, 0x59)
+
+#define Souliss_Logic_T52 Souliss_Logic_T51
+#define Souliss_Logic_T53 Souliss_Logic_T51
+#define Souliss_Logic_T54 Souliss_Logic_T51
+#define Souliss_Logic_T55 Souliss_Logic_T51
+#define Souliss_Logic_T56 Souliss_Logic_T51
+#define Souliss_Logic_T57 Souliss_Logic_T51
+#define Souliss_Logic_T58 Souliss_Logic_T51
+#define Souliss_Logic_T59 Souliss_Logic_T51
+
 #endif
 
 

@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation - Remote my Garage
+	Souliss - Remote my Garage
 	
 	It control a garage door acting on the relays that drive the motor and 
 	get the limit switches, open and close command are only available via
@@ -7,6 +7,11 @@
 	
 	This logics is fine if act on device with over current protection and 
 	obstacle detection, if not limit switches are mandatory.
+	
+	To use MOD-IO2 and a communication board (MOD-ENC28J60 or MOD-WIFI)
+	is required a ribbon cable that extend the UEXT bus to both the boards,
+	the signal dedicated for I2C shall not be extended to the communication
+	modules.
 	
 	Applicable for:
 		- Garage doors,
@@ -43,19 +48,19 @@
 	Run this code on one of the following boards:
 	
 		Board Conf Code			Board Model
-		0x0D					Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO2
-		0x0E					Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO2
-		0x0F					Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO2 
-		0x10					Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO2		  
-		0x11					Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO2	  
-		0x12					Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO2  	
+		0x13		Olimex AVR-T32U4 		with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x14		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x15		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-IO 2(UEXT)
+		0x16		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-IO 2(UEXT)
+		0x17		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-IO 2(UEXT)
+		0x18		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-IO 2(UEXT) 	
 	
 	******************** Configuration Parameters *********************
 	
 		Configuration file		Parameter
 		QuickCfg.h				#define	QC_ENABLE			0x01
-		QuickCfg.h				#define	QC_BOARDTYPE		0x0D, 0x0E, 0x0F,
-															0x10, 0x11, 0x12
+		QuickCfg.h				#define	QC_BOARDTYPE		0x13, 0x14, 0x15,
+															0x16, 0x17, 0x18
 
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -127,6 +132,9 @@ void loop()
 		// Execute the code every 21 time_base_fast		
 		if (!(phase_fast % 21))
 		{
+			// Get all inputs states
+			Souliss_MODIO_In();
+			
 			// Use input 0 and input 1 as limit switchtes
 			Souliss_MODIO_LowDigIn(GPIO0, Souliss_T2n_LimSwitch_Open, memory_map, GARAGEDOOR_NODE);
 			Souliss_MODIO_LowDigIn(GPIO1, Souliss_T2n_LimSwitch_Close, memory_map, GARAGEDOOR_NODE);			

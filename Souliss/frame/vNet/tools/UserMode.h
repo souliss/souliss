@@ -36,10 +36,10 @@
 
 #include "src/types.h"
 
-void UserMode_Record(U16 addr, U8* ip_addr);
+void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port);
 void UserMode_Remove(U16 addr);
 void UserMode_Reset();
-void UserMode_Get(U16 addr, U8* ip_addr);
+void UserMode_Get(U16 addr, U8* ip_addr, U8* p_port);
 
 #endif
 #endif

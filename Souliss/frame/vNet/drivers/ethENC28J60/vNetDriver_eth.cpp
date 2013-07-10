@@ -48,7 +48,8 @@ extern struct uip_conn uip_conns[UIP_CONNS];			// State for uIP connections
 uint8_t *appdata;										// Pointer of the incoming packet
 uint8_t *ripadrr;										// Pointer of remote IP address
 uint8_t vnetlenght=0;									// Lenght of the incoming packet
-uint16_t portnumber=0;									// Port number of the incoming packet
+uint16_t portnumber=0;									// Destination port number of the incoming packet
+uint16_t sportnumber=0;									// Source port number of the incoming packet
 uint8_t arptimer=0;										// ARP table timeout						
 uint8_t usedsock=MAX_SOCK_NUM;
 uint8_t mac_addr[6];
@@ -126,39 +127,27 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	// If the frame is not empty, there are waiting data 	
 	oFrame_Define(&vNetM1_oFrame);
 	if(oFrame_Available())
-		return ETH_FAIL;
+		return ETH_FAIL;		
 
 	// Build a frame with len of payload as first byte
 	vNetM1_header = len+1;
 	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
 	
-	//	Get the IP address
 	// Define the standard vNet port
 	vNet_port = ETH_PORT;
 
 	// Verify the User Mode	
 	#if(UMODE_ENABLE)
 	if ((addr & 0xFF00) != 0x0000)
-	{
-		// The first byte is the User Mode Index, if not zero
-		// the User Mode shall be used
-		
-		UserMode_Get(addr, &ip_addr[0]);
-		
-		// Use the User Mode
-		vNet_port = USR_PORT;
+	{	
+		// The first byte is the User Mode Index, if in range 0x01 - 0x64
+		// a standard client/server connection is used with the user interface
+		// this give rounting and NATting passthrough
+		UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
 	}
 	else
-	#endif	
-		eth_vNettoIP(addr, &ip_addr[0]);
-	
-	// In case of user interface, data are sent more than once	
-	#if(UMODE_ENABLE)
-	if ((addr & 0xFF00) != 0x0000)
-		s = UMODE_SENDS;
-	else
 	#endif
-		s = 1;
+		eth_vNettoIP(addr, &ip_addr[0]);	// Get the IP address
 	
 	// Setup the connection, data will be sent using a callback function
 	if(!uip_udp_sock((u16_t*)ip_addr, vNet_port))
@@ -230,7 +219,6 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 {
 	// Retrieve the first byte of the message
 	uint8_t len=*appdata;
-	uint8_t* ip_addr;
 
 	// Retrieve the complete message
 	if((len>0 && len <= vnetlenght) && len <= (VNET_HEADER_SIZE+VNET_MAX_PAYLOAD))
@@ -241,11 +229,15 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		// Verify the incoming address, is a not conventional procedure at this layer
 		// but is required to record the IP address in case of User Mode addresses
 		#if(UMODE_ENABLE)
-		// Get the IP source address for the last frame
-		uip_udp_srcaddr(ip_addr);
+		// Get the IP source address for the last frame, ripadrr and sportnumber are processed
+		// in vNet_UDP_callback() with a callback from the uIP stack.
 		
+		// Is an UserMode frame, record the incoming source information
 		if(((*(U16*)&data[4]) & 0xFF00) != 0x0000)
-			UserMode_Record((*(U16*)&data[4]), ip_addr);	
+		{
+			sportnumber = HTONS(sportnumber);										// Swap byte before record the source port
+			UserMode_Record((*(U16*)&data[4]), ripadrr, (uint8_t*)&sportnumber);	
+		}												
 		#endif
 	}
 	else

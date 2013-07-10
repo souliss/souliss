@@ -228,7 +228,7 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if((memory_map[MaCaco_IN_s + slot] > Souliss_T1n_AutoCmd)	&& (memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState)) // Memory value is used as timer
+	if((memory_map[MaCaco_IN_s + slot] > Souliss_T1n_AutoCmd) && (memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState)) // Memory value is used as timer
 	{	
 		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil)  
 			*trigger = Souliss_TRIGGED;									// Trig change
@@ -237,7 +237,7 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)	// Off Command
 	{
-		if((memory_map[MaCaco_OUT_s + slot] && ~Souliss_T1n_AutoState) != Souliss_T1n_OffCoil)  
+		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OffCoil)  
 			*trigger = Souliss_TRIGGED;
 	
 		// Switch OFF and reset the AUTO mode
@@ -246,7 +246,7 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
-		if((memory_map[MaCaco_OUT_s + slot] && ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil)  
+		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil)  
 			*trigger = Souliss_TRIGGED;	
 		
 		// Switch ON and reset the AUTO mode
@@ -255,9 +255,9 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)
 	{
-		if((memory_map[MaCaco_OUT_s + slot] && ~Souliss_T1n_AutoState) == Souliss_T1n_OnCoil)
+		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch OFF the output and reset the AUTO mode
-		else if((memory_map[MaCaco_OUT_s + slot] && ~Souliss_T1n_AutoState) == Souliss_T1n_OffCoil)
+		else if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) == Souliss_T1n_OffCoil)
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch ON the output	and reset the AUTO mode
 
 		*trigger = Souliss_TRIGGED;										// Trig the state change
@@ -265,13 +265,17 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_AutoCmd)	// Set AUTO state
 	{
-		if((memory_map[MaCaco_OUT_s + slot] && ~Souliss_T1n_AutoState) != Souliss_T1n_OffCoil)  
-			*trigger = Souliss_TRIGGED;
-	
-		// Switch OFF and set the AUTO mode
-		memory_map[MaCaco_OUT_s + slot] = (Souliss_T1n_AutoState | Souliss_T1n_OffCoil);			// Switch off the output
+		// If the logic is not in AUTO, active AUTO mode
+		if((memory_map[MaCaco_OUT_s + slot] == (Souliss_T1n_AutoState | Souliss_T1n_Coil)) || ((memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState) != Souliss_T1n_AutoState))
+			memory_map[MaCaco_OUT_s + slot] = (Souliss_T1n_AutoState | Souliss_T1n_OffCoil);			// Switch OFF and set the AUTO mode
+		else
+			memory_map[MaCaco_OUT_s + slot] = (~Souliss_T1n_AutoState & Souliss_T1n_OffCoil);			// Switch OFF and reset the AUTO mode
+			
+		*trigger = Souliss_TRIGGED;
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
+	else
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// No recognized command, reset
 }
 
 /**************************************************************************
@@ -938,89 +942,185 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T31;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
+	memory_map[MaCaco_TYP_s + slot + 2] = Souliss_TRL;
+	memory_map[MaCaco_TYP_s + slot + 3] = Souliss_TRL;
+	memory_map[MaCaco_TYP_s + slot + 4] = Souliss_TRL;
 }
 
 /**************************************************************************
 /*!
-	Typical 31 : Temperature control 
+	Typical 31 : Temperature control with cooling and heating mode
 
 		It compare an internal setpoint with a measured value to control
-		a digital output for cooling or heating heating. The input value
-		and setpoint shall be unsigned on 7 bits, the difference is stored
-		as signed on 8 bits.
+		a digital output for cooling or heating. Actual temperature and
+		desired setpoint are stored and available for user interface or
+		any other node in the network.
 		
 		The difference is caluclated as measured values (MV) less setpoint
-		(SP) D = MV - SP, the output shall be activated based on the sign
-		of the difference. In case of heating control, using:
-			Souliss_DigOutLessThan, 
+		(SP) D = MV - SP, the output goes on based on the sign of this
+		difference and on the selected mode (cooling / heating).
 		
-		when the desired temperature is below the setpoint an output coil 
-		can be controlled. In case of cooling control, using:
-			Souliss_DigOutGreaterThan, 
+		This typical use five (5) memory slot, arranged as follow
+			Temperature Control User Commands (IN / OUT) SLOT +0  
+			Temperature Measured Value (IN / OUT) SLOT +1, SLOT +2
+			Temperature Setpoint Value (IN / OUT) SLOT +3, SLOT +4
 		
-		when the desired temperature is over the setpoint an output coil 
-		can be controlled.
-	
-		This typical use two (2) memory slot, the first contain the difference 
-		D the latter contains the setpoint SP.
+		all values shall be in half-precision floating point, automatic
+		conversion is done if using Souliss_AnalogIn
 		
 		Hardware and/or Software Command:
 			
 			Using a monostable wall switch (press and spring return) or a 
 			software command from user interface, to increase or decrease
 			the setpoint.
-				#define Souliss_T3n_InSetPoint		0x01
-				#define Souliss_T3n_OutSetPoint		0x02
-
-		Setpoint and measured values shall be in the following raw range:		
-				#define Souliss_T3n_LowRange		0x10
-				#define Souliss_T3n_MaxRange		0x7F
-				#define Souliss_T3n_MinSetPoint		0x10
-				#define Souliss_T3n_MaxSetPoint		0x7F
+				#define Souliss_T3n_InSetPoint			0x01
+				#define Souliss_T3n_OutSetPoint			0x02
+				#define Souliss_T3n_AsMeasured			0x03
+				#define Souliss_T3n_Cooling				0x04
+				#define Souliss_T3n_Heating				0x05
+				#define Souliss_T3n_FanOff				0x06
+				#define Souliss_T3n_FanLow				0x07
+				#define Souliss_T3n_FanMed				0x08
+				#define Souliss_T3n_FanHigh				0x09
+				#define Souliss_T3n_FanAuto				0x0A
+				#define Souliss_T3n_FanManual			0x0B
+				
+		Setpoint and measured values can be provided via analog input acquisition
+		using Souliss_AnalogIn method, the setpoint can be modified using the In(+)
+		and Out(-) commands, that will decrease of one unit the actual setpoint.
+		
+		The outputs are available as control state in the SLOT +0 and as used
+		measured value and setpoint in next four slots (as per inputs).
+		
+		The control state bit meaning follow as:
+			BIT 0	Not used 
+			BIT 1	(0 Heating OFF , 1 Heating ON)
+			BIT 2	(0 Cooling OFF , 1 Cooling ON)
+			BIT 3	(0 Fan 1 OFF   , Fan 1 ON)
+			BIT 4	(0 Fan 2 OFF   , Fan 2 ON)
+			BIT 5	(0 Fan 3 OFF   , Fan 3 ON)
+			BIT 6	(0 Manual Mode , 1 Automatic Mode for Fan) 
+			BIT 7	(0 Heating Mode, 1 Cooling Mode)		
 			
+		Using the Souliss_nDigOut method matching with following state defines
+		let control heating, cooling and fans.
+				#define Souliss_T3n_HeatingOn			0x02
+				#define Souliss_T3n_CoolingOn			0x03
+				#define Souliss_T3n_FanOn1				0x08
+				#define Souliss_T3n_FanOn2				0x10
+				#define Souliss_T3n_FanOn3				0x20	
 */	
 /**************************************************************************/
 void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	float actual_temp, actual_setpnt, in_temp, in_setpnt;
+
+	// Convert the stored values in single precision floating points
+	float32((U16*)(memory_map + MaCaco_IN_s + slot + 1), &in_temp);
+	float32((U16*)(memory_map + MaCaco_IN_s + slot + 3), &in_setpnt);
+	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
+	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
+	
 	// Store actual value as difference with requested setpoint
-	if(memory_map[MaCaco_IN_s + slot] != Souliss_T3n_RstCmd)
+	if(*(U16*)(memory_map + MaCaco_IN_s + slot + 1) != Souliss_T3n_RstCmd)
+	{		
+		// If there is a too small change in the new temperature
+		if(abs((in_temp-actual_temp)/actual_temp) > Souliss_T3n_DeadBand)
+			actual_temp = in_temp;													// Set the new temperature value
+
+		*(U16*)(memory_map + MaCaco_IN_s + slot + 1) = Souliss_T3n_RstCmd;		// Reset	
+	}
+	
+	// Trig the next change of the state
+	*trigger = Souliss_TRIGGED;	
+		
+	// Check the actual operational mode (Cooling / Heating)
+	if(!(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
 	{
-		// If the actual value is out of range
-		if((memory_map[MaCaco_IN_s + slot] < Souliss_T3n_LowRange) || (memory_map[MaCaco_IN_s + slot] > Souliss_T3n_MaxRange))
-		{	
-			memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;	// Reset
-			return;
-		}
+		// Heating Mode
+		if(((actual_temp-actual_setpnt)/actual_temp) < -Souliss_T3n_DeadBand)
+			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingOn;	// Active the heating 
+		else if(((actual_temp-actual_setpnt)/actual_temp) > Souliss_T3n_DeadBand)
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
+		else
+			*trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
+	}
+	else if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingMode)
+	{
+		// Cooling Mode
+		if(((actual_temp-actual_setpnt)/actual_temp) > Souliss_T3n_DeadBand)
+			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingOn;	// Active the cooling 
+		else if(((actual_temp-actual_setpnt)/actual_temp) < -Souliss_T3n_DeadBand)
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling 
+		else
+			*trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
+	}
+
+	// Check the fan mode (Manual / Auto)
+	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_FanAutoState)
+	{
+		float deviation = abs((actual_temp-actual_setpnt)/actual_temp);
 		
-		// If the actual values is greather than the setpoint
-		if(memory_map[MaCaco_IN_s + slot] > memory_map[MaCaco_OUT_s + slot + 1] + Souliss_T3n_DeadBand)
+		if(deviation > Souliss_T3n_ThHigh)
+			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Active Fan1 + Fan2 + Fan3
+		else if(deviation > Souliss_T3n_ThMed)
 		{
-			memory_map[MaCaco_OUT_s + slot] = 	memory_map[MaCaco_IN_s + slot] - memory_map[MaCaco_OUT_s + slot + 1];
-			*trigger = Souliss_TRIGGED;	
+			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2);						// Active Fan1 + Fan2
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_FanOn3;
 		}
-		else if(memory_map[MaCaco_IN_s + slot] < memory_map[MaCaco_OUT_s + slot + 1] - Souliss_T3n_DeadBand)
-		{	
-			memory_map[MaCaco_OUT_s + slot] = 	Souliss_T3n_ZeroSetPoint + memory_map[MaCaco_OUT_s + slot + 1] - memory_map[MaCaco_IN_s + slot] ;	// Store as signed byte
-			*trigger = Souliss_TRIGGED;	
+		else if(deviation > Souliss_T3n_DeadBand)
+		{
+			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1);											// Active Fan1
+			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);
 		}
-		
-		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;	// Reset		
-	}	
+		else
+			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Stop Fan1 + Fan2 + Fan3
+	}
 	
 	// If new setpoint is available, store it
-	if(memory_map[MaCaco_IN_s + slot + 1] != Souliss_T3n_RstCmd)
+	if(memory_map[MaCaco_IN_s + slot] != Souliss_T3n_RstCmd)
 	{	
 		// Check out the setpoint request
-		if((memory_map[MaCaco_IN_s + slot] == Souliss_T3n_InSetPoint) && (memory_map[MaCaco_OUT_s + slot + 1] + 1 < Souliss_T3n_MaxSetPoint))
-			memory_map[MaCaco_OUT_s + slot + 1]++;
-		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T3n_OutSetPoint) && (memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T3n_MinSetPoint))
-			memory_map[MaCaco_OUT_s + slot + 1]--;
-		else if((memory_map[MaCaco_IN_s + slot] >= Souliss_T3n_MinSetPoint) || 	(memory_map[MaCaco_IN_s + slot] <= Souliss_T3n_MaxSetPoint))
-			memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_IN_s + slot];	// Store the new setpoint
+		if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_InSetPoint)
+			actual_setpnt++;														// Increase of 1 degree
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_OutSetPoint)
+			actual_setpnt--;														// Decrease of 1 degree
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_AsMeasured)
+			actual_setpnt = actual_temp;											// As actual temperature
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Cooling)
+			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingMode;				// Set Cooling Mode
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Heating)
+			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingMode;				// Set Heating Mode
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanAuto)
+			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_FanAutoState;			// Set Fan in Automatic Mode
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanManual)
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_FanAutoState;			// Set Fan in Manual Mode				
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanOff)
+			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Stop Fan1 + Fan2 + Fan3
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanLow)
+		{
+			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1);											// Active Fan1
+			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);
+		
+		}
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanMed)
+		{
+			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2);						// Active Fan1 + Fan2
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_FanOn3;
+		
+		}
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanHigh)		
+			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Active Fan1 + Fan2 + Fan3
+
 			
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
 		*trigger = Souliss_TRIGGED;		
 	}		
+	
+	// Convert the processed values in half precision floating points
+	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
+	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
+		
 }
 
 /**************************************************************************
@@ -1130,7 +1230,7 @@ void Souliss_SetT41(U8 *memory_map, U8 slot)
 		
 		Hardware and/or Software Command:
 			
-			Using a two state switch or a software command from user other nodes
+			Using a two state switch or a software command
 				#define Souliss_T4n_Alarm			0x01
 				#define Souliss_T4n_ReArm			0x03
 				#define Souliss_T4n_NotArmed		0x04
@@ -1226,100 +1326,84 @@ U8 Souliss_Logic_T42(U8 *memory_map, U8 slot, U8 *trigger, U16 main_antitheft_ad
 
 /**************************************************************************
 /*!
-	Define the use of Typical 51 : Analog input, unsigned byte
+	Define the use of Typical 51 : Analog input, half-precision floating point
 */	
 /**************************************************************************/
 void Souliss_SetT51(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T51;
+	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 }
 
 /**************************************************************************
 /*!
-	Typical 51 : Analog input, unsigned byte
-*/	
-/**************************************************************************/
-U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const U8 deadband, U8 *trigger)
-{
-	if(abs(memory_map[MaCaco_IN_s + slot]-memory_map[MaCaco_OUT_s + slot]) > deadband)
-	{
-		// Store the new value
-		memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];
-		memory_map[MaCaco_IN_s + slot] = 0;			// Reset
-		
-		// Trigger
-		*trigger = Souliss_TRIGGED;		
-	}
-}
-
-/**************************************************************************
-/*!
-	Define the use of Typical 52 : Analog input, unsigned byte square root 
-	mean value
-*/	
-/**************************************************************************/
-void Souliss_SetT52(U8 *memory_map, U8 slot)
-{
-	memory_map[MaCaco_TYP_s + slot] = Souliss_T52;
-}
-
-/**************************************************************************
-/*!
-	Typical 52 : Analog input, unsigned byte square root mean value
-*/	
-/**************************************************************************/
-U8 Souliss_Logic_T52(U8 *memory_map, U8 slot, const U8 deadband, U8 *trigger)
-{
-	U8 mean;
+	Typical 51 : Analog input, half-precision floating point
 	
-	if(memory_map[MaCaco_IN_s + slot] != 0)
-	{
-		mean = memory_map[MaCaco_OUT_s + slot];
+		The inputs value, coming from an analog source is stored and notified
+		to the user interface or any other subscriber if the data are changing
+		out of an user defined threshold.
 	
-		// Iterative mean value		
-		mean += memory_map[MaCaco_IN_s + slot];
-		mean /= 2;
-		
-		memory_map[MaCaco_IN_s + slot] = 0;			// Reset
-		
-		// Trigger only if above the deadband
-		if(abs(mean-memory_map[MaCaco_OUT_s + slot]) > deadband)
-			*trigger = Souliss_TRIGGED;		
+		The analog values shall be a floating point and must be converted in
+		half-precision floating point using Souliss.
 	
-		// Place the mean value in the memory map
-		memory_map[MaCaco_OUT_s + slot] = mean;
-	}	
-}
-
-/**************************************************************************
-/*!
-	Define the use of Typical 53 : Analog input, unsigned byte max iterative 
-	mean value
+		This typical use two (2) memory slots
 */	
 /**************************************************************************/
-void Souliss_SetT53(U8 *memory_map, U8 slot)
+U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 {
-	memory_map[MaCaco_TYP_s + slot] = Souliss_T53;
-}
-
-/**************************************************************************
-/*!
-	Typical 53 : Analog input, unsigned byte max moving value
-*/	
-/**************************************************************************/
-U8 Souliss_Logic_T53(U8 *memory_map, U8 slot, const U8 deadband, U8 *trigger)
-{
-	if(memory_map[MaCaco_IN_s + slot] != 0)
-	{
-		if(memory_map[MaCaco_OUT_s + slot]*0.9 < memory_map[MaCaco_IN_s + slot])
+	float m_in, m_out;
+	
+	// If there is a new values, compare it against the previous one
+	if((memory_map[MaCaco_IN_s + slot] != 0) || (memory_map[MaCaco_IN_s + slot + 1] != 0))
+	{	
+		// Values are actually stored as half-precision floating point, this doesn't
+		// allow math operation, so convert them back to single-precision
+		float32((U16*)(memory_map + MaCaco_IN_s + slot), &m_in);
+		float32((U16*)(memory_map + MaCaco_OUT_s + slot), &m_out);
+			
+		if(abs((m_in - m_out)/m_in) > deadband)
+		{
+			// Store the new value
 			memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];
-		else
-			memory_map[MaCaco_OUT_s + slot] *= 0.97;
+			memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_IN_s + slot + 1];
+					
+			memory_map[MaCaco_IN_s + slot] = 0;			// Reset
+			memory_map[MaCaco_IN_s + slot + 1] = 0;		// Reset
 			
-		// Trigger only if above the deadband
-		if(abs(memory_map[MaCaco_IN_s + slot]-memory_map[MaCaco_OUT_s + slot]) > deadband)
+			// Trigger
 			*trigger = Souliss_TRIGGED;		
-			
-		memory_map[MaCaco_IN_s + slot] = 0;			// Reset
+		}
 	}	
+}
+
+/**************************************************************************
+/*!
+	Typical 5n : Pre-defined Analog Input	
+	
+		Souliss support for analog values use a single rapresentation as
+		half-duplex floating point, at same time some pre-defined analog
+		input typical (pressure, temperature, humidity, ...) are defined
+		in order to standardize the ranges and the user interface management.
+		
+		The following pre-defined analog inputs are available,
+			Souliss_Logic_T52 - Temperature measure (-20, +50) °C
+			Souliss_Logic_T53 - Humidity measure (0, 100) %
+			Souliss_Logic_T54 - Pressure measure (0, 1500) hPa
+			Souliss_Logic_T55 - Voltage (0, 400) V
+			Souliss_Logic_T56 - Current (0, 25)  A
+			Souliss_Logic_T57 - Power (0, 6500)  W
+			Souliss_Logic_T58 - 
+			Souliss_Logic_T59 - 
+			
+		All typicals between T52 and T59 are handled with T51, simply the value
+		at user interface side will be clamped into the pre-defined ranges, having
+		known unit measure.		
+		
+		All code for T52 up to T59 is defined using macro in Typicals.h			
+*/	
+/**************************************************************************/
+void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ)
+{
+	memory_map[MaCaco_TYP_s + slot] = typ;
+	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 }

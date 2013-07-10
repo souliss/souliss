@@ -68,7 +68,7 @@ typedef struct
     U16 src_addr;
     U8 seq;
     volatile bool data_rcv;
-    volatile bool tx_end;
+    volatile bool trx_end;
 
     // stats
     U16 rcvd_xfers;
@@ -81,7 +81,6 @@ typedef struct
     U8 status;
     U8 ed;
     U8 crc;
-    U8 tx_busy;
 } pcb_t;
 
 typedef struct

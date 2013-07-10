@@ -810,6 +810,7 @@ uip_process(u8_t flag)
 	     UIP_LOG("udp: listened port"); 
 		 uip_udp_conn->ripaddr[0] = BUF->srcipaddr[0];
 		 uip_udp_conn->ripaddr[1] = BUF->srcipaddr[1];
+		 uip_udp_conn->rport = UDPBUF->srcport; ///////////////////////
 		 goto udp_found; 
     }
   }

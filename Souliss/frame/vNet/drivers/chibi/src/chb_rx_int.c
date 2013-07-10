@@ -99,10 +99,7 @@ ISR(CHB_RADIO_IRQ)
                         pcb->data_rcv = true;
                     }
                 }
-                else
-                {
-                    pcb->tx_end = true;
-                }
+				pcb->trx_end = true; 
                 intp_src &= ~CHB_IRQ_TRX_END_MASK;
                 while (chb_set_state(RX_STATE) != RADIO_SUCCESS);
             }

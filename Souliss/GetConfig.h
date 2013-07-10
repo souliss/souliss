@@ -391,6 +391,7 @@
 
 #	include "conf/ethUsrCfg.h"
 #	include "conf/hwBoards.h"
+#	include "conf/hwSensors.h"
 #	include "conf/MaCacoCfg.h"
 #	include "conf/SoulissCfg.h"
 #	include "conf/vNetCfg.h"

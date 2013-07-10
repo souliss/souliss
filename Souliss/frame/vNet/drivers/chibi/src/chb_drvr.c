@@ -600,7 +600,7 @@ U8 chb_tx(oFrame *frame)
     chb_frame_write(frame);
 
     //Do frame transmission. 
-    pcb->tx_busy = true;
+    pcb->trx_end = false;
     chb_reg_read_mod_write(TRX_STATE, CMD_TX_START, 0x1F);
 
     // wait for the transmission to end, signalled by the TRX END flag
@@ -613,8 +613,8 @@ U8 chb_tx(oFrame *frame)
 	while ((!pcb->tx_end) && (millis() - start < CHB_WAIT));
     pcb->tx_end = false;
 #else
-	while (!pcb->tx_end);
-	pcb->tx_end = false;
+	while (!pcb->trx_end);
+	pcb->trx_end = false;
 	
 #endif	
  
@@ -675,7 +675,7 @@ static void chb_radio_init()
     chb_reg_read(IRQ_STATUS);
 
     // re-enable intps while we config the radio
-    chb_reg_write(IRQ_MASK, 0x8);
+    chb_reg_write(IRQ_MASK, 0xc);
 
     // enable mcu intp pin on INT6 for rising edge
     CFG_CHB_INTP();

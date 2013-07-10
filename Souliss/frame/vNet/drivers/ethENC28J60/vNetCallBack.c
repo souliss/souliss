@@ -32,7 +32,8 @@
 extern uint8_t *appdata;									// Pointer of the incoming packet
 extern uint8_t *ripadrr;									// Pointer of remote IP address
 extern uint8_t vnetlenght;									// Lenght of the incoming packet
-extern uint16_t portnumber;									// Port number of the incoming packet
+extern uint16_t portnumber;									// Destination Port number of the incoming packet
+extern uint16_t sportnumber;								// Source Port number of the incoming packet
 extern uint8_t arptimer;									// Timeout for ARP table
 extern oFrame vNetM1_oFrame;								// Data structure for output frame
 //extern OutBuffer outframe;	
@@ -73,7 +74,8 @@ void vNet_callback()
 		// Save the pointer, lenght and port of incoming data
 		appdata = (uint8_t*)uip_appdata;	
 		vnetlenght = uip_len;
-		portnumber = uip_conn->lport;
+		portnumber  = uip_conn->lport;
+		sportnumber = uip_conn->rport;		
 		ripadrr = (uint8_t*)uip_conn->ripaddr;
 	}
 	else if(uip_flags & UIP_TIMEDOUT)
@@ -116,7 +118,8 @@ void vNet_UDP_callback()
 		// Save the pointer, lenght and port of incoming data
 		appdata = (uint8_t*)uip_appdata;	
 		vnetlenght = uip_len;
-		portnumber = uip_udp_conn->lport;
+		portnumber  = uip_udp_conn->lport;
+		sportnumber = uip_udp_conn->rport;		
 		ripadrr = (uint8_t*)uip_udp_conn->ripaddr;
 		
 		uip_flags = 0;
