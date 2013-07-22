@@ -1,6 +1,12 @@
 /**************************************************************************
-	Souliss
-    Copyright (C) 2013  Veseo
+	Souliss Support for DFRobots XBoard Relay
+    Copyright (C) 2012  Veseo
+	
+***************************************************************************/
+
+/**************************************************************************
+	Souliss Home Automation
+    Copyright (C) 2012  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,37 +28,11 @@
     \file 
     \ingroup
 */
-#ifndef IODEF_H
-#define IODEF_H
+#ifndef XBR_H
+#define XBR_H
 
-#include "GetConfig.h"			// need : hwBoards.h
-
-// Include pins definition for KMTronic DINo
-#if(BOARD_MODEL == 0x03)						
-#	include "hardware/KMTronic/DINo.h"
-#endif
-
-// Include pins definition for DFRobots XBoard Relay
-#if(BOARD_MODEL == 0x07)						
-#	include "hardware/DFRobots/XBoardRelay.h"
-#endif
-
-// Include drivers for Olimex MOD-IO
-#if(IOBOARD_MODEL == 0x01)						
-#	include "hardware/Olimex/MODIO.h"
-#	include "hardware/Olimex/Souliss_MODIO.h"
-#endif
-
-// Include drivers for Olimex MOD-IO2
-#if(IOBOARD_MODEL == 0x02)						
-#	include "hardware/Olimex/MODIO2.h"
-#	include "hardware/Olimex/Souliss_MODIO.h"
-#endif
-
-// Include drivers for Olimex MOD-RGB
-#if(IOBOARD_MODEL == 0x03)						
-#	include "hardware/Olimex/MODRGB.h"
-#	include "hardware/Olimex/Souliss_MODRGB.h"
-#endif
+// XBoard Relay Pinouts
+#define REL1			8
+#define REL2			7	
 
 #endif

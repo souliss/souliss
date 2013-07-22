@@ -364,7 +364,15 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
-
+#	elif(QC_BOARDTYPE == 0x30)
+#		define	ETH_W5100				1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x07
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x01)

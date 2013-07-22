@@ -39,6 +39,7 @@
 		0x04		Olimex AVR-T32U4
 		0x05		Olimex OLIMEXINO-32U4 
 		0x06		Olimex OLIMEXINO-328
+		0x07		DFRobots XBoard Relay
  
 */
 /**************************************************************************/

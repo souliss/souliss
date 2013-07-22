@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss
+	Souliss Home Automation
     Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify
@@ -22,37 +22,21 @@
     \file 
     \ingroup
 */
-#ifndef IODEF_H
-#define IODEF_H
+#ifndef SoulissDHT_H
+#define SoulissDHT_H
 
-#include "GetConfig.h"			// need : hwBoards.h
+#include "DHT.h"
 
-// Include pins definition for KMTronic DINo
-#if(BOARD_MODEL == 0x03)						
-#	include "hardware/KMTronic/DINo.h"
-#endif
+#define DHT11 11
+#define DHT22 22
+#define DHT21 21
 
-// Include pins definition for DFRobots XBoard Relay
-#if(BOARD_MODEL == 0x07)						
-#	include "hardware/DFRobots/XBoardRelay.h"
-#endif
+#define	ssDHT11_Init(pin, id)		ssDHT ssDHT##id(pin, DHT11)	
+#define	ssDHT21_Init(pin, id)		ssDHT ssDHT##id(pin, DHT21)	
+#define	ssDHT22_Init(pin, id)		ssDHT ssDHT##id(pin, DHT22)	
 
-// Include drivers for Olimex MOD-IO
-#if(IOBOARD_MODEL == 0x01)						
-#	include "hardware/Olimex/MODIO.h"
-#	include "hardware/Olimex/Souliss_MODIO.h"
-#endif
-
-// Include drivers for Olimex MOD-IO2
-#if(IOBOARD_MODEL == 0x02)						
-#	include "hardware/Olimex/MODIO2.h"
-#	include "hardware/Olimex/Souliss_MODIO.h"
-#endif
-
-// Include drivers for Olimex MOD-RGB
-#if(IOBOARD_MODEL == 0x03)						
-#	include "hardware/Olimex/MODRGB.h"
-#	include "hardware/Olimex/Souliss_MODRGB.h"
-#endif
+#define ssDHT_Begin(id)				ssDHT##id.begin()
+#define ssDHT_readTemperature(id)	ssDHT##id.readTemperature()
+#define ssDHT_readHumidity(id)		ssDHT##id.readHumidity()
 
 #endif

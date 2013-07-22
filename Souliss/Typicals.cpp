@@ -546,21 +546,16 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		// Toogle the actual status of the light
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
-		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCmd)
+		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
 	}
-	else
-	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
 		// Trigger the change and save the actual color
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
-		{
-			// Save the actual color and turn off the output
-			for(U8 i=1;i<4;i++)
-				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
-				
+		{				
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
 			*trigger = Souliss_TRIGGED;									// Trig the change
 		}
@@ -654,7 +649,9 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 				memory_map[MaCaco_OUT_s + slot + 2] = 0;
 				memory_map[MaCaco_OUT_s + slot + 3] = 0;
 			}
-			else
+			else if((memory_map[MaCaco_OUT_s + slot + 1] == 0)
+				&& (memory_map[MaCaco_OUT_s + slot + 2]  == 0) 
+				&& (memory_map[MaCaco_OUT_s + slot + 3]  == 0))
 			{
 				// Set output to previous value
 				memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_AUXIN_s + slot + 1];
@@ -669,6 +666,7 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		for(U8 i=1;i<4;i++)
 		{
 			memory_map[MaCaco_OUT_s + slot + i] = memory_map[MaCaco_IN_s + slot + i];
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 			memory_map[MaCaco_IN_s + slot + i] = Souliss_T1n_RstCmd;
 		}
 		
@@ -1303,10 +1301,14 @@ void Souliss_SetT42(U8 *memory_map, U8 slot)
 		anti-theft logics, so that a missing node in the chain will be addressed
 		as anti-theft activation cause.
 		
+		A manual reset of the alarm condition is used to let the user identify 
+		which of the devices was in alarm.
+		
 		Hardware and/or Software Command:
 			
 			Using a two state switch or a software command from user other nodes
 				#define Souliss_T4n_Alarm			0x01
+				#define	Souliss_T4n_ReArm			0x03
 
 */	
 /**************************************************************************/
@@ -1320,7 +1322,7 @@ U8 Souliss_Logic_T42(U8 *memory_map, U8 slot, U8 *trigger, U16 main_antitheft_ad
 
 		return MaCaco_send(main_antitheft_address, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + slot, 1, &memory_map[MaCaco_OUT_s + slot]);
 	}
-	else
+	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm))
 		return memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_RstCmd;	
 }
 
@@ -1333,6 +1335,9 @@ void Souliss_SetT51(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T51;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
+	
+	*(U16*)(memory_map + MaCaco_IN_s + slot)  = 0xFE00;	// Use NaN as init value
+	*(U16*)(memory_map + MaCaco_OUT_s + slot) = 0xFE00;	// Use NaN as init value
 }
 
 /**************************************************************************
@@ -1356,12 +1361,22 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 	// If there is a new values, compare it against the previous one
 	if((memory_map[MaCaco_IN_s + slot] != 0) || (memory_map[MaCaco_IN_s + slot + 1] != 0))
 	{	
+		// If the input is not a number (NaN) force the output at same value
+		if((*(U16*)(memory_map + MaCaco_IN_s + slot)) == 0xFE00)	
+		{
+			*(U16*)(memory_map + MaCaco_OUT_s + slot) = 0xFE00;		// Force at NaN
+			return 0;
+		}
+		
 		// Values are actually stored as half-precision floating point, this doesn't
 		// allow math operation, so convert them back to single-precision
 		float32((U16*)(memory_map + MaCaco_IN_s + slot), &m_in);
 		float32((U16*)(memory_map + MaCaco_OUT_s + slot), &m_out);
-			
-		if(abs((m_in - m_out)/m_in) > deadband)
+		
+		// If previously set as NaN or if there is a change grather than the deadband, update the output
+		if((((*(U16*)(memory_map + MaCaco_IN_s + slot)) != (*(U16*)(memory_map + MaCaco_OUT_s + slot))) && 
+				*(U16*)(memory_map + MaCaco_OUT_s + slot) == 0xFE00) || 
+				(abs((m_in - m_out)/m_in) > deadband))
 		{
 			// Store the new value
 			memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];
@@ -1406,4 +1421,7 @@ void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ)
 {
 	memory_map[MaCaco_TYP_s + slot] = typ;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
+
+	*(U16*)(memory_map + MaCaco_IN_s + slot)  = 0xFE00;	// Use NaN as init value
+	*(U16*)(memory_map + MaCaco_OUT_s + slot) = 0xFE00;	// Use NaN as init value
 }

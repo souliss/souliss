@@ -139,7 +139,7 @@ void vNet_SetAddress_M1(uint16_t addr)
 
 /**************************************************************************/
 /*!
-	Send a messagge via TCP/IP
+	Send a messagge via UDP/IP
 */
 /**************************************************************************/
 uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
