@@ -32,7 +32,7 @@ class ssDHT {
   boolean firstreading;
 
  public:
-  ssDHT(uint8_t pin, uint8_t type, uint8_t count=6);
+  ssDHT(uint8_t pin, uint8_t type, uint8_t count=3);
   void begin(void);
   float readTemperature();
   float readHumidity(void);
