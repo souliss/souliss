@@ -32,8 +32,10 @@
 #define Souliss_T12						0x12			// ON/OFF Digital Output with AUTO mode
 #define Souliss_T13						0x13			// Digital Input Value
 #define Souliss_T14						0x14			// Pulse Digital Output
-#define Souliss_T15						0x15			// RGB Light
+#define Souliss_T15						0x15			// RGB Light (IR)
 #define Souliss_T16						0x16			// RGB Light
+#define Souliss_T18						0x18			// ON/OFF Digital Output with pulse output with Timer Option
+#define Souliss_T19						0x19			// LED Light
 #define Souliss_T21						0x21			// Motorized devices with limit switches
 #define Souliss_T22						0x22			// Motorized devices with limit switches and middle position
 #define Souliss_T31						0x31			// Temperature control 
@@ -55,12 +57,18 @@
 #define Souliss_T1n_BrightDown			0x20		// Decrease Light
 #define Souliss_T1n_Flash				0x21		// Flash Light
 #define Souliss_T1n_Set					0x22		// Set a state
+#define Souliss_T1n_OnFeedback			0x23		// Report the actual state as ON
+#define Souliss_T1n_OffFeedback			0x24		// Report the actual state as OFF
 #define Souliss_T1n_Timed				0x30		// Timed ON
 #define Souliss_T1n_RstCmd				0x00		// Reset
 #define Souliss_T1n_AutoState			0xF0		// AUTO Mode Feedback
 #define Souliss_T1n_Coil				0x01		// Output Feedback ON
 #define Souliss_T1n_OnCoil				0x01		// Output Feedback ON
 #define Souliss_T1n_OffCoil				0x00		// Output Feedback OFF
+#define Souliss_T1n_ResetCoil			0xA1		// Pulse Output Coil
+#define Souliss_T1n_PulseCoil			0xA5		// Pulse Output Coil
+#define Souliss_T1n_TimedOnCoil			0xE1		// Output Feedback ON in Timed Mode
+#define Souliss_T1n_TimedOffCoil		0xE0		// Output Feedback OFF in Timed Mode
 #define Souliss_T1n_AutoOnCoil			0xF1		// Output Feedback ON in AUTO Mode
 #define Souliss_T1n_AutoOffCoil			0xF0		// Output Feedback OFF in AUTO Mode
 #define Souliss_T1n_GoodNight			0xF1		// Output Feedback ON in GoodNight Mode
@@ -203,6 +211,13 @@ void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_SetT16(U8 *memory_map, U8 slot);
 void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T16_Timer(U8 *memory_map, U8 input_slot);
+
+void Souliss_SetT18(U8 *memory_map, U8 slot);
+void Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger);
+
+void Souliss_SetT19(U8 *memory_map, U8 slot);
+void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger);
+void Souliss_T19_Timer(U8 *memory_map, U8 input_slot);
 
 void Souliss_SetT21(U8 *memory_map, U8 slot);
 void Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger);

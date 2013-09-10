@@ -61,6 +61,7 @@
 #include "conf/MaCacoCfg.h"
 #include "conf/uIPopt.h"
 #include "conf/chibiUsrCfg.h"
+#include "conf/usartUsrCfg.h"
 
 #if(QC_ENABLE)	//	If Quick Configuration is enabled
 	
@@ -370,6 +371,25 @@
 #		define	BOARD_MODEL				0x07
 #		define VNET_MEDIA1_ENABLE  		1
 #		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x31)
+#		define	ETH_W5100				1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x40)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x02
+#		define	BOARD_MODEL				0x01
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0

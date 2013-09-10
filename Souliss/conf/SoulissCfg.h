@@ -29,19 +29,6 @@
 
 /**************************************************************************/
 /*!
-	Macros
-*/
-/**************************************************************************/
-#define AUX		MaCaco_AUXIN_s
-#define	IN		MaCaco_IN_s
-#define	OUT		MaCaco_OUT_s
-#define Souliss_Auxiliary(memory_map, slot)	memory_map[AUX+slot]	
-#define Souliss_Input(memory_map, slot)		memory_map[IN+slot]	
-#define Souliss_Output(memory_map, slot)	memory_map[OUT+slot]
-#define Souliss_ResetTrigger(data_changed)	data_changed=0;
-
-/**************************************************************************/
-/*!
 	The HTTP server is listening on the port number 80 and parse remote 
 	commands via HTTP GET request. 
 	
@@ -96,7 +83,7 @@
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define	MODBUS					1
+#	define	MODBUS					0
 #	define 	MODBUS_TCP  			1
 #	define 	MODBUS_RTU  			0
 #endif

@@ -50,6 +50,19 @@
 
 #define MAXINPIN	8		// Max number of input pins
 	
+/**************************************************************************/
+/*!
+	Macros
+*/
+/**************************************************************************/
+#define AUX		MaCaco_AUXIN_s
+#define	IN		MaCaco_IN_s
+#define	OUT		MaCaco_OUT_s
+#define Souliss_Auxiliary(memory_map, slot)	memory_map[AUX+slot]	
+#define Souliss_Input(memory_map, slot)		memory_map[IN+slot]	
+#define Souliss_Output(memory_map, slot)	memory_map[OUT+slot]
+#define Souliss_ResetTrigger(data_changed)	data_changed=0;	
+	
 void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode);
 void Souliss_SetLocalAddress(U8 *memory_map, U16 addr);
 void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node);

@@ -117,11 +117,11 @@
         0x0         Disable (Default)
         0x1         Enable
 	
-		Communication Media 1	-	Ethernet TCP/IP (Wiznet W5100 or Microchip ENC28J60)
-		Communication Media 2	-	Wireless - 2.4 GHz IEEE 802.15.4 (Atmel AT86RF230)
-		Communication Media 3	-	Ethernet RAW (Wiznet W5100 or Microchip ENC28J60)
+		Communication Media 1	-	Ethernet TCP/IP 
+		Communication Media 2	-	Wireless - 2.4 GHz IEEE 802.15.4 
+		Communication Media 3	-	Ethernet RAW 
 		Communication Media 4	-	Binary FSK (Atmel ATMega328P)
-		Communication Media 5	-		
+		Communication Media 5	-	USART with collision avoidance 	
 */
 /**************************************************************************/
 #	define VNET_MEDIA_NUMBER   5		// Number of total media

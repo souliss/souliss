@@ -110,7 +110,11 @@ uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len)
     if(chb_write(addr, frame, len) == CHB_SUCCESS)
 		return CHB_SUCC;
 	else
+	{
+		oFrame_Reset();		// Free the frame
+	
 		return CHB_FAIL;
+	}	
 }	
 
 /**************************************************************************/

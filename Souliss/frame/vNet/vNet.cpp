@@ -71,7 +71,7 @@
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)
-
+	#include "drivers/usart/vNetDriver_usart.cpp"
 #endif	
 
 #if (VNET_DEBUG)

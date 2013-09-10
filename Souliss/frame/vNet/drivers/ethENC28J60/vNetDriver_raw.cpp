@@ -73,7 +73,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	uint8_t *data, mac_addr[6];
 
 	// Check message lenght
-	if ((len == 0) || (len >= ETH_MAXPAYLOAD))
+	if ((len == 0) || (len >= VNET_MAX_PAYLOAD))
 		return ETH_FAIL;
 			
 	// Broadcast is not supported
@@ -82,7 +82,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 
 	// Build the Ethernet header	
 	eth_vNettoMAC(addr, mac_addr);
-	memcpy(ethstr.data+ETH_MAC_DADDR, mac_addr, 6);									// Load broadcast Ethernet address as destination address
+	memcpy(ethstr.data+ETH_MAC_DADDR, mac_addr, 6);								// Load broadcast Ethernet address as destination address
 	
 	// Load source Ethernet address
 	#if(AUTO_MAC)

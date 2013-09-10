@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss - vNet Virtualized Network
-    Copyright (C) 2012  Veseo
+    Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	
-	Developed by Dario Di Maio, based on HardwareSerial by Nicholas Zambetti
+	Originally developed by Dario Di Maio
 	
 ***************************************************************************/
 /*!
@@ -24,42 +24,43 @@
 
 */
 /**************************************************************************/
-#ifndef VNET_USART232_H
-#define VNET_USART232_H
+#ifndef VNET_USART_H
+#define VNET_USART_H
 
 #include "Arduino.h"
 #include "src/types.h"
+#include "GetConfig.h"				// need : usartUsrCfg.h
 
-#define	USART_BAUD				9600
-#define	USART_SUCCESS			1
-#define	USART_FAIL				0
+#define USART_SUCCESS			0x01
+#define USART_FAIL				0x00
 
-#define USART_PREAMBLE			0xAC
-#define	USART_PREAMBLE_LEN		3
+#if(USART_BAUD115k2)
+#	define USART_BAUD			115200			
+#elif(USART_BAUD19k2)
+#	define USART_BAUD			19200
+#else
+#	define USART_BAUD			9600
+#endif
 
-#define	USART_HEADER_LEN		4
-#define	USART_FRAME_LEN			(USART_HEADER_LEN+VNET_MAX_PAYLOAD)
+#define	USART_PREAMBLE			0xAC
+#define	USART_PREAMBLE_LEN		6
+#define	USART_POSTAMBLE			0xCA
+#define	USART_POSTAMBLE_LEN		6
+#define	USART_FRAME_LEN			(VNET_HEADER_SIZE+VNET_MAX_PAYLOAD+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN)
+#define	USART_MAXPAYLOAD		VNET_MAX_PAYLOAD
+#define USART_TOKEN				0xAA
+#define	USART_TOKEN_LENGHT		3
+#define USART_BYTE_TIME			1					// Time in milliseconds required to transmit a byte at slower baud rate
+#define USART_TOKEN_TIME		(USART_TOKEN_LENGHT*(2+USART_BYTE_TIME))
+#define	USART_BUSBUSY			0x09
+#define	USART_BUSFREE			0x00
 
-#define USART_AREDATAIN			((U8)(VNET_MAX_PAYLOAD + buffer.w_pnt - buffer.r_pnt) % VNET_MAX_PAYLOAD)
-#define USART_ISPREAMBLE		((buffer.data[buffer.r_pnt] == USART_PREAMBLE) && (buffer.data[buffer.r_pnt+1] == USART_PREAMBLE) && (buffer.data[buffer.r_pnt+2] == USART_PREAMBLE))
-
-#define	USART_CALLBACK			
-
-typedef struct
-{
-	U8  *data;					// Pointer	
-	U8	w_pnt;					// Write Pointer
-	U8	r_pnt;					// Read Pointer
-} Buffer;
-
-void usart_send(U8 data);
-uint8_t usart_datain();
-void usart_retrievebyte(U8 *data);
-void vNet_Init_M6();
-void vNet_SetAddress_M6(uint16_t addr);
-uint8_t vNet_Send_M6(uint16_t addr, uint8_t *data, uint8_t len);
-uint8_t vNet_DataAvailable_M6();
-uint8_t vNet_RetrieveData_M6(uint8_t *data);
-uint16_t vNet_GetSourceAddress_M6();
+void vNet_Init_M5();
+void vNet_SetAddress_M5(uint16_t addr);
+uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len);
+uint8_t vNet_DataSize_M5();
+uint8_t vNet_DataAvailable_M5();
+uint8_t vNet_RetrieveData_M5(uint8_t *data);
+uint16_t vNet_GetSourceAddress_M5();
 
 #endif

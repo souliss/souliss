@@ -83,8 +83,8 @@ void setup()
 	// Setup the anti-theft
 	Souliss_SetT42(memory_map, ANTITHEFT);
 	
-	// Define inputs, outputs pins and pulldown
-	pinMode(2, INPUT);	// Hardware pulldown required	
+	// Define inputs, outputs pins and pullup
+	pinMode(2, INPUT);	// Hardware pullup required	
 }
 
 void loop()

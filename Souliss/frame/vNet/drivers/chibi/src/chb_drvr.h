@@ -55,7 +55,7 @@
 #define CHB_IRQ_PLL_LOCK_MASK       0x01  /**< Mask for the PLL_LOCK interrupt. */
     
 #define CHB_ENTER_CRIT()    {U8 volatile saved_sreg = SREG; cli()
-#define CHB_LEAVE_CRIT()    SREG = saved_sreg;}
+#define CHB_LEAVE_CRIT()    SREG = saved_sreg; sei();}
 
 #define CHB_SLPTR_ENABLE()  do {CHB_SLPTR_PORT |= (_BV(CHB_SLPTR_PIN));} while (0)
 #define CHB_SLPTR_DISABLE() do {CHB_SLPTR_PORT &= ~(_BV(CHB_SLPTR_PIN));} while (0)

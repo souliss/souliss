@@ -1,0 +1,144 @@
+Souliss
+Copyright (C) 2013  Veseo
+
+Release note for revision Alpha 4.5.1, on 10/09/2013
+	
+	Introduction of a macro based easy coding feature referred as Speak Easy
+			- Introduced Speak Easy
+			- Introduced an USART vNet Driver for RS485 communication (preliminary)
+			- Native support for DFRobots XBoard
+			- Support for ENC28J60 + AT86RF230 SuperNodes (thanks to Antonino Fazio)
+			- Bug-fix for interrupt handler of chibiduino stack
+			- Bug-fix on ENC28J60 vNet Driver
+
+Release note for revision Alpha 4.5, on 18/07/2013
+
+	Review of analog values managment and relevant logics (typicals),
+	support for XBoard Relay from DFRobots and DHT temperature and humidity
+	sensors
+			- Introduced half-precision floating and methods
+			- Native support for DHT sensors
+			- Native support for DFRobots XBoard Relay
+			- Bug-fix as per chibiduino stack v.1.00a
+			- General bug-fix for typicals (T16, T42)
+
+Release note for revision Alpha 4.4.2, on 04/06/2013
+	
+	Bugfix in vNet over IP drivers, now source port is handled properly
+	also in case of source port masquering by NAT (thanks to Juan Luis).
+
+Release note for revision Alpha 4.4.1, on 13/05/2013
+	
+	Included updated documentation for
+			- MaCaco Light Data Protocol "User and Developers Guide"
+			- vNet Network Virtualization Layer "User Guide"
+			- Wireshark capture for MaCaco over vNet/UDP-IP
+
+Release note for revision Alpha 4.4, on 07/05/2013
+
+	Extended support of Olimex boards
+			- Support for Olimex MOD-RGB
+			- Support for Olimex MOD-IO
+			- Modbus RemoteInputs fix (thanks to Giorgio Zoppetti)
+
+Release note for revision Alpha 4.3, on 12/04/2013
+
+	Support for AirQ Networks wireless 433 MHz boards (needs download
+	of Air sNET library)
+			- Support for AirQ Shield
+			- Support for AirQ 305
+			- Bug fix.
+
+Release note for revision Alpha 4.2, on 25/03/2013
+
+	Support for Open Electronics boards and improvement on 
+	multicast commands.
+			- Support for Open Electronics RGB Shield
+			- Support for Open Electronics ENC28J60 Ethernet Shield
+			- Reduced number of frame sent for multicast commands
+			- Common commands tuned for Modbus coil use.
+
+Release note for revision Alpha 4.1, on 08/02/2013
+
+	Support Microchip MRF24WB0MA WiFi module and Olimex boards,
+	introduction of Quick Configuration mode.
+			- Support for Olimex AVR-T32U4
+			- Support for Olimex OLIMEXINO-32U4
+			- Support for Olimex OLIMEXINO-328
+			- Support for Olimex MOD-ENC28J60
+			- Support for Olimex MOD-WIFI
+			- Support for Olimex MOD-IO2			
+			- Support for Microchip MRF24WB0MA (up to firmware relase 0x1207)
+			- Quick Configuration mode
+
+Release note for revision Alpha 4, on 22/12/2012
+	
+	Support for Modbus and extended MaCaco for user interfaces,
+	all communication based on binary protocol to increase the
+	performances. Improvement on RAM handling.
+	
+			- Introduction of oFrame for data buffer handling,
+			- Extended MaCaco for user interfaces,
+			- Use of UDP for vNet based communication instead of TCP,
+			- Modbus RTU and TCP Slave,
+			- HTTP Server for remote commands,
+			- New Server/Client TCP APIs,
+			- New Examples,
+			- Bug fix.
+	
+Release note for revision Alpha 3.1, on 30/07/2012
+
+	Bugfix for ENC28J60 and first release of plinio drivers
+			- Binary FSK using ATmega328P (preliminary),
+			- New JSON Server with support for one and two commands
+				at same time,
+			- Bug fix,
+			- Enhanced examples.
+
+Release note for revision Alpha 3, on 18/07/2012
+	
+	Support for the Android Client application, integration with
+	anti-theft system and tools for communication debugging:
+			- Support for ENC28J60,
+        	- Introduction of Raw Ethernet communication,
+        	- Watchdog chain and typicals for anti-theft integration,
+        	- Debug mode for vNet and MaCaco using serial port,
+        	- Enhanced scheduler and examples,
+        	- Friendly names for Souliss examples,		
+			- Arduino IDE 1.	
+
+Release note for revision Alpha 2.3, on 11/04/2012
+	
+	Support for the Android Client application:
+		- Integration with dedicated Android Cleint adding a new
+			JSON array structure,
+
+Release note for revision Alpha 2.2, on 02/02/2012
+	
+	Bugfix
+
+Release note for revision Alpha 2.1, on 01/02/2012
+	
+	Support for nodes dedicated as JSON Server.
+		
+Release note for revision Alpha 2, on 07/01/2012
+
+	Support for user customizable interfaces is added, following
+	additional features are provided:
+		- Compatibility with standard Ethernet class (2 sockets),
+		- JSON Server for User Interfaces,
+		- Browser based User Interface,
+		- Support for new typicals (ready to use logics for Home Automation).
+
+Release note for revision Alpha, on 23/11/2011 
+
+	An smart home framework with Ethernet and 2.4 Ghz Point to Point
+	Wireless support.
+	
+	Supported boards are: 
+		- Freaklabs Chibiduino (2.4 GHz Wireless)
+		- Arduino 2009/UNO with Ethernet Shield (Wiznet W5100),
+		- Arduino Ethernet.	
+	
+	Development enviroment Arduino IDE 0022.	
+		

@@ -126,7 +126,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	
 	// If the frame is not empty, there are waiting data 	
 	oFrame_Define(&vNetM1_oFrame);
-	if(oFrame_Available())
+	if(oFrame_isBusy())
 		return ETH_FAIL;		
 
 	// Build a frame with len of payload as first byte
@@ -160,6 +160,10 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 				
 	// Data are processed with the IP stack		
 	vNet_uIP();	
+	
+	// At this stage data are processed or socket is failed, so we can
+	// securely reset the oFrame
+	oFrame_Reset();	
 	
 	return ETH_SUCCESS;
 }

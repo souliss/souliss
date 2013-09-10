@@ -54,17 +54,17 @@
 	MaCaco/vNet
 		
 		Force light at state ON,
-			UDP/IP - Address .17 (e.g.: 192.168.0.17)
+			UDP/IP - Address .17 (e.g.: 192.168.1.17)
 			Port 230
 			Frame (hex) : 0D 0C 17 11 00 64 01 33 00 00 00 01 01
 
 		Force lights at state OFF,
-			UDP/IP - Address .17 (e.g.: 192.168.0.17)
+			UDP/IP - Address .17 (e.g.: 192.168.1.17)
 			Port 230
 			Frame (hex) : 0D 0C 17 11 00 64 01 33 00 00 00 01 02
 
 		Get the state,
-			UDP/IP - Address .17 (e.g.: 192.168.0.17)
+			UDP/IP - Address .17 (e.g.: 192.168.1.17)
 			Port 230
 			Frame (hex) : 0C 0B 17 11 00 64 01 21 00 00 00 01
 			

@@ -174,8 +174,16 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 
 	// Send data	
 	if(!sendto(UDP_SOCK, (uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
+	{
+		oFrame_Reset();		// Free the frame
+		
 		return ETH_FAIL;	// If data sent fail, return
+	}
 	
+	// At this stage data are processed or socket is failed, so we can
+	// securely reset the oFrame
+	oFrame_Reset();		
+		
 	return ETH_SUCCESS;
 }
 
