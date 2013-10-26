@@ -65,8 +65,8 @@
 #define Souliss_T1n_Coil				0x01		// Output Feedback ON
 #define Souliss_T1n_OnCoil				0x01		// Output Feedback ON
 #define Souliss_T1n_OffCoil				0x00		// Output Feedback OFF
-#define Souliss_T1n_ResetCoil			0xA1		// Pulse Output Coil
-#define Souliss_T1n_PulseCoil			0xA5		// Pulse Output Coil
+#define Souliss_T1n_ResetCoil			0xA1		// Pulse Output Coil (Reset)
+#define Souliss_T1n_PulseCoil			0xA5		// Pulse Output Coil (Set)
 #define Souliss_T1n_TimedOnCoil			0xE1		// Output Feedback ON in Timed Mode
 #define Souliss_T1n_TimedOffCoil		0xE0		// Output Feedback OFF in Timed Mode
 #define Souliss_T1n_AutoOnCoil			0xF1		// Output Feedback ON in AUTO Mode

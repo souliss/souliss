@@ -73,8 +73,8 @@
 		Gateway Functional Codes:
 			0x21	Read state request (subscription),
 			0x31	Read state answer  (subscription),
-			0x22	Read state request (subscription),
-			0x32	Read state answer  (subscription),			
+			0x22	Read typical request,
+			0x32	Read typical answer,			
 			0x33	Force input values request,
 			0x34	Force input values answer,
 			0x25	Force input values by typical logic request,
@@ -112,11 +112,16 @@
 #define MaCaco_DBSTRUCTANS		0x36	// Database structure answer.
 #define MaCaco_DATAREQ			0x27	// Read state request without subscription,
 #define MaCaco_DATAANS			0x37	// Read state answer without subscription,
+#define MaCaco_DISCOVERREQ		0x28	// Discover a gateway node request (broadcasted)
+#define MaCaco_DISCOVERANS		0x38	// Discover a gateway node answer (broadcasted)
+#define	MaCaco_DINADDRESSREQ	0x29	// Dynamic addressing request (broadcasted)
+#define	MaCaco_DINADDRESSANS	0x39	// Dynamic addressing answer (broadcasted)
+#define	MaCaco_JOINNETWORK		0x3A	// Join a network gateway (broadcasted)
 
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01
 
-#define	MaCaco_FUNCODE_NO (17+12)
+#define	MaCaco_FUNCODE_NO (17+17)
 
 const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x08, 0x18, 0x09, 0x19, 
@@ -125,7 +130,9 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x83, 0x84, 0x85,
 											   0x21, 0x31, 0x22, 0x32,
 											   0x33, 0x34, 0x25, 0x35,
-											   0x26, 0x36, 0x27, 0x37};
+											   0x26, 0x36, 0x27, 0x37,
+											   0x28, 0x38, 0x29, 0x39,
+											   0x3A};
 		  
 /**************************************************************************/
 /*!
@@ -147,36 +154,86 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 		driver.
 		
 		Generally size of input and output message shall be consistent over
-		all nodes, but some dedicated nodes may accept bigger payload for
-		incoming data, this is the case of the user interfaces based on MaCaco.
-		For this reason the payload size is not taken in account while sending
-		data, but only while receiving data.
+		all nodes, but user interface based on MaCaco may accept larger frame.
+		For this reason the maximum payload size is not taken in account while
+		sending data, but only while receiving data.
+		
+		As a process protocol, the frame used to store MaCaco frames shall be
+		able to contains also overhead from bottom level.
 		
 */
 /**************************************************************************/							 
 #define MaCaco_HEADER	5
-#define MaCaco_PAYLOAD	50
+#define MaCaco_PAYLOAD	(VNET_MAX_PAYLOAD-MaCaco_HEADER)
+#define MaCaco_FRAME	(VNET_MAX_FRAME)
 		  
 /**************************************************************************/
 /*!
 	SHARED MEMORY MAP,
 		Is the whole data area that is used for the protocol handling and
-		for data sharing. If extended it contains data of the node itself 
-		and from remote nodes over the network, otherwise contains only the
-		data for the devices connected to the board.
+		for data sharing. As option the User Mode can be enabled, this 
+		reserve an area of the microcontroller RAM for data gathered from
+		other nodes in the network.
 		
+		As User Mode a node can acts as Gateway and collect (store) data for 
+		an User Interface. If Passthrough mode is activated, the User Mode 
+		node doesn't longer collect (store) data, but only send the relevant
+		data to the user interface node. This mode cannot be used togheter 
+		with polling protocols like Modbus.
+		
+		You are allowed to modify the number of MaCaco_NODES and MaCaco_SLOT
+		according to the below table, the values cannot be exceeded, but all 
+		configuration with lower values are valid.
+				
+		The maximum number of nodes and slots depends on configuration as shown
+		in below table:
+		
+									Nodes		Slots
+			User Mode without		10			8				
+			Passthrough				8			12			(Default)
+									5			18
+									
+			User Mode with			30			35
+			Passthrough				45			24			(Default)
+									70			4
+			
+			In case of User Mode without Passthorugh, due to the maximum size of the output IP
+			frame the following constrain shall be verified:
+			(3*MaCaco_NODES + 4*MaCaco_SLOT + MaCaco_CONFPARAM) < 100
+			
+			
+			In case of User Mode with Passthough, due to the maximum addressing space (1 byte) the
+			following constrain shall be verified:
+			(3*MaCaco_NODES + 4*MaCaco_SLOT + MaCaco_CONFPARAM) < 255
+			
+		As general requirements, all nodes shall have the same type of configuration
+		and size for the shared memory map, this regardless their action as standard
+		or gateway node.
+		
+	
 		Value       Status
         0x0         Disable (Default)
         0x1         Enable
 				
 */
 /**************************************************************************/							 
-#define MaCaco_EXTENDED_MAP		1
+#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#	define MaCaco_USERMODE		1
+#endif
 
-#define	MaCaco_NODES			10												// Number of remote nodes
-#define MaCaco_LOCNODE			0												// Node number for local data
-#define	MaCaco_CONFPARAM		5												// Define the number of configuration parameters
-#define MaCaco_SLOT				8												// Number of slot
+#define	MaCaco_PASSTHROUGH		1
+
+#define MaCaco_LOCNODE			0												// Node number for local data (cannot be changed)
+#define	MaCaco_CONFPARAM		10												// Define the number of configuration parameters
+
+#if(MaCaco_PASSTHROUGH)
+#	define MaCaco_NODES			45												// Number of remote nodes
+#	define MaCaco_SLOT			24												// Number of slot
+#else
+#	define MaCaco_NODES			8											
+#	define MaCaco_SLOT			12											
+#endif
+
 #define MaCaco_SUBSCRLEN		MaCaco_SLOT										// Lenght  byte for subscription data
 #define MaCaco_TYPLENGHT		MaCaco_SLOT										// Number of slot
 #define MaCaco_OUTLENGHT		MaCaco_SLOT										// Number of slot
@@ -187,34 +244,36 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last byte of the healty for the remote nodes
 #define MaCaco_CONF_s			(MaCaco_HEALTY_f+1)								// First byte of the configuration parameters
 #define MaCaco_CONF_f			(MaCaco_CONF_s+MaCaco_CONFPARAM-1)				// Last byte of the configuration parameters
-#define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)								// First byte of the auxiliary inputs
+#define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)												// First byte of the auxiliary inputs
 #define MaCaco_AUXIN_f			(MaCaco_AUXIN_s+MaCaco_SLOT-1)					// Last byte of the auxiliary inputs
-
-#if(MaCaco_EXTENDED_MAP)
-	#define MaCaco_IN_s			(MaCaco_AUXIN_f+1)								// First byte for input data
-	#define MaCaco_IN_f			(MaCaco_IN_s+(MaCaco_NODES*MaCaco_SLOT)-1)		// Last  byte for input data
-	#define MaCaco_TYP_s		(MaCaco_IN_f+1)									// First byte for typical logic definitions
-	#define MaCaco_TYP_f		(MaCaco_TYP_s+(MaCaco_NODES*MaCaco_SLOT)-1)		// Last  byte for typical logic definitions
-	#define MaCaco_OUT_s		(MaCaco_TYP_f+1)								// First byte for output data
-	#define MaCaco_OUT_f		(MaCaco_OUT_s+(MaCaco_NODES*MaCaco_SLOT)-1)		// Last  byte for output data
-#else
-	#define MaCaco_IN_s			(MaCaco_AUXIN_f+1)								// First byte for input data
-	#define MaCaco_IN_f			(MaCaco_IN_s+MaCaco_SLOT-1)						// Last  byte for input data
-	#define MaCaco_TYP_s		(MaCaco_IN_f+1)									// First byte for typical logic definitions
-	#define MaCaco_TYP_f		(MaCaco_TYP_s+MaCaco_SLOT-1)					// Last  byte for typical logic definitions
-	#define MaCaco_OUT_s		(MaCaco_TYP_f+1)								// First byte for output data
-	#define MaCaco_OUT_f		(MaCaco_OUT_s+MaCaco_SLOT-1)					// Last  byte for output data
-#endif
+#define MaCaco_IN_s				(MaCaco_AUXIN_f+1)								// First byte for input data
+#define MaCaco_IN_f				(MaCaco_IN_s+MaCaco_SLOT-1)						// Last  byte for input data
+#define MaCaco_TYP_s			(MaCaco_IN_f+1)									// First byte for typical logic definitions
+#define MaCaco_TYP_f			(MaCaco_TYP_s+MaCaco_SLOT-1)					// Last  byte for typical logic definitions
+#define MaCaco_OUT_s			(MaCaco_TYP_f+1)								// First byte for output data
+#define MaCaco_OUT_f			(MaCaco_OUT_s+MaCaco_SLOT-1)					// Last  byte for output data
 
 #define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeble data by a remote device
 #define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeble data by a remote device
-#define MaCaco_EXT_WRITE_s		(MaCaco_TYP_s+1)								// First writeble data by a remote device in case of extended memory map
-#define MaCaco_EXT_WRITE_f		(MaCaco_OUT_f)									// Last  writeble data by a remote device in case of extended memory map
 
-#if(MaCaco_EXTENDED_MAP)
-	#define MaCaco_MEMMAP		(MaCaco_OUT_f+1)								// Lenght of the whole memory map
+#if(MaCaco_USERMODE && !MaCaco_PASSTHROUGH)
+#	define MaCacoUserMode_IN_s	(MaCaco_OUT_f+1)										// First byte for input data in the extended map
+#	define MaCacoUserMode_IN_f	(MaCacoUserMode_IN_s+((MaCaco_NODES-1)*MaCaco_SLOT)-1)	// Last  byte for input data in the extended map
+#	define MaCacoUserMode_TYP_s	(MaCacoUserMode_IN_f+1)									// First byte for typical logic definitions in the extended map
+#	define MaCacoUserMode_TYP_f	(MaCacoUserMode_TYP_s+((MaCaco_NODES-1)*MaCaco_SLOT)-1)	// Last  byte for typical logic definitions in the extended map
+#	define MaCacoUserMode_OUT_s	(MaCacoUserMode_TYP_f+1)								// First byte for output data in the extended map
+#	define MaCacoUserMode_OUT_f	(MaCacoUserMode_OUT_s+((MaCaco_NODES-1)*MaCaco_SLOT)-1)	// Last  byte for output data in the extended map
+#endif
+
+#if(MaCaco_USERMODE && !MaCaco_PASSTHROUGH)
+#	define MaCaco_EXT_WRITE_s		(MaCacoUserMode_TYP_s)						// First writeble data by a remote device in case of extended memory map
+#	define MaCaco_EXT_WRITE_f		(MaCacoUserMode_OUT_f)						// Last  writeble data by a remote device in case of extended memory map
+#endif
+
+#if(MaCaco_USERMODE && !MaCaco_PASSTHROUGH)
+#	define MaCaco_MEMMAP		(MaCaco_EXT_WRITE_f+1)							// Lenght of the whole extended memory map
 #else
-	#define MaCaco_MEMMAP		(MaCaco_EXT_WRITE_f+1)							// Lenght of the whole extended memory map
+#	define MaCaco_MEMMAP		(MaCaco_OUT_f+1)								// Lenght of the whole memory map
 #endif
 
 /**************************************************************************/
@@ -236,15 +295,16 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 		devices.
 */
 /**************************************************************************/							 
-#define MaCaco_MAXSUBSCR			10
+#define MaCaco_INMAXSUBSCR			10
+#define MaCaco_OUTMAXSUBSCR			30
 
 #define MaCaco_NODATARECEIVED		0x00
 #define MaCaco_DATARECEIVED			0x01
 #define MaCaco_NODATACHANGED		0x00
 #define MaCaco_DATACHANGED			0x01
 
-#define MaCaco_SUBSDECREASE			0x01
-#define MaCaco_SUBSINCREASE			0x10
+#define MaCaco_SUBSDECREASE			0x20
+#define MaCaco_SUBSINCREASE			0x50
 
 #define MaCaco_NOSUBSCRANSWER		0x00
 #define MaCaco_SUBSCRANSWER			0x01

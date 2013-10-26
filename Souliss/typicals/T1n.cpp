@@ -544,6 +544,9 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
+		
+		// Trig the change
+		*trigger = Souliss_TRIGGED;	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
@@ -664,9 +667,21 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_IN_s + slot + i] = Souliss_T1n_RstCmd;
 		}
 		
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_Timed;			// Set a timer for the state notification
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		
 	}
+	else
+	{	// There is no command
+		
+		if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Set)			// Decrese the timer value
+			memory_map[MaCaco_AUXIN_s + slot]--;
+		else if(memory_map[MaCaco_AUXIN_s + slot] > 0)					// If we not getting new commands, the burst		
+		{																// is done, send the actual state 
+			memory_map[MaCaco_AUXIN_s + slot] = 0;
+			*trigger = Souliss_TRIGGED;									
+		}	
+	}	
 }
 
 /**************************************************************************
@@ -811,7 +826,7 @@ void Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_SetT19(U8 *memory_map, U8 slot)
 {
-	memory_map[MaCaco_TYP_s + slot] = Souliss_T16;
+	memory_map[MaCaco_TYP_s + slot] = Souliss_T19;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 }
 
@@ -977,9 +992,21 @@ void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_AUXIN_s + slot + 1] = memory_map[MaCaco_OUT_s + slot + 1];
 		memory_map[MaCaco_IN_s + slot + 1] = Souliss_T1n_RstCmd;
 		
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_Timed;			// Set a timer for the state notification		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		
 	}
+	else
+	{	// There is no command
+		
+		if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Set)			// Decrese the timer value
+			memory_map[MaCaco_AUXIN_s + slot]--;
+		else if(memory_map[MaCaco_AUXIN_s + slot] > 0)					// If we not getting new commands, the burst		
+		{																// is done, send the actual state 
+			memory_map[MaCaco_AUXIN_s + slot] = 0;
+			*trigger = Souliss_TRIGGED;									
+		}	
+	}	
 }
 
 /**************************************************************************

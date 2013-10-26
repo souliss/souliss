@@ -58,6 +58,7 @@ bool InPin[MAXINPIN] = {false};
 bool FirstInit = {false};
 static unsigned long time;
 U8 roundrob_1=1,roundrob_2=1;
+U16 randomval=0;
 
 /**************************************************************************
 /*!
@@ -123,6 +124,94 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 {
 	// Set the remote address of a node into the vNet
 	*(U16*)(memory_map+MaCaco_ADDRESSES_s+node*2) = addr;
+}
+
+/**************************************************************************
+/*!
+	Define a gateway node as server for dynamic addressing
+*/	
+/**************************************************************************/
+void Souliss_SetAddressingServer(U8 *memory_map)
+{
+	// Use the first available address for each media, because is supposed
+	// that the addressing server is also the unique bridge/router of the 
+	// network, 
+	U8 i=0;
+	for(i=0; i<VNET_MEDIA_NUMBER; i++)
+		if(vnet_media_en[i])
+			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
+	
+	for(i=0; i<VNET_MEDIA_NUMBER; i++)
+		if(vnet_media_en[i])
+		{
+			// Only one media, by default the first, is used as reference
+			Souliss_SetLocalAddress(memory_map, (vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE));
+			return;
+		}	
+}
+
+/**************************************************************************
+/*!
+	Request an addressing and parse the answer
+*/	
+/**************************************************************************/
+void Souliss_DynamicAddressing (U8 *memory_map)
+{
+	U8 usedmedia = vNet_MyMedia();			
+			
+	// If no address is set
+	if(!vNet_GetAddress(usedmedia))
+	{
+		// Verify if the addressing information are available in the configuration
+		// parameters of the memory map
+		
+		// The first parameter is the randomval number used to indetify my previous request
+		U8 *confparameters_p = (memory_map + MaCaco_CONFPARAM);
+		if((*(U16 *)confparameters_p) == randomval)
+		{
+			// The next parameter is the media
+			confparameters_p+=sizeof(U16);
+			if(*confparameters_p == usedmedia)
+			{
+				// Load the address
+				confparameters_p++;
+				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
+					
+				// Clear the actual configuration parameters, the addressing server will load there
+				// the requested address
+				for(U8 i=0; i<MaCaco_CONFPARAM; i++)
+					*(memory_map + MaCaco_CONFPARAM + i) = 0;
+				
+				return;
+			}	
+		}
+		
+		// Clear the actual configuration parameters, the addressing server will load there
+		// the requested address
+		for(U8 i=0; i<MaCaco_CONFPARAM; i++)
+			*(memory_map + MaCaco_CONFPARAM + i) = 0;
+		
+		// Generate a pseudo-randomval number
+		if(!randomval)
+			randomval = ((U16)millis()) & 0x1234;
+		
+		// Request a new address
+		MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)randomval, usedmedia, 0, 0);
+	}	
+}
+
+/**************************************************************************
+/*!
+	Send a request to join a network, shall be periodically processed by nodes
+	that requested a dynamic address
+*/	
+/**************************************************************************/
+void Souliss_JoinNetwork()
+{
+	// Request to join a network only if I've got an address
+	if(vNet_GetAddress(vNet_MyMedia()))
+		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, 0, 0, 0, 0);
+
 }
 
 /**************************************************************************
@@ -214,7 +303,8 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 	from the user interface.
 */	
 /**************************************************************************/	
-U8 Souliss_CommunicationChannels(U8 *memory_map, U8 numberofnodes)
+#if(MaCaco_USERMODE)
+U8 Souliss_CommunicationChannels(U8 *memory_map)
 {
 	U8 ret=0;
 
@@ -223,32 +313,27 @@ U8 Souliss_CommunicationChannels(U8 *memory_map, U8 numberofnodes)
 		*(memory_map+MaCaco_HEALTY_s+roundrob_2) = MaCaco_SUBINITHEALTY;
 	
 	// Handle the subscription in round robin
-	if(roundrob_2 <= numberofnodes)
+	if(roundrob_2 < MaCaco_NODES)
 	{
 		// Open and/or check one communication channel at each round
-		if (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2) != 0x0000)
-			ret = MaCaco_subscribe(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2), memory_map, memory_map + MaCaco_OUT_s + (roundrob_2*MaCaco_SUBSCRLEN), MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);
-
+		if (((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) != 0x0000))
+		#if(MaCaco_PASSTHROUGH)
+			ret = MaCaco_subscribe((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)), memory_map, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);		// Use putin as zero to flag a passthrough		
+		#else
+			ret = MaCaco_subscribe((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)), memory_map, memory_map + MaCacoUserMode_OUT_s + ((roundrob_2-1)*MaCaco_SUBSCRLEN), MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);
+		#endif
+		else
+		{
+			roundrob_2=1;		// Node number 0 is the local node
+			return ret;
+		}
+		
 		roundrob_2++;
 	} 
 	else
 		roundrob_2=1;	// Node number 0 is the local node 
 		
 	return ret;
-}
-
-/**************************************************************************
-/*!
-	Get definitions for typical from a remote device
-	
-	It use MaCaco and vNet to retreive typical definition data, use a polling
-	request.
-*/	
-/**************************************************************************/	
-U8 Souliss_GetTypical(U16 addr, U8 *memory_map)
-{
-	if(addr != 0x0000)
-		return MaCaco_send(addr, MaCaco_READREQDIG, memory_map + MaCaco_TYP_s, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);
 }
 
 /**************************************************************************
@@ -260,32 +345,38 @@ U8 Souliss_GetTypical(U16 addr, U8 *memory_map)
 	refresh can be achieved using the Souliss_RefreshTypicals() method.
 */	
 /**************************************************************************/	
-U8 Souliss_GetTypicals(U8 *memory_map, U8 numberofnodes)
-{
+U8 Souliss_GetTypicals(U8 *memory_map)
+{ 
 	U8 ret=0;
 
-	if(roundrob_1 <= numberofnodes)
+	if(MaCaco_reqtyp())
 	{
 		// Retreive once the typical definitions data
-		if (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1) != 0x0000)
-			ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_READREQDIG, memory_map + MaCaco_TYP_s + (roundrob_1*MaCaco_TYPLENGHT), MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);
-
-		roundrob_1++;
+		if (roundrob_1 == 0) 
+			roundrob_1++;
+		else if ((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)) != 0x0000)
+		{
+			#if(MaCaco_PASSTHROUGH)
+				ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+			#else
+				ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, memory_map + MaCacoUserMode_TYP_s + ((roundrob_1-1)*MaCaco_TYPLENGHT), MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);
+			#endif
+			
+			// Increase the index
+			if(roundrob_1 < MaCaco_NODES) 
+				roundrob_1++;
+			else
+				roundrob_1 = 1;		// Reset	
+				
+		}
 	}
+	else
+		if(roundrob_1 != 1)
+			roundrob_1 = 1;		// Reset
 		
 	return ret;	
 } 
-
-/**************************************************************************
-/*!
-	Restart the Souliss_GetTypicals function to refresh the data, this
-	function shall be used periodally with a low rate frequency.
-*/	
-/**************************************************************************/	
-void Souliss_RefreshTypicals()
-{
-	roundrob_1 = 1;			// Node number 0 is the local node  
-} 
+#endif
 	
 /**************************************************************************
 /*!

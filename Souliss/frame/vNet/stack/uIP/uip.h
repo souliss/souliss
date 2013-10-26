@@ -648,7 +648,7 @@ struct uip_conn *uip_connect(u16_t *ripaddr, u16_t port);
  * if no connection could be allocated.
  */
 
-struct uip_udp_conn * uip_udp_sock(u16_t *ripaddr, u16_t rport);
+struct uip_udp_conn * uip_udp_sock(u16_t *ripaddr, u16_t rport, u16_t localport);
  //struct uip_udp_conn *uip_udp_new(u16_t *ripaddr, u16_t rport);
 
 /**

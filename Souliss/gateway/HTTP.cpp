@@ -129,20 +129,28 @@ void HTTPServer(U8 *memory_map)
 				typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum lenght of "?typ="
 				val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum lenght of "&val="								
 				
+				U8* val_sp = &val_s;
+				
 				// Look for all slot assigned to this typical and put value in
 				for(U8 id=0;id<MaCaco_NODES;id++)
-				{
-					for(U8 slot=0;slot<MaCaco_SLOT;slot++)
-					{						
-						if(memory_map[id*MaCaco_TYPLENGHT+MaCaco_TYP_s+slot] & 0xF0 == typ & 0xF0)	
-						{									
-							// Send a command to the node	
-							if((id != MaCaco_LOCNODE) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)) != 0x0000))	// If is a remote node, the command act as remote input
-								Souliss_RemoteInput((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)), slot, val_s);			
-							else if (id == MaCaco_LOCNODE)												// If is a local node (me), the command is written back
-								memory_map[MaCaco_IN_s+slot] = val_s;	
-						}
-					}			
+				{						
+					// Send a command to the node	
+					if((id != MaCaco_LOCNODE) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)) != 0x0000))	// If is a remote node, the command act as remote input								
+						MaCaco_send(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*(j+1)), MaCaco_TYP, 0, typ, 1, val_sp);		
+					else if (id == MaCaco_LOCNODE)																	// If is a local node (me), the command is written back
+					{
+						U8 typ_mask;
+						
+						// Identify if the command is issued for a typical or a typical class
+						if((typ & 0x0F) == 0x00)
+							typ_mask = 0xF0;	// we look only to the typical class value
+						else
+							typ_mask = 0xFF;	// we look to whole typical value
+					
+						for(U8 i=0; i<MaCaco_SLOT; i++)		
+							if((*(memory_map + MaCaco_TYP_s + i) & typ_mask) == typ)	// Start offset used as typical logic indication
+								*(memory_map+MaCaco_IN_s + i) = val_s;
+					}	
 				}	
 			}
 		}

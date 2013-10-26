@@ -34,7 +34,7 @@
 	allowed by used base protocol.    
 */
 /**************************************************************************/
-#define VNET_MAX_PAYLOAD   40
+#define VNET_MAX_PAYLOAD   46
 
 /**************************************************************************/
 /*!
@@ -42,6 +42,21 @@
 */
 /**************************************************************************/
 #define VNET_HEADER_SIZE	6
+
+
+/**************************************************************************/
+/*!
+    Overhead space reserved for additional bytes from media driver   
+*/
+/**************************************************************************/
+#define VNET_OVERHEAD_SIZE	10
+
+/**************************************************************************/
+/*!
+    Max frame lenght  
+*/
+/**************************************************************************/
+#define VNET_MAX_FRAME   (VNET_MAX_PAYLOAD+VNET_HEADER_SIZE+VNET_OVERHEAD_SIZE)
 
 /**************************************************************************/
 /*!
@@ -124,14 +139,20 @@
 		Communication Media 5	-	USART with collision avoidance 	
 */
 /**************************************************************************/
-#	define VNET_MEDIA_NUMBER   5		// Number of total media
+#define VNET_MEDIA_NUMBER   5		// Number of total media
+
+#define VNET_MEDIA1_ID  0
+#define VNET_MEDIA2_ID  1
+#define VNET_MEDIA3_ID  2
+#define VNET_MEDIA4_ID  3
+#define VNET_MEDIA5_ID  4
 
 #if(!(QC_ENABLE))						// Define manually only in Detailed Configuration Mode
 #	define VNET_MEDIA1_ENABLE  1
-#	define VNET_MEDIA2_ENABLE  1
+#	define VNET_MEDIA2_ENABLE  0
 #	define VNET_MEDIA3_ENABLE  0
 #	define VNET_MEDIA4_ENABLE  0
-#	define VNET_MEDIA5_ENABLE  0
+#	define VNET_MEDIA5_ENABLE  1
 
 
 	const U16 vnet_media_en[VNET_MEDIA_NUMBER] = {VNET_MEDIA1_ENABLE,  // Media 1

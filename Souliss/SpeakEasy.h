@@ -64,8 +64,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_510s()		if (!(phase_slow % 51))
 #define	SLOW_710s()		if (!(phase_slow % 71))
 #define	SLOW_910s()		if (!(phase_slow % 91))
-#define	SLOW_1110s()		if (!(phase_slow % 111))
-#define	SLOW_2110s()		if (!(phase_slow % 211))
+#define	SLOW_1110s()	if (!(phase_slow % 111))
+#define	SLOW_2110s()	if (!(phase_slow % 211))
 /***************************************/
 
 /************** Typicals ******************/
@@ -141,9 +141,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
-#define	ssGetTypicals(numberofnodes)							Souliss_GetTypicals(memory_map, numberofnodes)
-#define	ssRefreshTypicals()										Souliss_RefreshTypicals()
-#define	ssCommunicationChannels(numberofnodes)					Souliss_CommunicationChannels(memory_map, numberofnodes)
+#define	ssGetTypicals()											Souliss_GetTypicals(memory_map)
+#define	ssCommunicationChannels()								Souliss_CommunicationChannels(memory_map)
 #define ProcessCommunication()									Souliss_CommunicationData(memory_map, &data_changed)
 #define	ssDigIn(pin,value,slot)									Souliss_DigIn(pin, value, memory_map, slot)
 #define	ssLowDigIn(pin,value,slot)								Souliss_LowDigIn(pin, value, memory_map, slot)

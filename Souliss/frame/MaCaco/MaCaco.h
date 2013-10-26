@@ -41,11 +41,13 @@ typedef struct
 } MaCaco_rx_data_t;
 
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl);
-U8 MaCaco_subscriptionanswer(U8* memory_map, U8* data_chg);
-U8 MaCaco_channstat(U16 addr, U8 *healty, U8 *count);
+U8 MaCaco_UserMode_subAnswer(U8* memory_map, U8* data_chg);
+U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data);
+U8 MaCaco_reqtyp();
 void MaCaco_DataIn();
 U8 MaCaco_retrieve(U8* memory_map, U8* data_chg);
 U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 *data);
+U8 MaCacoUserMode_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 l_numberof, U8 u_numberof, U8 *l_data, U8 *u_data);
 U8 MaCaco_getfuncode();
 U16 MaCaco_getputin();
 U8 MaCaco_getstartoffset();

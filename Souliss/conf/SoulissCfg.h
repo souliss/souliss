@@ -65,6 +65,27 @@
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
 #	define JSONSERVER  	0
 #endif
+
+					
+/**************************************************************************/
+/*!
+	The dynamic addressing node act as server for Souliss addresses over
+	the network. It works for single media and bridged networks with a single
+	bridge acting as addressing server.
+	
+        Value       JSONSERVER
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#	define DYNAMICADDRESSING  	0
+#endif
+
+#define	DYNAMICADDR_GATEWAYNODE	0x0001
+#define	DYNAMICADDR_SUBNETMASK	0xFF00
+#define	DYNAMICADDR_GATEWAY		0x0000
+
 /**************************************************************************/
 /*!
 	The Modbus TCP/RTU enable data transfer using standard Modbus protocol,

@@ -146,27 +146,33 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 {
 	uint8_t s, ip_addr[4];
 	uint16_t count = 0, vNet_port;
-			
-	// Broadcast is not supported
-	if(addr == 0xFFFF)
-		return ETH_FAIL;
 
 	// Define the standard vNet port
 	vNet_port = ETH_PORT;
-
-	// Verify the User Mode	
-	#if(UMODE_ENABLE)
-	if ((addr & 0xFF00) != 0x0000)
-	{	
-		// The first byte is the User Mode Index, if in range 0x01 - 0x64
-		// a standard client/server connection is used with the user interface
-		// this give rounting and NATting passthrough
-		UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
+	
+	// Define the IP address to be used
+	if(addr == 0xFFFF)
+	{
+		// Set the IP broadcast address
+		for(U8 i=0;i<4;i++)
+			ip_addr[i]=0xFF;
+	}	
+	else	
+	{
+		// Verify the User Mode	
+		#if(UMODE_ENABLE)
+		if ((addr & 0xFF00) != 0x0000)
+		{	
+			// The first byte is the User Mode Index, if in range 0x01 - 0x64
+			// a standard client/server connection is used with the user interface
+			// this give rounting and NATting passthrough
+			UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
+		}
+		else
+		#endif
+			eth_vNettoIP(addr, &ip_addr[0]);	// Get the IP address
 	}
-	else
-	#endif
-		eth_vNettoIP(addr, &ip_addr[0]);	// Get the IP address
-
+		
 	// Build a frame with len of payload as first byte
 	vNetM1_header = len+1;
 	oFrame_Define(&vNetM1_oFrame);
@@ -209,8 +215,7 @@ uint8_t vNet_DataAvailable_M1()
 	dataframe.len = W5100.getRXReceivedSize(UDP_SOCK);
 	
 	// If the incoming size is bigger than the UDP header
-	//if((dataframe.len >= 8)
-	if((dataframe.len >= 8) && ((dataframe.len <= (VNET_HEADER_SIZE + VNET_MAX_PAYLOAD))))
+	if((dataframe.len >= 8) && (dataframe.len <= VNET_MAX_FRAME))
 		return ETH_SUCCESS;
 	
 	// Discard
@@ -376,12 +381,28 @@ void eth_SetGateway(uint8_t *gateway)
 
 /**************************************************************************/
 /*!
+    Get the IP address
+*/
+/**************************************************************************/
+void eth_GetIP(uint8_t *ip_addr)
+{
+	*(ip_addr+0) = stack.ip[0];
+	*(ip_addr+1) = stack.ip[1];
+	*(ip_addr+2) = stack.ip[2];
+	*(ip_addr+3) = stack.ip[3];	
+}
+
+/**************************************************************************/
+/*!
     Get the base IP address
 */
 /**************************************************************************/
 void eth_GetBaseIP(uint8_t *ip_addr)
 {
-		ip_addr = stack.base_ip;
+	*(ip_addr+0) = stack.base_ip[0];
+	*(ip_addr+1) = stack.base_ip[1];
+	*(ip_addr+2) = stack.base_ip[2];
+	*(ip_addr+3) = stack.base_ip[3];	
 }
 
 /**************************************************************************/
@@ -391,7 +412,10 @@ void eth_GetBaseIP(uint8_t *ip_addr)
 /**************************************************************************/
 void eth_GetSubnetMask(uint8_t *submask)
 {
-	submask = stack.subnetmask;
+	*(submask+0) = stack.subnetmask[0];
+	*(submask+1) = stack.subnetmask[1];
+	*(submask+2) = stack.subnetmask[2];
+	*(submask+3) = stack.subnetmask[3];		
 }
 
 /**************************************************************************/
@@ -401,5 +425,8 @@ void eth_GetSubnetMask(uint8_t *submask)
 /**************************************************************************/
 void eth_GetGateway(uint8_t *gateway)
 {
-	gateway = stack.gateway;
+	*(gateway+0) = stack.gateway[0];
+	*(gateway+1) = stack.gateway[1];
+	*(gateway+2) = stack.gateway[2];
+	*(gateway+3) = stack.gateway[3];	
 }

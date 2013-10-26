@@ -1,28 +1,6 @@
 Souliss Home Automation
 Copyright (C) 2012  Veseo
 
-Known issue for revision Alpha 4
-	
-	Extended memory support
-		
-		The Extended memory support option MaCaco_EXTENDED_MAP in MaCaco_Config.h
-		is born to allow easy management of gateways nodes, for these nodes an
-		extended memory area is forseen to allow data storage from other nodes in
-		the network.
-		
-		Gateway nodes share information from the whole network to user interfaces,
-		giving an unique point of access for all data.
-		
-		A know issue doesn't allow the use of mixed configuration with nodes were
-		some has MaCaco_EXTENDED_MAP and some doesn't, because the Souliss calls 
-		throught MaCaco use an absolute reference in the memory to request data
-		from other nodes, so it assume that nodes has the same memory_map structure.
-		
-		This issue cause a waste of RAM, where nodes that doesn't require that option
-		(that is really required only for gateways) has allocate RAM that never will
-		be used. The RAM waste is 3*(MaCaco_NODES-1*MaCaco_SLOT) near 300 bytes in
-		standard configuration.
-		
 	Drivers for Microchip MRF24WB0MA
 
 		The drivers included in vNet for Microchip MRF24WB0MA are based on AsyncLab porting

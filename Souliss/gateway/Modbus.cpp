@@ -30,10 +30,15 @@
 
 #include "Modbus.h"
 
+#if(MaCaco_PASSTHROUGH)
+#	waring	Modbus cannot work with Passthough mode in MaCaco, remove it
+#endif
+
 U8 l=0, sock;
 U8 modbusin[MODBUS_MAXFRAME];						// Data buffer for incoming data
 U8 modbusdata[MODBUS_OUTFRAME];						// Data buffer for output data 
-oFrame Modbus_oFrame;								// Modbus output frame	
+oFrame Modbus_Additional_oFrame;							// Modbus output frame for data relevant the local node
+oFrame Modbus_oFrame;						// Modbus output frame for data relevant the remote nodes
 
 extern oFrame vNetM1_oFrame;						// Data structure for output frame
 
@@ -663,21 +668,34 @@ U8 ModbusVerify()
 U8 ModbusReply(U8 *memory_map)
 {
 	// Map the Modbus request to the MaCaco data area
-	U8 memory_map_address;	
+	U8 memory_map_address, byteqty, bytenumber;	
 			
-	// Parse the functinal code
+	// Parse the functional code
 	if((modbusframe->functionalcode == MODBUS_READ_COIL) || (modbusframe->functionalcode == MODBUS_READ_DISCRETE_INPUTS))
 	{	
 		// Map the the Modbus registers with the internal memory
 		if((modbusframe->startingaddress >= COILS_INPUT_START_ADDRESS) && (modbusframe->startingaddress <= COILS_INPUT_END_ADDRESS))
+		{
+			// Start from inputs
 			memory_map_address = MaCaco_IN_s;
+			
+			// Calculate the bit number into the memory_map
+			bytenumber  = (modbusframe->startingaddress - COILS_INPUT_START_ADDRESS)/8;			
+		}
 		else if((modbusframe->startingaddress >= COILS_TYP_START_ADDRESS) && (modbusframe->startingaddress <= COILS_TYP_END_ADDRESS))
+		{
+			// Start from typicals
 			memory_map_address = MaCaco_TYP_s;
+
+			// Calculate the bit number into the memory_map			bytenumber  = (modbusframe->startingaddress - COILS_TYP_START_ADDRESS)/8;				
+		}
 		else if((modbusframe->startingaddress >= COILS_OUTPUT_START_ADDRESS) && (modbusframe->startingaddress <= COILS_OUTPUT_END_ADDRESS))
+		{
+			// Start from outputs
 			memory_map_address = MaCaco_OUT_s;
-	
-		// Calculate the bit number and the byte offset into the memory_map from the requested bit
-		U8 byteqty, bytenumber  = (modbusframe->startingaddress)/8;
+			
+			// Calculate the bit number into the memory_map			bytenumber  = (modbusframe->startingaddress - COILS_OUTPUT_START_ADDRESS)/8;				
+		}
 
 		if(modbusframe->registers%8)
 			byteqty = 1 + modbusframe->registers / 8;
@@ -686,17 +704,61 @@ U8 ModbusReply(U8 *memory_map)
 	
 		// Build a frame, only the pointer are stored, so it can be changed
 		// also after the output frame is build
-		
 		#if(MODBUS_RTU)
 			oFrame_Define(&Modbus_CRC);
 			oFrame_Set(0, modbuscrc, 0, 2, 0);
-			oFrame_Define(&Modbus_oFrame);
-			oFrame_Set(modbusin, (memory_map+memory_map_address+bytenumber), MODBUS_REPLY_HEADER, byteqty, &Modbus_CRC);
-			//oFrame_Set(modbusin, modbusdata, MODBUS_REPLY_HEADER, byteqty, &Modbus_CRC);
+
+			// Indentify if requested data are local or remote
+			if((bytenumber + byteqty < MaCaco_SLOT))
+			{
+				// Requested data are all contained into the local node
+				oFrame_Define(&Modbus_oFrame);
+				oFrame_Set(0, (memory_map+memory_map_address+bytenumber), 0, byteqty, &Modbus_CRC);
+			}
+			else if (bytenumber < MaCaco_SLOT)
+			{
+				// Requested data are contained either in local and remote nodes
+						
+				// Append an oFrame for data from remote nodes
+				oFrame_Define(&Modbus_Additional_oFrame);
+				oFrame_Set(0, (memory_map+memory_map_address+bytenumber+(MaCacoUserMode_IN_s-MaCaco_IN_s)), 0, byteqty, &Modbus_CRC);				
+				
+				// Build an oFrame for data from local nodes
+				oFrame_Define(&Modbus_oFrame);
+				oFrame_Set(modbusin, (memory_map+memory_map_address+bytenumber), MODBUS_REPLY_HEADER, byteqty, &Modbus_Additional_oFrame);
+			}
+			else
+			{
+				// Requested data are all contained into the remote nodes
+				oFrame_Define(&Modbus_oFrame);
+				oFrame_Set(0, (memory_map+memory_map_address+bytenumber), 0, byteqty, &Modbus_CRC);				
+			}
 		#elif(MODBUS_TCP)
-			oFrame_Define(&Modbus_oFrame);
-			oFrame_Set(modbusin, (memory_map+memory_map_address+bytenumber), MODBUS_REPLY_HEADER, byteqty, 0);		
-			//oFrame_Set(modbusin, 0, MODBUS_REPLY_HEADER+2*(modbusframe->registers), 0, 0);		
+			// Indentify if requested data are local or remote
+			if((bytenumber + byteqty < MaCaco_SLOT))
+			{
+				// Requested data are all contained into the local node
+				oFrame_Define(&Modbus_oFrame);
+				oFrame_Set(0, (memory_map+memory_map_address+bytenumber), 0, byteqty, 0);
+			}
+			else if (bytenumber < MaCaco_SLOT)
+			{
+				// Requested data are contained either in local and remote nodes
+						
+				// Append an oFrame for data from remote nodes
+				oFrame_Define(&Modbus_Additional_oFrame);
+				oFrame_Set(0, (memory_map+memory_map_address+bytenumber+(MaCacoUserMode_IN_s-MaCaco_IN_s)), 0, byteqty - (MaCaco_SLOT - bytenumber), 0);				
+				
+				// Build an oFrame for data from local nodes
+				oFrame_Define(&Modbus_oFrame);
+				oFrame_Set(modbusin, (memory_map+memory_map_address+bytenumber), MODBUS_REPLY_HEADER, (MaCaco_SLOT - bytenumber), &Modbus_Additional_oFrame);
+			}
+			else
+			{
+				// Requested data are all contained into the remote nodes
+				oFrame_Define(&Modbus_oFrame);
+				oFrame_Set(0, (memory_map+memory_map_address+bytenumber), 0, byteqty, 0);				
+			}		
 		#endif
 		
 		// Prepare the header
@@ -722,30 +784,51 @@ U8 ModbusReply(U8 *memory_map)
 	{
 		// Map the the Modbus registers with the internal memory
 		if((modbusframe->startingaddress >= REGISTER_INPUT_START_ADDRESS) && (modbusframe->startingaddress <= REGISTER_INPUT_END_ADDRESS))
-			memory_map_address = MaCaco_IN_s + (modbusframe->startingaddress - REGISTER_INPUT_START_ADDRESS);
+		{
+			// Calculate the byte number into the memory_map		
+			bytenumber = (modbusframe->startingaddress - REGISTER_INPUT_START_ADDRESS);
+			
+			// Start from inputs
+			memory_map_address = MaCaco_IN_s + bytenumber;
+		}
 		else if((modbusframe->startingaddress >= REGISTER_TYP_START_ADDRESS) && (modbusframe->startingaddress <= REGISTER_TYP_END_ADDRESS))
-			memory_map_address = MaCaco_TYP_s + (modbusframe->startingaddress - REGISTER_TYP_START_ADDRESS);
+		{
+			// Calculate the byte number into the memory_map			
+			bytenumber = (modbusframe->startingaddress - REGISTER_TYP_START_ADDRESS);
+			
+			// Start from typicals
+			memory_map_address = MaCaco_TYP_s + bytenumber;
+		}
 		else if((modbusframe->startingaddress >= REGISTER_OUTPUT_START_ADDRESS) && (modbusframe->startingaddress <= REGISTER_OUTPUT_END_ADDRESS))
-			memory_map_address = MaCaco_OUT_s + (modbusframe->startingaddress - REGISTER_OUTPUT_START_ADDRESS);
-	
+		{
+			// Calculate the byte number into the memory_map			
+			bytenumber = (modbusframe->startingaddress - REGISTER_OUTPUT_START_ADDRESS);
+			
+			// Start from outputs
+			memory_map_address = MaCaco_OUT_s + bytenumber;
+		}
+		
 		// Modbus data are 2 bytes, rather MaCaco data is 1 byte. So is mandatory
 		// load the MaCaco data into a buffer, copying them as 2 bytes data.
 		
 		for(U8 i=0;i<(modbusframe->registers);i++)
-			*(U16 *)(&modbusdata[2*i]) = HTONS((U16)(*(memory_map+memory_map_address+i)));
-	
+			if(bytenumber + i < MaCaco_SLOT)	// Data relevant the local node
+				*(U16 *)(&modbusdata[2*i]) = HTONS((U16)(*(memory_map+memory_map_address+i)));
+			else								// Data relevant the remote node
+				*(U16 *)(&modbusdata[2*i]) = HTONS((U16)(*(memory_map+memory_map_address+i+(MaCacoUserMode_IN_s-MaCaco_IN_s))));
+				
 		// Build a frame, only the pointer are stored, so it can be changed
 		// also after the output frame is build
 		
 		#if(MODBUS_RTU)
 			oFrame_Define(&Modbus_CRC);
-			oFrame_Set(0, modbuscrc, 0, 2, 0);
+			oFrame_Set(0, modbuscrc, 0, 2, 0);		
+		
 			oFrame_Define(&Modbus_oFrame);
 			oFrame_Set(modbusin, modbusdata, MODBUS_REPLY_HEADER, 2*(modbusframe->registers), &Modbus_CRC);
 		#elif(MODBUS_TCP)
 			oFrame_Define(&Modbus_oFrame);
-			oFrame_Set(modbusin, modbusdata, MODBUS_REPLY_HEADER, 2*(modbusframe->registers), 0);		
-			//oFrame_Set(modbusin, 0, MODBUS_REPLY_HEADER+2*(modbusframe->registers), 0, 0);		
+			oFrame_Set(modbusin, modbusdata, MODBUS_REPLY_HEADER, 2*(modbusframe->registers), 0);			
 		#endif
 		
 		// Prepare the header
@@ -781,8 +864,7 @@ U8 ModbusReply(U8 *memory_map)
 			oFrame_Set(modbusin, 0, MODBUS_RTU_ANSWER_HEADER+2*(modbusframe->registers)+2, 0, 0);
 		#elif(MODBUS_TCP)
 			oFrame_Define(&Modbus_oFrame);
-			oFrame_Set(modbusin, 0, MODBUS_RTU_ANSWER_HEADER+2*(modbusframe->registers), 0, 0);
-			//oFrame_Set(modbusin, 0, MODBUS_REPLY_HEADER+2*(modbusframe->registers), 0, 0);		
+			oFrame_Set(modbusin, 0, MODBUS_RTU_ANSWER_HEADER+2*(modbusframe->registers), 0, 0);		
 		#endif	
 		
 		// Print a log message
@@ -811,8 +893,7 @@ U8 ModbusReply(U8 *memory_map)
 			oFrame_Set(modbusin, 0, MODBUS_RTU_ANSWER_HEADER+bytenumber+2, 0, 0);
 		#elif(MODBUS_TCP)
 			oFrame_Define(&Modbus_oFrame);
-			oFrame_Set(modbusin, 0, MODBUS_RTU_ANSWER_HEADER+bytenumber, 0, 0);
-			//oFrame_Set(modbusin, 0, MODBUS_REPLY_HEADER+2*(modbusframe->registers), 0, 0);		
+			oFrame_Set(modbusin, 0, MODBUS_RTU_ANSWER_HEADER+bytenumber, 0, 0);	
 		#endif	
 		
 		// Print a log message
@@ -1015,7 +1096,6 @@ U8 ModbusExecption()
 
 #if(MODBUS_RTU)
 
-
 #elif(MODBUS_TCP)
 
 	// Swap again from little-endian to big-endian
@@ -1062,9 +1142,6 @@ U8 ModbusExecption()
 
 	// Send data
 	srvcln_send(modbusin, MODBUS_TCP_REPLY_HEADER); 
-	
-	// Close the connection
-	//srvcln_stop();
 	
 #elif(MODBUS_TCP && (ETH_ENC28J60 || WIFI_MRF24))
 	
@@ -1136,7 +1213,7 @@ void ModbusRemoteInput(U8 *memory_map)
 	U16 i;
 
 	// Go throught all the inputs that are not relevant the local node
-	for(i=MaCaco_IN_s+MaCaco_SLOT;i<MaCaco_IN_f;i++)
+	for(i=MaCacoUserMode_IN_s;i<MaCacoUserMode_IN_f;i++)
 	{
 		// Look in the input area for a waiting command
 		if(*(memory_map+i))
@@ -1144,7 +1221,6 @@ void ModbusRemoteInput(U8 *memory_map)
 			// Calculate the id and slot for the remote node
 			U8 id = (i-MaCaco_IN_s)/MaCaco_SLOT; 
 			U8 slot = (i-MaCaco_IN_s)-id*MaCaco_SLOT;
-			// or U8 slot = (i-MaCaco_IN_s)%MaCaco_SLOT;
 			
 			// Send the remote command
 			Souliss_RemoteInput(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*id), slot, *(memory_map+i));		

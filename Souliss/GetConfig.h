@@ -58,17 +58,8 @@
 //
 
 #include "conf/QuickCfg.h"
-#include "conf/MaCacoCfg.h"
-#include "conf/uIPopt.h"
-#include "conf/chibiUsrCfg.h"
-#include "conf/usartUsrCfg.h"
 
 #if(QC_ENABLE)	//	If Quick Configuration is enabled
-	
-#	include "conf/ethUsrCfg.h"
-#	include "conf/hwBoards.h"
-#	include "conf/SoulissCfg.h"
-#	include "conf/vNetCfg.h"
 	
 	// Define the drivers to be loaded based on the board type
 #	if(QC_BOARDTYPE == 0x00)
@@ -395,18 +386,31 @@
 #		define VNET_MEDIA5_ENABLE  		0
 #	endif
 
-#	if  (QC_GATEWAYTYPE == 0x01)
+#	if  (QC_GATEWAYTYPE == 0x00)
+#		define	MaCaco_USERMODE			0
+#	elif(QC_GATEWAYTYPE == 0x01)
+#		define	MaCaco_USERMODE			1
 #	elif(QC_GATEWAYTYPE == 0x02)
+#		define	MaCaco_USERMODE			1
 #		define	MODBUS					1
 #		define 	MODBUS_TCP  			1
 #	elif(QC_GATEWAYTYPE == 0x03)
+#		define	MaCaco_USERMODE			1
 #		define	MODBUS					1
 #		define 	MODBUS_RTU  			1
 #	elif(QC_GATEWAYTYPE == 0x04)
+#		define	MaCaco_USERMODE			1
 #		define HTTPSERVER  				1
-#	elif(QC_GATEWAYTYPE == 0x05)
-#		define JSONSERVER  				1
 #	endif
+
+#	include "conf/MaCacoCfg.h"
+#	include "conf/uIPopt.h"
+#	include "conf/chibiUsrCfg.h"
+#	include "conf/usartUsrCfg.h"												
+#	include "conf/ethUsrCfg.h"
+#	include "conf/hwBoards.h"
+#	include "conf/SoulissCfg.h"
+#	include "conf/vNetCfg.h"
 
 	const U16 vnet_media_en[VNET_MEDIA_NUMBER] = {VNET_MEDIA1_ENABLE,  // Media 1
 												VNET_MEDIA2_ENABLE,  // Media 2
@@ -415,6 +419,7 @@
 												VNET_MEDIA5_ENABLE   // Media 5	
 												};
 
+												
 #else			// If Detailed Configuration is enabled
 
 #	include "conf/ethUsrCfg.h"
@@ -424,6 +429,7 @@
 #	include "conf/SoulissCfg.h"
 #	include "conf/vNetCfg.h"
 #	include "conf/ChibiUsrCfg.h"
+#	include "conf/usartUsrCfg.h"	
 	
 #endif
 

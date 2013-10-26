@@ -21,6 +21,8 @@
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x03, 0x04, 0x05
 
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01		
+		
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
 		QuickCfg.h				const uint8_t DEFAULT_SUBMASK[]       = {...}
@@ -87,11 +89,11 @@ void loop()
 		}
 		
 		FAST_510ms() {	// We retrieve data from the node with index 1 (peervNet_address)
-			ssCommunicationChannels(1);
+			ssCommunicationChannels();
 		}
 		
 		FAST_710ms() {	// We retrieve typical (device type connected to the board) for node with index 1
-			ssGetTypicals(1);
+			ssGetTypicals();
 		}
 	}
 	
@@ -100,10 +102,6 @@ void loop()
 
 		SLOW_10s() {		// We handle the light timer with a 10 seconds base time
 			Timer_SimpleLight(MYLIGHT);					
-		} 	  
-		
-		SLOW_110s() {	// Refresh the typicals every 1110 seconds
-			ssRefreshTypicals();
-		}	
+		} 	  	
 	}		
 } 

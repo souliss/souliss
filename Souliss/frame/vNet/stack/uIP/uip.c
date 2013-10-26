@@ -317,12 +317,15 @@ struct uip_udp_conn * uip_udp_listen(u16_t lport)
 
 // Setup an UDP connection, when the stack is processed, a callback will
 // load data into the buffer
-struct uip_udp_conn * uip_udp_sock(u16_t *ripaddr, u16_t rport)
+struct uip_udp_conn * uip_udp_sock(u16_t *ripaddr, u16_t rport, u16_t localport)
 {
   register struct uip_udp_conn *conn;
   
   // Set the local port
-  lastport = 4096 | ETH_PORT;
+  if(localport)
+	lastport = localport;
+  else	
+	lastport = 4096 | ETH_PORT;
   
   // Set the UDP connection for sending data
   c = UIP_UDP_SEND_CONN; 

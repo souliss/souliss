@@ -62,15 +62,16 @@
 #define Souliss_Input(memory_map, slot)		memory_map[IN+slot]	
 #define Souliss_Output(memory_map, slot)	memory_map[OUT+slot]
 #define Souliss_ResetTrigger(data_changed)	data_changed=0;	
-	
+	 
 void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode);
 void Souliss_SetLocalAddress(U8 *memory_map, U16 addr);
 void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node);
-U8 Souliss_GetTypical(U16 addr, U8 *memory_map);
-U8 Souliss_GetTypicals(U8 *memory_map, U8 numberofnodes);
-void Souliss_RefreshTypicals();
+U8 Souliss_GetTypicals(U8 *memory_map);
 U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 output_slot, U8 numof_slot, U8 subscr_chnl);
-U8 Souliss_CommunicationChannels(U8 *memory_map, U8 numberofnodes);
+U8 Souliss_CommunicationChannels(U8 *memory_map);
+void Souliss_JoinNetwork();
+void Souliss_SetAddressingServer(U8 *memory_map);
+void Souliss_DynamicAddressing (U8 *memory_map);
 U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command);
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);

@@ -68,6 +68,8 @@
 		Configuration file		Parameter
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x02
+		
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x02, 0x03
 
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -150,26 +152,14 @@ void loop()
 		if (!(phase_fast % 31))
 		{   
 			// Get logic typicals once and at every refresh
-			Souliss_GetTypicals(memory_map, 1);
+			Souliss_GetTypicals(memory_map);
 		}
 		
 		// Execute the code every 51 time_base_fast		  
 		if (!(phase_fast % 51))
 		{   
 			// Open a communication channel with remote nodes
-			Souliss_CommunicationChannels(memory_map, 1);
-		}			
-	}
-	else if(abs(millis()-tmr_slow) > time_base_slow)
-	{	
-		tmr_slow = millis();
-		phase_slow = (phase_slow + 1) % num_phases;
-
-		// Execute the code every 7 time_base_slow	 
-		if (!(phase_slow % 7))
-		{
-			// Refresh logic typicals
-			Souliss_RefreshTypicals();
+			Souliss_CommunicationChannels(memory_map);
 		}			
 	}	
 } 

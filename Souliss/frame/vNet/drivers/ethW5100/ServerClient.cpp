@@ -82,9 +82,6 @@ uint8_t srvcln_send(uint8_t *data, uint8_t len)
 		return ETH_FAIL;
 	}
 	
-	// Close the connection
-	//vNet_Stop_M1(usedsocket);	
-	
 	return ETH_SUCCESS;
 }
 
@@ -101,7 +98,6 @@ uint8_t srvcln_dataavailable(uint16_t port)
 	s = W5100.readSnSR(usedsocket);
 	
 	// Accept closing and restart the socket
-	//if(((s == SnSR::CLOSE_WAIT) || (s == SnSR::ESTABLISHED)) && !W5100.getRXReceivedSize(usedsocket))
 	if((s == SnSR::CLOSE_WAIT) && !W5100.getRXReceivedSize(usedsocket))
 		srvcln_stop();	
 	else if(s == SnSR::CLOSED)

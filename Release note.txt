@@ -1,9 +1,22 @@
 Souliss
 Copyright (C) 2013  Veseo
 
+Release note for revision Alpha 5.0, on dd/mm/yyy
+
+	Introduced a revised memory handling for MaCaco in order reduce the RAM waste in case
+	of non-gateway nodes, broadcasting features for configuration-less nodes
+			- Simple network can use auto-addressing features
+			- Nodes can join a Souliss network in runtime
+			- Broadcast support for vNet	
+			- PassThrough mode for MaCaco communication with User Interfaces
+			- Revised memory structure for MaCaco, save RAM on non-gateway nodes
+			- Bandwith friendly approach for MaCaco retries mechanism
+			- Bug-fix for uIP/vNet IP source port handling (thanks to Antonino Fazio)
+			- Arduino IDE 1.0.x and 1.5.x supported as main releases
+
 Release note for revision Alpha 4.5.1, on 10/09/2013
 	
-	Introduction of a macro based easy coding feature referred as Speak Easy
+	Introducted a macro based easy coding feature referred as Speak Easy
 			- Introduced Speak Easy
 			- Introduced an USART vNet Driver for RS485 communication (preliminary)
 			- Native support for DFRobots XBoard

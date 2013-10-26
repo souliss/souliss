@@ -29,12 +29,22 @@
 
 #include "vNetDriver_usart.h"							
 
-#define	PRESTANOME		0
-
 #define	BusIsBusy()		busstate=USART_BUSBUSY
+#define	BusIsRecev()	busstate=USART_BUSRECV
 #define	BusFreeSlot()	if(busstate) busstate--
 #define	isBusFree()		busstate==USART_BUSFREE
+#define	isBusRecv()		busstate==USART_BUSRECV
+#define setBusFree()	busstate=USART_BUSFREE
 #define	waitBusFree()	delay((myaddress-VNET_ADDR_L_M5)*USART_TOKEN_TIME)
+
+#if (USART_DEBUG)
+	#define USART_LOG 	mySerial.print
+#endif
+
+/***** TO BE DELETED****/
+#include "SoftwareSerial.h"
+extern SoftwareSerial mySerial; // RX, TX
+/***** TO BE DELETED****/
 
 uint8_t usartframe[USART_FRAME_LEN], l=0;	
 uint8_t	busstate=USART_BUSBUSY;
@@ -81,7 +91,7 @@ void vNet_SetAddress_M5(uint16_t addr)
 uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 {
 	uint8_t i, j, data;
-	uint16_t crc;
+	uint16_t crc=0xFFFF;
 	
 	// Check message lenght
 	if ((len == 0) || (len >= USART_MAXPAYLOAD))
@@ -93,8 +103,12 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	#endif
 	
 	// Check if the bus is free
-	if(!isBusFree())
+	if(!isBusFree() && !isBusRecv())
 	{
+		#if(USART_DEBUG)	
+		USART_LOG("(USART)<Send> Try\r\n");
+		#endif
+	
 		// The bus was used recently, if not yet in use try to get it
 		if(!Serial.available())
 		{	
@@ -107,22 +121,32 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 			// This is a collision avoidance with fixed priority, in
 			// a busy network, nodes with lower priority may never 
 			// found a slot
-			delay((myaddress-VNET_ADDR_L_M5)*USART_TOKEN_TIME);
+			waitBusFree();
 			
 			// Check if someone started while waiting for the slot
-			i=0;
-			while(Serial.available()) i++;
-
-			// Didn't get the bus, try next time
-			if(i)
+			if(Serial.available())
 			{
+				#if(USART_DEBUG)	
+				USART_LOG("(USART)<Send> Bus busy\r\n");
+				#endif
+			
 				BusIsBusy();
 				return USART_FAIL;
 			}	
 		}
 		else
+		{
+			#if(USART_DEBUG)	
+			USART_LOG("(USART)<Send> Waiting data\r\n");
+			#endif
+			
 			return USART_FAIL;
+		}	
 	}
+	
+	#if(USART_DEBUG)	
+	USART_LOG("(USART)<Send> Bus free\r\n");
+	#endif	
 	
 	// Send the preamble
 	for(i=0; i<USART_PREAMBLE_LEN; i++)
@@ -130,7 +154,8 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		
 	// Start sending the data
 	oFrame_Define(frame);
-	Serial.write(oFrame_GetLenght()+1);			// Send the frame lenght as first byte
+	Serial.write(oFrame_GetLenght()+USART_HEADERLEN+USART_CRCLEN);			// The total size is the frame_size + 
+																			// the lenght_as_header + the crc
 	
 	while(oFrame_Available())					// Send the frame	
 	{	
@@ -138,7 +163,6 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		data = oFrame_GetByte();
 		
 		// Compute the CRC
-		uint16_t crc = 0xFFFF;
 		crc = crc ^ (data);
 		for (j=0; j<8; j++) 
 		{
@@ -152,8 +176,13 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		Serial.write(data);							
 	}
 	
+	// This is the CRC
+	crc = (crc << 8  | crc >> 8);
+	
 	// Send the CRC
-	//Serial.write(crc); // Temporary disabled
+	uint8_t* u8crc=((uint8_t*)&crc);			// Cast as byte array
+	Serial.write(u8crc[0]);
+	Serial.write(u8crc[1]);
 	
 	// Send postamble
 	for(i=0; i<USART_POSTAMBLE_LEN; i++)
@@ -185,30 +214,20 @@ uint8_t vNet_DataSize_M5()
 uint8_t vNet_DataAvailable_M5()
 {
 	uint8_t i=0;
-	
-	#if(PRESTANOME)	
-	Serial.println("1");
-	#endif
 
 	if(l == USART_FRAME_LEN-1)
+	{
+		// Reset data, this avoid fake reads due to old data
+		for(i=0;i<USART_FRAME_LEN;i++)
+			usartframe[i]=0;
+	
 		l=0;		// Buffer is full just before retrieve data, remove junk
+	}
 	
 	// From the USART we get one byte per time, so before has to be identified
 	// if there is an incoming Modbus frame	
-	while(Serial.available() && (l < USART_FRAME_LEN)){	
-		usartframe[l++] = Serial.read();
-	
-	#if(PRESTANOME)	
-		uint8_t k=l-1;
-		Serial.print("(0x");
-		Serial.print(usartframe[k],HEX);
-		Serial.print("),");
-	#endif	
-	}
-	
-	#if(PRESTANOME)	
-	Serial.println("2");
-	#endif	
+	while(Serial.available() && (l < USART_FRAME_LEN))	
+		usartframe[l++] = Serial.read();	
 	
 	// If there are no incoming data
 	if((l == 0))
@@ -217,34 +236,32 @@ uint8_t vNet_DataAvailable_M5()
 		return USART_FAIL;
 	}
 
-	#if(PRESTANOME)	
-	Serial.println("3");
-	#endif
+	#if(USART_DEBUG)	
+	USART_LOG("(USART)<Read> Data aval\r\n");
+	#endif	
 	
 	// There were bytes on the bus
 	BusIsBusy();
 	
+	// If there are few bytes, the frame is still incomplete
+	if(l < (USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN))
+		return USART_FAIL;	// Nothing to parse
+	
 	// If the lenght exceed the buffer size
 	if(l > USART_FRAME_LEN-1)
 	{
-		l = 0;
+		// Reset data, this avoid fake reads due to old data
+		for(i=0;i<USART_FRAME_LEN;i++)
+			usartframe[i]=0;
+			
+		l=0;		// Buffer is full just before retrieve data, remove junk
+		
 		return USART_FAIL;
 	}
-
-	#if(PRESTANOME)	
-	Serial.println("4");
-	#endif
 	
 	// Analyze the retreived frame to findout a vNet message
 	for(i=0;i<l-USART_PREAMBLE_LEN;i++)
 	{
-	
-	#if(PRESTANOME)	
-	Serial.print("<0x");
-	Serial.print(usartframe[i],HEX);
-	Serial.print(">,");
-	#endif
-	
 		// Look for vNet preamble used in vNet for Ethernet Raw mode 
 		if( (usartframe[i]   == USART_PREAMBLE) &&
 			(usartframe[i+1] == USART_PREAMBLE) &&
@@ -256,20 +273,9 @@ uint8_t vNet_DataAvailable_M5()
 			// There is a preamble, look for postamble
 				
 			// If is a valid vNet message, after the preamble there is the frame lenght
-			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];
-			
-			#if(PRESTANOME)	
-			Serial.println("4a");
-			Serial.print("vNetLen ");
-			Serial.println(vNetLen,HEX);
-			
-			for(uint8_t j=0;j<USART_FRAME_LEN;j++){
-				Serial.print("[0x");
-				Serial.print(usartframe[j],HEX);
-				Serial.print("],");
-			}
-			#endif
-			
+			//uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN]-1;							// Remote the byte used to indicate the lenght
+			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];							
+					
 			if((vNetLen)&& ((i+USART_PREAMBLE_LEN+vNetLen) < USART_FRAME_LEN) &&
 				(usartframe[i+USART_PREAMBLE_LEN+vNetLen] == USART_POSTAMBLE) &&
 				(usartframe[i+USART_PREAMBLE_LEN+vNetLen+1] == USART_POSTAMBLE) &&
@@ -279,39 +285,51 @@ uint8_t vNet_DataAvailable_M5()
 				(usartframe[i+USART_PREAMBLE_LEN+vNetLen+5] == USART_POSTAMBLE))
 			{
 
-				// The frame is a valid vNet message, remove the preamble
-				memcpy(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);	
-				
 				// Save the transmitter crc
-				in_crc = *(uint16_t*)(usartframe+i+USART_PREAMBLE_LEN+vNetLen);		
+				in_crc = *(uint16_t*)(usartframe+i+USART_PREAMBLE_LEN+vNetLen-USART_CRCLEN);	
 				
-			#if(PRESTANOME)	
-			Serial.println("5");				
-			#endif		
-			
+				// The frame is a valid vNet message, remove the preamble
+				memcpy(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
+
 				return vNetLen;			// Return message lenght
+			}
+			else if((l-i)<(vNetLen+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN))
+			{
+				// If we are here, the frame is incomplete just wait for next data
+				BusIsRecev();			// We are receiving data on the bus cannot send	
+
+				#if(USART_DEBUG)	
+				USART_LOG("(USART)<Read> Incomplete\r\n");
+				#endif	
+				
+				return USART_FAIL;	
 			}
 			else
 			{
-				// If we are here, the frame was a token or corrupted
+				// If we are here, the frame was corrupted
 				BusIsBusy();	// Bus busy
+
+				#if(USART_DEBUG)	
+				USART_LOG("(USART)<Read> Corrupted\r\n");
+				#endif				
 				
-			#if(PRESTANOME)		
-			Serial.println("6");		
-			#endif
-			
-				// No valid message
-				l=0;
+				// Reset data, this avoid fake reads due to old data
+				for(i=0;i<USART_FRAME_LEN;i++)
+					usartframe[i]=0;
+					
+				l=0;		// Buffer is full just before retrieve data, remove junk
+		
 				return USART_FAIL;		
 			}
 		}
-	}	
+	}
 	
-	#if(PRESTANOME)	
-	Serial.println("7");
-	#endif
+	// Next try
+	#if(USART_DEBUG)	
+	USART_LOG("(USART)<Read> Next try\r\n");
+	#endif		
 	
-	return USART_FAIL;
+	return USART_FAIL;		
 }
 
 /**************************************************************************/
@@ -321,49 +339,68 @@ uint8_t vNet_DataAvailable_M5()
 /**************************************************************************/
 uint8_t vNet_RetrieveData_M5(uint8_t *data)
 {
-	if(l)
-	{
-		// Retrieve the first byte of the message
-		uint8_t len=*(usartframe);
+	uint8_t len=*(usartframe)-USART_HEADERLEN-USART_CRCLEN;		// Retrieve the first byte of the message
+	uint16_t c_crc;												// Calculate the CRC from the frame
 
-		// Retrieve the complete message
-		if(len > 0 && len <= l)
-		{	
-			uint8_t k=len;
-			uint16_t crc;
-			crc = 0xFFFF;
-			while (k--) 
-			{
-				crc = crc ^ (oFrame_GetByte());
-				for (uint8_t j=0; j < 8; j++) 
-				{
-					if (crc & 0x0001)
-						crc = (crc >> 1) ^ 0xA001;
-					else
-						crc = crc >> 1;
-				}
-			}		
-			
-			// Frame is corrupted
-			if(in_crc != (crc << 8  | crc >> 8));
-				//return USART_FAIL;
-			
-			memcpy(data, usartframe+1, len);
-			l = 0;										// Reset the lenght
-		}
-		else
-		{
-			l = 0;										// Reset the lenght
-			return ETH_FAIL;							// Data corrupted
-		}
+	// Retrieve the complete message
+	if(len > 0 && len <= l)
+	{
+		#if(USART_DEBUG)	
+		USART_LOG("(USART)<Read> Retrieve data\r\n");
+		#endif	
 		
-		// Return lenght of the data
-		return len;
+		uint8_t k=len;							// The CRC isn't calculated for the USART_HEADER
+			
+		c_crc = 0xFFFF;
+		for(uint8_t k=0;k<len;k++)
+		{
+			c_crc = c_crc ^ (*(usartframe+k+1));
+			for (uint8_t j=0; j < 8; j++) 
+			{
+				if (c_crc & 0x0001)
+					c_crc = (c_crc >> 1) ^ 0xA001;
+				else
+					c_crc = c_crc >> 1;
+			}
+		}		
+			
+		// Finalize the CRC
+		c_crc = (c_crc << 8  | c_crc >> 8);
+			
+		// Frame is corrupted
+		if(in_crc != c_crc)
+			return USART_FAIL;
+			
+		// The bus is a broadcast media and every time that we get a byte we consider
+		// it as busy, if the frame is for us, we can consider it free because is our
+		// time to give an answer.
+		if((*(U16*)(usartframe+3))==myaddress)
+		{
+			setBusFree();
+			
+			#if(USART_DEBUG)	
+			USART_LOG("(USART) Set bus free\r\n");
+			#endif	
+		}	
+			
+		// Send data to the top layer
+		memcpy(data, usartframe+1, len);
+		
+		// Move forward not parsed data
+		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len-1);
+		if(l>(USART_FRAME_LEN-len-1))
+			l-=USART_FRAME_LEN-len-1;				// Reset the lenght
+		else
+			l = 0;
 	}
-	
-	// No available data
-	l=0;
-	return ETH_FAIL;
+	else
+	{
+		l = 0;										// Reset the lenght
+		return ETH_FAIL;							// Data corrupted
+	}
+		
+	// Return lenght of the data
+	return len;
 }
 
 /**************************************************************************/

@@ -115,7 +115,6 @@
 		0x02		Gateway with additional Modbus TCP
 		0x03		Gateway with additional Modbus RTU
 		0x04		Gateway with additional HTTP Commander
-		0x05		Gateway with additional HTTP/JSON
 		
 */
 /**************************************************************************/
@@ -141,6 +140,21 @@
 /**************************************************************************/
 #if(QC_ENABLE)				
 #	define	DHT_SENSOR				0x00
+#endif
+
+/**************************************************************************/
+/*!
+	The dynamic addressing node act as server for Souliss addresses over
+	the network. It works for single media and bridged networks with a single
+	bridge acting as addressing server.
+	
+        Value       JSONSERVER
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
+#	define DYNAMICADDRESSING  	0
 #endif
 
 /**************************************************************************/

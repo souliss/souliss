@@ -92,6 +92,7 @@ typedef struct
 
 void vNet_Init();											
 U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port);	
+U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port);
 U8 vNet_SendData(U16 addr, U8 *data, U8 len, U8 port);				
 U8 vNet_DataAvailable();											
 U8 vNet_RetrieveData(U8 *data);
@@ -101,6 +102,7 @@ U8 vNet_GetLastMedia();
 U16 vNet_GetSourceAddress(U8 media);
 U16 vNet_GetoSourceAddress(U8 media);
 U16 vNet_GetfDestinationAddress(U8 media);
+U8 vNet_GetPort();
 U8 vNet_GetPortNumber(U8 media);
 void vNet_SetSubnetMask(U16 subnetmask, U8 media);
 U16 vNet_GetSubnetMask(U8 media);

@@ -59,8 +59,20 @@
 		USART_TXENPIN		-  The pin connected to driver
 */
 /**************************************************************************/
-#define USART_TXENABLE			1
+#define USART_TXENABLE			0
 #define USART_TXENPIN			3
+
+/**************************************************************************/
+/*!
+	If enabled print the header and payload of incoming, outgoing and routed
+	frames.
+	
+        Value       Status
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#define USART_DEBUG  			0
 
 #endif
 							  

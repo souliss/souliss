@@ -24,8 +24,8 @@
 
 */
 /**************************************************************************/
-#ifndef VNET_ETHTCP_H
-#define VNET_ETHTCP_H
+#ifndef VNET_ETHUDP_H
+#define VNET_ETHUDP_H
 
 #include "Arduino.h"
 #include "GetConfig.h"				// need : ethUsrCfg.h
@@ -68,6 +68,7 @@ void eth_SetBaseIP(uint8_t *ip_addr);
 void eth_SetIPAddress(uint8_t *ip_addr);
 void eth_SetSubnetMask(uint8_t *submask);
 void eth_SetGateway(uint8_t *gateway);
+void eth_GetIP(uint8_t *ip_addr);
 void eth_GetBaseIP(uint8_t *ip_addr);
 void eth_GetSubnetMask(uint8_t *submask);
 void eth_GetGateway(uint8_t *gateway);
