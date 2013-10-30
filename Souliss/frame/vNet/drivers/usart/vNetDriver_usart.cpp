@@ -273,7 +273,6 @@ uint8_t vNet_DataAvailable_M5()
 			// There is a preamble, look for postamble
 				
 			// If is a valid vNet message, after the preamble there is the frame lenght
-			//uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN]-1;							// Remote the byte used to indicate the lenght
 			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];							
 					
 			if((vNetLen)&& ((i+USART_PREAMBLE_LEN+vNetLen) < USART_FRAME_LEN) &&

@@ -86,19 +86,14 @@ void vNet_SetAddress_M3(uint16_t addr)
 /**************************************************************************/
 uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 {	
-	uint8_t *data, mac_addr[6];
+	uint8_t *data;
 
 	// Check message lenght
-	if ((len == 0) || (len >= ETH_MAXPAYLOAD))
+	if ((len == 0) || (len >= ETH_FRAME_LEN))
 		return ETH_FAIL;
 	
-	// Broadcast is not supported
-	if(addr == 0xFFFF)
-		return ETH_FAIL;
-		
 	// Build the Ethernet header	
-	eth_vNettoMAC(addr, mac_addr);
-	memcpy(ethstr.data+ETH_MAC_DADDR, mac_addr, 6);									// Load broadcast Ethernet address as destination address
+	memset(ethstr.data+ETH_MAC_DADDR, 0xFF, 6);											// Load broadcast Ethernet address as destination address
 	
 	// Load source Ethernet address
 	#if(AUTO_MAC)
@@ -107,19 +102,19 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 		memcpy(ethstr.data+ETH_MAC_SADDR, MAC_ADDRESS, 6);
 	#endif
 	
-	*(uint16_t*)(ethstr.data+ETH_MAC_FLEN)=ETH_HEADER_LEN+len+1;				// Message lenght
+	*(uint16_t*)(ethstr.data+ETH_MAC_FLEN)=ETH_HEADER_LEN+len+1;						// Message lenght
 	
 	// Insert preamble (used only in Ethernet-RAW mode)
-	memset(ethstr.data+ETH_VNET_PREAMBLE, ETH_PREAMBLE, ETH_PREAMBLE_LEN);		// Load preamble values
+	memset(ethstr.data+ETH_VNET_PREAMBLE, ETH_PREAMBLE, ETH_PREAMBLE_LEN);				// Load preamble values
 		
 	// Build a frame with len of payload as first byte	
 	*(ethstr.data+ETH_VNET_PAYLOAD) = len+1;
 	
 	// Load payload into the buffer
-	data = ethstr.data+ETH_VNET_PAYLOAD+1;										// Point the payload data area
+	data = ethstr.data+ETH_VNET_PAYLOAD+1;												// Point the payload data area
 	oFrame_Define(frame);
 	while(oFrame_Available())
-		memset(data++, oFrame_GetByte(), 1);									// Load data from the oFrame to the buffer
+		memset(data++, oFrame_GetByte(), 1);											// Load data from the oFrame to the buffer
 	
 	// Insert postamble (used only in Ethernet-RAW mode)
 	memset(ethstr.data+ETH_VNET_PAYLOAD+1+len, ETH_POSTAMBLE, ETH_POSTAMBLE_LEN);		// Load postamble values
@@ -175,14 +170,14 @@ uint8_t vNet_DataAvailable_M3()
 	}
 
 	// If there are no incoming data
-	if(!ethstr.datalen)
+	if((ethstr.datalen == 0) || (ethstr.datalen < (ETH_PREAMBLE_LEN + ETH_POSTAMBLE_LEN + ETH_HEADER_LEN)))
 	{
 		ethstr.datalen = 0;
 		return ETH_FAIL;
 	}
 	
 	// Analyze the retreived frame to findout a vNet message
-	for(i=0;i<ethstr.datalen;i++)
+	for(i=0;i<ethstr.datalen-ETH_PREAMBLE_LEN;i++)
 	{
 		// Look for vNet preamble used in vNet for Ethernet Raw mode 
 		if((ethstr.data[i] == ETH_PREAMBLE) &&

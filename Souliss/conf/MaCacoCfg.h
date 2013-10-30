@@ -71,15 +71,23 @@
 			0x85	Subscription refused.
 
 		Gateway Functional Codes:
-			0x21	Read state request (subscription),
-			0x31	Read state answer  (subscription),
-			0x22	Read typical request,
-			0x32	Read typical answer,			
-			0x33	Force input values request,
-			0x34	Force input values answer,
-			0x25	Force input values by typical logic request,
-			0x35	Force input values by typical logic answer.	
-			
+			0x21	Read state request with subscription,
+			0x31	Read state answer,
+			0x22	Read typical logic request,
+			0x32	Read typical logic answer,
+			0x33	Force input values,
+			0x34	Force input values by typical logic,	
+			0x25	Nodes healty request,
+			0x35	Nodes healty answer.
+			0x26	Database structure request,
+			0x36	Database structure answer.
+			0x27	Read state request without subscription,
+			0x37	Read state answer without subscription,
+			0x28	Discover a gateway node request (broadcasted)
+			0x38	Discover a gateway node answer (broadcasted)
+			0x29	Dynamic addressing request (broadcasted)
+			0x39	Dynamic addressing answer (broadcasted)
+			0x3A	Join a network gateway (broadcasted)	
 */
 /**************************************************************************/
 #define MaCaco_READREQDIG		0x01	// Read request for digital values,
@@ -199,7 +207,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 			
 			In case of User Mode without Passthorugh, due to the maximum size of the output IP
 			frame the following constrain shall be verified:
-			(3*MaCaco_NODES + 4*MaCaco_SLOT + MaCaco_CONFPARAM) < 100
+			(3*MaCaco_NODES + 4*MaCaco_SLOT) < 100
 			
 			
 			In case of User Mode with Passthough, due to the maximum addressing space (1 byte) the
@@ -224,7 +232,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define	MaCaco_PASSTHROUGH		1
 
 #define MaCaco_LOCNODE			0												// Node number for local data (cannot be changed)
-#define	MaCaco_CONFPARAM		10												// Define the number of configuration parameters
+#define	MaCaco_CONFPARAM		15												// Define the number of configuration parameters
 
 #if(MaCaco_PASSTHROUGH)
 #	define MaCaco_NODES			45												// Number of remote nodes
@@ -266,8 +274,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #endif
 
 #if(MaCaco_USERMODE && !MaCaco_PASSTHROUGH)
-#	define MaCaco_EXT_WRITE_s		(MaCacoUserMode_TYP_s)						// First writeble data by a remote device in case of extended memory map
-#	define MaCaco_EXT_WRITE_f		(MaCacoUserMode_OUT_f)						// Last  writeble data by a remote device in case of extended memory map
+#	define MaCaco_EXT_WRITE_s	(MaCacoUserMode_TYP_s)							// First writeble data by a remote device in case of extended memory map
+#	define MaCaco_EXT_WRITE_f	(MaCacoUserMode_OUT_f)							// Last  writeble data by a remote device in case of extended memory map
 #endif
 
 #if(MaCaco_USERMODE && !MaCaco_PASSTHROUGH)

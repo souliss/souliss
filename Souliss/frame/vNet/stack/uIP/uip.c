@@ -707,12 +707,13 @@ uip_process(u8_t flag)
 #endif /* UIP_PINGADDRCONF */
   
   /* Check if the packet is destined for our IP address. */  
-  if(BUF->destipaddr[0] != uip_hostaddr[0]) {
+  if((BUF->destipaddr[0] != uip_hostaddr[0]) && ((BUF->destipaddr[0] != 0xFFFF)))
+  {
     UIP_STAT(++uip_stat.ip.drop);
     UIP_LOG("ip: packet not for us.");        
     goto drop;
   }
-  if(BUF->destipaddr[1] != uip_hostaddr[1]) {
+  if((BUF->destipaddr[1] != uip_hostaddr[1]) && (BUF->destipaddr[1] != 0xFFFF)){
     UIP_STAT(++uip_stat.ip.drop);
     UIP_LOG("ip: packet not for us.");        
     goto drop;

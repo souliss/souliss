@@ -48,6 +48,8 @@ inframe dataframe;									// Data structure for incoming UDP frame
 
 TCPIP stack;
 
+extern bool addrsrv;
+
 /**************************************************************************/
 /*!
     Init the W5100 chip
@@ -250,8 +252,42 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	// but is required to record the IP address in case of User Mode addresses
 	#if(UMODE_ENABLE)
 	if(((*(U16*)&data_pnt[5]) & 0xFF00) != 0x0000)
-		UserMode_Record((*(U16*)&data_pnt[5]), dataframe.ip, (uint8_t *)(&dataframe.port));
+		UserMode_Record((*(U16*)&data_pnt[5]), dataframe.ip, (uint8_t *)(&dataframe.port));	
 	#endif
+	
+	// If the addressing server is used, get the subnet from the first broadcast
+	// message received. This trick is due to the missing DHCP support in vNet/IP
+	// and is supposed to work in most, but not all cases (fixed address will be needed
+	// in case of failure)
+	#if(UMODE_ENABLE && DYNAMICADDRESSING)
+	if(addrsrv == true)
+	{
+		// Use the incoming IP address to get the subnet to use, we are not changing
+		// the part of the IP address related to the vNet address
+		uint8_t i;
+		for(i=0;i<4;i++)
+		{
+			// Remove the subnet bits from the actual address
+			stack.base_ip[i] &= ~stack.subnetmask[i];
+			stack.ip[i] 	 &= ~stack.subnetmask[i];
+			stack.gateway[i] &= ~stack.subnetmask[i];
+			
+			// Get the subnet bits from the incoming adress
+			stack.base_ip[i] |= (dataframe.ip[i] & stack.subnetmask[i]);	
+			stack.ip[i] 	 |= (dataframe.ip[i] & stack.subnetmask[i]);				
+			stack.gateway[i] |= (dataframe.ip[i] & stack.subnetmask[i]);				
+		}
+
+		// Reset the IP drivers
+		W5100.setIPAddress(stack.ip);
+		W5100.setGatewayIp(stack.gateway);
+		W5100.setSubnetMask(stack.subnetmask);
+		
+		vNet_Begin_M1(UDP_SOCK);								// Start listen on socket
+
+		addrsrv = false;
+	}
+	#endif	
 	
 	// Remove the header
 	data_pnt++;

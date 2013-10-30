@@ -51,13 +51,16 @@ uint8_t vnetlenght=0;									// Lenght of the incoming packet
 uint16_t portnumber=0;									// Destination port number of the incoming packet
 uint16_t sportnumber=0;									// Source port number of the incoming packet
 uint8_t arptimer=0;										// ARP table timeout						
-uint8_t usedsock=MAX_SOCK_NUM;
-uint8_t mac_addr[6];
+uint8_t usedsock=MAX_SOCK_NUM;							// Socket used at last shift
+uint8_t mac_addr[6];									// MAC Address
+uint8_t rawdata=0;										// Flag if there are raw data (not UDP/IP, TCP/IP, ICMP, ARP)
 
 U8 vNetM1_header;										// Header for output frame
 oFrame vNetM1_oFrame;									// Data structure for output frame
 
 TCPIP stack;											// Structure for IP definitions
+
+extern bool addrsrv;
 
 /**************************************************************************/
 /*!
@@ -100,7 +103,6 @@ void vNet_SetAddress_M1(uint16_t addr)
 	#if(AUTO_MAC)
 		eth_vNettoMAC(addr, mac_addr);
 		nic_init(mac_addr);
-			
 	#else
 		eth_vNettoMAC(0, mac_addr);
 		nic_init(mac_addr);
@@ -136,7 +138,6 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	// Define the standard vNet port
 	vNet_port = ETH_PORT;
 
-	
 	// Define the IP address to be used
 	if(addr == 0xFFFF)
 	{
@@ -218,6 +219,13 @@ uint8_t vNet_DataAvailable_M1()
 		// HTTP frame are not handled at this stage, but requires a dedicated
 		// call to HTTP method in the main program
 	}
+	#if(VNET_MEDIA3_ENABLE)
+	else if(rawdata)
+	{
+		// RAW data are not handled at this stage, but requires a dedicated
+		// call to vNet Media3 method
+	}	
+	#endif
 	else		
 		vNet_uIP();		// Retrieve and process the incoming data
 	
@@ -254,6 +262,33 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 			UserMode_Record((*(U16*)&data[4]), ripadrr, (uint8_t*)&sportnumber);	
 		}												
 		#endif
+		
+		// If the addressing server is used, get the subnet from the first broadcast
+		// message received. This trick is due to the missing DHCP support in vNet/IP
+		// and is supposed to work in most, but not all cases (fixed address will be needed
+		// in case of failure)
+		#if(UMODE_ENABLE && DYNAMICADDRESSING)
+		if(addrsrv == true)
+		{
+			// Use the incoming IP address to get the subnet to use, we are not changing
+			// the part of the IP address related to the vNet address
+			uint8_t i;
+			for(i=0;i<4;i++)
+			{
+				// Remove the subnet bits from the actual address
+				stack.base_ip[i] &= ~stack.subnetmask[i];
+				stack.ip[i] 	 &= ~stack.subnetmask[i];
+				stack.gateway[i] &= ~stack.subnetmask[i];
+				
+				// Get the subnet bits from the incoming adress
+				stack.base_ip[i] |= (ripadrr[i] & stack.subnetmask[i]);	
+				stack.ip[i] 	 |= (ripadrr[i] & stack.subnetmask[i]);				
+				stack.gateway[i] |= (ripadrr[i] & stack.subnetmask[i]);				
+			}
+
+			addrsrv = false;
+		}
+		#endif					
 	}
 	else
 	{

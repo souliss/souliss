@@ -403,6 +403,18 @@
 #		define HTTPSERVER  				1
 #	endif
 
+// If dynamic request is used over Ethernet, communication between Ethernet
+// devices is done via MAC-RAW and only the gateway node use both UDP/IP and
+// MAC-RAW communication
+#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING)
+#		define VNET_MEDIA3_ENABLE  		1
+#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING)
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		1
+#	else
+#		define VNET_MEDIA3_ENABLE  		0
+#	endif
+
 #	include "conf/MaCacoCfg.h"
 #	include "conf/uIPopt.h"
 #	include "conf/chibiUsrCfg.h"
@@ -421,15 +433,16 @@
 
 												
 #else			// If Detailed Configuration is enabled
-
+	
+#	include "conf/MaCacoCfg.h"
+#	include "conf/uIPopt.h"
+#	include "conf/chibiUsrCfg.h"
+#	include "conf/usartUsrCfg.h"												
 #	include "conf/ethUsrCfg.h"
 #	include "conf/hwBoards.h"
-#	include "conf/hwSensors.h"
-#	include "conf/MaCacoCfg.h"
 #	include "conf/SoulissCfg.h"
-#	include "conf/vNetCfg.h"
-#	include "conf/ChibiUsrCfg.h"
-#	include "conf/usartUsrCfg.h"	
+#	include "conf/vNetCfg.h"	
+	
 	
 #endif
 

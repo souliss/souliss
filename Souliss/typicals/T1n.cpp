@@ -401,6 +401,7 @@ void Souliss_Logic_T14(U8 *memory_map, U8 slot, U8 *trigger)
 void Souliss_SetT15(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T15;
+	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;	
 }
 
 /**************************************************************************
@@ -417,24 +418,32 @@ void Souliss_SetT15(U8 *memory_map, U8 slot)
 			RBG light. In the definitions are available the commands that shall 
 			be mapped versus the RGB light command map.
 			
+		It use two memory slots	
+			
 */	
 /**************************************************************************/
 void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 {
 	// Before power OFF store the last state
 	if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_RGBLamp_OffCmd )
-		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_OUT_s + slot];
+		memory_map[MaCaco_AUXIN_s + slot + 1] = memory_map[MaCaco_OUT_s + slot];
 	
 	// If previosly there was an ON command, set the last state
-	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_RGBLamp_OnCmd) && (memory_map[MaCaco_AUXIN_s + slot]))
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_RGBLamp_OnCmd) && (memory_map[MaCaco_AUXIN_s + slot + 1]))
 	{
-		memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_AUXIN_s + slot];
+		memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 1];
+		
+		// Flag the change in the state
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_TRIGGED;
 		*trigger = Souliss_TRIGGED;
 	}
 	else if(memory_map[MaCaco_IN_s + slot] != Souliss_T1n_RGBLamp_RstCmd) 
 	{
 		// Use the incoming command
 		memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];
+		
+		// Flag the change in the state
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_TRIGGED;
 		*trigger = Souliss_TRIGGED;
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RGBLamp_RstCmd;			// Reset

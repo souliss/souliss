@@ -58,6 +58,11 @@ U8 reqtyp_startoffset = 0x00;
 U8 reqtyp_numberof = 0x00;
 U8 reqtyp_times = 0;
 
+// store incoming addressing request information
+U16 randomkeyid = 0;
+U16 proposedaddress = 0;
+
+// buffer for temporary use
 U8 ipaddrs[4], cmd[4] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR};
 
 #if (MaCaco_DEBUG)
@@ -477,22 +482,38 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	#if(DYNAMICADDRESSING && MaCaco_USERMODE)	
 	// answer to a dimanyc addressing request
 	if (rx->funcode == MaCaco_DINADDRESSREQ)
-	{		
-		// the startoffset is used as media number
-		U8 vNetMedia = rx->startoffset;
-		
-		// identify if there are yet devices on the same media
-		U16 nodeaddress=0x0002;
-		for(U8 nodes=0;nodes<MaCaco_NODES;nodes++)
-			if(vNetMedia == vNet_GetMedia(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
-				nodeaddress++;
-		
-		// define the node address
-		nodeaddress = nodeaddress + (vNet_GetAddress(vNetMedia) & vNet_GetSubnetMask(vNetMedia));
-		
-		// send the assigned address
-		U8*	nodeaddress_p = (U8 *)(&nodeaddress);
-		return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);	
+	{	
+		// Process new and yet issued requests
+		if ((randomkeyid == 0) || (randomkeyid == (U16)rx->putin))
+		{
+			// If there are no pending request or a yet open pending request
+			// proceed and provide an address
+			
+			// the putin is used ad random key identifier
+			randomkeyid = (U16)rx->putin;
+			
+			// the startoffset is used as media number
+			U8 vNetMedia = rx->startoffset;
+			
+			// identify if there are yet devices on the same media
+			U16 nodeaddress=0x0002;
+			for(U8 nodes=0;nodes<MaCaco_NODES;nodes++)
+				if(vNetMedia == vNet_GetMedia(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+					nodeaddress++;
+			
+			// define the node address
+			nodeaddress = nodeaddress + (vNet_GetAddress(vNetMedia) & vNet_GetSubnetMask(vNetMedia));
+			
+			// store the proposed address, will be used to identify later if the request
+			// is completed
+			proposedaddress = nodeaddress;
+			
+			// send the assigned address
+			U8*	nodeaddress_p = (U8 *)(&nodeaddress);
+			return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
+		}
+		else
+			return MaCaco_FUNCODE_ERR;		
 	}		
 	#endif
 	
@@ -513,6 +534,12 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// if the node wasn't recorded, assign it
 			if((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
 				(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
+	
+			// if the join request is from a nodes that previously got an address, flag the
+			// request as completed
+			for(nodes=0; nodes<MaCaco_NODES; nodes++)
+				if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+					randomkeyid = 0;
 	
 			return MaCaco_FUNCODE_OK;	
 		}	
@@ -540,7 +567,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				if(rx->numberof)
 					memmove(confparameters_p, rx->data, rx->numberof);
 			}
-			
 		}
 		#endif
 		
@@ -794,8 +820,8 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 
 	// if there was a change in the memory map, send data to subscriptors
 	if (*data_chg == MaCaco_DATACHANGED)
-		status = MaCaco_UserMode_subAnswer(memory_map, data_chg);
-
+		status = MaCaco_UserMode_subAnswer(memory_map, data_chg);	
+		
 	return status;	
 }
 

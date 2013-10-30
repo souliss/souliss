@@ -31,11 +31,9 @@
 #include <Arduino.h>
 
 #include "src/types.h"
-#include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h
+#include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
-#if(JSONSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
-	#include "gateway/JSON.cpp"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
 	#include "gateway/HTTP.cpp"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 	#include "gateway/HTTP_uIP.cpp"
@@ -55,10 +53,10 @@
 #include "sensors/sensors.cpp"
 
 bool InPin[MAXINPIN] = {false};
-bool FirstInit = {false};
+bool FirstInit = {false}, addrsrv = {false};
 static unsigned long time;
 U8 roundrob_1=1,roundrob_2=1;
-U16 randomval=0;
+U16 keyidval=0;
 
 /**************************************************************************
 /*!
@@ -133,6 +131,9 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 /**************************************************************************/
 void Souliss_SetAddressingServer(U8 *memory_map)
 {
+	// Flag the addressing server
+	addrsrv = true;
+
 	// Use the first available address for each media, because is supposed
 	// that the addressing server is also the unique bridge/router of the 
 	// network, 
@@ -147,15 +148,72 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 			// Only one media, by default the first, is used as reference
 			Souliss_SetLocalAddress(memory_map, (vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE));
 			return;
-		}	
+		}
 }
 
 /**************************************************************************
 /*!
-	Request an addressing and parse the answer
+	Set the node to retrieve the address dynamically
 */	
 /**************************************************************************/
-void Souliss_DynamicAddressing (U8 *memory_map)
+void Souliss_SetDynamicAddressing()
+{
+	U8 i=0;
+	for(i=0; i<VNET_MEDIA_NUMBER; i++)
+	{
+		U8 media = i + 1;							// Addressing in arrays starts from zero
+													// rather media definition from one
+		if(vnet_media_en[i])
+		{
+			// Set configuration parameters dedicated to the relevant interface
+			if(media == 1)			
+			{
+			#if(VNET_MEDIA1_ENABLE)
+				// Media 1 - Ethernet
+				eth_SetBaseIP((uint8_t *)DEFAULT_BASEIPADDRESS);
+				eth_SetSubnetMask((uint8_t *)DEFAULT_SUBMASK);
+				eth_SetGateway((uint8_t *)DEFAULT_GATEWAY);
+			#endif
+			}
+			else if(media == 2)		
+			{
+				// Media 2 - Chibiduino Wireless
+			}
+			else if(media == 3)
+			{
+			}
+			else if(media == 4)
+			{
+			}
+			else if(media == 5)
+			{
+			}
+
+			// Set configuration general parameters
+			if(!FirstInit)
+			{
+				vNet_Init();											// Init vNet
+				FirstInit = true;
+			}
+			
+			vNet_SetAddress(0x00, media);								// Set vNet Address
+			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, media);			// Set vNet Subnetmask
+			vNet_SetMySuperNode(DYNAMICADDR_GATEWAY, media);			// Set vNet Supernode
+		}
+	}
+}
+
+/**************************************************************************
+/*!
+	Request an addressing and parse the answer, need an unique identifier
+	id that is used while the node hasn't a valid address.
+	
+	A compiler macro can be used as id, __TIME__ is a 9 byte that indicate
+	the time that compiler started. Isn't an absolute identifier but works
+	in most of the cases.
+*/	
+/**************************************************************************/
+void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
 	U8 usedmedia = vNet_MyMedia();			
 			
@@ -165,9 +223,9 @@ void Souliss_DynamicAddressing (U8 *memory_map)
 		// Verify if the addressing information are available in the configuration
 		// parameters of the memory map
 		
-		// The first parameter is the randomval number used to indetify my previous request
+		// The first parameter is the keyidval number used to indetify my previous request
 		U8 *confparameters_p = (memory_map + MaCaco_CONFPARAM);
-		if((*(U16 *)confparameters_p) == randomval)
+		if((*(U16 *)confparameters_p) == keyidval)
 		{
 			// The next parameter is the media
 			confparameters_p+=sizeof(U16);
@@ -188,15 +246,17 @@ void Souliss_DynamicAddressing (U8 *memory_map)
 		
 		// Clear the actual configuration parameters, the addressing server will load there
 		// the requested address
-		for(U8 i=0; i<MaCaco_CONFPARAM; i++)
+		U8 i=0;
+		for(i=0; i<MaCaco_CONFPARAM; i++)
 			*(memory_map + MaCaco_CONFPARAM + i) = 0;
 		
-		// Generate a pseudo-randomval number
-		if(!randomval)
-			randomval = ((U16)millis()) & 0x1234;
-		
+		// Generate a a key identifier
+		if(!keyidval)
+			for(i=0;i<size;i++)
+				keyidval+=id[i];
+
 		// Request a new address
-		MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)randomval, usedmedia, 0, 0);
+		MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, usedmedia, 0, 0);
 	}	
 }
 

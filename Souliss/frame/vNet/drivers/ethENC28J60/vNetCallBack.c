@@ -36,7 +36,7 @@ extern uint16_t portnumber;									// Destination Port number of the incoming p
 extern uint16_t sportnumber;								// Source Port number of the incoming packet
 extern uint8_t arptimer;									// Timeout for ARP table
 extern oFrame vNetM1_oFrame;								// Data structure for output frame
-//extern OutBuffer outframe;	
+extern uint8_t rawdata;										// Flag if there are raw data (not UDP/IP, TCP/IP, ICMP, ARP)
 
 /**************************************************************************/
 /*!
@@ -141,7 +141,8 @@ uint8_t vNet_uIP()
 		buffer */	
 
 	// Retreive data from the EN28J60
-	if((nic_poll()==0))
+	rawdata = nic_poll();
+	if(rawdata==0)
 	{
 		// If there are no available data
 		
@@ -208,6 +209,9 @@ uint8_t vNet_uIP()
 				uip_arp_out();
 				nic_send();
 			}
+			
+			// Data are not RAW
+			rawdata = 0;
 		}
 		// Process an ARP packet
 		else if(ETHBUF->type == htons(UIP_ETHTYPE_ARP))
@@ -217,7 +221,11 @@ uint8_t vNet_uIP()
 			// Transmit a packet, if one is ready
 			if(uip_len > 0)
 				nic_send();
+				
+			// Data are not RAW
+			rawdata = 0;	
 		}
+
 	}
 	
 	return ETH_FAIL;

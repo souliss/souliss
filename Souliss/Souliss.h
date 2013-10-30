@@ -26,14 +26,12 @@
 #define SOULISS_H
 
 #include "src/types.h"
-#include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h
+#include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#if(JSONSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
-#	include "gateway/JSON.h"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
 #	include "gateway/HTTP.h"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 #	include "gateway/HTTP_uIP.h"
@@ -71,7 +69,8 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 U8 Souliss_CommunicationChannels(U8 *memory_map);
 void Souliss_JoinNetwork();
 void Souliss_SetAddressingServer(U8 *memory_map);
-void Souliss_DynamicAddressing (U8 *memory_map);
+void Souliss_SetDynamicAddressing();
+void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size);
 U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command);
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);

@@ -368,11 +368,13 @@ uip_arp_out(void)
     ipaddr[0] = IPBUF->destipaddr[0];
     ipaddr[1] = IPBUF->destipaddr[1];
   }
-      
+   
+  // Look for an address in the ARP table
   for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
     tabptr = &arp_table[i];
-    if(ipaddr[0] == tabptr->ipaddr[0] &&
-       ipaddr[1] == tabptr->ipaddr[1])
+    if((ipaddr[0] == 0xFF && ipaddr[1] == 0xFF) || 
+	(ipaddr[0] == tabptr->ipaddr[0] &&
+       ipaddr[1] == tabptr->ipaddr[1]))
       break;
   }
 
@@ -404,9 +406,12 @@ uip_arp_out(void)
   }
   
   /* Build an ethernet header. */
-  memcpy(IPBUF->ethhdr.dest.addr, tabptr->ethaddr.addr, 6);
-  //memcpy(IPBUF->ethhdr.src.addr, uip_ethaddr.addr, 6);
-  memcpy(IPBUF->ethhdr.src.addr, mac_addr, 6);
+  if(ipaddr[0] == 0xFF && ipaddr[1] == 0xFF)					// If is an IP broadcast
+	memset(IPBUF->ethhdr.dest.addr, 0xFF, 6);					// broadcast over MAC
+  else															// else
+	memcpy(IPBUF->ethhdr.dest.addr, tabptr->ethaddr.addr, 6);	// use the address in the ARP table
+  
+  memcpy(IPBUF->ethhdr.src.addr, mac_addr, 6);					// Set the source MAC address
 
   IPBUF->ethhdr.type = HTONS(UIP_ETHTYPE_IP);
 

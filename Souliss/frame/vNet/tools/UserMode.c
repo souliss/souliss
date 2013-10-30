@@ -41,9 +41,9 @@
 
 #if(UMODE_ENABLE)
 
-#define UMODE_LOG 		Serial.print
-#define	IPADDRESS_BYTES	4
-#define PPORT_BYTES	2
+#define UMODE_LOG 			Serial.print
+#define	IPADDRESS_BYTES		4
+#define PPORT_BYTES			2
 
 U16 in_vNet_Addresses[UMODE_USERS];
 U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES], 
@@ -75,7 +75,7 @@ void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 	// Store the IP address
 	in_vNet_Addresses[i] = addr;
 	memmove(in_IP_Addresses + i*(IPADDRESS_BYTES), ip_addr, IPADDRESS_BYTES);	// Store the IP address
-	memmove(in_P_Port + i*(PPORT_BYTES), p_port, PPORT_BYTES);				// Store the IP port
+	memmove(in_P_Port + i*(PPORT_BYTES), p_port, PPORT_BYTES);					// Store the IP port
 }
 
 /**************************************************************************/

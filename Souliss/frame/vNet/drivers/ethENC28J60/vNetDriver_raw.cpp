@@ -28,11 +28,18 @@
 #include <string.h>
 
 #include "vNetDriver_raw.h"
-#include "frame/vNet/drivers/ethENC28J60/src/ENC28J60.c"
+#if(!VNET_MEDIA1_ENABLE)
+#	include "frame/vNet/drivers/ethENC28J60/src/ENC28J60.c"
+#endif
 
-uint8_t src_mac_addr[6];							// Source MAC address
+#if(VNET_MEDIA1_ENABLE)
+	extern	uint8_t mac_addr[6];					// Source MAC address
+#else
+	uint8_t mac_addr[6];	
+#endif
+
 uint8_t ethraw_frame[ETH_FRAME_LEN];				// Buffer for outgoing data to EN29J60
-Buffer ethstr;										// Structure for the outgoing data
+Buffer ethstr;		
 
 /**************************************************************************/
 /*!
@@ -41,8 +48,6 @@ Buffer ethstr;										// Structure for the outgoing data
 /**************************************************************************/
 void vNet_Init_M3()
 {	
-	//ethstr.r_pnt=0;									// Init the buffer pointer	
-	//ethstr.w_pnt=0;									// Init the buffer pointer
 	ethstr.data=ethraw_frame;						// Init the buffer pointer	
 }
 
@@ -53,14 +58,15 @@ void vNet_Init_M3()
 /**************************************************************************/
 void vNet_SetAddress_M3(uint16_t addr)
 {
+#if(!VNET_MEDIA1_ENABLE)
 	// Set the MAC Address	
-	#if(AUTO_MAC)
-		eth_vNettoMAC(addr, src_mac_addr);
-		enc28j60Init(src_mac_addr);
-	#else
+#	if(AUTO_MAC)
+		eth_vNettoMAC(addr, mac_addr);
+		enc28j60Init(mac_addr);
+#	else
 		enc28j60Init((U8 *)&MAC_ADDRESS[0]);
-	#endif	
-
+#	endif	
+#endif
 }
 
 /**************************************************************************/
@@ -70,31 +76,26 @@ void vNet_SetAddress_M3(uint16_t addr)
 /**************************************************************************/
 uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 {
-	uint8_t *data, mac_addr[6];
+	uint8_t *data;
 
 	// Check message lenght
 	if ((len == 0) || (len >= VNET_MAX_PAYLOAD))
 		return ETH_FAIL;
-			
-	// Broadcast is not supported
-	if(addr == 0xFFFF)
-		return ETH_FAIL;
 
 	// Build the Ethernet header	
-	eth_vNettoMAC(addr, mac_addr);
-	memcpy(ethstr.data+ETH_MAC_DADDR, mac_addr, 6);								// Load broadcast Ethernet address as destination address
+	memset(ethstr.data+ETH_MAC_DADDR, 0xFF, 6);								// Load broadcast Ethernet address as destination address
 	
 	// Load source Ethernet address
 	#if(AUTO_MAC)
-		memcpy(ethstr.data+ETH_MAC_SADDR, src_mac_addr, 6);
+		memcpy(ethstr.data+ETH_MAC_SADDR, mac_addr, 6);
 	#else
 		memcpy(ethstr.data+ETH_MAC_SADDR, MAC_ADDRESS, 6);
 	#endif
 	
-	*(uint16_t*)(ethstr.data+ETH_MAC_FLEN)=ETH_HEADER_LEN+len+1;				// Message Lenght
+	*(uint16_t*)(ethstr.data+ETH_MAC_FLEN)=ETH_HEADER_LEN+len+1;			// Message Lenght
 
 	// Insert preamble (used only in Ethernet-RAW mode)
-	memset(ethstr.data+ETH_VNET_PREAMBLE, ETH_PREAMBLE, ETH_PREAMBLE_LEN);		// Load preamble values
+	memset(ethstr.data+ETH_VNET_PREAMBLE, ETH_PREAMBLE, ETH_PREAMBLE_LEN);	// Load preamble values
 	
 	// Build a frame with len of payload as first byte
 	*(ethstr.data+ETH_VNET_PAYLOAD) = len+1;
@@ -106,7 +107,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 		memset(data++, oFrame_GetByte(), 1);
 	
 	// Insert postamble (used only in Ethernet-RAW mode)
-	memset(ethstr.data+ETH_VNET_PAYLOAD+1+len, ETH_POSTAMBLE, ETH_POSTAMBLE_LEN);		// Load postamble values
+	memset(ethstr.data+ETH_VNET_PAYLOAD+1+len, ETH_POSTAMBLE, ETH_POSTAMBLE_LEN);	// Load postamble values
 
 	// Frame lenght
 	ethstr.datalen = len+ETH_HEADER_LEN+ETH_PREAMBLE_LEN+ETH_POSTAMBLE_LEN+1;
@@ -115,8 +116,6 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	enc28j60PacketSend(ethstr.datalen, ethstr.data);
 	
 	// Reset the buffer pointers
-	//ethstr.r_pnt=0;
-	//ethstr.w_pnt=0;		
 	ethstr.datalen=0;
 	
 	return ETH_SUCCESS;
@@ -142,11 +141,20 @@ uint8_t vNet_DataAvailable_M3()
 	uint8_t i;
 	
 	// Read data from the buffer
-	ethstr.datalen = enc28j60PacketReceive(ETH_FRAME_LEN, ethstr.data);	
-
+	#if(VNET_MEDIA1_ENABLE)
+		ethstr.data = (U8 *)uip_buf;
+		ethstr.datalen = rawdata;
+	#else
+		ethstr.datalen = enc28j60PacketReceive(ETH_FRAME_LEN, ethstr.data);	
+	#endif
+	
 	// If there are no incoming data
 	if(!ethstr.datalen)
 	{
+		#if(VNET_MEDIA1_ENABLE)
+		rawdata = 0;
+		#endif
+		
 		ethstr.datalen = 0;
 		return ETH_FAIL;
 	}
@@ -154,12 +162,16 @@ uint8_t vNet_DataAvailable_M3()
 	// If the lenght exceed the buffer size
 	if(ethstr.datalen > ETH_FRAME_LEN)
 	{
+		#if(VNET_MEDIA1_ENABLE)
+		rawdata = 0;
+		#endif
+		
 		ethstr.datalen = 0;
 		return ETH_FAIL;
 	}
 	
 	// Analyze the retreived frame to findout a vNet message
-	for(i=0;i<ethstr.datalen;i++)
+	for(i=0;i<ethstr.datalen-ETH_PREAMBLE_LEN;i++)
 	{
 		// Look for vNet preamble used in vNet for Ethernet Raw mode 
 		if((ethstr.data[i] == ETH_PREAMBLE) &&
@@ -192,13 +204,21 @@ uint8_t vNet_DataAvailable_M3()
 			else
 			{
 				// No valid message
+				#if(VNET_MEDIA1_ENABLE)
+				rawdata = 0;
+				#endif
+				
 				ethstr.datalen = 0;
-				return ETH_FAIL;		
+				return ETH_FAIL;	
 			}
 		}
 	}	
 	
 	// No valid message
+	#if(VNET_MEDIA1_ENABLE)
+	rawdata = 0;
+	#endif
+		
 	ethstr.datalen = 0;
 	return ETH_FAIL;
 }
@@ -250,6 +270,7 @@ uint16_t vNet_GetSourceAddress_M3()
     Translate a vNet address (2 bytes) in MAC address (6 bytes)
 */
 /**************************************************************************/
+#if(!VNET_MEDIA1_ENABLE)
 void eth_vNettoMAC(const uint16_t addr, uint8_t *mac_addr)
 {
 	uint8_t *vNet_addr;
@@ -267,3 +288,4 @@ void eth_vNettoMAC(const uint16_t addr, uint8_t *mac_addr)
 		mac_addr[0] |= 0x01;
 	#endif
 }
+#endif

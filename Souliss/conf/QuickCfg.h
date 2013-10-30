@@ -46,7 +46,7 @@
 	
 	If disabled, the configuration goes in Detailed Configuration mode
 	        
-		Value       Media
+		Value       
         0x00        Disabled (Default)
 		0x01		Enabled
 		
@@ -62,7 +62,7 @@
 	
 	Standard configuration is always possible
 	        
-		Value       Media
+		Value      
         0x00        No selection (Default)
 		0x01		Freaklabs Chibiduino (2.4 GHz Wireless)
 		0x02		Freaklabs Chibiduino with Ethernet Shield (W5100)
@@ -109,7 +109,7 @@
 	data from all the other in the network and make the same available to
 	external interfaces (like Android, Modbus or HTTP/JSON).
 	        
-		Value       Media
+		Value       
         0x00        No selection (Default)
 		0x01		Gateway
 		0x02		Gateway with additional Modbus TCP
@@ -127,14 +127,14 @@
 	Select the sensor used to include automatically proper drivers, multiple
 	selection is allowed.
 	        
-		Value       Media
+		Value       
         0x00        No selection (Default)
 		0x01		Selected
  
 	List of available sensors and relevant description,
 		
-		Name			Description
-		DHT_SENSOR		Temperature and humidity DHT11, DHT21, DHT22
+		Name		Description
+		DHT_SENSOR	Temperature and humidity DHT11, DHT21, DHT22
  
 */
 /**************************************************************************/
@@ -148,13 +148,13 @@
 	the network. It works for single media and bridged networks with a single
 	bridge acting as addressing server.
 	
-        Value       JSONSERVER
-        0x0         Disable (Default)
-        0x1         Enable
+        Value       DYNAMICADDRESSING
+        0x0         Disable 
+        0x1         Enable	(Default)
 */
 /**************************************************************************/
 #if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
-#	define DYNAMICADDRESSING  	0
+#	define DYNAMICADDRESSING  		0x01
 #endif
 
 /**************************************************************************/
