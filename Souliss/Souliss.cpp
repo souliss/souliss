@@ -33,7 +33,7 @@
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
 	#include "gateway/HTTP.cpp"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 	#include "gateway/HTTP_uIP.cpp"
@@ -215,11 +215,16 @@ void Souliss_SetDynamicAddressing()
 /**************************************************************************/
 void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
-	U8 usedmedia = vNet_MyMedia();			
+	U8 i, usedmedia = vNet_MyMedia();			
 			
 	// If no address is set
 	if(!vNet_GetAddress(usedmedia))
 	{
+		// Generate a a key identifier
+		if(!keyidval)
+			for(i=0;i<size;i++)
+				keyidval+=(i*i)*id[i];	
+	
 		// Verify if the addressing information are available in the configuration
 		// parameters of the memory map
 		
@@ -246,14 +251,8 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		
 		// Clear the actual configuration parameters, the addressing server will load there
 		// the requested address
-		U8 i=0;
 		for(i=0; i<MaCaco_CONFPARAM; i++)
 			*(memory_map + MaCaco_CONFPARAM + i) = 0;
-		
-		// Generate a a key identifier
-		if(!keyidval)
-			for(i=0;i<size;i++)
-				keyidval+=id[i];
 
 		// Request a new address
 		MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, usedmedia, 0, 0);
@@ -407,14 +406,16 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 /**************************************************************************/	
 U8 Souliss_GetTypicals(U8 *memory_map)
 { 
-	U8 ret=0;
+	U8 ret=0, s=MaCaco_reqtyp();
 
-	if(MaCaco_reqtyp())
+	if(s)
 	{
+		// Reset the round robin loop
+		if (s == MaCaco_NODES) 
+			roundrob_1 = 1;		// Reset, node 0 is the node it-self, doesn't need to send data out
+		
 		// Retreive once the typical definitions data
-		if (roundrob_1 == 0) 
-			roundrob_1++;
-		else if ((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)) != 0x0000)
+		if ((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)) != 0x0000)
 		{
 			#if(MaCaco_PASSTHROUGH)
 				ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			

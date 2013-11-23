@@ -32,8 +32,8 @@
 
 #if (VNET_MEDIA1_ENABLE)
 	// Driver for Wiznet W5100
-	#if (ETH_W5100)
-		#include "drivers/ethW5100/vNetDriver_eth.h"	
+	#if (ETH_W5100 || ETH_W5200 )
+		#include "drivers/ethW5x00/vNetDriver_eth.h"	
 	#endif
 	
 	// Driver for Microchip ENC28J60
@@ -54,18 +54,14 @@
 	
 #if (VNET_MEDIA3_ENABLE)
 	// Driver for Wiznet W5100
-	#if (ETH_W5100)
-		#include "drivers/ethW5100/vNetDriver_raw.h"	
+	#if (ETH_W5100 || ETH_W5200 )
+		#include "drivers/ethW5x00/vNetDriver_raw.h"	
 	#endif
 	
 	// Driver for Microchip EN28J60
 	#if (ETH_ENC28J60)
 		#include "drivers/ethENC28J60/vNetDriver_raw.h"	
 	#endif	
-#endif
-
-#if (VNET_MEDIA4_ENABLE)
-	#include "drivers/plinio/vNetDriver_fsk.h"		
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)

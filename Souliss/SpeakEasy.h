@@ -139,6 +139,11 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define myData	&data_changed
 #define myNode	memory_map, &data_changed
 
+
+#define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
+#define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
+#define	ssDynamicAddressing()									Souliss_DynamicAddressing (memory_map, __TIME__, 9)
+#define	ssJoinNetwork()											Souliss_JoinNetwork()
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
 #define	ssGetTypicals()											Souliss_GetTypicals(memory_map)
@@ -165,5 +170,32 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define ssOutput(slot)											memory_map[OUT+slot]
 
 /*****************************************/
+
+/************* Let be lazy ***************/
+#define	FAST_GatewayComms()						FAST_70ms()    						\
+													ProcessCommunication();			\
+												FAST_1110ms() 						\
+													ssCommunicationChannels();		\
+												FAST_910ms() 						\
+													ssGetTypicals()									
+			
+#define	START_PeerJoin()						FAST_2110ms()						\
+												{									\
+													if(!MaCaco_IsSubscribed())		\
+													{								\
+														ssDynamicAddressing();		\
+														ssJoinNetwork();			\
+													}								\
+												}
+
+#define	SLOW_PeerJoin()							SLOW_50s() {						\
+													ssDynamicAddressing();			\
+													ssJoinNetwork();				\
+												}
+
+
+
+/*****************************************/
+
 
 #endif

@@ -69,7 +69,7 @@
         0x03        Arduino Ethernet (W5100) 
 		0x04		Arduino with Ethernet Shield (W5100)
 		0x05		Arduino with ENC28J60 Ethernet Shield
-		0x06		KMTronic DINo	
+		0x06		KMTronic DINo v1	
 		0x07		Olimex AVR-T32U4 		with MOD-ENC28J60 (UEXT)
 		0x08		Olimex OLIMEXINO-32U4 	with MOD-ENC28J60 (UEXT)
 		0x09		Olimex OLIMEXINO-328 	with MOD-ENC28J60 (UEXT)
@@ -93,7 +93,8 @@
 		0x1B		Olimex OLIMEXINO-328 	with MOD-ENC28J60 and MOD-RGB(UEXT)
 		0x1C		Olimex AVR-T32U4 		with MOD-WIFI	  and MOD-RGB(UEXT)
 		0x1D		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-RGB(UEXT)
-		0x1E		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-RGB(UEXT)		
+		0x1E		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-RGB(UEXT)	
+		0x20		KMP Electronics DINo v2
 		0x30		DFRobots XBoard Relay
 		0x31		DFRobots XBoard
 		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield
@@ -124,6 +125,43 @@
 
 /**************************************************************************/
 /*!
+	The dynamic addressing node act as server for Souliss addresses over
+	the network. It works for single media and bridged networks with a single
+	bridge acting as addressing server.
+	
+        Value       DYNAMICADDRESSING
+        0x0         Disable (Default)
+        0x1         Enable	
+*/
+/**************************************************************************/
+#if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
+#	define DYNAMICADDRESSING  		0x00
+#endif
+
+/**************************************************************************/
+/*!
+	In case of a network with multiple Ethernet based boards, the use of 
+	MAC RAW communication remove the need of a dedicated IP address for each
+	board.
+	
+	This settings has effect only on Ethernet boards with DYNAMICADDRESSING
+	option set, following scenario are forseen:
+		- Gateway : Is configured with either IP and MACRAW, bridges data from
+					IP to MACRAW and viceversa.
+		- Peer (not Gateway) : Is configured only as MACRAW, doesn't need an IP
+					address.
+	
+        Value       ETHERNETMACRAW
+        0x0         Disable (Default)
+        0x1         Enable	
+*/
+/**************************************************************************/
+#if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
+#	define ETHERNETMACRAW  		0x00
+#endif
+
+/**************************************************************************/
+/*!
 	Select the sensor used to include automatically proper drivers, multiple
 	selection is allowed.
 	        
@@ -144,27 +182,11 @@
 
 /**************************************************************************/
 /*!
-	The dynamic addressing node act as server for Souliss addresses over
-	the network. It works for single media and bridged networks with a single
-	bridge acting as addressing server.
-	
-        Value       DYNAMICADDRESSING
-        0x0         Disable 
-        0x1         Enable	(Default)
-*/
-/**************************************************************************/
-#if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
-#	define DYNAMICADDRESSING  		0x01
-#endif
-
-/**************************************************************************/
-/*!
     IP Base Configuration 
 
 	The IP address of Ethernet boards is defined as merge of a IP Base Address
-	and the vNet address, to get this the DEFAULT_BASEIPADDRESS[] shall not 
-	contain the bits that are zero on the subnet mask, the last bits are set 
-	with the vNet address.
+	and the vNet address, to get this the DEFAULT_BASEIPADDRESS[] shall always
+	have the last byte at zero, that byte is used to define the vNet address.
 	
 	Below are listed some example of valid and not valid configurations, the
 	default configuration match the one used for most of home networks routers.
@@ -173,10 +195,8 @@
 		- IP 192.168. 0.0  / SUBNETMASK 255.255.255.0
 		- IP 192.168. 1.0  / SUBNETMASK 255.255.255.0
 		- IP 192.168.10.0  / SUBNETMASK 255.255.255.0
-		- IP 192.168. 0.0  / SUBNETMASK 255.255.  0.0
 	Example of wrong configuration are:	
 		- IP 192.168. 0.12  / SUBNETMASK 255.255.255.0	(WRONG)
-		- IP 192.168. 10.0  / SUBNETMASK 255.255. 0.0	(WRONG)
 
 */
 /**************************************************************************/

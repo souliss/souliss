@@ -1,14 +1,17 @@
 Souliss
 Copyright (C) 2013  Veseo
 
-Release note for revision Alpha 5.0, on dd/mm/yyy
+Release note for revision Alpha 5.0.1, on 13/11/2013
 
 	Introduced a revised memory handling for MaCaco in order reduce the RAM waste in case
 	of non-gateway nodes, broadcasting features for configuration-less nodes
-			- Simple network can use auto-addressing features
+			- Configuration-less network for simple architectures added
 			- Nodes can join a Souliss network in runtime
 			- Broadcast support for vNet	
 			- PassThrough mode for MaCaco communication with User Interfaces
+			- Support for KMP Electronics DINo II relay board
+			- Added Wiznet W5200 drivers (Ethernet controller)
+			- HTTP/JSON running on nodes is deprecated
 			- Revised memory structure for MaCaco, save RAM on non-gateway nodes
 			- Bandwith friendly approach for MaCaco retries mechanism
 			- Bug-fix for uIP/vNet IP source port handling (thanks to Antonino Fazio)

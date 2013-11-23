@@ -35,11 +35,12 @@
         0x00        No selection (Default)
 		0x01		Freaklabs Chibiduino
         0x02        Arduino Boards
-		0x03		KMTronic DINo
+		0x03		KMTronic DINo v1
 		0x04		Olimex AVR-T32U4
 		0x05		Olimex OLIMEXINO-32U4 
 		0x06		Olimex OLIMEXINO-328
 		0x07		DFRobots XBoard Relay
+		0x08		KMP Electronics DINo v2
  
 */
 /**************************************************************************/
@@ -55,7 +56,7 @@
 	        
 		Value       Media
         0x00        No selection (Default)
-		0x01		Arduino Ethernet Shield with Wiznet W5100
+		0x01		Arduino Ethernet Shield with Wiznet W5x00
 		0x02		Ethernet Shield with Microchip ENC28J60
 		0x03		WiFi Shield with Microchip MRF24WB0MA
 		0x04		Olimex MOD-ENC28J60 (UEXT) with Microchip ENC28J60

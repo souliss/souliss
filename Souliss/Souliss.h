@@ -31,7 +31,7 @@
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
 #	include "gateway/HTTP.h"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 #	include "gateway/HTTP_uIP.h"

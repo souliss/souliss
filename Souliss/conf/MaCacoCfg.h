@@ -125,11 +125,12 @@
 #define	MaCaco_DINADDRESSREQ	0x29	// Dynamic addressing request (broadcasted)
 #define	MaCaco_DINADDRESSANS	0x39	// Dynamic addressing answer (broadcasted)
 #define	MaCaco_JOINNETWORK		0x3A	// Join a network gateway (broadcasted)
+#define	MaCaco_SETIP			0x3B	// Set an IP address at runtime (broadcasted)
 
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01
 
-#define	MaCaco_FUNCODE_NO (17+17)
+#define	MaCaco_FUNCODE_NO (17+18)
 
 const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x08, 0x18, 0x09, 0x19, 
@@ -140,7 +141,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x33, 0x34, 0x25, 0x35,
 											   0x26, 0x36, 0x27, 0x37,
 											   0x28, 0x38, 0x29, 0x39,
-											   0x3A};
+											   0x3A, 0x3B};
 		  
 /**************************************************************************/
 /*!

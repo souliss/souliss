@@ -27,9 +27,14 @@
 
 #include "GetConfig.h"			// need : hwBoards.h
 
-// Include pins definition for KMTronic DINo
+// Include pins definition for KMTronic DINo v1
 #if(BOARD_MODEL == 0x03)						
-#	include "hardware/KMTronic/DINo.h"
+#	include "hardware/KMPElectronics/DINo_v1.h"
+#endif
+
+// Include pins definition for KMP Electronics DINo v2
+#if(BOARD_MODEL == 0x08)						
+#	include "hardware/KMPElectronics/DINo_v2.h"
 #endif
 
 // Include pins definition for DFRobots XBoard Relay

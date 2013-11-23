@@ -35,4 +35,10 @@
 #define REL1			8
 #define REL2			7	
 
+#define	SetRelay1()			pinMode(8, OUTPUT);
+#define	SetRelay2()			pinMode(7, OUTPUT);
+
+#define	CntRelay1(slot)		ssDigOut(8,Souliss_T1n_Coil,slot)
+#define	CntRelay2(slot)		ssDigOut(7,Souliss_T1n_Coil,slot)
+
 #endif

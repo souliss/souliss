@@ -467,7 +467,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	}
 	#endif
 	
-	#if(MaCaco_USERMODE)	
+	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
 	if (rx->funcode == MaCaco_DISCOVERREQ)
 	{		
@@ -545,6 +545,32 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		}	
 		#endif
 	
+		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE)	
+		
+		// set an IP address at runtime
+		if (rx->funcode == MaCaco_SETIP)
+		{	
+			// the payload contains the IPv4 address in the first four bytes
+			// then the subnetmask and gateway IP
+			U8 i, setbaseipaddr[4];
+			U16 vnetaddress = 0;
+			
+			for(i=0;i<4;i++)
+				setbaseipaddr[i] = (*(rx->data+i) & *(rx->data+4+i));
+			
+			eth_SetBaseIP((uint8_t *)setbaseipaddr);									// Base IP address			
+			eth_SetSubnetMask((uint8_t *)(rx->data+4));									// Subnetmask
+			eth_SetGateway((uint8_t *)(rx->data+8));									// Gateway IP
+			
+			// use the last byte from the IP address to define the vNet one
+			vnetaddress += (setbaseipaddr[4] & DYNAMICADDR_SUBNETMASK);
+			
+			vNet_SetAddress(vnetaddress, vNet_GetMedia(vnetaddress));					// Set vNet Address
+			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, vNet_GetMedia(vnetaddress));		// Set vNet Subnetmask
+			vNet_SetMySuperNode(DYNAMICADDR_GATEWAY, vNet_GetMedia(vnetaddress));		// Set vNet Supernode
+		}
+		#endif
+		
 		#if(DYNAMICADDRESSING)	
 		// record the dynamic address provided
 		if (rx->funcode == MaCaco_DINADDRESSANS)
@@ -1098,4 +1124,23 @@ U8 MaCaco_getdatain()
 U16 MaCaco_getdatabuffer()
 {
 	return (U16)(&MaCaco_data[0]);
+}
+
+/**************************************************************************/
+/*!
+    Return the subscription state, if true a gateway node has subscribed 
+	this node
+*/
+/**************************************************************************/
+U8 MaCaco_IsSubscribed()
+{
+	U8 i=0;
+	
+	// stops at first subcription
+	while((subscr_addr[i]==0) && (i<(MaCaco_INMAXSUBSCR-1)))
+		i++;
+	
+	// returns subscription state
+	return (subscr_addr[i]!=0);	
+	
 }

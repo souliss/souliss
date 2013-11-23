@@ -356,6 +356,15 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x20)
+#		define	ETH_W5200				1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x08
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
 #	elif(QC_BOARDTYPE == 0x30)
 #		define	ETH_W5100				1	
 #		define	COMMS_MODEL				0x01
@@ -406,9 +415,9 @@
 // If dynamic request is used over Ethernet, communication between Ethernet
 // devices is done via MAC-RAW and only the gateway node use both UDP/IP and
 // MAC-RAW communication
-#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING)
+#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && ETHERNETMACRAW)
 #		define VNET_MEDIA3_ENABLE  		1
-#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING)
+#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && ETHERNETMACRAW)
 #		define VNET_MEDIA1_ENABLE  		0
 #		define VNET_MEDIA3_ENABLE  		1
 #	else

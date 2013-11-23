@@ -46,6 +46,7 @@
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
 #	define ETH_W5100  		0
+#	define ETH_W5200  		0
 #	define ETH_ENC28J60  	1
 #	define WIFI_MRF24		0
 #endif
@@ -124,9 +125,8 @@
     IP Base Configuration 
 
 	The IP address of Ethernet boards is defined as merge of a IP Base Address
-	and the vNet address, to get this the DEFAULT_BASEIPADDRESS[] shall not 
-	contain the bits that are zero on the subnet mask, the last bits are set 
-	with the vNet address.
+	and the vNet address, to get this the DEFAULT_BASEIPADDRESS[] shall always
+	have the last byte at zero, that byte is used to define the vNet address.
 	
 	Below are listed some example of valid and not valid configurations, the
 	default configuration match the one used for most of home networks routers.
@@ -135,10 +135,8 @@
 		- IP 192.168. 0.0  / SUBNETMASK 255.255.255.0
 		- IP 192.168. 1.0  / SUBNETMASK 255.255.255.0
 		- IP 192.168.10.0  / SUBNETMASK 255.255.255.0
-		- IP 192.168. 0.0  / SUBNETMASK 255.255.  0.0
 	Example of wrong configuration are:	
 		- IP 192.168. 0.12  / SUBNETMASK 255.255.255.0	(WRONG)
-		- IP 192.168. 10.0  / SUBNETMASK 255.255. 0.0	(WRONG)
 
 */
 /**************************************************************************/

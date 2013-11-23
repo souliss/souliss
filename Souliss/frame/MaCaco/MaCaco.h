@@ -54,4 +54,5 @@ U8 MaCaco_getstartoffset();
 U8 MaCaco_getnumberof();
 U8 MaCaco_getdatain();
 U16 MaCaco_getdatabuffer();
+U8 MaCaco_IsSubscribed();
 #endif

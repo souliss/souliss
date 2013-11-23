@@ -1,6 +1,18 @@
 Souliss Home Automation
 Copyright (C) 2012  Veseo
 
+	Modbus and HTTP Protocol
+		
+		Due to a new data structure the Modbus and HTTP code has been modified to work with 
+		release Alpha 5, actually those new lines of code hasn't been yet involved into a test.
+
+	Drivers for Microchip ENC28J60 in MACRAW Mode
+		
+		The drivers included works on ENC28J60 either as IP and MACRAW, actually these two
+		modes can work at same time, but still there are some bugs.
+		The use of MACRAW is needed for plug&play features over Ethernet, out of this all
+		others are expected to work properly.
+
 	Drivers for Microchip MRF24WB0MA
 
 		The drivers included in vNet for Microchip MRF24WB0MA are based on AsyncLab porting
