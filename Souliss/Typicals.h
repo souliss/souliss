@@ -75,6 +75,11 @@
 
 #define Souliss_T1n_BrightValue			0x10		
 
+/*
+
+//	These values are not yet updated in SoulissApp, reverse to old ones
+//	thanks to Juan Pinto.
+
 #define Souliss_T1n_RGBLamp_OnCmd		0x02		// ON Command
 #define Souliss_T1n_RGBLamp_OffCmd		0x04		// OFF Command
 #define Souliss_T1n_RGBLamp_RstCmd		0x00		// Reset Command
@@ -84,6 +89,19 @@
 #define Souliss_T1n_RGBLamp_W			0x09		// White Color
 #define Souliss_T1n_RGBLamp_BrightUp	0x10		
 #define Souliss_T1n_RGBLamp_BrightDown	0x20
+*/
+
+#define Souliss_T1n_RGBLamp_OnCmd		0x01 		// ON Command
+#define Souliss_T1n_RGBLamp_OffCmd      0x09 		// OFF Command
+#define Souliss_T1n_RGBLamp_RstCmd		0x00		// Reset Command
+#define Souliss_T1n_RGBLamp_R	        0x02 		// Red Color
+#define Souliss_T1n_RGBLamp_G	        0x03 		// Green Color
+#define Souliss_T1n_RGBLamp_B	        0x04 		// Blue Color
+#define Souliss_T1n_RGBLamp_W	        0x05 		// White Color
+#define Souliss_T1n_RGBLamp_BrightUp	0x06 	
+#define Souliss_T1n_RGBLamp_BrightDown	0x07 	
+
+
 #define Souliss_T1n_RGBLamp_Flash		0xA1
 #define Souliss_T1n_RGBLamp_Strobe		0xA2
 #define Souliss_T1n_RGBLamp_Fade		0xA3

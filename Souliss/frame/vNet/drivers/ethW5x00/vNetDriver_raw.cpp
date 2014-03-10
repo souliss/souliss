@@ -57,6 +57,11 @@ void vNet_Init_M3()
 /**************************************************************************/
 void vNet_Begin_M3(uint8_t sock)
 {
+	// Close the socket
+	W5x00.execCmdSn(sock, Sock_CLOSE);
+	W5x00.writeSnIR(sock, 0xFF);
+	
+	// Start the socket
 	W5x00.writeSnMR(sock, SnMR::MACRAW);
 	W5x00.execCmdSn(sock, Sock_OPEN);
 }
@@ -124,8 +129,13 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	
 	// Send data
 	W5x00.send_data_processing(RAW_SOCK, ethstr.data, ethstr.datalen);
-    W5x00.execCmdSn(RAW_SOCK, Sock_SEND_MAC);	
 	
+	#if(ETH_W5200)
+	W5x00.execCmdSn(RAW_SOCK, Sock_SEND);	
+	#elif(ETH_W5100)
+    W5x00.execCmdSn(RAW_SOCK, Sock_SEND_MAC);	
+	#endif
+
 	// Reset the buffer pointers
 	ethstr.datalen=0;
 	
@@ -154,6 +164,7 @@ uint8_t vNet_DataAvailable_M3()
 
 	// Get data lenght from the buffer
 	ethstr.datalen = W5x00.getRXReceivedSize(RAW_SOCK);
+	if(ethstr.datalen == 0) return ETH_FAIL;
 	
 	// If there is enough room in the buffer
 	if(ethstr.datalen < ETH_FRAME_LEN)

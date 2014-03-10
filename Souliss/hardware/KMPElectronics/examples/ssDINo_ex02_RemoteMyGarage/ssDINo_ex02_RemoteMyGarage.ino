@@ -43,7 +43,8 @@
 	Run this code on one of the following boards:
 	
 		Board Conf Code			Board Model
-		0x06					KMTronic DINo	
+		0x06					KMTronic 		DINo v1	
+		0x20					KMP Electronics DINo v2	
 	
 	******************** Configuration Parameters *********************
 	
@@ -51,39 +52,32 @@
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x06, 0x20
 
-	Is required an additional IP configuration using the following parameters
-		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
-		QuickCfg.h				const uint8_t DEFAULT_SUBMASK[]       = {...}
-		QuickCfg.h				const uint8_t DEFAULT_GATEWAY[]       = {...}
-	
 ***************************************************************************/
+#include "bconf/DINo_v2_Gateway.h"			// Load QuickCfg.h configuration parameters automatically
 #include "Souliss.h"
 #include "SpeakEasy.h"						// Is a library to code easy Souliss examples
 #include <SPI.h>
 
 // Define the network configuration
-//
-// In the QuickCfg.h file set DEFAULT_BASEIPADDRESS[] = {192,168,1,0}
-#define myvNet_address		0x0011 			// 0x0011 is equal to 17 in decimal
-#define myvNet_subnet		0xFF00
-#define myvNet_supern		0x0000
-// defining myvNet_address as 0x0011 (is hexadecimal, in decimal is uqual to 17) gives
-// as IP address 192.168.1.17, use this address in SoulissApp 
+uint8_t ip_address[4]  = {192, 168, 1, 17};
+uint8_t subnet_mask[4] = {255, 255, 255, 0};
+uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 
 #define GARAGEDOOR					0			// This identify the number of the logic
 #define GARAGELIGHT					1			// This identify the number of the logic
 
 void setup()
 {	
+	// Init the board
+	InitDINo();
+
 	// Setup the network configuration
 	//
-	// The vNet address is 11(hex) that is 17(dec), so the IP address is
-	// the DEFAULT_BASEIPADDRESS[] defined in ethUsrCfg.h plus 17 on last 
-	// octect. If DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0} the IP address
-	// for the board will be 192.168.1.17
-	Souliss_SetAddress(myvNet_address, myvNet_subnet, myvNet_supern);		
-	
-	SetAsGateway(myvNet_address);		// Set this node as gateway for SoulissApp	
+	// The vNet address will be equal to the last byte of the IP address
+	// with the most significant one at zero, so in this case 0x0011.
+	// Board reply to pings at 192.168.1.17
+	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
+	SetAsGateway((U16)ip_address[3]);										// Last byte of the IP address is the vNet address
 	
 	// Define the logics for this node
 	Set_GarageDoor(GARAGEDOOR);

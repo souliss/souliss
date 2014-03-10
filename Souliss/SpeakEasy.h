@@ -33,15 +33,16 @@ U8 data_changed = 0;						// flag
 /************** Scheduler ******************/
 #define time_base_fast		10				// Time cycle in milliseconds
 #define time_base_slow		10000			// Time cycle in milliseconds
-#define num_phases			255				// Number of phases
+#define num_phases			1000			// Number of phases
 
-U8 phase_speedy=0, phase_fast=0, phase_slow=0;
+U16 phase_speedy=0, phase_fast=0, phase_slow=0;
 unsigned long tmr_fast=0, tmr_slow=0;  
 
 #define EXECUTEFAST()	if(abs(millis()-tmr_fast) > time_base_fast)
 #define UPDATEFAST()	tmr_fast = millis();	\
 						phase_fast = (phase_fast + 1) % num_phases
-						
+
+#define	FAST_30ms()		if (!(phase_fast % 3))						
 #define	FAST_50ms()		if (!(phase_fast % 5))
 #define	FAST_70ms()		if (!(phase_fast % 7))
 #define	FAST_90ms()		if (!(phase_fast % 9))
@@ -51,6 +52,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	FAST_910ms()	if (!(phase_fast % 91))
 #define	FAST_1110ms()	if (!(phase_fast % 111))
 #define	FAST_2110ms()	if (!(phase_fast % 211))
+#define	FAST_7110ms()	if (!(phase_fast % 711))
 
 #define EXECUTESLOW()	else if(abs(millis()-tmr_slow) > time_base_slow)
 #define UPDATESLOW()	tmr_slow = millis();	\
@@ -179,9 +181,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												FAST_910ms() 						\
 													ssGetTypicals()									
 			
-#define	START_PeerJoin()						FAST_70ms()    						\
-													ProcessCommunication();			\
-												FAST_2110ms()						\
+#define	FAST_PeerComms()						FAST_70ms()    						\
+													ProcessCommunication();			
+													
+#define	START_PeerJoin()						FAST_1110ms()						\
 												{									\
 													if(!MaCaco_IsSubscribed())		\
 													{								\
@@ -189,6 +192,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 														ssJoinNetwork();			\
 													}								\
 												}
+												
+#define	JoinInProgress()						(!MaCaco_IsSubscribed())												
 
 #define	SLOW_PeerJoin()							SLOW_50s() {						\
 													ssDynamicAddressing();			\

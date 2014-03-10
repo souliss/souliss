@@ -44,6 +44,7 @@
 #define OUT2			12
 #define OUT3			11
 #define OUT4			7		
+#define	STATLED			13
 
 #define	SetInput1()			pinMode(IN1, INPUT)
 #define	SetInput2()			pinMode(IN2, INPUT)
@@ -54,6 +55,7 @@
 #define	SetRelay2()			pinMode(OUT2, OUTPUT)
 #define	SetRelay3()			pinMode(OUT3, OUTPUT)
 #define	SetRelay4()			pinMode(OUT4, OUTPUT)
+#define	SetLED()			pinMode(STATLED, OUTPUT)
 
 #define	ReadInput1(slot)	ssDigIn(IN1, Souliss_T1n_ToogleCmd, slot)	
 #define	ReadInput2(slot)	ssDigIn(IN2, Souliss_T1n_ToogleCmd, slot)	
@@ -65,9 +67,14 @@
 #define	CntRelay3(slot)		ssDigOut(OUT3, Souliss_T1n_Coil, slot)
 #define	CntRelay4(slot)		ssDigOut(OUT4, Souliss_T1n_Coil, slot)
 
+#define ToogleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
+#define	TurnOnLED()			digitalWrite(STATLED, HIGH)
+#define	TurnOffLED()		digitalWrite(STATLED, LOW)
+
 // Set the Reset and PWDN pins in DINo version 2
 #define	InitDINo()			pinMode(10, OUTPUT);					\
 							digitalWrite(10, HIGH); 				\
 							pinMode(9, OUTPUT);						\
-							digitalWrite(9, LOW)
+							digitalWrite(9, LOW);					\
+							delay(1000)
 #endif

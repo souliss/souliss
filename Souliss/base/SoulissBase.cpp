@@ -82,7 +82,8 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 
 /**************************************************************************
 /*!
-	Set the addresses of local nodes into the memory map
+	Set the addresses of local nodes into the memory map, shall be used
+	for gateway node
 */	
 /**************************************************************************/
 void Souliss_SetLocalAddress(U8 *memory_map, U16 addr)
@@ -100,6 +101,30 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 {
 	// Set the remote address of a node into the vNet
 	*(U16*)(memory_map+MaCaco_ADDRESSES_s+node*2) = addr;
+}
+
+/**************************************************************************
+/*!
+	Set an IP address and calculate automatically the vNet address, it
+	overwrite all other settings
+*/	
+/**************************************************************************/
+void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
+{
+	// Starting from IP configuration define the vNet ones
+	U8 i=0;
+	for(i=0; i<4; i++)
+	{
+		DEFAULT_BASEIPADDRESS[i]=ip_address[i];
+		DEFAULT_SUBMASK[i] = subnet_mask[i];
+		DEFAULT_GATEWAY[i] = ip_gateway[i];
+	}
+	
+	U16 vNet_address = (U16)ip_address[i-1];			// The last byte of the IP address is the vNet one
+	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
+	
+	// Set the address
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
 }
 
 /**************************************************************************
@@ -502,10 +527,9 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		return MaCaco_DATACHANGED;
 	}
 	else if(!digitalRead(pin))
-	{
 		InPin[pin] = false;
-		return MaCaco_NODATACHANGED;
-	}
+	
+	return MaCaco_NODATACHANGED;
 }
 
 /**************************************************************************
@@ -527,10 +551,9 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		return MaCaco_DATACHANGED;
 	}
 	else if(digitalRead(pin))
-	{
 		InPin[pin] = false;
-		return MaCaco_NODATACHANGED;
-	}
+	
+	return MaCaco_NODATACHANGED;
 }
 
 /**************************************************************************
@@ -586,10 +609,9 @@ U8 Souliss_DigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map, U
 		memory_map[MaCaco_IN_s + slot] = value_state2;	
 	}
 	else if(!digitalRead(pin))
-	{
 		InPin[pin] = false;
-		return MaCaco_NODATACHANGED;
-	}
+		
+	return MaCaco_NODATACHANGED;
 }
 
 
@@ -619,10 +641,9 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map
 		memory_map[MaCaco_IN_s + slot] = value_state2;
 	}
 	else if(digitalRead(pin))
-	{
 		InPin[pin] = false;
-		return MaCaco_NODATACHANGED;
-	}
+	
+	return MaCaco_NODATACHANGED;
 }
 
 /**************************************************************************

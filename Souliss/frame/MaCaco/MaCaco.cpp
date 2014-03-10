@@ -298,7 +298,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 			// In passthrough mode data from other nodes are not stored, at this time we can send out only local
 			// data, then when other nodes will send back data these will be bridged to the User Interface
-			if(rx->startoffset == MaCaco_LOCNODE) 
+			if(rx->putin == 0) 
 				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));					
 	}
 		

@@ -8,32 +8,9 @@
  	Applicable for:
 		- Light
 		- Other ON/OFF electrical appliance
-
-	CONFIGURATION IS MANDATORY BEFORE COMPILING
-	Before compiling this code, is mandatory the configuration of the framework
-	this ensure the use of proper drivers based functionalities and requested
-	communication interface.	
-	
-	Configuration files are located on /conf folder, is suggested to use this 
-	code on one of the boards listed below.	
-	
-	Run this code on one of the following boards:
-	
-		Board Conf Code			Board Model
-		0x06					KMTronic 		DINo v1	
-		0x20					KMP Electronics DINo v2
-	
-	******************** Configuration Parameters *********************
-	
-		Configuration file		Parameter
-		QuickCfg.h				#define	QC_ENABLE			0x01
-		QuickCfg.h				#define	QC_BOARDTYPE		0x06, 0x20
-
-		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01
-		QuickCfg.h				#define	DYNAMICADDRESSING	0x01
-		QuickCfg.h				#define	ETHERNETMACRAW		0x01	
 	
 ***************************************************************************/
+#include "bconf/DINo_v2_Gateway.h"			// Load QuickCfg.h configuration parameters automatically
 #include "Souliss.h"
 #include "SpeakEasy.h"						// Is a library to code easy Souliss examples
 #include <SPI.h>
@@ -62,7 +39,11 @@ void setup()
 	SetRelay2();
 	SetRelay3();
 	SetRelay4();
-
+	
+	// Set and turn ON the status LED
+	SetLED();
+	TurnOnLED();
+	
 	// Define two Simple Light logics and the relays
 	Set_SimpleLight(RELAY1);
 	Set_SimpleLight(RELAY2);

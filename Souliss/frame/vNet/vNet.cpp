@@ -620,6 +620,14 @@ void vNet_SetAddress(U16 addr, U8 media)
 {
 	vNet_Media[media-1].src_addr = addr;
 	
+	// Include debug functionalities, if required
+	#if(VNET_DEBUG)
+	// Print address  
+    VNET_LOG("(vNet)<SETADDR><|0x");
+	VNET_LOG(vNet_Media[media-1].src_addr,HEX);
+	VNET_LOG(">\r\n");
+	#endif	
+	
 	// Write address into the driver
 	switch(media)
 	{

@@ -103,7 +103,7 @@
 		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield	
 */
 /**************************************************************************/
-#if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))
+#if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))									// Define manually only in Detailed Configuration Mode
 #	define	QC_BOARDTYPE			0x00
 #endif
 /**************************************************************************/
@@ -121,7 +121,7 @@
 		
 */
 /**************************************************************************/
-#if(QC_ENABLE && !defined(GATEWAYTYPE_INSKETCH))
+#if(QC_ENABLE && !defined(GATEWAYTYPE_INSKETCH))								// Define manually only in Detailed Configuration Mode
 #	define	QC_GATEWAYTYPE			0x00
 #endif
 
@@ -136,7 +136,7 @@
         0x1         Enable	
 */
 /**************************************************************************/
-#if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
+#if(QC_ENABLE && !defined(DYNAMICADDRESSING_INSKETCH))							// Define manually only in Detailed Configuration Mode
 #	define DYNAMICADDRESSING  		0x00
 #endif
 
@@ -158,7 +158,7 @@
         0x1         Enable	
 */
 /**************************************************************************/
-#if(QC_ENABLE)						// Define manually only in Detailed Configuration Mode
+#if(QC_ENABLE && !defined(ETHERNETMACRAW_INSKETCH))								// Define manually only in Detailed Configuration Mode
 #	define ETHERNETMACRAW  		0x00
 #endif
 
@@ -203,9 +203,9 @@
 */
 /**************************************************************************/
 #if(QC_ENABLE)
-const uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0};
-const uint8_t DEFAULT_SUBMASK[] = {255, 255, 255, 0};
-const uint8_t DEFAULT_GATEWAY[] = {192, 168, 1, 1};
+uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0};
+uint8_t DEFAULT_SUBMASK[] = {255, 255, 255, 0};
+uint8_t DEFAULT_GATEWAY[] = {192, 168, 1, 1};
 #endif
 /**************************************************************************/
 /*!

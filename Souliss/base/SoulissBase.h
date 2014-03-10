@@ -64,6 +64,7 @@ U8 Souliss_GetTypicals(U8 *memory_map);
 U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 output_slot, U8 numof_slot, U8 subscr_chnl);
 U8 Souliss_CommunicationChannels(U8 *memory_map);
 void Souliss_JoinNetwork();
+void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway);
 void Souliss_SetAddressingServer(U8 *memory_map);
 void Souliss_SetDynamicAddressing();
 void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size);

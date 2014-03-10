@@ -166,14 +166,14 @@ void loop()
 		if (!(phase_fast % 31))
 		{   
 			// Get logic typicals once and at every refresh
-			Souliss_GetTypicals(memory_map, 1);
+			Souliss_GetTypicals(memory_map);
 		}
 		
 		// Execute the code every 51 time_base_fast		  
 		if (!(phase_fast % 51))
 		{   
 			// Open a communication channel with remote nodes
-			Souliss_CommunicationChannels(memory_map, 1);
+			Souliss_CommunicationChannels(memory_map);
 		}
 		
 	}
@@ -190,14 +190,7 @@ void loop()
 			Souliss_T11_Timer(memory_map, RELAY2);	
 			Souliss_T11_Timer(memory_map, RELAY3);	
 			Souliss_T11_Timer(memory_map, RELAY4);				
-		} 	
-
-		// Execute the code every 7 time_base_slow	 
-		if (!(phase_slow % 7))
-		{
-			// Refresh logic typicals
-			Souliss_RefreshTypicals();
-		}			
+		} 			
 		
 	}	
 } 

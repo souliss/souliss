@@ -306,7 +306,7 @@ private:
   inline static void initSS()    { DDRB  |=  _BV(4); };
   inline static void setSS()     { PORTB &= ~_BV(4); };
   inline static void resetSS()   { PORTB |=  _BV(4); };
-#elif defined(__AVR_ATmega32U4__) && (BOARD_MODEL == 0x20)	// KMP Electronics DINo has a not standard allocation of Chip Select pin	
+#elif defined(__AVR_ATmega32U4__) && (BOARD_MODEL == 0x08)	// KMP Electronics DINo has a not standard allocation of Chip Select pin	
   inline static void initSS()    { DDRB  |=  _BV(4); };
   inline static void setSS()     { PORTB &= ~_BV(4); };
   inline static void resetSS()   { PORTB |=  _BV(4); }; 

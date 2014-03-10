@@ -1,6 +1,16 @@
 Souliss
 Copyright (C) 2013  Veseo
 
+Release note for revision Alpha 5.0.3, on 18/12/2013
+	
+	Support for DINo v2 completed with addition of Board Configuration files contained
+	in bconf/ folder, that include automatically all the Quick Configuration parameters 
+	for that sketch, without need of user intervention of QuickConf.h file.
+			- Board Configuration files for inSketch mode added
+			- KMP Electronics DINo v2 full support completed
+			- Bugfix for IR-RGB Light, thanks to Juan Pinto
+			- Bugfix for Inputs method, thanks to Juan Luis Navarro.
+
 Release note for revision Alpha 5.0.2, on 01/12/2013
 
 	Introduction of inSketch mode, this move selected configuration parameters from the
