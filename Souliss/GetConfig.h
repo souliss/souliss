@@ -393,6 +393,34 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x41)
+#		define	ETH_W5100				1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		1
+#	elif(QC_BOARDTYPE == 0x42)
+#		define	ETH_ENC28J60			1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		1
+#	elif(QC_BOARDTYPE == 0x43)	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		1
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x00)
@@ -402,6 +430,11 @@
 #	elif(QC_GATEWAYTYPE == 0x04)
 #		define	MaCaco_USERMODE			1
 #		define HTTPSERVER  				1
+#	elif(QC_GATEWAYTYPE == 0x05)
+#		define	MaCaco_USERMODE			1
+#		define 	ARDUINO_ETHLIB			1
+#		define	ARDUINO_DHCP			1
+#		define	ARDUINO_DNS				1
 #	endif
 
 // If dynamic request is used over Ethernet, communication between Ethernet

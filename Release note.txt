@@ -1,6 +1,12 @@
 Souliss
 Copyright (C) 2013  Veseo
 
+Release note for revision Alpha 5.0.4, on 12/01/2014
+
+	Introduction of USART drivers in Quick Configuration and preliminary support
+	for Arduino Ethernet Library methods, this ensure compatibility with third
+	party libraries and doesn't affect Souliss/vNet communication.
+
 Release note for revision Alpha 5.0.3, on 18/12/2013
 	
 	Support for DINo v2 completed with addition of Board Configuration files contained

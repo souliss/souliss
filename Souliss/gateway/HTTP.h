@@ -31,7 +31,7 @@
 #define HTTP_MAXBYTES	50			// Max lenght for URL request
 #define NULLID			0xFF		// This ID value is assumed as Null
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_W5100)
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
 void HTTPServer(U8 *memory_map);
 #endif
 

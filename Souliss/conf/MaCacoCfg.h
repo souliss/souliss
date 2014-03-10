@@ -238,7 +238,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last byte of the healty for the remote nodes
 #define MaCaco_CONF_s			(MaCaco_HEALTY_f+1)								// First byte of the configuration parameters
 #define MaCaco_CONF_f			(MaCaco_CONF_s+MaCaco_CONFPARAM-1)				// Last byte of the configuration parameters
-#define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)												// First byte of the auxiliary inputs
+#define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)								// First byte of the auxiliary inputs
 #define MaCaco_AUXIN_f			(MaCaco_AUXIN_s+MaCaco_SLOT-1)					// Last byte of the auxiliary inputs
 #define MaCaco_IN_s				(MaCaco_AUXIN_f+1)								// First byte for input data
 #define MaCaco_IN_f				(MaCaco_IN_s+MaCaco_SLOT-1)						// Last  byte for input data

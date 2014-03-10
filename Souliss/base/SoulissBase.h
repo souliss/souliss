@@ -42,7 +42,7 @@
 #include "src/IEEE754/float16.h"
 #include "sensors/sensors.h"
 
-#define MAXINPIN	8		// Max number of input pins
+#define MAXINPIN	32		// Max number of input pins
 	
 /**************************************************************************/
 /*!

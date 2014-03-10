@@ -37,6 +37,47 @@ char buf[HTTP_MAXBYTES];							// Used for temporary operations
 uint8_t *buff = (uint8_t *)buf;
 uint8_t nodes, indata=0, bufferlen, data_len;		// End of HTML request
 
+/**************************************************************************/
+/*!
+	Convert number in string
+*/
+/**************************************************************************/
+void convert_num2str(uint8_t *data, uint8_t base, uint8_t *len) 
+{
+	// Convert a number into a string
+	unsigned long i = 0, n, nn;
+	
+	// Save the incoming byte
+	n = *(unsigned long*)data;
+
+	if (n == 0) 		// Print 0
+	{
+		data[0] = '0';
+		*len += 1;
+	} 
+	else				// Print other chars
+	{
+		// Save the value to convert
+		nn = n;
+		
+		while (nn > 0) 
+		{
+			i++;
+			nn /= base;
+		}
+
+		*len += i;		// Store the size
+		
+		for (; i > 0; i--)
+		{
+			data[i-1] = n % base;
+			n /= base;
+			
+			data[i-1] = (data[i-1] < 10 ? '0' + data[i-1] : 'A' + data[i-1] - 10);
+		}
+	}
+}
+
 /**************************************************************************
 /*!
 	Parse incoming HTTP GET for incoming commands

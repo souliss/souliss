@@ -96,7 +96,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define Logic_GarageDoor(slot)		Souliss_Logic_T21(memory_map, slot, &data_changed)
 #define Timer_GarageDoor(slot)		Souliss_T21_Timer(memory_map, slot)
 
-#define	Set_Windows(slot)			Souliss_SetT22(memory_map, U8 slot)
+#define	Set_Windows(slot)			Souliss_SetT22(memory_map, slot)
 #define	Logic_Windows(slot)			Souliss_Logic_T22(memory_map, slot, &data_changed)
 #define	Timer_Windows(slot)			Souliss_T22_Timer(memory_map, slot)
 

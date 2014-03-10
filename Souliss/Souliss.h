@@ -43,6 +43,8 @@
 #	include "gateway/HTTP.h"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 #	include "gateway/HTTP_uIP.h"
+#elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
+#	include	"webhook/webhook.h"
 #endif
 
 // Include IO definitions and drivers for supported hardware

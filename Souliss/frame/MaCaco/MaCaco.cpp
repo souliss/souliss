@@ -381,7 +381,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			nodes++;
 		
 		// Add the actual number of nodes on the database structure frame
-		cmd[0] = nodes;								
+		cmd[0] = nodes;					
 			
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, 0x04, cmd);
 	}
@@ -416,13 +416,30 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			U8 vNetMedia = rx->startoffset;
 			
 			// identify if there are yet devices on the same media
+			U8 nodes=0;
 			U16 nodeaddress=0x0002;
-			for(U8 nodes=0;nodes<MaCaco_NODES;nodes++)
+			for(nodes=0;nodes<MaCaco_NODES;nodes++)
 				if(vNetMedia == vNet_GetMedia(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
 					nodeaddress++;
 			
 			// define the node address
 			nodeaddress = nodeaddress + (vNet_GetAddress(vNetMedia) & vNet_GetSubnetMask(vNetMedia));
+			
+			// verify that the address isn't yet in use (as fixed address)
+			U8 tryagain=0, trying=0;
+			do
+			{
+				for(nodes=0;nodes<MaCaco_NODES;nodes++)
+				{
+					if(nodeaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+					{
+						nodeaddress++;						
+						tryagain=1;
+						trying++;
+					}
+				}	
+			} 
+			while(tryagain && (trying < MaCaco_NODES));
 			
 			// store the proposed address, will be used to identify later if the request
 			// is completed

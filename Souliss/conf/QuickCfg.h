@@ -100,7 +100,10 @@
 		0x20		KMP Electronics DINo v2
 		0x30		DFRobots XBoard Relay
 		0x31		DFRobots XBoard
-		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield	
+		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield
+		0x41		Arduino Ethernet (or Ethernet Shield) with USART 
+		0x42		Arduino with ENC28J60 Ethernet Shield and USART
+		0x43		Arduino with USART
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))									// Define manually only in Detailed Configuration Mode
@@ -110,7 +113,7 @@
 /*!
 	Select the requested gateway type (if needed), a gateway node collects
 	data from all the other in the network and make the same available to
-	external interfaces (like Androidor HTTP/JSON).
+	external interfaces.
 	        
 		Value       
         0x00        No selection (Default)
@@ -118,6 +121,7 @@
 		0x02		Not used
 		0x03		Not used
 		0x04		Gateway with additional HTTP Commander
+		0x05		Gateway with Arduino Library Compatibility
 		
 */
 /**************************************************************************/
@@ -178,7 +182,7 @@
  
 */
 /**************************************************************************/
-#if(QC_ENABLE)				
+#if(QC_ENABLE && !defined(DHTSENSOR_INSKETCH))								// Define manually only in Detailed Configuration Mode
 #	define	DHT_SENSOR				0x00
 #endif
 

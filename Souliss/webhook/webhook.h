@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss - vNet Virtualized Network
-    Copyright (C) 2012  Veseo
+	Souliss
+    Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,14 +21,38 @@
 /*!
     \file 
     \ingroup
-
 */
-/**************************************************************************/
+#ifndef WEBHOOK_H
+#define WEBHOOK_H
 
-void srvcln_setsocket(uint8_t sock);
-void srv_listen(uint16_t port);
-uint8_t srvcln_connected(uint16_t port);
-uint8_t srvcln_send(uint8_t *data, uint8_t len);
-uint8_t srvcln_dataavailable(uint16_t port);
-uint8_t srvcln_retrieve(uint8_t *data, uint8_t len);
-void srvcln_stop();
+#if(ARDUINO_ETHLIB)
+#	include "EthernetUdp.h"
+#	include "EthernetServer.h"
+#	include "EthernetClient.h"
+#	include "Ethernet.h"
+#endif
+
+#if(ARDUINO_DHCP)
+#	include "Dhcp.h"
+#endif
+
+#if(ARDUINO_DNS)
+#	include "Dns.h"
+#endif
+
+#if(ARDUINO_ETHLIB)
+#	include "EthernetUdp.cpp"
+#	include "EthernetServer.cpp"
+#	include "EthernetClient.cpp"
+#	include "Ethernet.cpp"
+#endif
+
+#if(ARDUINO_DHCP)
+#	include "Dns.cpp"
+#endif
+
+#if(ARDUINO_DNS)
+#	include "Dhcp.cpp"
+#endif
+
+#endif

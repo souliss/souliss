@@ -65,16 +65,18 @@
 /**************************************************************************/
 /*!
     Define the base socket number,
-		vNet Ethernet RAW - Use socket RAW_SOCK
-		vNet UDP/IP       - Use sockets UDP_SOCK
-		Server TCP/IP     - Use sockets SRV_SOCK1 and SRV_SOCK2
+		vNet Ethernet RAW 		 - Use socket RAW_SOCK
+		vNet UDP/IP       		 - Use sockets UDP_SOCK
+		Server/Client TCP/IP     - Use sockets SRV_SOCK1 and SRV_SOCK2
 */
 /**************************************************************************/
 #define RAW_SOCK   		0
 #define UDP_SOCK	   	1
 #define SRV_SOCK1   	2
 #define SRV_SOCK2   	3
-#define MAX_SOCK_NUM 	4
+
+#define ST_SOCK		   	2			// Starting sock number in Arduino Ethernet compatible
+									// mode
 
 /**************************************************************************/
 /*!
@@ -120,6 +122,52 @@
 #define ETH_FAIL		   0
 #define ETH_SUCCESS		   1
 
+/**************************************************************************/
+/*!
+    Arduino Ethernet Library Compatibility
+	
+	This option include class as per official Arduino Ethernet Library, this
+	allow user to customize their Souliss boards using external code developed
+	for standard Arduinos.
+	You can enable this option only for Wiznet W5100/W5200 (this include the 
+	official Arduino Ethernet Shield) and not for controller based on others,
+	even if supported in Souliss.
+		
+	Before using this option, please note the followings:
+		- The sockets number 0 and 1 are always used by vNet drivers
+		- Arduino IP configuration overrides the vNet ones
+			
+	In order to avoid misconfiguration, most of vNet methods used for IP init
+	are automatically disabled, you must use the standard Arduino ones.
+	
+	Warning: Adding the Arduino libraries will increase the amount of RAM used,
+	generally the libraries based on Arduino Ethernet library are based on ASCII
+	protocol and strings that is an additional load on RAM usage.
+	
+	Enable the general Arduino Ethernet Classes
+	
+		Value       ARDUINO_ETHLIB
+        0x0         Disable (Default)
+        0x1         Enable
+		
+	Enable the DHCP support	
+		
+		Value       ARDUINO_DHCP
+        0x0         Disable (Default)
+        0x1         Enable
+
+	Enable the DNS support	
+		
+		Value       ARDUINO_DNS
+        0x0         Disable (Default)
+        0x1         Enable			
+*/
+/**************************************************************************/
+#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#	define 	ARDUINO_ETHLIB		0x0
+#	define	ARDUINO_DHCP		0x0
+#	define	ARDUINO_DNS			0x0
+#endif
 /**************************************************************************/
 /*!
     IP Base Configuration 
