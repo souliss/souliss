@@ -25,8 +25,52 @@
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 
+// Arduino Mega 2560
+#    define SPI0_SS_BIT              BIT0        // Not required, must be set as output             
+#    define SPI0_SS_DDR              DDRB
+#    define SPI0_SS_PORT             PORTB
+#    define SPI0_SCLK_BIT            BIT1         // ATmega2560 PB1 - In ICSP     
+#    define SPI0_SCLK_DDR            DDRB
+#    define SPI0_SCLK_PORT           PORTB
+#    define SPI0_MOSI_BIT            BIT2        // ATmega2560 PB2 - In ICSP
+#    define SPI0_MOSI_DDR            DDRB
+#    define SPI0_MOSI_PORT           PORTB
+#    define SPI0_MISO_BIT            BIT3        // ATmega2560 PB3 - In ICSP
+#    define SPI0_MISO_DDR            DDRB
+#    define SPI0_MISO_PORT           PORTB
+
+// Chip select
+#    define ENC28J60_CS_BIT      	BIT4        // ATmega2560 PB4 - Arduino pin 10   
+#    define ENC28J60_CS_DDR         DDRB
+#    define ENC28J60_CS_PORT        PORTB
+
+#    define SPI0_Init()    DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT;\
+                                        DDRB  &= ~SPI0_MISO_BIT;\
+                                        PORTB = SPI0_SS_BIT
+										
 #elif defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__)
 
+// Standard ATmega644
+#	define SPI0_SS_BIT              BIT4		// Not required used as CS  
+#	define SPI0_SS_DDR              DDRB
+#	define SPI0_SS_PORT             PORTB
+#	define SPI0_SCLK_BIT            BIT7     	// ATmega644 PB7 - 644 pin 7         
+#	define SPI0_SCLK_DDR            DDRB
+#	define SPI0_SCLK_PORT           PORTB
+#	define SPI0_MOSI_BIT            BIT5        // ATmega644  PB5 - 644 pin 5    
+#	define SPI0_MOSI_DDR            DDRB
+#	define SPI0_MOSI_PORT           PORTB
+#	define SPI0_MISO_BIT            BIT6        // ATmega644  PB6 - 644 pin 6    
+#	define SPI0_MISO_DDR            DDRB
+#	define SPI0_MISO_PORT           PORTB
+
+#	define ENC28J60_CS_BIT          BIT4        // ATmega328  PB2 - 644 pin 4   
+#	define ENC28J60_CS_DDR          DDRB
+#   define ENC28J60_CS_PORT         PORTB
+
+#	define SPI0_Init()	DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT;\
+										DDRB  &= ~SPI0_MISO_BIT;\
+										PORTB = SPI0_SS_BIT
 #elif defined(__AVR_ATmega32U4__)
 // Arduino Leonardo and ATmega32U4 boards
 #	define SPI0_SS_BIT              BIT0		// Not required, must be set as output             
@@ -87,19 +131,8 @@
 										DDRB  &= ~SPI0_MISO_BIT;\
 										PORTB = SPI0_SS_BIT
 #endif
-/*
-#define SPI0_WaitForReceive()
-#define SPI0_RxData()				(SPDR)
 
-#define SPI0_TxData(Data)			(SPDR = Data)
-#define SPI0_WaitForSend()			while( (SPSR & 0x80)==0x00 )        
-
-#define SPI0_SendByte(Data)			SPI0_TxData(Data);SPI0_WaitForSend()
-#define SPI0_RecvByte()				SPI0_RxData()
-*/
 #define ENC28J60_SpiInit			SPI0_Init
-//#define ENC28J60_SpiSendData		SPI0_SendByte
-//#define ENC28J60_SpiRecvData		SPI0_RxData
 
 #define ENC28J60_CSInit()			(ENC28J60_CS_DDR  |= ENC28J60_CS_BIT)
 #define ENC28J60_CSon()				(ENC28J60_CS_PORT |= ENC28J60_CS_BIT)

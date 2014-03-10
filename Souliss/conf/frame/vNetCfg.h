@@ -186,6 +186,9 @@
 #define VNET_ADDR_L_M5	   	0xCE00			// vNet Low Address for Media 5,  size 4 byte
 #define VNET_ADDR_H_M5	   	0xFDFF			// vNet High Address for Media 5, size 4 byte
 
+#define	VNET_ADDR_NULL		0xFF00			// This is a NULL address, frames to that address are discarded
+#define	VNET_ADDR_BRDC		0xFFFF			// This is a BROADCAST address
+
 const U16 vnet_addr_l[VNET_MEDIA_NUMBER] = {VNET_ADDR_L_M1,  // Media 1
 											VNET_ADDR_L_M2,  // Media 2
 											VNET_ADDR_L_M3,  // Media 3

@@ -25,8 +25,6 @@
 */
 /**************************************************************************/
 
-#define	uIP_DELAY	1
-
 void srv_listen(uint16_t port);
 void srv_unlisten(uint16_t port);
 uint8_t srvcln_getsocket(uint16_t port);

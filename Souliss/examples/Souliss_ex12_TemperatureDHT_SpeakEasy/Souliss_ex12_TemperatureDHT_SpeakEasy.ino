@@ -13,16 +13,12 @@
         0x03        			Arduino Ethernet (W5100) 
 		0x04					Arduino with Ethernet Shield (W5100)
 		0x05					Arduino with ENC28J60 Ethernet Shield	
-
-		Sensor Conf
-		0x01				Temperature and humidity DHT11, DHT21, DHT22
 		
 	******************** Configuration Parameters *********************
 	
 		Configuration file		Parameter
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x03, 0x04, 0x05
-		QuickCfg.h				#define	DHT_SENSOR			0x01
 
 		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01
 		

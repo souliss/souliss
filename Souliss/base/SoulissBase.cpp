@@ -585,6 +585,33 @@ U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory
 
 /**************************************************************************
 /*!
+	Link an hardware pin to the shared memory map, use with latched two state
+	pushbutton, active on falling edge
+*/	
+/**************************************************************************/
+U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot)
+{
+	// If pin is off, set the "value"
+	if(digitalRead(pin)==0 && !InPin[pin])
+	{
+		memory_map[MaCaco_IN_s + slot] = value_state_on;
+	 
+		InPin[pin] = true;
+		return MaCaco_DATACHANGED;
+	}
+	else if(digitalRead(pin) && InPin[pin])
+	{
+		memory_map[MaCaco_IN_s + slot] = value_state_off;
+	 
+		InPin[pin] = false;
+		return MaCaco_DATACHANGED;
+	}
+	 
+	return MaCaco_NODATACHANGED;
+}
+
+/**************************************************************************
+/*!
 	Link an hardware pin to the shared memory map, active on rising edge
 	Identify two states, press and hold.
 */	

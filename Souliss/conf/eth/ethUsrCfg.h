@@ -47,7 +47,7 @@
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
 #	define ETH_W5100  		0
 #	define ETH_W5200  		0
-#	define ETH_ENC28J60  	1
+#	define ETH_ENC28J60  	0
 #	define WIFI_MRF24		0
 #endif
 /**************************************************************************/
@@ -58,7 +58,6 @@
 /**************************************************************************/
 #define ETH_PORT   		230					// Port for vNet nodes
 #define USR_PORT   		23000				// Port for vNet user
-#define ETH_JSON   		80					// Port for HTTP/JSON server
 #define ETH_HTTP   		80					// Port for HTTP server
 #define ETH_MODBUS 		502					// Port for Modbus server
 
@@ -68,6 +67,7 @@
 		vNet Ethernet RAW 		 - Use socket RAW_SOCK
 		vNet UDP/IP       		 - Use sockets UDP_SOCK
 		Server/Client TCP/IP     - Use sockets SRV_SOCK1 and SRV_SOCK2
+		Virtual RAM on W5x00	 - Use socket SRV_SOCK2
 */
 /**************************************************************************/
 #define RAW_SOCK   		0
@@ -76,8 +76,8 @@
 #define SRV_SOCK2   	3
 
 #define ST_SOCK		   	2			// Starting sock number in Arduino Ethernet compatible
-									// mode
-
+									// mode								
+									
 /**************************************************************************/
 /*!
     User Interface Mode

@@ -30,13 +30,13 @@
 
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
-
+/*
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
 #	include "gateway/HTTP.h"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 #	include "gateway/HTTP_uIP.h"
 #endif
-
+*/
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.h"
 #include "src/IEEE754/float16.h"

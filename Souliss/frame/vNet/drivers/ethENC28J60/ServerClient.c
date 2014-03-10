@@ -59,7 +59,7 @@ void srv_unlisten(uint16_t port)
 /**************************************************************************/
 uint8_t srvcln_getsocket(uint16_t port)
 {
-	// Look for an estabilished connection
+	// Look for an established connection
 	for(U8 sock=0;sock<MAX_SOCK_NUM;sock++)
 		if(uip_conns[sock].lport == HTONS(port) && (uip_conns[sock].tcpstateflags == ESTABLISHED))
 			return sock;	// Return the used socket number
@@ -137,7 +137,7 @@ void srvcln_load(uint8_t *data, uint8_t len)
 /**************************************************************************/
 /*!
 	Prepare data sending for a server connection, verify that the connection
-	is estabilished before sent the data mode
+	is established before send the data mode
 */
 /**************************************************************************/
 void srv_send(uint8_t sock, uint8_t mode) 

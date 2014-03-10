@@ -32,51 +32,13 @@
 
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
 
+#include "ASCIItools.c"
+
 String incomingURL = String(HTTP_MAXBYTES);			// The GET request is stored in incomingURL
 char buf[HTTP_MAXBYTES];							// Used for temporary operations
 uint8_t *buff = (uint8_t *)buf;
 uint8_t nodes, indata=0, bufferlen, data_len;		// End of HTML request
 
-/**************************************************************************/
-/*!
-	Convert number in string
-*/
-/**************************************************************************/
-void convert_num2str(uint8_t *data, uint8_t base, uint8_t *len) 
-{
-	// Convert a number into a string
-	unsigned long i = 0, n, nn;
-	
-	// Save the incoming byte
-	n = *(unsigned long*)data;
-
-	if (n == 0) 		// Print 0
-	{
-		data[0] = '0';
-		*len += 1;
-	} 
-	else				// Print other chars
-	{
-		// Save the value to convert
-		nn = n;
-		
-		while (nn > 0) 
-		{
-			i++;
-			nn /= base;
-		}
-
-		*len += i;		// Store the size
-		
-		for (; i > 0; i--)
-		{
-			data[i-1] = n % base;
-			n /= base;
-			
-			data[i-1] = (data[i-1] < 10 ? '0' + data[i-1] : 'A' + data[i-1] - 10);
-		}
-	}
-}
 
 /**************************************************************************
 /*!
@@ -106,25 +68,16 @@ void HTTPServer(U8 *memory_map)
 				
 			srvcln_retrieve(buff, data_len);	
 				
-			// Flag the incoming data
-			indata=1;
-			
 			// Move data into a string for parsing
 			incomingURL = "";
-			for(U8 i=0;i<data_len;i++)
-			{
-				// Stop at next space after GET
-				if(incomingURL.startsWith("GET /") && buf[i] == 32)
-					break;
-					
+			for(U8 i=0;i<data_len;i++)						
 				incomingURL = incomingURL + buf[i];	
-			}
+		
+			// Flag the incoming data and quit
+			indata=1;
 		}	
 		else
-		{
-			// Empty the controller buffer and discard the data
-			srvcln_retrieve(buff, HTTP_MAXBYTES);
-		}	
+			srvcln_stop();				// Stop the socket, it will be restarted at next iteration
 	}	
 	
 	// Parse the incoming data

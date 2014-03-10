@@ -28,9 +28,7 @@
 #include "GetConfig.h"			// need : hwSensors.h
 
 // Include drivers for DHT11, DHT21, DHT22
-#if(DHT_SENSOR == 0x01)					
-#	include "sensors/src/DHT/DHT.h"	
-#	include "sensors/src/DHT/SoulissDHT.h"
-#endif
+#include "sensors/src/DHT/DHT.h"	
+#include "sensors/src/DHT/SoulissDHT.h"
 
 #endif

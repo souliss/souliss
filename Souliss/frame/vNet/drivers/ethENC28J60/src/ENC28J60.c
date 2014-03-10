@@ -28,6 +28,8 @@
 #include "Arduino.h"  //all things wiring / arduino
 #include "spi.h"
 
+#include "vram_ENC28J60.c"	// Use part of the RAM for data storage
+
 static uint8_t Enc28j60Bank;
 static uint16_t gNextPacketPtr;
 
@@ -93,6 +95,9 @@ static word enc28j60ReadBufferWord() {
 
 void enc28j60WriteBuffer(uint16_t len, uint8_t* data)
 {
+	if(len >= (MAX_FRAMELEN))
+		return;
+
     enableChip();
     sendSPI(ENC28J60_WRITE_BUF_MEM);
     while (len--)

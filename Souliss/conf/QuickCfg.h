@@ -109,6 +109,7 @@
 #if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))									// Define manually only in Detailed Configuration Mode
 #	define	QC_BOARDTYPE			0x00
 #endif
+
 /**************************************************************************/
 /*!
 	Select the requested gateway type (if needed), a gateway node collects
@@ -118,15 +119,30 @@
 		Value       
         0x00        No selection (Default)
 		0x01		Gateway
-		0x02		Not used
-		0x03		Not used
-		0x04		Gateway with additional HTTP Commander
-		0x05		Gateway with Arduino Library Compatibility
+		0x02		Gateway and Data Persistance
+		0x03		Gateway with Arduino Ethernet Library Compatibility
+		0x04		Gateway with Arduino Ethernet Library Compatibility and Data Persistance
 		
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(GATEWAYTYPE_INSKETCH))								// Define manually only in Detailed Configuration Mode
 #	define	QC_GATEWAYTYPE			0x00
+#endif
+
+/**************************************************************************/
+/*!
+	Select the interfaces for data retrieving, those can be used either on
+	gateway or peer nodes.
+	
+		Value
+        0x00        No selection (Default)
+		0x01		HTTP Command Parser
+		0x02		openHAB HTTP XML Interface
+		
+*0
+/**************************************************************************/
+#if(QC_ENABLE && !defined(INTERFACE_INSKETCH))								// Define manually only in Detailed Configuration Mode
+#	define	QC_INTERFACE		0x00
 #endif
 
 /**************************************************************************/
@@ -141,7 +157,7 @@
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(DYNAMICADDRESSING_INSKETCH))							// Define manually only in Detailed Configuration Mode
-#	define DYNAMICADDRESSING  		0x00
+#	define DYNAMICADDRESSING  		0x01
 #endif
 
 /**************************************************************************/
@@ -164,26 +180,6 @@
 /**************************************************************************/
 #if(QC_ENABLE && !defined(ETHERNETMACRAW_INSKETCH))								// Define manually only in Detailed Configuration Mode
 #	define ETHERNETMACRAW  		0x00
-#endif
-
-/**************************************************************************/
-/*!
-	Select the sensor used to include automatically proper drivers, multiple
-	selection is allowed.
-	        
-		Value       
-        0x00        No selection (Default)
-		0x01		Selected
- 
-	List of available sensors and relevant description,
-		
-		Name		Description
-		DHT_SENSOR	Temperature and humidity DHT11, DHT21, DHT22
- 
-*/
-/**************************************************************************/
-#if(QC_ENABLE && !defined(DHTSENSOR_INSKETCH))								// Define manually only in Detailed Configuration Mode
-#	define	DHT_SENSOR				0x00
 #endif
 
 /**************************************************************************/

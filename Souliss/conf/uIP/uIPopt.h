@@ -57,10 +57,6 @@
 #ifndef __UIPOPT_H__
 #define __UIPOPT_H__
 
-#ifndef MaCaco_EXTENDED_MAP
-#define	MaCaco_EXTENDED_MAP	1
-#endif
-
 /*------------------------------------------------------------------------------*/
 /**
  * \defgroup uipopttypedef uIP type definitions
@@ -108,6 +104,22 @@ typedef unsigned short uip_stats_t;
  *
  * All of these should be changed to suit your project.
 */
+
+/**
+ * Determines the number of idle milliseconds while processing
+ * a socket.
+ *
+ * \hideinitializer
+ */
+#define	uIP_DELAY		1
+
+/**
+ * Determines the maximum number of TCP socket and UDP instace 
+ * that runs over uIP
+ *
+ * \hideinitializer
+ */
+#define MAX_SOCK_NUM 	4				
 
 /**
  * Determines if uIP should use a fixed IP address or not.
@@ -268,8 +280,11 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_RECEIVE_WINDOW   100
-
+#if(QC_GATEWAYTYPE == 0x02) 
+#	define UIP_RECEIVE_WINDOW   360
+#else
+#	define UIP_RECEIVE_WINDOW   120	
+#endif
 /**
  * Determines if support for TCP urgent data notification should be
  * compiled in.
@@ -363,9 +378,13 @@ typedef unsigned short uip_stats_t;
  * \hideinitializer
  */
 
-#define UIP_BUFSIZE     	160
-#define UIP_PAYLOADSIZE     120
-
+#if(QC_GATEWAYTYPE == 0x02)  
+#	define UIP_BUFSIZE 	    	400
+#	define UIP_PAYLOADSIZE    	360
+#else
+#	define UIP_BUFSIZE	     	160
+#	define UIP_PAYLOADSIZE     	120
+#endif
 
 /**
  * Determines if statistics support should be compiled in.

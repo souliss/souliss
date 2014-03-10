@@ -43,13 +43,15 @@
 	
 	// Driver for Microchip MRF2WB0MA
 	#if (WIFI_MRF24)
-		#include "drivers/wifiMRF24/vNetDriver_eth.h"	
+		#include "drivers/ethMRF24/vNetDriver_eth.h"	
 	#endif
 	
 #endif
 
 #if (VNET_MEDIA2_ENABLE)
-	#include "drivers/chibi/vNetDriver_chibi.h"	
+	#if(CHIBI_AT86RF230)
+		#include "drivers/chibi/vNetDriver_chibi.h"	
+	#endif	
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)

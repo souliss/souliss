@@ -55,4 +55,5 @@ U8 MaCaco_getnumberof();
 U8 MaCaco_getdatain();
 U16 MaCaco_getdatabuffer();
 U8 MaCaco_IsSubscribed();
+U8 MaCaco_InternalSubcription();
 #endif

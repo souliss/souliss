@@ -1,6 +1,18 @@
 Souliss
 Copyright (C) 2013  Veseo
 
+Release note for revision Alpha 5.1, on 09/03/2014
+	
+	The introduction of PERSISTANCE and LASTIN modes makes a gateway node
+	able to provide data to external sources using polling protocols.
+	External protocols are now referred as Interfaces and are available either
+	on gateway as peer nodes.
+			- Introduced openHAB interface based on HTTP/XML (thanks to Fulvio Spelta)
+			- The INTERFACES takes place of HTTP and Modbus GATEWAY
+			- The INTERFACES is now handled directly on MaCaco and has PERSISTANCE and
+				LASTIN modes available
+			- Bugfix for USART over RS485 (thanks to Marco Pozzuolo and Juan Pinto)	
+
 Release note for revision Alpha 5.0.4, on 12/01/2014
 
 	Introduction of USART drivers in Quick Configuration and preliminary support

@@ -318,6 +318,17 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			subscr_putin[i] = rx->putin;
 			subscr_startoffset[i] = rx->startoffset;
 			subscr_numberof[i] = rx->numberof;
+			
+			// If the number of nodes wasn't specified
+			if(!(rx->numberof) && (rx->funcode == MaCaco_STATEREQ))
+			{
+				// Count the number of nodes
+				U8 nodes = 0;	
+				while(((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
+					nodes++;
+					
+				subscr_numberof[i] = nodes;	
+			}
 		}
 		else
 			return MaCaco_ERR85;
@@ -382,7 +393,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 		// Add the actual number of nodes on the database structure frame
 		cmd[0] = nodes;					
-			
+		
+		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, 0x04, cmd);
 	}
 	#endif
@@ -623,17 +635,24 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Typical logic answer
 		#if(MaCaco_USERMODE)
 		case(MaCaco_TYPANS) :
-			// This information is just redirected to the User Interface
+			// This information is redirected to the User Interface and stored
+			// only if data persistance is activated
 				
 			// Identify the node index
 			U8 nodeindex;
 			for(nodeindex=MaCaco_LOCNODE+1; nodeindex<MaCaco_NODES ; nodeindex++)
 				if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 					break;
-				
+			
+			// Data persistance is active, store information
+			#if(MaCaco_PERSISTANCE)
+			if(rx->numberof)
+				memmove((memory_map+MaCaco_P_TYP_s+(nodeindex*MaCaco_TYPLENGHT)), rx->data, rx->numberof);
+			#endif
+			
 			if(reqtyp_addr)		// If there is a stored address from a User Interface
 				MaCaco_send(reqtyp_addr, MaCaco_TYPANS, reqtyp_putin, nodeindex, rx->numberof, rx->data);								
-			
+
 		break;
 		#endif
 		
@@ -661,18 +680,28 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				for(nodeindex=1; nodeindex<MaCaco_NODES ; nodeindex++)
 					if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 						break;
+
+				#if(MaCaco_PERSISTANCE)		// PERSISTANCE is active, store information
+				if(rx->numberof)
+					memmove((memory_map+MaCaco_P_OUT_s+(nodeindex*MaCaco_OUTLENGHT)), rx->data, rx->numberof);
+				#elif(MaCaco_LASTIN)		// LASTIN is active, store the last information
+					memmove((memory_map+MaCaco_L_MEM_s), rx->data, rx->numberof);
 					
+					if(MaCaco_OUTLENGHT - rx->numberof)
+						memset((memory_map+MaCaco_L_MEM_s), 0x00, (MaCaco_OUTLENGHT - rx->numberof));
+				#endif
+						
 				// Send the data to all subscribers
 				MaCaco_PassThrough_subAnswer(nodeindex, rx->numberof, rx->data);
 				
 				return MaCaco_FUNCODE_OK;
 			}	
-			else					// This flag data subscribed for local use
+			else	// This flag data subscribed for local use
 			{
 				if ((rx->putin >= &memory_map[MaCaco_WRITE_s] && rx->putin <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
 					memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address
 				else
-					return MaCaco_FUNCODE_ERR;
+					return MaCaco_FUNCODE_ERR;				
 			}			
 				
 			return MaCaco_FUNCODE_OK;
@@ -683,8 +712,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		default :
 			if ((rx->putin >= &memory_map[MaCaco_WRITE_s] && rx->putin <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
 				memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address			
-
 			return MaCaco_FUNCODE_OK;
+			
 		break;
 		}	
 	}	
@@ -750,16 +779,26 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 			status = MaCaco_NODATARECEIVED;
 	}
 
-	// if there was a change in the memory map, send data to subscriptors
+	// if there was a change in the memory map
 	if (*data_chg == MaCaco_DATACHANGED)
+	{
+		#if(MaCaco_PERSISTANCE)			// PERSISTANCE is active, store data
+			memmove((memory_map+MaCaco_P_TYP_s), (memory_map+MaCaco_TYP_s), MaCaco_SLOT);		
+			memmove((memory_map+MaCaco_P_OUT_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
+		#elif(MaCaco_LASTIN)			// LOCALIN is active, store data
+			memmove((memory_map+MaCaco_L_MEM_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);	
+		#endif
+	
+		// send data to all subscriptors
 		status = MaCaco_UserMode_subAnswer(memory_map, data_chg);	
+	}	
 		
 	return status;	
 }
 
 /**************************************************************************/
 /*!
-    Senda data to all subscribers nodes, when working in PassThrough UserMode
+    Send data to all subscribers nodes, when working in PassThrough UserMode
 */
 /**************************************************************************/
 U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
@@ -804,7 +843,7 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 
 /**************************************************************************/
 /*!
-    Senda data to all subscribers nodes, when working in UserMode
+    Send data to all subscribers nodes, when working in UserMode
 */
 /**************************************************************************/
 U8 MaCaco_UserMode_subAnswer(U8* memory_map, U8* data_chg)
@@ -878,7 +917,7 @@ U8 MaCaco_reqtyp()
 /**************************************************************************/
 /*!
     Activate a subscription on remote device, send periodically subscription
-	request based on communication healty. At first run, healty value should
+	request based on communication healthy. At first run, healthy value should
 	be greater than MaCaco_SUBSCRHEALTY.
 	
 	For each subscripted device, an unique subscribe_addr (starting from 0x00)
@@ -1024,4 +1063,50 @@ U8 MaCaco_IsSubscribed()
 	// returns subscription state
 	return (subscr_addr[i]!=0);	
 	
+}
+
+
+/**************************************************************************/
+/*!
+    Record an internal subscription
+		
+		Using this method the gateway starts to subscribe all the peers
+		if the PERSISTANCE mode is active, those data are stored in the
+		gateway and became available for external protocols.
+		
+		If any full compliant MaCaco User Mode Interface is used, this
+		method isn't longer required, because the subscription for the user
+		interface is also used for external protocols.
+*/
+/**************************************************************************/
+U8 MaCaco_InternalSubcription()
+{
+	/** Create a permanent data subscription **/
+
+	// look for the subscription channel
+	U8 i = 0;
+	while((subscr_addr[i] != VNET_ADDR_NULL) && (subscr_addr[i] != 0x0000) && (i < MaCaco_INMAXSUBSCR))
+		i++;
+			
+	// Store the subscription data
+	if(i < MaCaco_INMAXSUBSCR)
+	{
+		subscr_addr[i]  = VNET_ADDR_NULL;
+		subscr_funcode[i] = MaCaco_STATEREQ;
+		subscr_putin[i] = 0x00;
+		subscr_startoffset[i] = 0x00;		
+		subscr_numberof[i] = MaCaco_NODES;
+	}
+	
+	/** Create a one time request for typicals logics values **/
+
+	// Record the request info
+	reqtyp_addr = VNET_ADDR_NULL;	
+	reqtyp_putin = 0x00;
+	reqtyp_startoffset = 0x00;
+	reqtyp_numberof = MaCaco_SLOT;
+				
+	// Flag that the request shall be processed for all nodes, this is used at an upper level
+	reqtyp_times = MaCaco_NODES;		
+			
 }

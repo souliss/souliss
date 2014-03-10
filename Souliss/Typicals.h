@@ -28,6 +28,12 @@
 #include "src/types.h"
 
 // Defines for Typicals
+#define	Souliss_T1n						0x10			// Typicals Group 0x10
+#define	Souliss_T2n						0x20			// Typicals Group 0x20
+#define	Souliss_T3n						0x30			// Typicals Group 0x30
+#define	Souliss_T4n						0x40			// Typicals Group 0x40
+#define	Souliss_T5n						0x50			// Typicals Group 0x50
+
 #define Souliss_T11						0x11			// ON/OFF Digital Output with Timer Option
 #define Souliss_T12						0x12			// ON/OFF Digital Output with AUTO mode
 #define Souliss_T13						0x13			// Digital Input Value
@@ -42,7 +48,7 @@
 #define Souliss_T32						0x32			// Air Conditioner
 #define Souliss_T41						0x41			// Anti-theft integration (Main)
 #define Souliss_T42						0x42			// Anti-theft integration (Peer)
-#define Souliss_T51						0x51
+#define Souliss_T51						0x51			
 #define Souliss_T52						0x52
 #define Souliss_T53						0x53
 #define Souliss_T54						0x54
@@ -282,6 +288,3 @@ void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ);
 #define Souliss_Logic_T59 Souliss_Logic_T51
 
 #endif
-
-
-

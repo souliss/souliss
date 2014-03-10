@@ -62,9 +62,8 @@ void vNet_callback()
 			// Set pointer and lenght to send data
 			uip_send((uint8_t*)(&vNetM1_oFrame), oFrame_GetLenght());
 		
-			// Flag that send is requested and empty the buffer
+			// Flag that send is requested
 			uip_conn->appstate &= ~SENDDATA;
-			//outframe.datalen = 0;
 		}
 		else if(uip_conn->appstate & CLOSECLIENT)
 			uip_flags = UIP_CLOSE;
@@ -83,7 +82,6 @@ void vNet_callback()
 		// Reset the connection and the data buffer
 		uip_conn->appstate = RESET;
 		oFrame_Reset();
-		//outframe.datalen = 0;
 	}
 	
 }

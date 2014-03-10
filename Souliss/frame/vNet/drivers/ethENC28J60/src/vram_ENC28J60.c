@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss - vNet Virtualized Network
-    Copyright (C) 2011  Veseo
+	Souliss - Virtual RAM
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,55 +24,70 @@
 
 */
 /**************************************************************************/
-#ifndef USART_CFG_H
-#define USART_CFG_H
 
 /**************************************************************************/
 /*!
-	Select USART Baud Rate for wire communication, lower baud rate help over
-	longer distances rather higher ones help in lower collision rate.
-
-	Never select more than one driver per time
-	        
-		Value       Media
-        0x0         Disable (Default)
-        0x1         Enable
-	
-		USART_BAUD9k6		-  USART at 9600   bps
-		USART_BAUD19k2		-  USART at 19200  bps
-		USART_BAUD115k2		-  USART at 115200 bps
+    This library is designed to use part of the ENC28J60 RAM as extension of
+	the data space of the microcontroller
 */
 /**************************************************************************/
-#define USART_BAUD9k6			1
-#define USART_BAUD19k2			0
-#define USART_BAUD115k2			0
+
+#include "ENC28J60.h"
+#include "spi.h"
+
 
 /**************************************************************************/
 /*!
-	Select the transmission enable pin of the transceiver (if any)
-	        
-		Value       Media
-        0x0         Disable (Default)
-        0x1         Enable
-	
-		USART_TXENABLE		-  If enabled, the TXENPIN is used before transmitting
-		USART_TXENPIN		-  The pin connected to driver
+	Init the chip
 */
 /**************************************************************************/
-#define USART_TXENABLE			0
-#define USART_TXENPIN			3
+#define vram_init()	;
 
 /**************************************************************************/
 /*!
-	If enabled print the header and payload of incoming, outgoing and routed
-	frames.
-	
-        Value       Status
-        0x0         Disable (Default)
-        0x1         Enable
+	Write data into the chip
 */
 /**************************************************************************/
-#define USART_DEBUG  			0
+void vram_write(U8 pointer, U8 *data, U8 len)
+{
+	// Check the lenght
+	if(len >= vramBUF_len)
+		return;
+		
+	// Set the write pointer to start of transmit buffer area
+	enc28j60WriteWord(EWRPTL, vramBUF_start + pointer);
 
-#endif
-							  
+	// Load data into the ENC28J60 RAM
+	enc28j60WriteBuffer(len, data);
+}
+
+/**************************************************************************/
+/*!
+	Read data from the chip
+*/
+/**************************************************************************/
+U8 vram_read(U8 pointer)
+{
+	U8 data;
+	
+	// Set the write pointer to start of transmit buffer area
+	enc28j60WriteWord(ERDPTL, vramBUF_start + pointer);
+
+	// Read a byte
+	enc28j60ReadBuffer(1, &data);
+	return data;
+}
+
+/**************************************************************************/
+/*!
+	Read multiple bytes of data from the chip
+*/
+/**************************************************************************/
+void vram_read(U8 pointer, U8 *data, U8 len)
+{
+	// Set the write pointer to start of transmit buffer area
+	enc28j60WriteWord(ERDPTL, vramBUF_start + pointer);
+
+	// Read bytes
+	enc28j60ReadBuffer(len, data);
+}

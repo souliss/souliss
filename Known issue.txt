@@ -1,12 +1,5 @@
-Souliss Home Automation
+Souliss
 Copyright (C) 2012  Veseo
-
-	Modbus and HTTP Protocol
-		
-		Due to a new data structure the Modbus and HTTP code has been modified to work with 
-		release Alpha 5, actually those new lines of code hasn't been yet involved into a test.
-		
-		Modbus is deprecated starting from release A5.0.2, HTTP commands lines is still available.
 
 	Drivers for Microchip ENC28J60 in MACRAW Mode
 		

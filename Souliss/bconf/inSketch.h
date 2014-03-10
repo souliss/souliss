@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss 
+	Souliss Home Automation
     Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify
@@ -22,9 +22,13 @@
     \file 
     \ingroup
 */
+#ifndef bconf_ssGTW_H
+#define bconf_ssGTW_h
 
-#include "sensors.h"
-#include "GetConfig.h"			// need : hwSensors.h
+// List QuickCfg.h parameters that want to be configured from the sketch, values
+// shall be inserted into the sketch
+#define	BOARDTYPE_INSKETCH
+#define GATEWAYTYPE_INSKETCH
+#define INTERFACE_INSKETCH
 
-// Include drivers for DHT11, DHT21, DHT22
-#include "sensors/src/DHT/DHT.cpp"
+#endif

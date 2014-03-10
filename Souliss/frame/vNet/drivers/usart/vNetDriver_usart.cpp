@@ -38,11 +38,14 @@
 #define	waitBusFree()	delay((myaddress-VNET_ADDR_L_M5)*USART_TOKEN_TIME)
 
 #if (USART_DEBUG)
+	#include "SoftwareSerial.h"
+	extern SoftwareSerial myUSARTDRIVER; // RX, TX
+	
 	#define USART_LOG 	myUSARTDRIVER.print
 #endif
 
 // The name of the class that refers to the USART, change it accordingly to the used device
-#ifndef(USARTDRIVER_INSKETCH)
+#ifndef USARTDRIVER_INSKETCH
 #	define	USARTDRIVER	Serial				
 #endif
 
@@ -63,6 +66,7 @@ void vNet_Init_M5()
 	// Set the write mode pin of the RS485
 	#if(USART_TXENABLE)
 	pinMode(USART_TXENPIN, OUTPUT);
+	digitalWrite(USART_TXENPIN, LOW);
 	#endif
 }
 
@@ -96,11 +100,6 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	// Check message lenght
 	if ((len == 0) || (len >= USART_MAXPAYLOAD))
 		return USART_FAIL;
-
-	// Set the write mode pin of the RS485
-	#if(USART_TXENABLE)
-	digitalWrite(USART_TXENPIN, HIGH);
-	#endif
 	
 	// Check if the bus is free
 	if(!isBusFree() && !isBusRecv())
@@ -112,10 +111,21 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		// The bus was used recently, if not yet in use try to get it
 		if(!USARTDRIVER.available())
 		{	
+			// Set the write mode pin of the RS485
+			#if(USART_TXENABLE)
+			digitalWrite(USART_TXENPIN, HIGH);
+			#endif
+	
 			// Send a token to notify that we are willing to use the bus
 			for(i=0; i<USART_TOKEN_LENGHT; i++)
 				USARTDRIVER.write(USART_TOKEN);	
+			USARTDRIVER.flush();					// Wait data send
 			
+			// Set the write mode pin of the RS485
+			#if(USART_TXENABLE)
+			digitalWrite(USART_TXENPIN, LOW);
+			#endif
+				
 			// Wait for a given number of token times before proceed,
 			// nodes with lower address has major priority.
 			// This is a collision avoidance with fixed priority, in
@@ -147,6 +157,11 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	#if(USART_DEBUG)	
 	USART_LOG("(USART)<Send> Bus free\r\n");
 	#endif	
+
+	// Set the write mode pin of the RS485
+	#if(USART_TXENABLE)
+	digitalWrite(USART_TXENPIN, HIGH);
+	#endif
 	
 	// Send the preamble
 	for(i=0; i<USART_PREAMBLE_LEN; i++)
@@ -154,9 +169,9 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		
 	// Start sending the data
 	oFrame_Define(frame);
-	USARTDRIVER.write(oFrame_GetLenght()+USART_HEADERLEN+USART_CRCLEN);			// The total size is the frame_size + 
+	USARTDRIVER.write(oFrame_GetLenght()+USART_HEADERLEN+USART_CRCLEN);		// The total size is the frame_size + 
 																			// the lenght_as_header + the crc
-	
+																			
 	while(oFrame_Available())					// Send the frame	
 	{	
 		// Get the next byte to send
@@ -187,7 +202,8 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	// Send postamble
 	for(i=0; i<USART_POSTAMBLE_LEN; i++)
 		USARTDRIVER.write(USART_POSTAMBLE);
-	
+	USARTDRIVER.flush();					// Wait data send
+
 	// Reset the write mode pin of the RS485
 	#if(USART_TXENABLE)
 	digitalWrite(USART_TXENPIN, LOW);
@@ -225,7 +241,7 @@ uint8_t vNet_DataAvailable_M5()
 	}
 	
 	// From the USART we get one byte per time, so before has to be identified
-	// if there is an incoming Modbus frame	
+	// if there is an incoming frame	
 	while(USARTDRIVER.available() && (l < USART_FRAME_LEN))	
 		usartframe[l++] = USARTDRIVER.read();	
 	

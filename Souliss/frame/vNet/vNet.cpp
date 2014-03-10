@@ -46,13 +46,15 @@
 
 	// Driver for Microchip MRF2WB0MA
 	#if (WIFI_MRF24)
-		#include "drivers/wifiMRF24/vNetDriver_eth.cpp"	
+		#include "drivers/ethMRF24/vNetDriver_eth.cpp"	
 	#endif	
 	
 #endif
 	
 #if (VNET_MEDIA2_ENABLE)
-	#include "drivers/chibi/vNetDriver_chibi.c"	
+	#if(CHIBI_AT86RF230)
+		#include "drivers/chibi/vNetDriver_chibi.h"	
+	#endif	
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)
@@ -144,6 +146,14 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 {
 	U8 media, *frame_pnt;
 	U16 routed_addr;
+	
+	// If the destination is the NULL address, discard it
+	if(addr==VNET_ADDR_NULL)
+	{
+		// Free the frame and return
+		oFrame_Reset();
+		return VNET_DATA_FAIL;
+	}
 	
 	// Upper layers cannot use broadcast, broadcast can be used only at vNet level
 	if(addr == 0xFFFF)

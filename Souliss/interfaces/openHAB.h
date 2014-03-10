@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss 
-    Copyright (C) 2013  Veseo
+    Copyright (C) 2012  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,17 +14,33 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	Originally developed by Dario Di Maio
+		
+	Originally developed by Fulvio Spelta and Dario Di Maio
 	
 ***************************************************************************/
 /*!
     \file 
     \ingroup
 */
+#ifndef OPENHAB_H
+#define OPENHAB_H
 
-#include "sensors.h"
-#include "GetConfig.h"			// need : hwSensors.h
+#include "GetConfig.h"						// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h
 
-// Include drivers for DHT11, DHT21, DHT22
-#include "sensors/src/DHT/DHT.cpp"
+#define HTTPPORT		80					// Listening for WebServer
+#define	HTTP_REQBYTES	40					// Max lenght for URL request
+#define HTTP_BUFBYTES	(20+12*MaCaco_SLOT)	// Max lenght for data buffer
+#define NULLID			0xFF				// This ID value is assumed as Null
+
+#define	MAXVALUES		5					// Number of values into a single URL, comma separated
+
+#if (OPENHAB_DEBUG)
+	#define OPENHAB_LOG Serial.print
+#endif
+
+#if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_ENC28J60))
+void openHABInit();
+void openHABInterface(U8 *memory_map);
+#endif
+
+#endif

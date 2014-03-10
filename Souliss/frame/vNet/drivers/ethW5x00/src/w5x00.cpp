@@ -28,6 +28,8 @@ W5x00Class W5x00;
 #	define RXBUF_BASE 0x6000
 #endif
 
+#include "vram_w5x00.c"		// Use part of the RAM for data storage
+
 void W5x00Class::init(void)
 {
   delay(300);

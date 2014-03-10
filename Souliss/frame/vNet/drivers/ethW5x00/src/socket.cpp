@@ -130,7 +130,10 @@ uint16_t send(SOCKET s, const uint8_t * buf, uint16_t len)
 
   // copy data
   if(frame==0)
-	W5x00.send_data_processing(s, (uint8_t *)buf, ret);
+    if(ret)	
+	  W5x00.send_data_processing(s, (uint8_t *)buf, ret);
+	else
+	  return 0;
   else
 	W5x00.send_data_processing(s, (uint8_t *)frame, 0);		// Use a zero lenght to indicate a frame insted of a buffer
 	
@@ -223,7 +226,10 @@ uint16_t sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t *addr, uint1
 
   // copy data
   if(frame==0)
-	W5x00.send_data_processing(s, (uint8_t *)buf, ret);
+    if(ret)
+	  W5x00.send_data_processing(s, (uint8_t *)buf, ret);
+	else
+		return 0;
   else
 	W5x00.send_data_processing(s, (uint8_t *)frame, 0);		// Use a zero lenght to indicate a frame insted of a buffer
 	
@@ -408,7 +414,10 @@ uint16_t bufferData(SOCKET s, uint16_t offset, const uint8_t* buf, uint16_t len)
   {
     ret = len;
   }
-  W5x00.send_data_processing_offset(s, offset, buf, ret);
+  
+  if(ret)
+    W5x00.send_data_processing_offset(s, offset, buf, ret);
+  
   return ret;
 }
 

@@ -255,19 +255,20 @@
 // buffer boundaries applied to internal 8K ram
 // the entire available packet buffer space is allocated
 //
-// start with recbuf at 0/
-#define RXSTART_INIT     0x0
-// receive buffer end
-#define RXSTOP_INIT      (0x1FFF-0x0600-1)
-// start TX buffer at 0x1FFF-0x0600, pace for one full ethernet frame (~1500 bytes)
-#define TXSTART_INIT     (0x1FFF-0x0600)
-// stp TX buffer at end of mem
-#define TXSTOP_INIT      0x1FFF
-//
-// max frame length which the conroller will accept:
-#define        MAX_FRAMELEN        1500        // (note: maximum ethernet frame length would be 1518)
-//#define MAX_FRAMELEN     600
 
+#define	RAMSIZE			0x1FFF						// Total amount of RAM for TX and RX operations	
+#define	vramBUF_len		0x0800						// Size of the TX RAM area used for data storage
+#define	MAX_FRAMELEN	0x02BC						// Size of the maximum TX packet
+#define TXSIZE			(vramBUF_len+MAX_FRAMELEN)	
+
+#define TXSTOP_INIT      RAMSIZE					// The TX buffer end
+#define TXSTART_INIT     (TXSTOP_INIT-TXSIZE)		// The TX buffer start 
+#define RXSTOP_INIT      (TXSTART_INIT-1)			// The RX buffer end
+#define RXSTART_INIT     0x0000						// The RX buffer start		
+
+// The TX buffer is partially used for data storage
+#define	vramBUF_start	(TXSTOP_INIT-vramBUF_len)	// Start of the RAM area used for data storage
+#define	vramBUF_end		RAMSIZE						// End of the RAM area used for data storage
 
 // functions
 extern uint8_t enc28j60ReadOp(uint8_t op, uint8_t address);
@@ -288,6 +289,7 @@ extern uint8_t enc28j60getrev(void);
 extern uint8_t enc28j60hasRxPkt(void);
 extern uint8_t enc28j60linkup(void);
 extern uint8_t enc28j60BufferedData();
+extern void enc28j60WriteWord(byte address, word data);
 
 #endif
 //@}

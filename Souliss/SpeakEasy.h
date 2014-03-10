@@ -28,7 +28,7 @@
 #include "Typicals.h"
 
 U8 memory_map[MaCaco_MEMMAP];				// define the shared memory map
-U8 data_changed = 0;						// flag 
+U8 data_changed = 1;						// flag 
 
 /************** Scheduler ******************/
 #define time_base_fast		10				// Time cycle in milliseconds

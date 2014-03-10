@@ -30,13 +30,10 @@
 /**************************************************************************/
 /*!
 	The HTTP server is listening on the port number 80 and parse remote 
-	commands via HTTP GET request. 
+	commands via HTTP GET request. It doesn't provide any data retrieve 
+	mechanism, allows only to send commands over the network.
 	
-	The actual state of the node and its connected devices can be retrieved
-	via MaCaco, Modbus or JSON (if W5100 is used). Enabling only the HTTP
-	doesn't give access to that data.
-	
-        Value       HTTPSERVER
+        Value       
         0x0         Disable (Default)
         0x1         Enable
 */
@@ -47,25 +44,26 @@
 							
 /**************************************************************************/
 /*!
-	The JSON Server is an HTTP server listening on the port number 80 that
-	enable data transfer using a JSON string.
+	The openHAB Server is an HTTP server listening on the port number 80 that
+	enable data transfer using a XML string.
 	
 	An external device can access the data into the node using a simple HTTP
 	GET request. That node can access data from all the other in the network
-	acting as a Souliss to JSON gateway.
+	acting as a Souliss to XML gateway.
 	
-	The JSON Server is supported only for Ethernet based nodes equipped with
-	Wiznet W5100 controller.
+	The openHAB Server is supported only for Ethernet based nodes equipped with
+	Wiznet W5100/W5200 controller.
 	
-        Value       JSONSERVER
+        Value       
         0x0         Disable (Default)
         0x1         Enable
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define JSONSERVER  	0
+#	define OPENHAB  	0
 #endif
 
+#define	OPENHAB_DEBUG	0
 					
 /**************************************************************************/
 /*!
@@ -73,7 +71,7 @@
 	the network. It works for single media and bridged networks with a single
 	bridge acting as addressing server.
 	
-        Value       JSONSERVER
+        Value       
         0x0         Disable (Default)
         0x1         Enable
 */
@@ -85,35 +83,6 @@
 #define	DYNAMICADDR_GATEWAYNODE	0x004D
 #define	DYNAMICADDR_SUBNETMASK	0xFF00
 #define	DYNAMICADDR_GATEWAY		0x0000
-
-/**************************************************************************/
-/*!
-	The Modbus TCP/RTU enable data transfer using standard Modbus protocol,
-	an external device can access the data into the node using a standard
-	Modbus request. 
-	
-	That node can access data from all the other in the network acting as a 
-	Souliss to Modbus gateway.
-	
-	This feature is intender to get data from a Souliss node, so Souliss is 
-	always a Modbus slave. In case of Modbus TCP a dedicated socket is used,
-	rather in case of Modbus RTU the internal USART is used.
-	
-	This code implement only partially the Modbus protocol and doesn't allow
-	multidrop configuration and/or bridging in RTU mode.
-*/
-/**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define	MODBUS					0
-#	define 	MODBUS_TCP  			1
-#	define 	MODBUS_RTU  			0
-#endif
-
-#define	MODBUS_DEBUG				0
-
-#define	MODBUS_ID					1	
-#define	MODBUS_RTU_BAUD				115200
-#define MODBUS_TCP_PORT				502
 
 /**************************************************************************/
 /*!
