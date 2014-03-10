@@ -32,7 +32,7 @@
 #define DHT21 21
 
 #define concat(a, b)				a##b
-#define	ssDHT11_Init(pin, id)		ssDHT concat(ssDHT, id)(pin, DHT11)	// ssDHT11_Init(2, 1); became ssDHT ssDHT1(2, DHT11);
+#define	ssDHT11_Init(pin, id)		ssDHT concat(ssDHT, id)(pin, DHT11)	// ssDHT11_Init(2, 1); 	became 	-> ssDHT ssDHT1(2, DHT11);
 #define	ssDHT21_Init(pin, id)		ssDHT concat(ssDHT, id)(pin, DHT21)	
 #define	ssDHT22_Init(pin, id)		ssDHT concat(ssDHT, id)(pin, DHT22)	
 

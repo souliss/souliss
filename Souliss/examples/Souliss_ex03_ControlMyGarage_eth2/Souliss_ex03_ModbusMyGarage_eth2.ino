@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss - Modbus my Garage
+	Souliss - Control my Garage
 	
 	It control a garage door with two devices: one device act on the relays
 	that drive the motor and get the limit switches, the other has one 
@@ -9,19 +9,7 @@
 	obstacle detection, if not limit switches are mandatory.
 	
 	The door can be controller via Android (or any equivalent direct user 
-	interface) or via Modbus TCP, connecting to node number two.
-	
-	Modbus Map (Register, Functional Code)
-		- Open/Close Request at (R 0x00, FC 0x01, 0x05) or (R 0x00, FC 0x02)
-		- Closing at (R 0x2000, FC 0x01) or (R 0x2000, FC 0x02)
-		- Opening at (R 0x2001, FC 0x01) or (R 0x2001, FC 0x02)
-		- Closed  at (R 0x2008, FC 0x01) or (R 0x2008, FC 0x02)
-		- Opened  at (R 0x2010, FC 0x01) or (R 0x2010, FC 0x02)
-		
-		or
-		
-		- Open/Close Request at (R 0x00, FC 0x03, 0x06) or (R 0x00, FC 0x04)
-		- Door State at (R 0x200, FC 0x03) or (R 0x200, FC 0x04)	
+	interface), connecting to node number two.
 		
 	Applicable for:
 		- Garage doors
@@ -70,6 +58,8 @@
 		Configuration file		Parameter
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x03, 0x04, 0x05
+		
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01
 
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -119,9 +109,6 @@ void setup()
 	// Set the addresses of the remote nodes
 	Souliss_SetRemoteAddress(memory_map, network_address_1, 1);	
 	
-	// Init the Modbus protocol, board act as Modbus slave
-	ModbusInit();
-	
 	// Define inputs, outputs pins and pulldown
 	pinMode(2, INPUT);	// Hardware pulldown required
 	
@@ -147,10 +134,6 @@ void loop()
 				Souliss_RemoteInput(network_address_1, GARAGEDOOR_NODE1, Souliss_Input(memory_map, GARAGEDOOR_NODE2));
 				Souliss_ResetInput(memory_map, GARAGEDOOR_NODE2);
 			}
-
-			// Parse Modbus input request from remote nodes
-			ModbusRemoteInput(memory_map);
-			
 		} 
 		
 		// Execute the code every 5 time_base_fast		  
@@ -160,13 +143,6 @@ void loop()
 			Souliss_CommunicationData(memory_map, &data_changed);		
 		}
 
-		// Execute the code every 7 time_base_fast		  
-		if (!(phase_fast % 7))
-		{   
-			// Retrieve data from the Modbus communication channel
-			Modbus(memory_map);
-		}		
-		
 		// Execute the code every 31 time_base_fast		  
 		if (!(phase_fast % 31))
 		{   
@@ -181,17 +157,5 @@ void loop()
 			Souliss_CommunicationChannels(memory_map, 1);
 		}	
 						
-	}
-	else if(abs(millis()-tmr_slow) > time_base_slow)
-	{	
-		tmr_slow = millis();
-		phase_slow = (phase_slow + 1) % num_phases;
-
-		// Execute the code every 7 time_base_slow	 
-		if (!(phase_slow % 7))
-		{
-			// Refresh logic typicals
-			Souliss_RefreshTypicals();
-		}		
 	}
 } 

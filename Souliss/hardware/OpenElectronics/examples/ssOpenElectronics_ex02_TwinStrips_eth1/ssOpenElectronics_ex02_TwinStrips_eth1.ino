@@ -35,6 +35,8 @@
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x05
 
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01		
+		
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
 		QuickCfg.h				const uint8_t DEFAULT_SUBMASK[]       = {...}
@@ -181,13 +183,6 @@ void loop()
 			// Timer associated to the LED logic control
 			Souliss_T16_Timer(memory_map, LEDCONTROL);						
 		} 	  
-		
-		// Execute the code every 7 time_base_slow	 
-		if (!(phase_slow % 7))
-		{
-			// Refresh logic typicals
-			Souliss_RefreshTypicals();
-		}			
 	}	
 	
 	

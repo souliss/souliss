@@ -40,15 +40,16 @@
 
 /**************************************************************************/
 /*!
-	Enable quick configuration, if enabled discard configuration parameters
-	from other files and build the configuration only accordingly to details
-	inserted in this file.
+	Enable quick configuration, if enabled all main parameters are
+	automatically configured from the option selected in this page.
 	
 	If disabled, the configuration goes in Detailed Configuration mode
+	and option needs to be selected from the dedicated configuration files,
+	that way offers more flexibility but result a bit more difficult.
 	        
 		Value       
-        0x00        Disabled (Default)
-		0x01		Enabled
+        0x00        Disabled 
+		0x01		Enabled		(Default)
 		
 */
 /**************************************************************************/
@@ -57,10 +58,12 @@
 /**************************************************************************/
 /*!
 	Select the used board type and the associated media interface (wireless,
-	ethernet or WiFi), using this option no other configuration is required
-	for standard nodes.
+	ethernet or WiFi), using this option all main paramaters related to the
+	selected board are set automatically.
 	
-	Standard configuration is always possible
+	Using the #define BOARDTYPE_INSKETCH inside the sketch, the parameter
+	selection is moved in the sketch and whatever selected in this file for
+	that option has no longer effect.
 	        
 		Value      
         0x00        No selection (Default)
@@ -97,29 +100,28 @@
 		0x20		KMP Electronics DINo v2
 		0x30		DFRobots XBoard Relay
 		0x31		DFRobots XBoard
-		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield
-		
+		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield	
 */
 /**************************************************************************/
-#if(QC_ENABLE)
+#if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))
 #	define	QC_BOARDTYPE			0x00
 #endif
 /**************************************************************************/
 /*!
 	Select the requested gateway type (if needed), a gateway node collects
 	data from all the other in the network and make the same available to
-	external interfaces (like Android, Modbus or HTTP/JSON).
+	external interfaces (like Androidor HTTP/JSON).
 	        
 		Value       
         0x00        No selection (Default)
 		0x01		Gateway
-		0x02		Gateway with additional Modbus TCP
-		0x03		Gateway with additional Modbus RTU
+		0x02		Not used
+		0x03		Not used
 		0x04		Gateway with additional HTTP Commander
 		
 */
 /**************************************************************************/
-#if(QC_ENABLE)
+#if(QC_ENABLE && !defined(GATEWAYTYPE_INSKETCH))
 #	define	QC_GATEWAYTYPE			0x00
 #endif
 

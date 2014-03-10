@@ -27,6 +27,8 @@
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x09, 0x0C
 
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01
+
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
 		QuickCfg.h				const uint8_t DEFAULT_SUBMASK[]       = {...}

@@ -179,7 +179,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												FAST_910ms() 						\
 													ssGetTypicals()									
 			
-#define	START_PeerJoin()						FAST_2110ms()						\
+#define	START_PeerJoin()						FAST_70ms()    						\
+													ProcessCommunication();			\
+												FAST_2110ms()						\
 												{									\
 													if(!MaCaco_IsSubscribed())		\
 													{								\

@@ -15,12 +15,12 @@
 
 #if(ETH_W5200)
 #	define MAX_SOCK_NUM 8
+#elif(ETH_W5100)
+#	define MAX_SOCK_NUM 4
 #	define IDM_OR  0x8000
 #	define IDM_AR0 0x8001
 #	define IDM_AR1 0x8002
 #	define IDM_DR  0x8003
-#elif(ETH_W5100)
-#	define MAX_SOCK_NUM 4
 #endif
 
 typedef uint8_t SOCKET;
@@ -198,13 +198,17 @@ public:
   __GP_REGISTER8 (IMR,    0x0016);    // Interrupt Mask
   __GP_REGISTER16(RTR,    0x0017);    // Timeout address
   __GP_REGISTER8 (RCR,    0x0019);    // Retry count
+#if(ETH_W5100)  
   __GP_REGISTER8 (RMSR,   0x001A);    // Receive memory size
   __GP_REGISTER8 (TMSR,   0x001B);    // Transmit memory size
+#endif
   __GP_REGISTER8 (PATR,   0x001C);    // Authentication type address in PPPoE mode
   __GP_REGISTER8 (PTIMER, 0x0028);    // PPP LCP Request Timer
   __GP_REGISTER8 (PMAGIC, 0x0029);    // PPP LCP Magic Number
+#if(ETH_W5100)
   __GP_REGISTER_N(UIPR,   0x002A, 4); // Unreachable IP address in UDP mode
   __GP_REGISTER16(UPORT,  0x002E);    // Unreachable Port address in UDP mode
+#endif
   
 #undef __GP_REGISTER8
 #undef __GP_REGISTER16
@@ -302,6 +306,10 @@ private:
   inline static void initSS()    { DDRB  |=  _BV(4); };
   inline static void setSS()     { PORTB &= ~_BV(4); };
   inline static void resetSS()   { PORTB |=  _BV(4); };
+#elif defined(__AVR_ATmega32U4__) && (BOARD_MODEL == 0x20)	// KMP Electronics DINo has a not standard allocation of Chip Select pin	
+  inline static void initSS()    { DDRB  |=  _BV(4); };
+  inline static void setSS()     { PORTB &= ~_BV(4); };
+  inline static void resetSS()   { PORTB |=  _BV(4); }; 
 #elif defined(__AVR_ATmega32U4__)
   inline static void initSS()    { DDRB  |=  _BV(6); };
   inline static void setSS()     { PORTB &= ~_BV(6); };

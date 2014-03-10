@@ -20,8 +20,13 @@ W5x00Class W5x00;
 #define TX_BUF 0x1100
 #define RX_BUF (TX_BUF + TX_RX_MAX_BUF_SIZE)
 
-#define TXBUF_BASE 0x4000
-#define RXBUF_BASE 0x6000
+#if(ETH_W5200)
+#	define TXBUF_BASE 0x8000
+#	define RXBUF_BASE 0xC000
+#elif(ETH_W5100) 
+#	define TXBUF_BASE 0x4000
+#	define RXBUF_BASE 0x6000
+#endif
 
 void W5x00Class::init(void)
 {

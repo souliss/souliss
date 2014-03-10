@@ -5,18 +5,7 @@
 	via the optoisolated inputs or using the Android interface or via any Modbus
 	TCP Master application. Connecting the relays to lights or similar electrial 
 	appliace, you can get remote control of them.
-	
-	Modbus Map (Register, Functional Code)
-		- Light 1 ON/OFF  Command at (R 0x00, FC 0x01, 0x05) or (R 0x00, FC 0x02)	
-		- Light 2 ON/OFF  Command at (R 0x08, FC 0x01, 0x05) or (R 0x08, FC 0x02)	
-		- Light 3 ON/OFF  Command at (R 0x10, FC 0x01, 0x05) or (R 0x00, FC 0x02)	
-		- Light 4 ON/OFF  Command at (R 0x18, FC 0x01, 0x05) or (R 0x00, FC 0x02)	
-		
-		- Light 1 State at (R 0x2000, FC 0x01) or (R 0x2000, FC 0x02)
-		- Light 2 State at (R 0x2008, FC 0x01) or (R 0x2008, FC 0x02)
-		- Light 3 State at (R 0x2010, FC 0x01) or (R 0x2010, FC 0x02)
-		- Light 4 State at (R 0x2018, FC 0x01) or (R 0x2018, FC 0x02)
-		
+			
  	Applicable for:
 		- Light
 		- Other ON/OFF electrical appliance
@@ -58,7 +47,7 @@
 		Configuration file		Parameter
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x03, 0x04
-		QuickCfg.h				#define	QC_GATEWAYTYPE		0x02
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01
 
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}

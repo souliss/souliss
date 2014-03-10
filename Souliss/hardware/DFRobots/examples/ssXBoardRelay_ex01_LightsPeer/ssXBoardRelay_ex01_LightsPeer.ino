@@ -67,13 +67,7 @@ void loop()
 			
 			CntRelay1(RELAY1);									// Drive the Relay 1
 			CntRelay2(RELAY2);                                  // Drive the Relay 2
-		} 
-			  
-		FAST_70ms() {   // We check incoming communication data every 70 milliseconds
-			// Here we handle here the communication with Android, commands and notification
-			// are automatically assigned to RELAY1 and RELAY2
-			ProcessCommunication();										
-		}	
+		} 	
 
 		// At first runs, we look for a gateway to join
 		START_PeerJoin();

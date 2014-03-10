@@ -60,22 +60,33 @@
 
 void setup()
 {	
-	// We don't assign a fixed IP address to the board, the board will get the base IP
-	// information from the first broadcast frame sent out with the Android application.
-	// By default the board will get an IP address with .77 as last byte, you can change
-	// it in runtime using the Android application SoulissApp.
-	SetAddressingServer();
+	// Init the board
+	InitDINo();
+	
+	// Set the inputs
+	SetInput1();
+    SetInput2();
+    SetInput3();
+    SetInput4();
+	
+	// Set the outputs
+	SetRelay1();
+	SetRelay2();
+	SetRelay3();
+	SetRelay4();
 
 	// Define two Simple Light logics and the relays
 	Set_SimpleLight(RELAY1);
 	Set_SimpleLight(RELAY2);
 	Set_SimpleLight(RELAY3);
 	Set_SimpleLight(RELAY4);	
-	SetRelay1();
-	SetRelay2();
-	SetRelay3();
-	SetRelay4();	
 	
+	// We don't assign a fixed IP address to the board, the board will get the base IP
+	// information from the first broadcast frame sent out with the Android application.
+	// By default the board will get an IP address with .77 as last byte, you can change
+	// it in runtime using the Android application SoulissApp.
+	SetAddressingServer();
+
 	// Define a Modbus slave
 	ModbusInit();
 }

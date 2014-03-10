@@ -2,10 +2,8 @@
 	Souliss - Lights
 	
 	It handle the MOD-IO relays either via opto-isolated inputs or using the
-	Android interface or via Modbus TCP/RTU. Connecting the relays to lights
-	or similar electrial appliace, you can get remote control of them.
-	The use of Modbus RTU is supported only on ATmega328P based boards (like
-	Olimexino-328).
+	Android interface. Connecting the relays to lights or similar electrial 
+	appliace, you can get remote control of them.
 	
 	To use MOD-IO and a communication board (MOD-ENC28J60 or MOD-WIFI)
 	is required a ribbon cable that extend the UEXT bus to both the boards,
@@ -93,9 +91,6 @@ void setup()
 	// Load the address also in the memory_map
 	Souliss_SetLocalAddress(memory_map, network_address_1);	
 	
-	// Init the Modbus protocol, board act as Modbus slave
-	ModbusInit();
-	
 	// Set the typical logic to use, T11 is a ON/OFF Digital Output with Timer Option
 	Souliss_SetT11(memory_map, SLOT_RELAY1);
 	Souliss_SetT11(memory_map, SLOT_RELAY2);
@@ -124,13 +119,6 @@ void loop()
 			Souliss_CommunicationData(memory_map, &data_changed);
 		}		
 
-		// Execute the code every 7 time_base_fast		  
-		if (!(phase_fast % 7))
-		{   
-			// Retrieve data from the Modbus communication channel
-			Modbus(memory_map);
-		}			
-		
 		// Execute the code every 31 time_base_fast		
 		if (!(phase_fast % 31))
 		{

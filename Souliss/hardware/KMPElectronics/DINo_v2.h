@@ -65,4 +65,9 @@
 #define	CntRelay3(slot)		ssDigOut(OUT3, Souliss_T1n_Coil, slot)
 #define	CntRelay4(slot)		ssDigOut(OUT4, Souliss_T1n_Coil, slot)
 
+// Set the Reset and PWDN pins in DINo version 2
+#define	InitDINo()			pinMode(10, OUTPUT);					\
+							digitalWrite(10, HIGH); 				\
+							pinMode(9, OUTPUT);						\
+							digitalWrite(9, LOW)
 #endif

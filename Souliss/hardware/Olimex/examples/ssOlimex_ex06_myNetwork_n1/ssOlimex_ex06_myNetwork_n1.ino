@@ -213,17 +213,5 @@ void loop()
 			Souliss_CommunicationChannels(memory_map, 2);
 		}
 		
-	}
-	else if(abs(millis()-tmr_slow) > time_base_slow)
-	{	
-		tmr_slow = millis();
-		phase_slow = (phase_slow + 1) % num_phases;
-
-		// Execute the code every 7 time_base_slow	 
-		if (!(phase_slow % 7))
-		{
-			// Refresh logic typicals
-			Souliss_RefreshTypicals();
-		}		
 	}	
 } 

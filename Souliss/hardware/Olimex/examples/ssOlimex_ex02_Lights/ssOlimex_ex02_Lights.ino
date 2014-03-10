@@ -2,21 +2,12 @@
 	Souliss - Lights
 	
 	It handle the MOD-IO2 relays either via GPIOs inputs or using the Android
-	interface or via Modbus TCP/RTU. Connecting the relays to lights or similar
-	electrial appliace, you can get remote control of them. The use of Modbus RTU 
-	is supported RTU is supported only on ATmega328P based boards 
-	(like Olimexino-328).
+	interface. Connecting the relays to lights or similar electrial appliace, 
+	you can get remote control of them. 
 	
 	To use MOD-IO2 and a communication board (MOD-ENC28J60 or MOD-WIFI) is
 	required a ribbon cable that extend the UEXT bus to both the boards, the signal 
 	dedicated for I2C shall not be extended to the communication modules.
-	
-	Modbus Map (Register, Functional Code)
-		- Light 1 ON/OFF  Request at (R 0x00 - 0001, FC 0x01, 0x05) or (R 0x00 - 0001, FC 0x02)	
-		- Light 2 ON/OFF  Request at (R 0x08 - 0009, FC 0x01, 0x05) or (R 0x08 - 0009, FC 0x02)	
-		
-		- Light 1 State at (R 0x2000 - 8193, FC 0x01) or (R 0x2000 - 8193, FC 0x02)
-		- Light 2 State at (R 0x2008 - 8201, FC 0x01) or (R 0x2008 - 8201, FC 0x02)
 
  	Applicable for:
 		- Light
@@ -46,6 +37,8 @@
 		QuickCfg.h				#define	QC_ENABLE			0x01
 		QuickCfg.h				#define	QC_BOARDTYPE		0x13, 0x14, 0x15,
 															0x16, 0x17, 0x18
+		
+		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01
 
 	Is required an additional IP configuration using the following parameters
 		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -90,9 +83,6 @@ void setup()
 	// Load the address also in the memory_map
 	Souliss_SetLocalAddress(memory_map, network_address_1);	
 	
-	// Init the Modbus protocol, board act as Modbus slave
-	ModbusInit();
-	
 	// Set the typical logic to use, T11 is a ON/OFF Digital Output with Timer Option
 	Souliss_SetT11(memory_map, SLOT_RELAY1);
 	Souliss_SetT11(memory_map, SLOT_RELAY2);
@@ -122,14 +112,7 @@ void loop()
 			// Retreive data from the communication channel
 			Souliss_CommunicationData(memory_map, &data_changed);
 		}		
-
-		// Execute the code every 7 time_base_fast		  
-		if (!(phase_fast % 7))
-		{   
-			// Retrieve data from the Modbus communication channel
-			Modbus(memory_map);
-		}			
-		
+	
 		// Execute the code every 21 time_base_fast		
 		if (!(phase_fast % 21))
 		{

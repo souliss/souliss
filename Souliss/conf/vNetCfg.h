@@ -135,7 +135,7 @@
 		Communication Media 1	-	Ethernet TCP/IP 
 		Communication Media 2	-	Wireless - 2.4 GHz IEEE 802.15.4 
 		Communication Media 3	-	Ethernet RAW 
-		Communication Media 4	-	Binary FSK (Atmel ATMega328P)
+		Communication Media 4	-	Not used
 		Communication Media 5	-	USART with collision avoidance 	
 */
 /**************************************************************************/

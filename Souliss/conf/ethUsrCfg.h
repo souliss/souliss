@@ -182,10 +182,11 @@
 	
 */
 /**************************************************************************/
-const uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
-#define AUTO_MAC  		1
-#define MAC_DEBUG	  	0
-							
+#if (!defined(MAC_INSKETCH))
+	const uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
+#	define AUTO_MAC  		1
+#	define MAC_DEBUG	  	0
+#endif							
 /**************************************************************************/
 /*!
 	WiFi Configuration

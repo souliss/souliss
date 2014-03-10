@@ -1,6 +1,15 @@
 Souliss
 Copyright (C) 2013  Veseo
 
+Release note for revision Alpha 5.0.2, on 01/12/2013
+
+	Introduction of inSketch mode, this move selected configuration parameters from the
+	configuration file to the sketch. Removed legacy non-pass-through mode, from this time
+	the gateway cannot longer serve polling protocols.
+			- Introduced inSketch mode,
+			- Modbus protocol deprecated,
+			- Bugfix for DINo v2 support (still work in progress).
+
 Release note for revision Alpha 5.0.1, on 13/11/2013
 
 	Introduced a revised memory handling for MaCaco in order reduce the RAM waste in case

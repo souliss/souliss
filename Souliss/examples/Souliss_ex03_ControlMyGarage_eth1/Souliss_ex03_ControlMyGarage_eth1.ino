@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss - Modbus my Garage
+	Souliss - Control my Garage
 	
 	It control a garage door with two devices: one device act on the relays
 	that drive the motor and get the limit switches, the other has one 
@@ -9,19 +9,7 @@
 	obstacle detection, if not limit switches are mandatory.
 	
 	The door can be controller via Android (or any equivalent direct user 
-	interface) or via Modbus TCP, connecting to node number two.
-	
-	Modbus Map (Register, Functional Code)
-		- Open/Close Request at (R 0x00, FC 0x01, 0x05) or (R 0x00, FC 0x02)
-		- Closing at (R 0x2000, FC 0x01) or (R 0x2000, FC 0x02)
-		- Opening at (R 0x2001, FC 0x01) or (R 0x2001, FC 0x02)
-		- Closed  at (R 0x2008, FC 0x01) or (R 0x2008, FC 0x02)
-		- Opened  at (R 0x2010, FC 0x01) or (R 0x2010, FC 0x02)
-		
-		or
-		
-		- Open/Close Request at (R 0x00, FC 0x03, 0x06) or (R 0x00, FC 0x04)
-		- Door State at (R 0x200, FC 0x03) or (R 0x200, FC 0x04)	
+	interface), connecting to node number two.
 		
 	Applicable for:
 		- Garage doors

@@ -48,19 +48,30 @@
 
 void setup()
 {	
-	// This board (peer) request an address to the gateway one at runtine, no need
-	// to configure any parameter here
-	SetDynamicAddressing();
+	// Init the board
+	InitDINo();
+	
+	// Set the inputs
+	SetInput1();
+    SetInput2();
+    SetInput3();
+    SetInput4();
+	
+	// Set the outputs
+	SetRelay1();
+	SetRelay2();
+	SetRelay3();
+	SetRelay4();
 
 	// Define two Simple Light logics and the relays
 	Set_SimpleLight(RELAY1);
 	Set_SimpleLight(RELAY2);
 	Set_SimpleLight(RELAY3);
 	Set_SimpleLight(RELAY4);	
-	SetRelay1();
-	SetRelay2();
-	SetRelay3();
-	SetRelay4();	
+	
+	// This board (peer) request an address to the gateway one at runtine, no need
+	// to configure any parameter here
+	SetDynamicAddressing();
 }
 
 void loop()
@@ -86,12 +97,6 @@ void loop()
 			CntRelay3(RELAY3);									// Drive the Relay 3
 			CntRelay4(RELAY4);                                  // Drive the Relay 4			
 		} 
-		
-		FAST_70ms() {   // We check incoming communication data every 70 milliseconds
-			// Here we handle here the communication with Android, commands and notification
-			// are automatically assigned to RELAY1 and RELAY2
-			ProcessCommunication();										
-		}	
 
 		// At first runs, we look for a gateway to join
 		START_PeerJoin();

@@ -25,32 +25,10 @@
 
 #include "Souliss.h"
 #include "Typicals.h"
-#include "frame/MaCaco/MaCaco.cpp"
-#include "frame/vNet/vNet.cpp"
-
 #include <Arduino.h>
 
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
-
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
-	#include "gateway/HTTP.cpp"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-	#include "gateway/HTTP_uIP.cpp"
-#endif
-	
-#if(MODBUS)
-	#include "gateway/Modbus.cpp"	
-#endif
-
-// Include IO definitions and drivers for supported hardware
-#include "hardware/IOdef.cpp"
-
-// Include methods for half-precision floating points
-#include "src/IEEE754/float16.c"
-
-// Include drivers for supported sensors
-#include "sensors/sensors.cpp"
 
 bool InPin[MAXINPIN] = {false};
 bool FirstInit = {false}, addrsrv = {false};
@@ -376,11 +354,7 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	{
 		// Open and/or check one communication channel at each round
 		if (((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) != 0x0000))
-		#if(MaCaco_PASSTHROUGH)
 			ret = MaCaco_subscribe((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)), memory_map, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);		// Use putin as zero to flag a passthrough		
-		#else
-			ret = MaCaco_subscribe((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)), memory_map, memory_map + MaCacoUserMode_OUT_s + ((roundrob_2-1)*MaCaco_SUBSCRLEN), MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);
-		#endif
 		else
 		{
 			roundrob_2=1;		// Node number 0 is the local node
@@ -417,11 +391,7 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 		// Retreive once the typical definitions data
 		if ((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)) != 0x0000)
 		{
-			#if(MaCaco_PASSTHROUGH)
-				ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
-			#else
-				ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, memory_map + MaCacoUserMode_TYP_s + ((roundrob_1-1)*MaCaco_TYPLENGHT), MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);
-			#endif
+			ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
 			
 			// Increase the index
 			if(roundrob_1 < MaCaco_NODES) 
