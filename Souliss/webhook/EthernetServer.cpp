@@ -14,7 +14,7 @@ extern "C" {
 #include "Ethernet.h"
 #include "EthernetClient.h"
 #include "EthernetServer.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 
 EthernetServer::EthernetServer(uint16_t port)
 {
