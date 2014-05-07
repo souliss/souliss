@@ -7,7 +7,7 @@
 
 #include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
 #include "frame/vNet/drivers/ethW5x00/src/socket.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 
 extern "C" {
   #include "string.h"
