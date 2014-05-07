@@ -38,7 +38,7 @@
 #include "Ethernet.h"
 #include "Udp.h"
 #include "Dns.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 
 /* Constructor */
 EthernetUDP::EthernetUDP() : _sock(MAX_SOCK_NUM) {}
