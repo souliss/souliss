@@ -2,7 +2,7 @@
 #define ethernetserver_h
 
 #include "Server.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 
 class EthernetClient;
 
