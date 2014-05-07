@@ -38,7 +38,7 @@
 #define ethernetudp_h
 
 #include <Udp.h>
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 
 #define UDP_TX_PACKET_MAX_SIZE 24
 
