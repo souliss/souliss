@@ -68,7 +68,7 @@ void setup()
 	pinMode(26, OUTPUT);													// Output to control the LIGHT (relay)
 
 	// Init the openHAB HTTP/XML Interface
-	openHABInit();
+	openHABInit(myMap);
 	
 	// Init the DHT sensor
 	ssDHT_Begin(DHT_id1);	
@@ -83,7 +83,7 @@ void loop()
 		FAST_GatewayComms();	
 
 		FAST_110ms() {   // We check the openHAB HTTP/XML interface every 70 milliseconds
-			openHABInterface(memory_map);		
+			openHABInterface(myMap);		
 		}
 		
 		FAST_510ms() {   // We check incoming communication data every 510 milliseconds

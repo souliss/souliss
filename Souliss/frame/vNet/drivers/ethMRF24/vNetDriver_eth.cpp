@@ -35,11 +35,11 @@
 #include "frame/vNet/stack/uIP/uip_arch.c"
 #include "frame/vNet/stack/uIP/uip_arp.c"
 
-#include "frame/vNet/drivers/wifiMRF24/vNetCallBack.c"
-#include "frame/vNet/drivers/wifiMRF24/src/g2100.c"
-#include "frame/vNet/drivers/wifiMRF24/src/nic.c"
+#include "frame/vNet/drivers/ethMRF24/vNetCallBack.c"
+#include "frame/vNet/drivers/ethMRF24/src/g2100.c"
+#include "frame/vNet/drivers/ethMRF24/src/nic.c"
 
-#include "frame/vNet/drivers/wifiMRF24/ServerClient.c"
+#include "frame/vNet/drivers/ethMRF24/ServerClient.c"
 #include "frame/vNet/tools/UserMode.c"
 
 #define ETHBUF ((struct uip_eth_hdr *)&uip_buf[0])
@@ -172,7 +172,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	}
 	
 	// Setup the connection, data will be sent using a callback function
-	if(!uip_udp_sock((u16_t*)ip_addr, vNet_port))
+	if(!uip_udp_sock((u16_t*)ip_addr, vNet_port, (u16_t)ETH_PORT))
 	{		
 		// Flag the error
 		oFrame_Reset();

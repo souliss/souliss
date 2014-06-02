@@ -41,7 +41,10 @@ typedef struct
 } MaCaco_rx_data_t;
 
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl);
-U8 MaCaco_UserMode_subAnswer(U8* memory_map, U8* data_chg);
+void MaCaco_subscribe_reset();
+void MaCaco_subscribe_battery(U8 subscr_chnl);
+void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof);
+U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg);
 U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data);
 U8 MaCaco_reqtyp();
 void MaCaco_DataIn();
@@ -56,4 +59,7 @@ U8 MaCaco_getdatain();
 U16 MaCaco_getdatabuffer();
 U8 MaCaco_IsSubscribed();
 U8 MaCaco_InternalSubcription();
+U8 MaCaco_isLastIn(U8 *memory_map);
+U8 MaCaco_GetLastIn(U8 *memory_map);
+U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber);
 #endif

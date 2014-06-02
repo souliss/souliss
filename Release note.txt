@@ -1,6 +1,28 @@
 Souliss
-Copyright (C) 2013  Veseo
+Copyright (C) 2014  Veseo
 
+Release note for revision Alpha 5.2.1, on dd/mm/yyyy
+	
+	Introduced a buffer for the XML interface for either TCP and UDP cases
+	to handle multiple commands in short time.
+		- Command buffer for HTTP/XML Interface
+		- Command buffer for UDP/XML  Interface
+		- Support for DINov2 / ProDINo RS485
+
+Release note for revision Alpha 5.2, on 22/05/2014
+	
+	A new XML data interface over UDP has been introduced, based on LASTIN
+	allows event driven data retrieving in ASCII/XML format. Support for 
+	nRF24L01 and nRF24L01+ 2.4 GHz radio and Wiznet W5500 Ethernet controller.
+		- Extended openHAB HTTP/XML interface on uIP		- Juan Pinto
+		- Completed LASTIN mode
+		- UDP/XML Interface (Event based communication)		- Fulvio Spelta
+		- Battery friendly subscription mode introduced
+		- vNet drivers for Wiznet W5500						- Philippe Peltier
+		- vNet drivers for nRF24L01 and nRF24L01+	
+		- New examples										- Flavio Piccolo
+		- Bugfix
+	
 Release note for revision Alpha 5.1, on 09/03/2014
 	
 	The introduction of PERSISTANCE and LASTIN modes makes a gateway node

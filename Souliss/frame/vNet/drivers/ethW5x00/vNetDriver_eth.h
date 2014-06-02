@@ -30,7 +30,12 @@
 #include "Arduino.h"
 #include "GetConfig.h"				// need : ethUsrCfg.h
 
-#include "src/w5x00.h"
+#if(ETH_W5100 || ETH_W5200)
+#	include "src/w5x00.h"
+#elif(ETH_W5500)
+#	include "src/w5500.h"
+#endif
+
 #include "src/socket.h"
 #include "frame/vNet/tools/UserMode.h"
 

@@ -26,24 +26,4 @@
 #ifndef HWSENSORS_H
 #define HWSENSORS_H
 
-/**************************************************************************/
-/*!
-	Select the sensor used to include automatically proper drivers, multiple
-	selection is allowed.
-	        
-		Value       Media
-        0x00        No selection (Default)
-		0x01		Selected
- 
-	List of available sensors and relevant description,
-		
-		Name		Description
-		DHT			Temperature and humidity DHT11, DHT21, DHT22
- 
-*/
-/**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define	DHT_SENSOR				0x00
-#endif
-
 #endif

@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss 
-    Copyright (C) 2012  Veseo
+    Copyright (C) 2014  
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,9 +30,10 @@
 
 #include "openHAB.h"
 
-#if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200))
+#if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
 
 #include "ASCIItools.c"
+#include "BUFFERtools.c"
 
 String incomingURL = String(HTTP_REQBYTES);			// The GET request is stored in incomingURL
 char buf[HTTP_BUFBYTES];							// Used for temporary operations
@@ -47,12 +48,12 @@ const char* xml[] = {"<s", ">", "</s", "<id", "</id"};
 	Init the interface
 */	
 /**************************************************************************/
-void openHABInit()
+void openHABInit(U8 *memory_map)
 {
 	// Set an internal subscription in order to collect data from other
 	// nodes in the network
 	
-	MaCaco_InternalSubcription();
+	MaCaco_InternalSubcription(memory_map);
 }
 
 /**************************************************************************
@@ -113,7 +114,15 @@ void openHABInterface(U8 *memory_map)
 		}	
 		else
 			srvcln_stop();				// Stop the socket, it will be restarted at next iteration
-	}	
+	}
+	else
+	{
+		// Reset
+		indata=0;
+		
+		// Send buffered commands
+		command_send();					
+	}
 	
 	// Parse the incoming data
 	if(indata)
@@ -206,7 +215,7 @@ void openHABInterface(U8 *memory_map)
 			
 				// Send a command to the node	
 				if((id < MaCaco_NODES) && (id != MaCaco_LOCNODE) && (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id) != 0x0000))	// If is a remote node, the command act as remote input				
-					MaCaco_send(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + slot, MAXVALUES, vals);		
+					command_buffer(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, vals);
 				else if (id == MaCaco_LOCNODE)								// If is a local node (me), the command is written back
 				{
 					i = 0;
@@ -283,7 +292,7 @@ void openHABInterface(U8 *memory_map)
 			
 			// Init the buffer
 			bufferlen=0;
-						
+		
 			// Find start and end index request
 			U8 status  = incomingURL.indexOf("status",0);
 			if(incomingURL.indexOf("?id=",status) > 0)
@@ -326,7 +335,7 @@ void openHABInterface(U8 *memory_map)
 			bufferlen += strlen(xml[1]);
 			
 			for(U8 slot=0;slot<MaCaco_SLOT;slot++)
-			{
+			{	
 				if( memory_map[MaCaco_G_TYP_s+(id_for*MaCaco_TYPLENGHT)+slot] != 0x00 )	
 				{
 					// Print "<s"
@@ -356,7 +365,7 @@ void openHABInterface(U8 *memory_map)
 						*(unsigned long*)(buf+bufferlen) = (unsigned long)memory_map[MaCaco_G_OUT_s+(id_for*MaCaco_OUTLENGHT)+slot];
 						ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, &bufferlen);						
 					}
-
+			
 					// Print "</slot"
 					memmove(&buf[bufferlen],xml[2],strlen(xml[2]));
 					bufferlen += strlen(xml[2]);

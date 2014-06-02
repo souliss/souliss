@@ -1,8 +1,14 @@
-#include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
+// Select the Wiznet controller model
+#if(ETH_W5100 || ETH_W5200)
+#	include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
+#elif(ETH_W5500)
+#	include "frame/vNet/drivers/ethW5x00/src/w5500.h"
+#endif
+
 #include "frame/vNet/drivers/ethW5x00/src/socket.h"
 #include "Ethernet.h"
 #include "Dhcp.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 #include "base/SoulissBase.h"
 
 // XXX: don't make assumptions about the value of MAX_SOCK_NUM.

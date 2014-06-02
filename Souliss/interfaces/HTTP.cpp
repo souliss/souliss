@@ -30,7 +30,7 @@
 
 #include "HTTP.h"
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 
 #include "ASCIItools.c"
 

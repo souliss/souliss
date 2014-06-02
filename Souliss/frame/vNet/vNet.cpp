@@ -35,7 +35,7 @@
 
 #if (VNET_MEDIA1_ENABLE)
 	// Driver for Wiznet W5100 / W5200
-	#if (ETH_W5100 || ETH_W5200 )
+	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
 		#include "drivers/ethW5x00/vNetDriver_eth.cpp"	
 	#endif
 	
@@ -53,13 +53,17 @@
 	
 #if (VNET_MEDIA2_ENABLE)
 	#if(CHIBI_AT86RF230)
-		#include "drivers/chibi/vNetDriver_chibi.h"	
+		#include "drivers/chibi/vNetDriver_chibi.c"	
+	#endif	
+	
+	#if(NRF24)
+		#include "drivers/nRF24/vNetDriver_nrf24.cpp"
 	#endif	
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)
 	// Driver for Wiznet W5100 / W5200
-	#if (ETH_W5100 || ETH_W5200 )
+	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
 		#include "drivers/ethW5x00/vNetDriver_raw.cpp"	
 	#endif
 	// Driver for Microchip EN28J60

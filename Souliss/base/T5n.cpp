@@ -101,11 +101,11 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 		The following pre-defined analog inputs are available,
 			Souliss_Logic_T52 - Temperature measure (-20, +50) °C
 			Souliss_Logic_T53 - Humidity measure (0, 100) %
-			Souliss_Logic_T54 - Pressure measure (0, 1500) hPa
+			Souliss_Logic_T54 - Light Sensor (0, 40) kLux
 			Souliss_Logic_T55 - Voltage (0, 400) V
 			Souliss_Logic_T56 - Current (0, 25)  A
 			Souliss_Logic_T57 - Power (0, 6500)  W
-			Souliss_Logic_T58 - 
+			Souliss_Logic_T58 - Pressure measure (0, 1500) hPa 
 			Souliss_Logic_T59 - 
 			
 		All typicals between T52 and T59 are handled with T51, simply the value

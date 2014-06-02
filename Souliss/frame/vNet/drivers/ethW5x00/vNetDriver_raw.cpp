@@ -31,7 +31,11 @@
 
 #if (! VNET_MEDIA1_ENABLE)
 	// Include the W5x00 drivers only if not yet done by Media1
-	#include "src/w5x00.cpp"
+#	if(ETH_W5100 || ETH_W5200)
+#		include "src/w5x00.cpp"
+#	elif(ETH_W5500)
+#		include "src/w5500.cpp"
+#	endif	
 #endif
 
 uint8_t src_mac_addr[6];							// Source MAC address
@@ -130,7 +134,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	// Send data
 	W5x00.send_data_processing(RAW_SOCK, ethstr.data, ethstr.datalen);
 	
-	#if(ETH_W5200)
+	#if(ETH_W5200 || ETH_W5500)
 	W5x00.execCmdSn(RAW_SOCK, Sock_SEND);	
 	#elif(ETH_W5100)
     W5x00.execCmdSn(RAW_SOCK, Sock_SEND_MAC);	

@@ -2,7 +2,13 @@
 // (c) Copyright 2009-2010 MCQN Ltd.
 // Released under Apache License, version 2.0
 
-#include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
+// Select the Wiznet controller model
+#if(ETH_W5100 || ETH_W5200)
+#	include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
+#elif(ETH_W5500)
+#	include "frame/vNet/drivers/ethW5x00/src/w5500.h"
+#endif
+
 #include "EthernetUdp.h"
 #include "src/util.h"
 

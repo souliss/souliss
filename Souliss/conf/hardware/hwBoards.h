@@ -61,6 +61,7 @@
 		0x03		WiFi Shield with Microchip MRF24WB0MA
 		0x04		Olimex MOD-ENC28J60 (UEXT) with Microchip ENC28J60
 		0x05		Olimex MOD-WIFI (UEXT) with Microchip MRF24WB0MA
+		0x06		Nordic nRF24L01 and nRF24L01+
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode

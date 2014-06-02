@@ -424,6 +424,55 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		1
+#	elif(QC_BOARDTYPE == 0x44)
+#		define	ETH_W5100				1
+#		define	NRF24					1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x45)
+#		define	ETH_ENC28J60			1	
+#		define	NRF24					1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x46)	
+#		define	COMMS_MODEL				0x06
+#		define	BOARD_MODEL				0x02
+#		define	NRF24					1	
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x47)
+#		define	ETH_W5200				1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x48)
+#		define	ETH_W5500				1	
+#		define	COMMS_MODEL				0x01
+#		define	BOARD_MODEL				0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x00)
@@ -447,6 +496,15 @@
 #		define	ARDUINO_DHCP			1
 #		define	ARDUINO_DNS				1
 #		define MaCaco_PERSISTANCE		1
+#	elif(QC_GATEWAYTYPE == 0x05)
+#		define	MaCaco_USERMODE			1
+#		define MaCaco_LASTIN			1
+#	elif(QC_GATEWAYTYPE == 0x06)
+#		define	MaCaco_USERMODE			1
+#		define 	ARDUINO_ETHLIB			1
+#		define	ARDUINO_DHCP			1
+#		define	ARDUINO_DNS				1
+#		define MaCaco_LASTIN			1
 #	endif
 
 #	if  (QC_INTERFACE == 0x00)
@@ -454,8 +512,10 @@
 #		define	HTTPSERVER				1
 #	elif(QC_INTERFACE == 0x02)
 #		define	OPENHAB					1
+#	elif(QC_INTERFACE == 0x03)
+#		define	OPENHAB					2
+#		define MaCaco_LASTIN			1
 #	endif
-
 
 // If dynamic request is used over Ethernet, communication between Ethernet
 // devices is done via MAC-RAW and only the gateway node use both UDP/IP and
@@ -472,6 +532,7 @@
 #	include "conf/frame/MaCacoCfg.h"
 #	include "conf/uIP/uIPopt.h"
 #	include "conf/chibi/chibiUsrCfg.h"
+#	include "conf/nRF24/nRF24UsrCfg.h"
 #	include "conf/usart/usartUsrCfg.h"												
 #	include "conf/eth/ethUsrCfg.h"
 #	include "conf/hardware/hwBoards.h"
@@ -491,6 +552,7 @@
 #	include "conf/frame/MaCacoCfg.h"
 #	include "conf/uIP/uIPopt.h"
 #	include "conf/chibi/chibiUsrCfg.h"
+#	include "conf/nRF24/nRF24UsrCfg.h"
 #	include "conf/usart/usartUsrCfg.h"												
 #	include "conf/eth/ethUsrCfg.h"
 #	include "conf/hardware/hwBoards.h"

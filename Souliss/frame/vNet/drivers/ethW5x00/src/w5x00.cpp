@@ -28,8 +28,6 @@ W5x00Class W5x00;
 #	define RXBUF_BASE 0x6000
 #endif
 
-#include "vram_w5x00.c"		// Use part of the RAM for data storage
-
 void W5x00Class::init(void)
 {
   delay(300);
@@ -83,7 +81,6 @@ uint16_t W5x00Class::getRXReceivedSize(SOCKET s)
 
 void W5x00Class::send_data_processing(SOCKET s, const uint8_t *data, uint16_t len)
 {
-
   // This is same as having no offset in a call to send_data_processing_offset
   send_data_processing_offset(s, 0, data, len);
 }

@@ -23,3 +23,12 @@ Copyright (C) 2012  Veseo
 		a reverse of last Microchip Application Library to find out changes that shall be applied to
 		get the new release working.
 		
+	Interface HTTP and HTTP/XML for Microchip ENC28J60
+		
+		The code hasn't been tested deeply and even compiling doesn't work properly
+			
+	Drivers for Winet W5100 / W5200 / W5500
+		
+		The drivers used are modified for oFrame usage, and while transferring multiple bytes are opening
+		and closing the SPI communication (CS low and then high) for each byte. The W5200 and W5500 support
+		transfer of multiple bytes, this feature is not used in the actual driver.

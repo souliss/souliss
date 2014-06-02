@@ -30,19 +30,19 @@
 
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
-/*
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
-#	include "gateway/HTTP.h"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-#	include "gateway/HTTP_uIP.h"
-#endif
-*/
+
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.h"
 #include "src/IEEE754/float16.h"
 #include "sensors/sensors.h"
 
-#define MAXINPIN	32		// Max number of input pins
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#	define MAXINPIN		69		// Max number of input pins
+#elif defined(__AVR_ATmega32U4__)
+#	define MAXINPIN		29		// Max number of input pins
+#else
+#	define MAXINPIN		29		// Max number of input pins
+#endif
 	
 /**************************************************************************/
 /*!
@@ -63,6 +63,8 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node);
 U8 Souliss_GetTypicals(U8 *memory_map);
 U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 output_slot, U8 numof_slot, U8 subscr_chnl);
 U8 Souliss_CommunicationChannels(U8 *memory_map);
+void Souliss_BatteryChannels(U8 *memory_map, U16 addr);
+U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr);
 void Souliss_JoinNetwork();
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway);
 void Souliss_SetAddressingServer(U8 *memory_map);
@@ -75,6 +77,7 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
 U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
 U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot);
+U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memory_map, U8 slot);
 U8 Souliss_DigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map, U8 slot);
 U8 Souliss_LowDigInHold(U8 pin, U8 value_state1, U8 value_state2, U8 *memory_map, U8 slot);
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue);

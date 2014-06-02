@@ -1,7 +1,11 @@
 #ifndef	_SOCKET_H_
 #define	_SOCKET_H_
 
-#include "w5x00.h"
+#if(ETH_W5100 || ETH_W5200)
+#	include "w5x00.h"
+#elif(ETH_W5500)
+#	include "w5500.h"
+#endif
 
 extern uint8_t socket(SOCKET s, uint8_t protocol, uint16_t port, uint8_t flag); // Opens a socket(TCP or UDP or IP_RAW mode)
 extern void close(SOCKET s); // Close socket

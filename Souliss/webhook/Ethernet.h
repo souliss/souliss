@@ -2,12 +2,11 @@
 #define ethernet_h
 
 #include <inttypes.h>
-//#include "W5x00.h"
 #include "IPAddress.h"
 #include "EthernetClient.h"
 #include "EthernetServer.h"
 #include "Dhcp.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 #include "base/SoulissBase.h"
 
 #define MAX_SOCK_NUM 4

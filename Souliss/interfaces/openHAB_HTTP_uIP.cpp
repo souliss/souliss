@@ -47,12 +47,12 @@ const char* xml[] = {"<s", ">", "</s", "<id", "</id"};
 	Init the interface
 */	
 /**************************************************************************/
-void openHABInit()
+void openHABInit(U8 *memory_map)
 {
 	// Set an internal subscription in order to collect data from other
 	// nodes in the network
 	
-	MaCaco_InternalSubcription();
+	MaCaco_InternalSubcription(memory_map);
 }
 
 /**************************************************************************
@@ -471,9 +471,17 @@ void openHABInterface(U8 *memory_map)
 			srvcln_retrieve(buff, HTTP_REQBYTES);
 			
 			// Move data into a string for parsing
+			indata=1;
 			incomingURL = "";
-			for(i=0;i<data_len;i++)						
+
+			for(U8 i=0;i<HTTP_REQBYTES;i++)
+			{
+				// Stop at next space after GET
+				if(incomingURL.startsWith("GET /") && buf[i] == 32)
+					break;
+					
 				incomingURL = incomingURL + buf[i];	
+			}					
 		}
 	}	
 }

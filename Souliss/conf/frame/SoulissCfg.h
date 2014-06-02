@@ -44,19 +44,23 @@
 							
 /**************************************************************************/
 /*!
-	The openHAB Server is an HTTP server listening on the port number 80 that
+	The openHAB Server is an TCP or UDP server listening for HTTP URLs and 
 	enable data transfer using a XML string.
 	
-	An external device can access the data into the node using a simple HTTP
-	GET request. That node can access data from all the other in the network
-	acting as a Souliss to XML gateway.
+	Enabled in TCP mode, the node can be polled using a standard HTTP URL
+	(connection in TCP on port 80) this allow data forcing and retriving.
+	Enabled in UDP mode, the node once polled send data every time that
+	new data are available.
+	
+	Data are available in XML format.
 	
 	The openHAB Server is supported only for Ethernet based nodes equipped with
 	Wiznet W5100/W5200 controller.
 	
         Value       
         0x0         Disable (Default)
-        0x1         Enable
+        0x1         Enable in TCP
+		0x2			Enable in UDP
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
@@ -92,6 +96,14 @@
 #define	WTD_EXPIRE	0x10
 #define	WTD_FAILED	0x00
 #define	WTD_SET		0x19
-											
+	
+/**************************************************************************/
+/*!
+	Souliss_AnalogIn2State configuration parameters
+*/
+/**************************************************************************/
+#define AIN2S_BOTTOM  300
+#define AIN2S_TOP     700
+	
 #endif
 							  

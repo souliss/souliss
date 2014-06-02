@@ -396,6 +396,21 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 
 /**************************************************************************
 /*!
+	Define a Communication Channel as battery operated
+*/	
+/**************************************************************************/	
+void Souliss_BatteryChannels(U8 *memory_map, U16 addr)
+{
+	for(U8 i=0;i<MaCaco_NODES;i++)
+		if(((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) == addr))
+		{
+			MaCaco_subscribe_battery(i);
+			return;
+		}	
+}
+
+/**************************************************************************
+/*!
 	Get definitions for typical from multiple remote devices
 	
 	Do same job of Souliss_GetTypical for more nodes at same time, using
@@ -433,6 +448,21 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 	return ret;	
 } 
 #endif
+
+/**************************************************************************
+/*!
+	Record into a node a subscription at code time, it has the same effect
+	of a runtime subscription but avoids long wait times.
+	
+	This is useful for battery operated (or generally devices not running 24h)
+	that may never match the subscription request because sleeping at time.
+*/	
+/**************************************************************************/	
+U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr)
+{
+	if(gateway_addr)
+		MaCaco_subscribe_record(gateway_addr, MaCaco_SUBSCRREQ, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN);
+}
 	
 /**************************************************************************
 /*!
@@ -582,6 +612,59 @@ U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory
 	
 	return MaCaco_NODATACHANGED;
 }
+
+/**************************************************************************
+/*!
+	Use a single analog input connected to two different pushbuttons, use 
+	different pull-up resistors to define different voltage drops for the
+	two pushbuttons.
+	
+	If the analog value goes over the top limit or below the bottom one,
+	the pushbuttons are pressed, if the analog value stay in the middle 
+	no action is taken.
+*/	
+/**************************************************************************/
+U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memory_map, U8 slot)
+{
+	uint16_t iPinValue = 0;  
+	bool bState=false;
+	bool bMiddle=false;
+
+	iPinValue = analogRead(pin);    
+
+	if (iPinValue >= AIN2S_TOP)
+	{
+	  bState=true;
+	  bMiddle=false;
+	}
+	else if (iPinValue <= AIN2S_BOTTOM)
+	{
+	  bState=false;
+	  bMiddle=false;
+	}
+	else 
+		bMiddle=true;
+
+
+	// If pin is on, set the "value"
+    if(bState && !InPin[pin] && !bMiddle)
+    {    
+        memory_map[MaCaco_IN_s + slot] = value_button1;
+        InPin[pin] = true;
+        return MaCaco_DATACHANGED;
+    }
+    else if(!bState && !InPin[pin] && !bMiddle)
+    {
+        memory_map[MaCaco_IN_s + slot] = value_button2;
+        InPin[pin] = true;
+        return MaCaco_DATACHANGED;
+    }
+	else if(bMiddle) 
+		InPin[pin] = false;
+
+	return MaCaco_NODATACHANGED;
+}
+
 
 /**************************************************************************
 /*!

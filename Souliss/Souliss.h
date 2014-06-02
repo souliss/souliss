@@ -39,13 +39,13 @@
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 #	include "interfaces/HTTP.h"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 #	include "interfaces/HTTP_uIP.h"
-#elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
+#elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 #	include	"webhook/webhook.h"
-#elif(OPENHAB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_ENC28J60))
+#elif(OPENHAB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
 #	include "interfaces/openHAB.h"
 #endif
 
@@ -59,14 +59,16 @@
 #include "frame/MaCaco/MaCaco.cpp"
 #include "frame/vNet/vNet.cpp"
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
+#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 	#include "interfaces/HTTP.cpp"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 	#include "interfaces/HTTP_uIP.cpp"
-#elif(OPENHAB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200))
-#	include "interfaces/openHAB.cpp"
-#elif(OPENHAB && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-#	include "interfaces/openHAB_uIP.cpp"
+#elif((OPENHAB == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
+#	include "interfaces/openHAB_HTTP.cpp"
+#elif((OPENHAB == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
+#	include "interfaces/openHAB_UDP.cpp"
+#elif((OPENHAB == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
+#	include "interfaces/openHAB_HTTP_uIP.cpp"
 #endif
 	
 // Include IO definitions and drivers for supported hardware

@@ -7,7 +7,7 @@
 #include "Typicals.h"
 
 //These are Samsung MH026FB specific
-#define tempmask 						0xF//temp e` quarto byte dell'input
+#define tempmask 						0xF
 #define funmask 						0xF0
 #define fanmask 						0x700
 #define swirlmask 						0x800

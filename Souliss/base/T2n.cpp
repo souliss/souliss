@@ -199,38 +199,53 @@ void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd))
+	if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) || 
+		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) || 
+		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd))
 	{
 		// Change the output value, between OPEN and CLOSE always OFF is performed	
-		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open))
+		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd) || 
+			(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) || 
+			(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
-		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) && (memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Open))
+		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) && 
+				(memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Open))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// Open Command
-		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) && (memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Close))
+		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) && 
+				(memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Close))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close command
-		
+		else	// Catch all
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
+						
 		// If a command was issued, set the timer
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_Coil_Off)
 		{
-			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_Timer_Val;			// Set timer value
+			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_Timer_Val;				// Set timer value
+			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
+			
 			*trigger = Souliss_TRIGGED;		
 		}
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
 	}
-	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Close) || ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) && (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_Timer_Off)))
+	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Close) || 
+			((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) && 
+				(memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off)))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Close;			// Close Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
   		*trigger = Souliss_TRIGGED;
 	}
-	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Open) || ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) && (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_Timer_Off)))
+	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Open) || 
+			((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) && 
+				(memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off)))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Open;			// Open Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
   		*trigger = Souliss_TRIGGED;	
 	}
-	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_Timer_Off))
+	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && 
+			(memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_NoLimSwitch;				// No Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
@@ -245,6 +260,6 @@ void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_T22_Timer(U8 *memory_map, U8 slot)
 {
-	if(memory_map[MaCaco_IN_s + slot] > Souliss_T2n_Timer_Off)				// Memory value is used as timer
-		memory_map[MaCaco_IN_s + slot]--;									// Decrease timer
+	if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T2n_Timer_Off)				// Memory value is used as timer
+		memory_map[MaCaco_AUXIN_s + slot]--;									// Decrease timer
 }

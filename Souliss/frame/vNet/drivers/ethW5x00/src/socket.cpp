@@ -1,5 +1,16 @@
-#include "w5x00.h"
 #include "socket.h"
+
+// Select the Wiznet controller model
+#if(ETH_W5100 || ETH_W5200)
+#	include "w5x00.h"
+
+#	define	pntcast		(uint8_t *)
+#elif(ETH_W5500)
+#	include "w5500.h"
+	// A type cast isn't required, leave blank
+#	define	pntcast		
+#endif
+
 
 static uint16_t local_port;
 
@@ -271,7 +282,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
     switch (W5x00.readSnMR(s) & 0x07)
     {
     case SnMR::UDP :
-      W5x00.read_data(s, (uint8_t *)ptr, head, 0x08);
+      W5x00.read_data(s, pntcast ptr, head, 0x08);
       ptr += 8;
       // read peer's IP address, port number.
       addr[0] = head[0];
@@ -286,7 +297,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       if (data_len > len)
       {
         // read as much data as will fit into buf 
-        W5x00.read_data(s, (uint8_t *)ptr, buf, len); // data copy.
+        W5x00.read_data(s, pntcast ptr, buf, len); // data copy.
          
         // skip over the extra bytes
         ptr += data_len;
@@ -296,7 +307,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       }
       else
       {
-        W5x00.read_data(s, (uint8_t *)ptr, buf, data_len); // data copy.
+        W5x00.read_data(s, pntcast ptr, buf, data_len); // data copy.
         ptr += data_len;
       }	  
 
@@ -304,7 +315,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       break;
 
     case SnMR::IPRAW :
-      W5x00.read_data(s, (uint8_t *)ptr, head, 0x06);
+      W5x00.read_data(s, pntcast ptr, head, 0x06);
       ptr += 6;
 
       addr[0] = head[0];
@@ -317,7 +328,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       if (data_len > len)
       {
         // read as much data as will fit into buf 
-        W5x00.read_data(s, (uint8_t *)ptr, buf, len); // data copy.
+        W5x00.read_data(s, pntcast ptr, buf, len); // data copy.
          
         // skip over the extra bytes
         ptr += data_len;
@@ -327,7 +338,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       }
       else
       {
-        W5x00.read_data(s, (uint8_t *)ptr, buf, data_len); // data copy.
+        W5x00.read_data(s, pntcast ptr, buf, data_len); // data copy.
         ptr += data_len;
       }	 
 
@@ -335,7 +346,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       break;
 
     case SnMR::MACRAW:
-      W5x00.read_data(s,(uint8_t*)ptr,head,2);
+      W5x00.read_data(s,pntcast ptr,head,2);
       ptr+=2;
       data_len = head[0];
       data_len = (data_len<<8) + head[1] - 2;
@@ -343,7 +354,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       if (data_len > len)
       {
         // read as much data as will fit into buf 
-        W5x00.read_data(s, (uint8_t *)ptr, buf, len); // data copy.
+        W5x00.read_data(s, pntcast ptr, buf, len); // data copy.
          
         // skip over the extra bytes
         ptr += data_len;
@@ -353,7 +364,7 @@ uint16_t recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *addr, uint16_t 
       }
       else
       {
-        W5x00.read_data(s, (uint8_t *)ptr, buf, data_len); // data copy.
+        W5x00.read_data(s, pntcast ptr, buf, data_len); // data copy.
         ptr += data_len;
       }	 
 	  

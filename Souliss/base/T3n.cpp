@@ -116,9 +116,9 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	if(*(U16*)(memory_map + MaCaco_IN_s + slot + 1) != Souliss_T3n_RstCmd)
 	{		
 		// If there is a too small change in the new temperature
-		if(abs((in_temp-actual_temp)/actual_temp) > Souliss_T3n_DeadBand)
-			actual_temp = in_temp;													// Set the new temperature value
-
+			if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
+				actual_temp = in_temp;													// Set the new temperature value
+		
 		*(U16*)(memory_map + MaCaco_IN_s + slot + 1) = Souliss_T3n_RstCmd;		// Reset	
 	}
 	
@@ -129,9 +129,9 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	if(!(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
 	{
 		// Heating Mode
-		if(((actual_temp-actual_setpnt)/actual_temp) < -Souliss_T3n_DeadBand)
+		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingOn;	// Active the heating 
-		else if(((actual_temp-actual_setpnt)/actual_temp) > Souliss_T3n_DeadBand)
+		else if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
 		else
 			*trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
@@ -139,9 +139,9 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	else if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingMode)
 	{
 		// Cooling Mode
-		if(((actual_temp-actual_setpnt)/actual_temp) > Souliss_T3n_DeadBand)
+		if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingOn;	// Active the cooling 
-		else if(((actual_temp-actual_setpnt)/actual_temp) < -Souliss_T3n_DeadBand)
+		else if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling 
 		else
 			*trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
@@ -150,16 +150,16 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	// Check the fan mode (Manual / Auto)
 	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_FanAutoState)
 	{
-		float deviation = abs((actual_temp-actual_setpnt)/actual_temp);
+		float deviation = abs(actual_temp-actual_setpnt);
 		
-		if(deviation > Souliss_T3n_ThHigh)
+		if(deviation > (Souliss_T3n_ThHigh*actual_temp))
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Active Fan1 + Fan2 + Fan3
 		else if(deviation > Souliss_T3n_ThMed)
 		{
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2);						// Active Fan1 + Fan2
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_FanOn3;
 		}
-		else if(deviation > Souliss_T3n_DeadBand)
+		else if(deviation > (Souliss_T3n_DeadBand*actual_temp))
 		{
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1);											// Active Fan1
 			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);

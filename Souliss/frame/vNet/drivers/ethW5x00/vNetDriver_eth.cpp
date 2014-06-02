@@ -30,7 +30,12 @@
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
 
-#include "frame/vNet/drivers/ethW5x00/src/w5x00.cpp"
+#if(ETH_W5100 || ETH_W5200)
+#	include "src/w5x00.cpp"
+#elif(ETH_W5500)
+#	include "src/w5500.cpp"
+#endif
+
 #include "frame/vNet/drivers/ethW5x00/src/socket.cpp"
 #include "frame/vNet/tools/UserMode.c"
 

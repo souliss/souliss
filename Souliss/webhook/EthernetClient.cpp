@@ -5,9 +5,15 @@
 	All modification are tracked in the comments.
 ***************************************************************************/
 
-#include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
+// Select the Wiznet controller model
+#if(ETH_W5100 || ETH_W5200)
+#	include "frame/vNet/drivers/ethW5x00/src/w5x00.h"
+#elif(ETH_W5500)
+#	include "frame/vNet/drivers/ethW5x00/src/w5500.h"
+#endif
+
 #include "frame/vNet/drivers/ethW5x00/src/socket.h"
-#include "conf/ethUsrCfg.h"
+#include "conf/eth/ethUsrCfg.h"
 
 extern "C" {
   #include "string.h"

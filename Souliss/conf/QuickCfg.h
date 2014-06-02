@@ -104,6 +104,11 @@
 		0x41		Arduino Ethernet (or Ethernet Shield) with USART 
 		0x42		Arduino with ENC28J60 Ethernet Shield and USART
 		0x43		Arduino with USART
+		0x44		Arduino Ethernet (or Ethernet Shield) with Nordic nRF24L01 or nRF24L01+
+		0x45		Arduino with ENC28J60 Ethernet Shield and  Nordic nRF24L01 or nRF24L01+
+		0x46		Arduino with Nordic nRF24L01 or nRF24L01+	
+		0x47		Arduino with W5200 Ethernet Shield
+		0x48		Arduino with W5500 Ethernet Shield
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))									// Define manually only in Detailed Configuration Mode
@@ -119,10 +124,11 @@
 		Value       
         0x00        No selection (Default)
 		0x01		Gateway
-		0x02		Gateway and Data Persistance
+		0x02		Gateway and Data PERSISTANCE Mode
 		0x03		Gateway with Arduino Ethernet Library Compatibility
-		0x04		Gateway with Arduino Ethernet Library Compatibility and Data Persistance
-		
+		0x04		Gateway with Arduino Ethernet Library Compatibility and Data PERSISTANCE Mode
+		0x05		Gateway with LASTIN Mode
+		0x06 		Gateway with Arduino Ethernet Library Compatibility and LASTIN Mode
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(GATEWAYTYPE_INSKETCH))								// Define manually only in Detailed Configuration Mode
@@ -138,8 +144,9 @@
         0x00        No selection (Default)
 		0x01		HTTP Command Parser
 		0x02		openHAB HTTP XML Interface
+		0x03		openHAB	UDP  XML Interface
 		
-*0
+*/
 /**************************************************************************/
 #if(QC_ENABLE && !defined(INTERFACE_INSKETCH))								// Define manually only in Detailed Configuration Mode
 #	define	QC_INTERFACE		0x00

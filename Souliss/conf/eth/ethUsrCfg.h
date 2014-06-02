@@ -40,6 +40,8 @@
         0x1         Enable
 	
 		ETH_W5100		-  Wiznet    W5100 			(Wired Ethernet)
+		ETH_W5200		-  Wiznet    W5200 			(Wired Ethernet)
+		ETH_W5500		-  Wiznet    W5500 			(Wired Ethernet)		
 		ETH_ENC28J60	-  Microchip ENC28J60		(Wired Ethernet)
 		WIFI_MRF24		-  Microchip MRF24WB0MA 	(WiFi  Ethernet) 
 */
@@ -47,6 +49,7 @@
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
 #	define ETH_W5100  		0
 #	define ETH_W5200  		0
+#	define ETH_W5500		0
 #	define ETH_ENC28J60  	0
 #	define WIFI_MRF24		0
 #endif
