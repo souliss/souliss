@@ -42,16 +42,6 @@
 
 #define	MAXVALUES		5					// Number of values into a single URL, comma separated
 
-#define	CMDBUFF_NO		5
-#define	CMDBUFF_HEADER	(5*CMDBUFF_NO)		// Lenght of the header structure
-#define	CMDBUFF_VALS	(5*CMDBUFF_NO)		// Lenght of the vals area
-
-typedef struct
-{
-	U16	address;							// Node Address
-	U8  slot;								// Node Slot
-} CommandBufferHeader;
-
 #if (OPENHAB_DEBUG)
 	#define OPENHAB_LOG Serial.print
 #endif

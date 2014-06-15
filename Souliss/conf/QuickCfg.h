@@ -145,8 +145,7 @@
 		0x01		HTTP Command Parser
 		0x02		openHAB HTTP XML Interface
 		0x03		openHAB	UDP  XML Interface
-		0x04		Modbus TCP/IP
-		0x05		Modbus RTU
+		
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(INTERFACE_INSKETCH))								// Define manually only in Detailed Configuration Mode

@@ -55,7 +55,7 @@
 	Data are available in XML format.
 	
 	The openHAB Server is supported only for Ethernet based nodes equipped with
-	Wiznet W5100/W5200/W5500 controller.
+	Wiznet W5100/W5200 controller.
 	
         Value       
         0x0         Disable (Default)
@@ -68,51 +68,7 @@
 #endif
 
 #define	OPENHAB_DEBUG	0
-			
-/**************************************************************************/
-/*!
-	The HTTP server is listening on the port number 80 and parse remote 
-	commands via HTTP GET request. It doesn't provide any data retrieve 
-	mechanism, allows only to send commands over the network.
-	
-        Value       
-        0x0         Disable (Default)
-        0x1         Enable
-*/
-/**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define HTTPSERVER  	0
-#endif
-
-/**************************************************************************/
-/*!
-	The Modbus TCP/RTU enable data transfer using standard Modbus protocol,
-	an external device can access the data into the node using a standard
-	Modbus request. 
-	
-	That node can access data from all the other in the network acting as a 
-	Souliss to Modbus interface.
-	
-	This feature is intender to get data from a Souliss node, so Souliss is 
-	always a Modbus slave. In case of Modbus TCP a dedicated socket is used,
-	rather in case of Modbus RTU the internal USART is used.
-	
-	This code implement only partially the Modbus protocol and doesn't allow
-	multidrop configuration and/or bridging in RTU mode.
-*/
-/**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define	MODBUS					0
-#	define 	MODBUS_TCP  			1
-#	define 	MODBUS_RTU  			0
-#endif
-
-#define	MODBUS_DEBUG				0
-
-#define	MODBUS_ID					1	
-#define	MODBUS_RTU_BAUD				115200
-#define MODBUS_TCP_PORT				502
-			
+					
 /**************************************************************************/
 /*!
 	The dynamic addressing node act as server for Souliss addresses over

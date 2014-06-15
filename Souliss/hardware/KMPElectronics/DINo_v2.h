@@ -46,8 +46,6 @@
 #define OUT4			7		
 #define	STATLED			13
 
-#define	RS485ENABLE		3
-
 #define	SetInput1()			pinMode(IN1, INPUT)
 #define	SetInput2()			pinMode(IN2, INPUT)
 #define	SetInput3()			pinMode(IN3, INPUT)
@@ -78,7 +76,5 @@
 							digitalWrite(10, HIGH); 				\
 							pinMode(9, OUTPUT);						\
 							digitalWrite(9, LOW);					\
-							pinMode(1, OUTPUT);						\
-							pinMode(0, INPUT);						\
-							delay(1000)								
+							delay(1000)
 #endif

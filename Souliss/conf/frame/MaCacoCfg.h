@@ -288,18 +288,14 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 
 #if(MaCaco_PERSISTANCE)
 #	define	MaCaco_G_TYP_s		MaCaco_P_TYP_s									// Pointer for gateway data in case of PERSISTANCE mode
-#	define	MaCaco_G_TYP_f		MaCaco_P_TYP_f
 #	define	MaCaco_G_OUT_s		MaCaco_P_OUT_s                                  // Pointer for gateway data in case of PERSISTANCE mode
-#	define	MaCaco_G_OUT_f		MaCaco_P_OUT_f
 #	define	MaCaco_MEMMAP		MaCaco_P_MEMMAP                                 // Lenght
 #elif(MaCaco_LASTIN)
 #	define	MaCaco_G_OUT_s		MaCaco_L_OUT_s									// Pointer for gateway data in case of LASTIN mode
 #	define	MaCaco_MEMMAP		MaCaco_L_MEMMAP                                 // Lenght
 #else
 #	define	MaCaco_G_TYP_s		MaCaco_TYP_s									// Pointer for gateway data
-#	define	MaCaco_G_TYP_f		MaCaco_TYP_f
 #	define	MaCaco_G_OUT_s		MaCaco_OUT_s									// Pointer for gateway data
-#	define	MaCaco_G_OUT_f		MaCaco_OUT_f
 #	define	MaCaco_MEMMAP		MaCaco_T_MEMMAP									// Lenght
 #endif
 

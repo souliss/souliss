@@ -514,14 +514,7 @@
 #		define	OPENHAB					1
 #	elif(QC_INTERFACE == 0x03)
 #		define	OPENHAB					2
-#	elif(QC_INTERFACE == 0x04)
-#		define	MODBUS					1
-#		define 	MODBUS_TCP  			1
-#		define 	MODBUS_RTU  			0
-#	elif(QC_INTERFACE == 0x05)
-#		define	MODBUS					1
-#		define 	MODBUS_TCP  			0
-#		define 	MODBUS_RTU  			1
+#		define MaCaco_LASTIN			1
 #	endif
 
 // If dynamic request is used over Ethernet, communication between Ethernet

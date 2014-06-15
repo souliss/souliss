@@ -1,14 +1,6 @@
 Souliss
 Copyright (C) 2014  Veseo
 
-Release note for revision Alpha 5.2.1, on dd/mm/yyyy
-	
-	Introduced a buffer for the XML interface for either TCP and UDP cases
-	to handle multiple commands in short time.
-		- Command buffer for HTTP/XML Interface
-		- Command buffer for UDP/XML  Interface
-		- Support for DINov2 / ProDINo RS485
-
 Release note for revision Alpha 5.2, on 22/05/2014
 	
 	A new XML data interface over UDP has been introduced, based on LASTIN

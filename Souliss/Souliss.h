@@ -47,8 +47,6 @@
 #	include	"webhook/webhook.h"
 #elif(OPENHAB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
 #	include "interfaces/openHAB.h"
-#elif(MODBUS)
-#	include "interfaces/Modbus.h"
 #endif
 
 // Include IO definitions and drivers for supported hardware
@@ -71,8 +69,6 @@
 #	include "interfaces/openHAB_UDP.cpp"
 #elif((OPENHAB == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
 #	include "interfaces/openHAB_HTTP_uIP.cpp"
-#elif(MODBUS)
-#	include "interfaces/Modbus.cpp"
 #endif
 	
 // Include IO definitions and drivers for supported hardware
