@@ -200,10 +200,10 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 		The maximum number of nodes and slots depends on configuration as shown
 		in below table:
 		
-									Nodes		Slots									
-			User Mode with			30			35
-			Passthrough				45			24			(Default)
-									70			4
+					Nodes		Slots									
+					30			35
+					45			24			(Default)
+					70			4
 			
 			Due to the maximum addressing space (1 byte) the
 			following constrain shall be verified:
@@ -216,7 +216,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 			MaCaco_HEADER shall not be modified.
 			
 			The MaCaco protocol use (3*MaCaco_NODES + 4*MaCaco_SLOT + MaCaco_CONFPARAM)
-			bytes of RAM.
+			bytes of RAM in case of MaCaco_SUBSCRIBERS selected, if not the 3*MaCaco_NODES
+			quantity doesn't apply.
 			
 		As general requirements, all nodes shall have the same type of configuration
 		and size for the shared memory map, this regardless their action as standard
@@ -234,6 +235,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 /**************************************************************************/							 
 #if(!(QC_ENABLE))																// Define manually only in Detailed Configuration Mode
 #	define MaCaco_USERMODE		1												// User Mode
+#	define MaCaco_SUBSCRIBERS	1												// Enable subscribing to other nodes
 #	define MaCaco_PERSISTANCE	0												// Data Persistance (increase RAM usage)
 #	define MaCaco_LASTIN		0												// Data Persistance for last incoming values
 #endif
@@ -250,11 +252,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_TYPLENGHT		MaCaco_SLOT										// Number of slot
 #define MaCaco_OUTLENGHT		MaCaco_SLOT										// Number of slot
 
-#define MaCaco_ADDRESSES_s		0												// First byte of the addresses for the remote nodes
-#define MaCaco_ADDRESSES_f		(2*MaCaco_NODES-1)								// Last  byte of the addresses for the remote nodes
-#define MaCaco_HEALTY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
-#define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
-#define MaCaco_CONF_s			(MaCaco_HEALTY_f+1)								// First byte of the configuration parameters
+#define MaCaco_CONF_s			0												// First byte of the configuration parameters
 #define MaCaco_CONF_f			(MaCaco_CONF_s+MaCaco_CONFPARAM-1)				// Last  byte of the configuration parameters
 #define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)								// First byte of the auxiliary inputs
 #define MaCaco_AUXIN_f			(MaCaco_AUXIN_s+MaCaco_SLOT-1)					// Last  byte of the auxiliary inputs
@@ -265,17 +263,22 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_OUT_s			(MaCaco_TYP_f+1)								// First byte for output data
 #define MaCaco_OUT_f			(MaCaco_OUT_s+MaCaco_SLOT-1)					// Last  byte for output data
 
+#define MaCaco_ADDRESSES_s		(MaCaco_OUT_f+1)								// First byte of the addresses for the remote nodes
+#define MaCaco_ADDRESSES_f		(MaCaco_ADDRESSES_s+ 2*MaCaco_NODES-1)			// Last  byte of the addresses for the remote nodes
+#define MaCaco_HEALTY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
+#define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
+
 #define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeble data by a remote device
 #define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeble data by a remote device
 
-#define	MaCaco_P_TYP_s			(MaCaco_OUT_f+1)								// First byte for typical logic definitions in PERSISTANCE mode
+#define	MaCaco_P_TYP_s			(MaCaco_HEALTY_f+1)								// First byte for typical logic definitions in PERSISTANCE mode
 #define MaCaco_P_TYP_f			(MaCaco_P_TYP_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for typical logic definitions in PERSISTANCE mode
 #define	MaCaco_P_OUT_s			(MaCaco_P_TYP_f+1)								// First byte for output data in PERSISTANCE mode
 #define MaCaco_P_OUT_f			(MaCaco_P_OUT_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for output data in PERSISTANCE mode
 
 #define	MaCaco_L_BUFSIZE		3												// Number of nodes stored in the buffer for LASTIN mode
 #define	MaCaco_L_IDX_NULL		255												// Null value for the index in LASTIN mode									
-#define MaCaco_L_TYP5n_s		(MaCaco_OUT_f+1)								// First byte for last incoming data in case of LASTIN mode
+#define MaCaco_L_TYP5n_s		(MaCaco_HEALTY_f+1)								// First byte for last incoming data in case of LASTIN mode
 #define MaCaco_L_TYP5n_f		(MaCaco_L_TYP5n_s+(2*MaCaco_NODES))				// First byte for last incoming data in case of LASTIN mode
 #define	MaCaco_L_IDX_s			(MaCaco_L_TYP5n_f+1)							// First byte for node index in case of LASTIN mode
 #define	MaCaco_L_IDX_f			(MaCaco_L_IDX_s+MaCaco_L_BUFSIZE)				// Last byte for node index in case of LASTIN mode
@@ -283,19 +286,30 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define	MaCaco_L_OUT_f			(MaCaco_L_OUT_s+(MaCaco_L_BUFSIZE*MaCaco_SLOT))	// Last byte for the output data in LASTIN mode
 
 #define MaCaco_T_MEMMAP			(MaCaco_OUT_f+1)								// Lenght of the whole memory map
+#define MaCaco_S_MEMMAP			(MaCaco_HEALTY_f+1)								// Lenght of the whole memory map in case of Subscribers nodes
 #define MaCaco_P_MEMMAP			(MaCaco_P_OUT_f+1)								// Lenght of the whole memory map in case of PERSISTANCE mode
 #define	MaCaco_L_MEMMAP			(MaCaco_L_OUT_f+1)								// Lenght of the whole memory map in case of LASTIN mode
 
 #if(MaCaco_PERSISTANCE)
 #	define	MaCaco_G_TYP_s		MaCaco_P_TYP_s									// Pointer for gateway data in case of PERSISTANCE mode
+#	define	MaCaco_G_TYP_f		MaCaco_P_TYP_f
 #	define	MaCaco_G_OUT_s		MaCaco_P_OUT_s                                  // Pointer for gateway data in case of PERSISTANCE mode
+#	define	MaCaco_G_OUT_f		MaCaco_P_OUT_f
 #	define	MaCaco_MEMMAP		MaCaco_P_MEMMAP                                 // Lenght
 #elif(MaCaco_LASTIN)
 #	define	MaCaco_G_OUT_s		MaCaco_L_OUT_s									// Pointer for gateway data in case of LASTIN mode
 #	define	MaCaco_MEMMAP		MaCaco_L_MEMMAP                                 // Lenght
+#elif(MaCaco_SUBSCRIBERS)
+#	define	MaCaco_G_TYP_s		MaCaco_TYP_s									// Pointer for gateway data
+#	define	MaCaco_G_TYP_f		MaCaco_TYP_f
+#	define	MaCaco_G_OUT_s		MaCaco_OUT_s									// Pointer for gateway data
+#	define	MaCaco_G_OUT_f		MaCaco_OUT_f
+#	define	MaCaco_MEMMAP		MaCaco_S_MEMMAP									// Lenght
 #else
 #	define	MaCaco_G_TYP_s		MaCaco_TYP_s									// Pointer for gateway data
+#	define	MaCaco_G_TYP_f		MaCaco_TYP_f
 #	define	MaCaco_G_OUT_s		MaCaco_OUT_s									// Pointer for gateway data
+#	define	MaCaco_G_OUT_f		MaCaco_OUT_f
 #	define	MaCaco_MEMMAP		MaCaco_T_MEMMAP									// Lenght
 #endif
 

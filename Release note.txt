@@ -1,6 +1,17 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+Release note for revision Alpha 6.0.1, on dd/mm/yyyy
+	
+	Modbus TCP/RTU interface is back available. Introduced 
+	a buffer for the XML interface for either TCP and UDP cases
+	to handle multiple commands in short time.
+		- Modbus TCP/RTU interface
+		- Modified the memory handling, saving more RAM on Peers
+		- Command buffer for HTTP/XML Interface
+		- Command buffer for UDP/XML  Interface
+		- Bugfix
+
 Release note for revision Alpha 5.2, on 22/05/2014
 	
 	A new XML data interface over UDP has been introduced, based on LASTIN

@@ -35,7 +35,7 @@
 #include "frame/vNet/stack/uIP/uip_arch.c"
 #include "frame/vNet/stack/uIP/uip_arp.c"
 
-#include "frame/vNet/drivers/ethMF24/vNetCallBack.c"
+#include "frame/vNet/drivers/ethMRF24/vNetCallBack.c"
 #include "frame/vNet/drivers/ethMRF24/src/g2100.c"
 #include "frame/vNet/drivers/ethMRF24/src/nic.c"
 

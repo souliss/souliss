@@ -231,7 +231,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		// Verify if the addressing information are available in the configuration
 		// parameters of the memory map
 		
-		// The first parameter is the keyidval number used to indetify my previous request
+		// The first parameter is the keyidval number used to identify my previous request
 		U8 *confparameters_p = (memory_map + MaCaco_CONFPARAM);
 		if((*(U16 *)confparameters_p) == keyidval)
 		{
@@ -344,6 +344,7 @@ void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot)
 	provide feedback on communication status.
 */	
 /**************************************************************************/	
+#if(MaCaco_SUBSCRIBERS)
 U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 output_slot, U8 numof_slot, U8 subscr_chnl)
 {
 	// Verify the number of data to collect
@@ -365,7 +366,6 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 	from the user interface.
 */	
 /**************************************************************************/	
-#if(MaCaco_USERMODE)
 U8 Souliss_CommunicationChannels(U8 *memory_map)
 {
 	U8 ret=0;

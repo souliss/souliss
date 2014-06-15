@@ -1,8 +1,4 @@
 /**************************************************************************
-Temporary version Alpha5 - 18/05/14 16:16
-**************************************************************************/
-
-/**************************************************************************
 	Souliss 
     Copyright (C) 2014  
 
@@ -37,6 +33,7 @@ Temporary version Alpha5 - 18/05/14 16:16
 #if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
 
 #include "ASCIItools.c"
+#include "BUFFERtools.c"
 
 String incomingURL = String(XML_REQBYTES);			// The GET request is stored in incomingURL
 char buf[XML_BUFBYTES];								// Used for temporary operations
@@ -145,11 +142,28 @@ void openHABInterface(U8 *memory_map)
 		}
 	}
 	else
+	{
+		// If needed, restart the socket
+		if(W5x00.readSnSR(SRV_SOCK1) != SnSR::UDP)
+		{
+			socket(SRV_SOCK1, SnMR::UDP, udpXML_inPORT, 0);	
+		}		
+	
+		// Reset
 		indata=0;
+		
+		// Send buffered commands
+		command_send();			
+	}
 	
 	// Look for data available from the LASTIN buffer
 	if(MaCaco_isLastIn(memory_map))
 	{
+		#if(OPENHAB_DEBUG)
+			OPENHAB_LOG("(UDP/XML)<LASTIN");
+			OPENHAB_LOG(">\r\n");								
+		#endif		
+	
 		incomingURL = "GET /status";
 		indata=1;
 	}
@@ -298,12 +312,7 @@ void openHABInterface(U8 *memory_map)
 				valf[0]  = incomingURL.indexOf(",", val_s);
 				if(valf[0] != 0xFF)
 				{
-				OPENHAB_LOG("(UDP/XML)<Parametri multipli>\r\n");
-				OPENHAB_LOG("(UDP/XML)<valf[0]=");
-				OPENHAB_LOG(valf[0],DEC);
-				OPENHAB_LOG(">\r\n");		
-
-				// Buffer used to store offset of values
+					// Buffer used to store offset of values
 					for(i=0;i<MAXVALUES;i++)	valf[i]=0;
 					
 					// Get the offset of all values
@@ -356,7 +365,7 @@ void openHABInterface(U8 *memory_map)
 			
 				// Send a command to the node	
 				if((id < MaCaco_NODES) && (id != MaCaco_LOCNODE) && (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id) != 0x0000))	// If is a remote node, the command act as remote input				
-					MaCaco_send(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + slot, MAXVALUES, vals);		
+					command_buffer(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, vals);
 				else if (id == MaCaco_LOCNODE)								// If is a local node (me), the command is written back
 				{
 					i = 0;

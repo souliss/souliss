@@ -33,6 +33,7 @@
 #if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
 
 #include "ASCIItools.c"
+#include "BUFFERtools.c"
 
 String incomingURL = String(HTTP_REQBYTES);			// The GET request is stored in incomingURL
 char buf[HTTP_BUFBYTES];							// Used for temporary operations
@@ -113,7 +114,15 @@ void openHABInterface(U8 *memory_map)
 		}	
 		else
 			srvcln_stop();				// Stop the socket, it will be restarted at next iteration
-	}	
+	}
+	else
+	{
+		// Reset
+		indata=0;
+		
+		// Send buffered commands
+		command_send();					
+	}
 	
 	// Parse the incoming data
 	if(indata)
@@ -206,7 +215,7 @@ void openHABInterface(U8 *memory_map)
 			
 				// Send a command to the node	
 				if((id < MaCaco_NODES) && (id != MaCaco_LOCNODE) && (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id) != 0x0000))	// If is a remote node, the command act as remote input				
-					MaCaco_send(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + slot, MAXVALUES, vals);		
+					command_buffer(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, vals);
 				else if (id == MaCaco_LOCNODE)								// If is a local node (me), the command is written back
 				{
 					i = 0;

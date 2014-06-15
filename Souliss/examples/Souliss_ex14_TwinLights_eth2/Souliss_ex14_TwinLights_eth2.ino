@@ -1,7 +1,7 @@
 /**************************************************************************
 	Souliss - Twin Lights
 	
-	It handle two lights located on two different boards and act them togheter
+	It handle two lights located on two different boards and act them together
 	if receive a command from the push button. Control from Android is also 
 	available.
 	It use Souliss Speak Easy to make write the sketch even easier.
@@ -55,9 +55,6 @@ void setup()
 	// octect. If DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0} the IP address
 	// for the board will be 192.168.1.18
 	Souliss_SetAddress(myvNet_address, myvNet_subnet, myvNet_supern);		
-	
-	SetAsGateway(myvNet_address);			// Set this node as gateway for SoulissApp	
-	SetAsPeerNode(peervNet_address, 1);		// Set the peer node 
 	
 	Set_SimpleLight(MYLIGHT);			// Define a simple LED light logic
 	

@@ -1,7 +1,7 @@
 /**************************************************************************
 	Souliss - Twin Lights
 	
-	It handle two lights located on two different boards and act them togheter
+	It handle two lights located on two different boards and act them together
 	if receive a command from the push button. Control from Android is also 
 	available.
 	It use Souliss Speak Easy to make write the sketch even easier.
