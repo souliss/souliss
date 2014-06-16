@@ -45,12 +45,12 @@ U8* subscr_putin[MaCaco_INMAXSUBSCR] = {0x0000};
 U8 subscr_startoffset[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_numberof[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_funcode[MaCaco_INMAXSUBSCR] = {0x00};
-U8 subscr_count[MaCaco_INMAXSUBSCR] = {0x00};
 
 // store outgoing subscription state
 U16 subscr_outaddr[MaCaco_OUTMAXSUBSCR] = {0x0000};	// Record the address of subscribed nodes	
 bool subscr_status[MaCaco_OUTMAXSUBSCR] = {0};		// Flag if last incoming data was a subscription
 bool subscr_battery[MaCaco_OUTMAXSUBSCR] = {0};		// Flag battery operated devices	
+U8 subscr_count[MaCaco_OUTMAXSUBSCR] = {0x00};
 
 // store incoming typical logic request
 U16 reqtyp_addr = 0x0000;	
@@ -345,7 +345,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			U16 nodeoffest, len, u_nodeoffest, u_len;
 			
 			// Force an update request to refresh data
-			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
 				subscr_count[i] = 0;
 			
 			// These points the local data
@@ -365,7 +365,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 		// If a manual update is requested, force an update request to the remote nodes (if any)
 		// to get at next process fresh data
-		for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+		for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
 			subscr_count[i] = 0;
 				
 		// These points the local data
@@ -487,6 +487,32 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// if the node wasn't recorded, assign it
 			if((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
 				(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
+	
+			// sort the node addresses	
+			U8 sort_i = 1, sorting = 0;
+			U16	sort_buffer;
+			U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
+	
+			// out of this for all address are sorted, out of the local address
+			for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
+			{
+				// don't sort zeros
+				if(m_address[sort_i] == 0x0000) break;
+				
+				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
+				{
+					if(m_address[sort_i] > m_address[sorting])
+					{
+						sort_buffer         = m_address[sort_i];
+						m_address[sort_i]   = m_address[sorting];
+						m_address[sorting]  = sort_buffer;
+					}
+				}
+			}
+			
+			// restart the subscriptions
+			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+				subscr_count[i] = 0;			
 	
 			// if the join request is from a nodes that previously got an address, flag the
 			// request as completed
@@ -972,7 +998,7 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 	U16 src_addr = 0x0000;
 
 	// Verify the subscription index
-	if(subscr_chnl >= MaCaco_INMAXSUBSCR)
+	if(subscr_chnl >= MaCaco_OUTMAXSUBSCR)
 		return MaCaco_NOSUBSCRANSWER;
 	
 	// Init the pointers
@@ -1037,7 +1063,7 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 /**************************************************************************/
 void MaCaco_subscribe_reset()
 {
-		for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+		for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
 			subscr_count[i] = 0;
 }
 

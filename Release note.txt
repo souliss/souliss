@@ -8,8 +8,10 @@ Release note for revision Alpha 6.0.1, on dd/mm/yyyy
 	to handle multiple commands in short time.
 		- Modbus TCP/RTU interface
 		- Modified the memory handling, saving more RAM on Peers
+		- Nodes can dynamically join a Gateway even if has a fixed vNet address
 		- Command buffer for HTTP/XML Interface
 		- Command buffer for UDP/XML  Interface
+		- Examples with Modbus TCP over DINo with plug&play
 		- Bugfix
 
 Release note for revision Alpha 5.2, on 22/05/2014

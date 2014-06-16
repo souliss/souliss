@@ -79,7 +79,7 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 	vNet_SetMySuperNode(mysupernode, vNet_GetMedia(addr));		// Set vNet Supernode
 	
 }
-
+#if(MaCaco_SUBSCRIBERS)
 /**************************************************************************
 /*!
 	Set the addresses of local nodes into the memory map, shall be used
@@ -102,7 +102,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 	// Set the remote address of a node into the vNet
 	*(U16*)(memory_map+MaCaco_ADDRESSES_s+node*2) = addr;
 }
-
+#endif
 /**************************************************************************
 /*!
 	Set an IP address and calculate automatically the vNet address, it
@@ -137,9 +137,8 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	// Flag the addressing server
 	addrsrv = true;
 
-	// Use the first available address for each media, because is supposed
-	// that the addressing server is also the unique bridge/router of the 
-	// network, 
+	// Use a free address for each media, is supposed that the addressing server
+	// is also the unique bridge/router of the network
 	U8 i=0;
 	for(i=0; i<VNET_MEDIA_NUMBER; i++)
 		if(vnet_media_en[i])
