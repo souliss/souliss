@@ -24,7 +24,7 @@
 #include <inttypes.h>
 #include <avr/interrupt.h>
 
-#include "enc28j60.h"
+#include "ENC28J60.h"
 #include "Arduino.h"  //all things wiring / arduino
 #include "spi.h"
 
