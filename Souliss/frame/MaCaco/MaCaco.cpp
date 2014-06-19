@@ -396,10 +396,15 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			nodes++;
 		
 		// Add the actual number of nodes on the database structure frame
-		cmd[0] = nodes;					
+		cmd[0] = nodes;		
+
+		if(rx->numberof >= 0x07)
+			rx->numberof = 0x07;													// Never read more than 7 bytes of data
+		else
+			rx->numberof = 0x04;													// Otherwise send the short frame with only 4 bytes of data
 		
 		// Send the actual number of nodes and the other static information contained in cmd
-		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, 0x07, cmd);
+		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
 	#endif
 	
