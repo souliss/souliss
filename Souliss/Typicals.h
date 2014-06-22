@@ -216,46 +216,46 @@
 
 
 void Souliss_SetT11(U8 *memory_map, U8 slot);
-void Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T11_Timer(U8 *memory_map, U8 input_slot);
 
 void Souliss_SetT12(U8 *memory_map, U8 slot);
-void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T12_Timer(U8 *memory_map, U8 input_slot);
 
 void Souliss_SetT13(U8 *memory_map, U8 slot);
-void Souliss_Logic_T13(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T13(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT14(U8 *memory_map, U8 slot);
-void Souliss_Logic_T14(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T14(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT15(U8 *memory_map, U8 slot);
-void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT16(U8 *memory_map, U8 slot);
-void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T16_Timer(U8 *memory_map, U8 input_slot);
 
 void Souliss_SetT18(U8 *memory_map, U8 slot);
-void Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT19(U8 *memory_map, U8 slot);
-void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T19_Timer(U8 *memory_map, U8 input_slot);
 
 void Souliss_SetT21(U8 *memory_map, U8 slot);
-void Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T21_Timer(U8 *memory_map, U8 slot);
 
 void Souliss_SetT22(U8 *memory_map, U8 slot);
-void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T22_Timer(U8 *memory_map, U8 slot);
 
 void Souliss_SetT31(U8 *memory_map, U8 slot);
-void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT32(U8 *memory_map, U8 slot);
-void Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT41(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_T41(U8 *memory_map, U8 slot, U8 *trigger);

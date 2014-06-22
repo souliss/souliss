@@ -98,6 +98,8 @@
 		0x1D		Olimex OLIMEXINO-32U4 	with MOD-WIFI	  and MOD-RGB(UEXT)
 		0x1E		Olimex OLIMEXINO-328 	with MOD-WIFI	  and MOD-RGB(UEXT)	
 		0x20		KMP Electronics DINo v2
+		0x21		KMP Electronics DINo v2 with Ethernet and RS485	(max 1 RS485 node connected)
+		0x22		KMP Electronics DINo v2	with RS485	
 		0x30		DFRobots XBoard Relay
 		0x31		DFRobots XBoard
 		0x40		Freaklabs Chibiduino with ENC28J60 Ethernet Shield

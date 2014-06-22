@@ -85,8 +85,11 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 			
 			// Trigger
 			*trigger = Souliss_TRIGGED;		
+			return Souliss_TRIGGED;	
 		}
-	}	
+	}
+
+	return 0;	
 }
 
 /**************************************************************************

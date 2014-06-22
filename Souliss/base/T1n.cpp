@@ -90,22 +90,24 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 		
 */	
 /**************************************************************************/
-void Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
 	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed) // Memory value is used as timer
 	{	
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;									// Trig change
+			i_trigger = Souliss_TRIGGED;								// Trig change
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)	// Off Command
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
-			*trigger = Souliss_TRIGGED;
+			i_trigger = Souliss_TRIGGED;
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
@@ -113,7 +115,7 @@ void Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;	
+			i_trigger = Souliss_TRIGGED;	
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
@@ -121,13 +123,19 @@ void Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)
 	{
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch OFF the output
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch OFF the output
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch ON the output		
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Switch ON the output		
 		
-		*trigger = Souliss_TRIGGED;	
+		i_trigger = Souliss_TRIGGED;	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
+	
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;
 }
 
 /**************************************************************************
@@ -217,22 +225,24 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 
 */	
 /**************************************************************************/
-void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
 	if((memory_map[MaCaco_IN_s + slot] > Souliss_T1n_AutoCmd) && (memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState)) // Memory value is used as timer
 	{	
 		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;									// Trig change
+			i_trigger = Souliss_TRIGGED;								// Trig change
 		
 		memory_map[MaCaco_OUT_s + slot] = (Souliss_T1n_AutoState | Souliss_T1n_OnCoil);			// Switch on the output
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)	// Off Command
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
 		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OffCoil)  
-			*trigger = Souliss_TRIGGED;
+			i_trigger = Souliss_TRIGGED;
 	
 		// Switch OFF and reset the AUTO mode
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the output and reset the AUTO mode
@@ -241,7 +251,7 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
 		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;	
+			i_trigger = Souliss_TRIGGED;	
 		
 		// Switch ON and reset the AUTO mode
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
@@ -250,14 +260,14 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)
 	{
 		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) == Souliss_T1n_OnCoil)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch OFF the output and reset the AUTO mode
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch OFF the output and reset the AUTO mode
 		else if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) == Souliss_T1n_OffCoil)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch ON the output	and reset the AUTO mode
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Switch ON the output	and reset the AUTO mode
 
-		*trigger = Souliss_TRIGGED;										// Trig the state change
+		i_trigger = Souliss_TRIGGED;									// Trig the state change
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_AutoCmd)	// Set AUTO state
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_AutoCmd)		// Set AUTO state
 	{
 		// If the logic is not in AUTO, active AUTO mode
 		if((memory_map[MaCaco_OUT_s + slot] == (Souliss_T1n_AutoState | Souliss_T1n_Coil)) || ((memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState) != Souliss_T1n_AutoState))
@@ -265,11 +275,17 @@ void Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 		else
 			memory_map[MaCaco_OUT_s + slot] = (~Souliss_T1n_AutoState & Souliss_T1n_OffCoil);			// Switch OFF and reset the AUTO mode
 			
-		*trigger = Souliss_TRIGGED;
+		i_trigger = Souliss_TRIGGED;
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// No recognized command, reset
+		
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;		
 }
 
 /**************************************************************************
@@ -319,15 +335,17 @@ void Souliss_SetT13(U8 *memory_map, U8 slot)
 
 */	
 /**************************************************************************/
-void Souliss_Logic_T13(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T13(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)		// Memory value is used as timer
+	if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)				// Memory value is used as timer
 	{	
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;									// Trig change
+			i_trigger = Souliss_TRIGGED;								// Trig change
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
@@ -335,12 +353,17 @@ void Souliss_Logic_T13(U8 *memory_map, U8 slot, U8 *trigger)
 	else if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Memory value is used as timer
 	{	
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
-			*trigger = Souliss_TRIGGED;									// Trig change
+			i_trigger = Souliss_TRIGGED;								// Trig change
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
+
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
 	
+	return i_trigger;
 }
 
 /**************************************************************************
@@ -376,8 +399,10 @@ void Souliss_SetT14(U8 *memory_map, U8 slot)
 
 */	
 /**************************************************************************/
-void Souliss_Logic_T14(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T14(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// If the ON command is received
 	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)	
 	{
@@ -386,11 +411,17 @@ void Souliss_Logic_T14(U8 *memory_map, U8 slot, U8 *trigger)
 		
 		// Reset the command
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
-		*trigger = Souliss_TRIGGED;
+		i_trigger = Souliss_TRIGGED;
 	}
 	else	// Set the output OFF
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;	
 
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;		
+		
 }
 
 /**************************************************************************/
@@ -422,8 +453,10 @@ void Souliss_SetT15(U8 *memory_map, U8 slot)
 			
 */	
 /**************************************************************************/
-void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Before power OFF store the last state
 	if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_RGBLamp_OffCmd )
 		memory_map[MaCaco_AUXIN_s + slot + 1] = memory_map[MaCaco_OUT_s + slot];
@@ -435,7 +468,7 @@ void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 		
 		// Flag the change in the state
 		memory_map[MaCaco_AUXIN_s + slot] = Souliss_TRIGGED;
-		*trigger = Souliss_TRIGGED;
+		i_trigger = Souliss_TRIGGED;
 	}
 	else if(memory_map[MaCaco_IN_s + slot] != Souliss_T1n_RGBLamp_RstCmd) 
 	{
@@ -444,7 +477,7 @@ void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 		
 		// Flag the change in the state
 		memory_map[MaCaco_AUXIN_s + slot] = Souliss_TRIGGED;
-		*trigger = Souliss_TRIGGED;
+		i_trigger = Souliss_TRIGGED;
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RGBLamp_RstCmd;			// Reset
 	}	
@@ -455,6 +488,12 @@ void Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 		after this method.
 	*/	
 
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;	
+	
 }
 
 /**************************************************************************
@@ -539,8 +578,10 @@ void Souliss_SetT16(U8 *memory_map, U8 slot)
 	
 */	
 /**************************************************************************/
-void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -555,7 +596,7 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
 		
 		// Trig the change
-		*trigger = Souliss_TRIGGED;	
+		i_trigger = Souliss_TRIGGED;	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
@@ -563,7 +604,7 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
 		{				
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
-			*trigger = Souliss_TRIGGED;									// Trig the change
+			i_trigger = Souliss_TRIGGED;									// Trig the change
 		}
 		
 		// Fade out and turn off the light step wise
@@ -580,7 +621,7 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;	
+			i_trigger = Souliss_TRIGGED;	
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		
@@ -688,9 +729,16 @@ void Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_AUXIN_s + slot] > 0)					// If we not getting new commands, the burst		
 		{																// is done, send the actual state 
 			memory_map[MaCaco_AUXIN_s + slot] = 0;
-			*trigger = Souliss_TRIGGED;									
+			i_trigger = Souliss_TRIGGED;									
 		}	
 	}	
+
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;	
+	
 }
 
 /**************************************************************************
@@ -785,8 +833,10 @@ void Souliss_SetT18(U8 *memory_map, U8 slot)
 		
 */	
 /**************************************************************************/
-void Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -826,6 +876,12 @@ void Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 	}	
 	else if (memory_map[MaCaco_OUT_s + slot] > Souliss_T1n_ResetCoil)
 		memory_map[MaCaco_OUT_s + slot]--;
+
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;
 }
 
 /**************************************************************************
@@ -908,8 +964,10 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 	
 */	
 /**************************************************************************/
-void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -929,7 +987,7 @@ void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
 		{				
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
-			*trigger = Souliss_TRIGGED;									// Trig the change
+			i_trigger = Souliss_TRIGGED;									// Trig the change
 		}
 		
 		// Fade out and turn off the light step wise
@@ -943,7 +1001,7 @@ void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
-			*trigger = Souliss_TRIGGED;	
+			i_trigger = Souliss_TRIGGED;	
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		
@@ -1013,9 +1071,16 @@ void Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_AUXIN_s + slot] > 0)					// If we not getting new commands, the burst		
 		{																// is done, send the actual state 
 			memory_map[MaCaco_AUXIN_s + slot] = 0;
-			*trigger = Souliss_TRIGGED;									
+			i_trigger = Souliss_TRIGGED;									
 		}	
 	}	
+	
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;
+	
 }
 
 /**************************************************************************

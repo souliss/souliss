@@ -76,8 +76,10 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 	
 */	
 /**************************************************************************/
-void Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -114,20 +116,27 @@ void Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_Timer_Val;			// Set timer value
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		*trigger = Souliss_TRIGGED;
+  		i_trigger = Souliss_TRIGGED;
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Close) || ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) && (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off)))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Close;			// Close Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		*trigger = Souliss_TRIGGED;
+  		i_trigger = Souliss_TRIGGED;
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Open) || ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) && (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off)))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Open;			// Open Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		*trigger = Souliss_TRIGGED;	
+  		i_trigger = Souliss_TRIGGED;	
 	}
+
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;	
+	
 }
 
 /**************************************************************************
@@ -194,8 +203,10 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 	
 */	
 /**************************************************************************/
-void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -223,7 +234,7 @@ void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_Timer_Val;				// Set timer value
 			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
 			
-			*trigger = Souliss_TRIGGED;		
+			i_trigger = Souliss_TRIGGED;		
 		}
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
@@ -234,7 +245,7 @@ void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Close;			// Close Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		*trigger = Souliss_TRIGGED;
+  		i_trigger = Souliss_TRIGGED;
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Open) || 
 			((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) && 
@@ -242,15 +253,21 @@ void Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Open;			// Open Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		*trigger = Souliss_TRIGGED;	
+  		i_trigger = Souliss_TRIGGED;	
 	}
 	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && 
 			(memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_NoLimSwitch;				// No Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		*trigger = Souliss_TRIGGED;	
+  		i_trigger = Souliss_TRIGGED;	
 	}	
+	
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;	
 }
 
 /**************************************************************************

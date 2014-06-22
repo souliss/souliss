@@ -102,8 +102,9 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 				#define Souliss_T3n_FanOn3				0x20	
 */	
 /**************************************************************************/
-void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
 	float actual_temp, actual_setpnt, in_temp, in_setpnt;
 
 	// Convert the stored values in single precision floating points
@@ -123,7 +124,7 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	
 	// Trig the next change of the state
-	*trigger = Souliss_TRIGGED;	
+	i_trigger = Souliss_TRIGGED;	
 		
 	// Check the actual operational mode (Cooling / Heating)
 	if(!(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
@@ -134,7 +135,7 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
 		else
-			*trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
+			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
 	}
 	else if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingMode)
 	{
@@ -144,7 +145,7 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling 
 		else
-			*trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
+			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
 	}
 
 	// Check the fan mode (Manual / Auto)
@@ -205,13 +206,18 @@ void Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 
 			
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
-		*trigger = Souliss_TRIGGED;		
+		i_trigger = Souliss_TRIGGED;		
 	}		
 	
 	// Convert the processed values in half precision floating points
 	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
 	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
 		
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;		
 }
 
 /**************************************************************************
@@ -267,8 +273,10 @@ void Souliss_SetT32(U8 *memory_map, U8 slot)
 			
 */	
 /**************************************************************************/
-void Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// If there is an input command, process it
 	if(memory_map[MaCaco_IN_s + slot] != Souliss_T3n_AirCon_RstCmd)	
 	{	
@@ -276,7 +284,7 @@ void Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger)
 		if(memory_map[MaCaco_OUT_s + slot] != memory_map[MaCaco_IN_s + slot])  
 		{
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_TRIGGED;
-			*trigger = Souliss_TRIGGED;	// Trig change
+			i_trigger = Souliss_TRIGGED;	// Trig change
 		}
 		
 		// Load the command in the output slot
@@ -292,5 +300,11 @@ void Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_AirCon_RstCmd;			// Reset
 			
 	}	
+	
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;	
 }
 
