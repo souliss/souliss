@@ -95,6 +95,7 @@ typedef struct
 void vNet_Init();											
 U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port);	
 U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port);
+U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup);
 U8 vNet_SendData(U16 addr, U8 *data, U8 len, U8 port);				
 U8 vNet_DataAvailable();											
 U8 vNet_RetrieveData(U8 *data);
@@ -114,5 +115,6 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index);
 U8 vNet_SetBridgingTable(U8 media_in, U8 media_out);
 U8 vNet_MyMedia();
 U8 vNet_GetMedia(U16 addr);
+void vNet_MulticastGroup(U16 multicastgroup, U8 multicastnumber);
 
 #endif

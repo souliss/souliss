@@ -506,6 +506,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
 				{
+					// don't sort zeros
+					if(m_address[sorting] == 0x0000) break; 
+				
+					// sort ascending
 					if(m_address[sort_i] > m_address[sorting])
 					{
 						sort_buffer         = m_address[sort_i];

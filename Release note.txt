@@ -11,6 +11,7 @@ Release note for revision Alpha 6.0.1, on dd/mm/yyyy
 		- Nodes can dynamically join a Gateway even if has a fixed vNet address
 		- Command buffer for HTTP/XML Interface
 		- Command buffer for UDP/XML  Interface
+		- Support for Multicast (preliminary)
 		- All Souliss DigIn can now returns the results without affect slots values
 		- Support of DINo over RS485 (max 1 node over RS485, without hardware mods)
 		- Examples with Modbus TCP over DINo with plug&play

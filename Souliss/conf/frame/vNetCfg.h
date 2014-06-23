@@ -43,13 +43,19 @@
 /**************************************************************************/
 #define VNET_HEADER_SIZE	6
 
-
 /**************************************************************************/
 /*!
     Overhead space reserved for additional bytes from media driver   
 */
 /**************************************************************************/
 #define VNET_OVERHEAD_SIZE	10
+
+/**************************************************************************/
+/*!
+    Number of mutilcast groups that can be subscribed   
+*/
+/**************************************************************************/
+#define VNET_MULTICAST_SIZE	5
 
 /**************************************************************************/
 /*!
@@ -187,20 +193,22 @@
 #define VNET_ADDR_H_M5	   	0xFDFF			// vNet High Address for Media 5, size 4 byte
 
 #define	VNET_ADDR_NULL		0xFF00			// This is a NULL address, frames to that address are discarded
+											// in between the NULL and the BROADCAST address there are the
+											// MULTICAST ones										
 #define	VNET_ADDR_BRDC		0xFFFF			// This is a BROADCAST address
 
 const U16 vnet_addr_l[VNET_MEDIA_NUMBER] = {VNET_ADDR_L_M1,  // Media 1
 											VNET_ADDR_L_M2,  // Media 2
 											VNET_ADDR_L_M3,  // Media 3
 											VNET_ADDR_L_M4,  // Media 4
-											VNET_ADDR_L_M5  // Media 5
+											VNET_ADDR_L_M5   // Media 5
 											};
 							  
 const U16 vnet_addr_h[VNET_MEDIA_NUMBER] = {VNET_ADDR_H_M1, // Media 1
 											VNET_ADDR_H_M2, // Media 2
 											VNET_ADDR_H_M3, // Media 3
 											VNET_ADDR_H_M4, // Media 4
-											VNET_ADDR_H_M5 // Media 5
+											VNET_ADDR_H_M5  // Media 5
 											};
 											
 #endif
