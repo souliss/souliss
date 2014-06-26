@@ -58,7 +58,7 @@ U8 MaCaco_getnumberof();
 U8 MaCaco_getdatain();
 U16 MaCaco_getdatabuffer();
 U8 MaCaco_IsSubscribed();
-U8 MaCaco_InternalSubcription();
+void MaCaco_InternalSubcription();
 U8 MaCaco_isLastIn(U8 *memory_map);
 U8 MaCaco_GetLastIn(U8 *memory_map);
 U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber);

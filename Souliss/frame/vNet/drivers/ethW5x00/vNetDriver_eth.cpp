@@ -151,8 +151,8 @@ void vNet_SetAddress_M1(uint16_t addr)
 /**************************************************************************/
 uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 {
-	uint8_t s, ip_addr[4];
-	uint16_t count = 0, vNet_port;
+	uint8_t ip_addr[4];
+	uint16_t vNet_port;
 
 	// Define the standard vNet port
 	vNet_port = ETH_PORT;

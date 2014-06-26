@@ -282,7 +282,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// answer to a typical logic read request
 	if ((rx->funcode == MaCaco_TYPREQ))
 	{
-			U16 nodeoffest, len, u_nodeoffest, u_len;
+			U16 nodeoffest, len;
 			
 			// These points the local data
 			nodeoffest = MaCaco_TYP_s;
@@ -342,7 +342,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			return MaCaco_send(addr, MaCaco_SUBSCRANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
 		else if(rx->funcode == MaCaco_STATEREQ)
 		{
-			U16 nodeoffest, len, u_nodeoffest, u_len;
+			U16 nodeoffest, len;
 			
 			// Force an update request to refresh data
 			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
@@ -361,7 +361,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// answer to a data request without subscription
 	if (rx->funcode == MaCaco_DATAREQ)
 	{	
-		U16 nodeoffest, len, u_nodeoffest, u_len;
+		U16 nodeoffest, len;
 		
 		// If a manual update is requested, force an update request to the remote nodes (if any)
 		// to get at next process fresh data
@@ -932,7 +932,7 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 				status = MaCaco_send(subscr_addr[i], MaCaco_SUBSCRANS, subscr_putin[i], subscr_startoffset[i], subscr_numberof[i], (subscr_startoffset[i] + memory_map));				
 			else if(subscr_funcode[i] == MaCaco_STATEREQ)
 			{			
-				U16 nodeoffest, len, u_nodeoffest, u_len;
+				U16 nodeoffest, len;
 				
 				// These points the local data
 				nodeoffest = MaCaco_OUT_s;
@@ -1003,8 +1003,7 @@ U8 MaCaco_reqtyp()
 #if(MaCaco_SUBSCRIBERS)
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl)
 {
-	U8 	i, used_media, *healty, *count = 0;
-	U16 src_addr = 0x0000;
+	U8 *healty, *count = 0;
 
 	// Verify the subscription index
 	if(subscr_chnl >= MaCaco_OUTMAXSUBSCR)
@@ -1212,7 +1211,7 @@ U8 MaCaco_IsSubscribed()
 		interface is also used for external protocols.
 */
 /**************************************************************************/
-U8 MaCaco_InternalSubcription(U8 *memory_map)
+void MaCaco_InternalSubcription(U8 *memory_map)
 {
 	U8 i=0;
 	

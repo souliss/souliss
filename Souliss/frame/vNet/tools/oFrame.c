@@ -117,8 +117,10 @@ U8 oFrame_Available()
 {
 	// If a frame is defined
 	if(actualframe)
+	{
 		if (oFrame_GetLenght())
 			return 1;
+	}		
 	else
 		return 0;
 }

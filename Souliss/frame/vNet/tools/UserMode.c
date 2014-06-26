@@ -108,8 +108,6 @@ void UserMode_Remove(U16 addr)
 /**************************************************************************/
 void UserMode_Reset()
 {
-	U8 i=0;
-
 	// Verify that the entry was not yet saved
 	for(U8 i=0;i<UMODE_USERS;i++)		
 		in_vNet_Addresses[i]=0x0000;	
