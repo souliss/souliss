@@ -1203,8 +1203,8 @@ U8 MaCaco_IsSubscribed()
     Record an internal subscription
 		
 		Using this method the gateway starts to subscribe all the peers
-		if the PERSISTANCE mode is active, those data are stored in the
-		gateway and became available for external protocols.
+		if the PERSISTANCE or LASTIN mode is active, those data are stored in 
+		the gateway and became available for external protocols.
 		
 		If any full compliant MaCaco User Mode Interface is used, this
 		method isn't longer required, because the subscription for the user

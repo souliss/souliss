@@ -1,9 +1,7 @@
 /**************************************************************************
 	Souliss - Modbus Gateway
 	
-	It handle the four relays either via IN1 to IN4 inputs or using the
-	Android interface. Connecting the relays to lights or similar electrical 
-	appliance, you can get remote control of them.
+	...
 	
 	This node provides also an interface via Modbus, data are available at
 	following registers:
@@ -30,9 +28,13 @@
 		- Other ON/OFF electrical appliance
 	
 ***************************************************************************/
-#include "bconf/DINo_v2_Gateway.h"			// Load QuickCfg.h configuration parameters automatically
-#include "bconf/ModbusTCP.h"				
-#include "bconf/DINo_v2_DisableMACRAW.h"
+#define	BOARDTYPE_INSKETCH
+#define	DYNAMICADDRESSING_INSKETCH
+
+#define	QC_BOARDTYPE			0x03
+#define DYNAMICADDRESSING  		0x01
+
+#include "bconf/ModbusTCP.h"				// Actually set 8 nodes with 15 slots
 #include "bconf/SmallNetwork.h"				// Modbus as a smaller addressing area compared to MaCaco
 
 #include "Souliss.h"
@@ -51,25 +53,6 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 
 void setup()
 {	
-	// Init the board
-	InitDINo();
-	
-	// Set the inputs
-	SetInput1();
-    SetInput2();
-    SetInput3();
-    SetInput4();
-	
-	// Set the outputs
-	SetRelay1();
-	SetRelay2();
-	SetRelay3();
-	SetRelay4();
-	
-	// Set and turn ON the status LED
-	SetLED();
-	TurnOnLED();
-	
 	// Define two Simple Light logics and the relays
 	Set_SimpleLight(RELAY1);
 	Set_SimpleLight(RELAY2);
@@ -91,21 +74,12 @@ void loop()
 		UPDATEFAST();	
 		
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
-		
-			ReadInput1(RELAY1);									// Read inputs from IN1
-			ReadInput2(RELAY2);									// Read inputs from IN2
-			ReadInput3(RELAY3);									// Read inputs from IN3
-			ReadInput4(RELAY4);									// Read inputs from IN4
-		
+				
 			Logic_SimpleLight(RELAY1);							// Execute the logic for Relay 1
 			Logic_SimpleLight(RELAY2);							// Execute the logic for Relay 2
 			Logic_SimpleLight(RELAY3);							// Execute the logic for Relay 3
 			Logic_SimpleLight(RELAY4);							// Execute the logic for Relay 4
 			
-			CntRelay1(RELAY1);									// Drive the Relay 1
-			CntRelay2(RELAY2);                                  // Drive the Relay 2
-			CntRelay3(RELAY3);									// Drive the Relay 3
-			CntRelay4(RELAY4);                                  // Drive the Relay 4			
 		} 
 		
 		// Here we process all communication with other nodes

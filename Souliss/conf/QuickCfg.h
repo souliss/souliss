@@ -145,8 +145,8 @@
 		Value
         0x00        No selection (Default)
 		0x01		HTTP Command Parser
-		0x02		openHAB HTTP XML Interface
-		0x03		openHAB	UDP  XML Interface
+		0x02		Polling based HTTP XML Interface (openHAB)
+		0x03		Event-driven UDP XML Interface
 		0x04		Modbus TCP/IP
 		0x05		Modbus RTU
 */

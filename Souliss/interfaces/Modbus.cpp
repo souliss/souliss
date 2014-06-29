@@ -117,7 +117,7 @@ uint16_t crc16(oFrame *frame)
 	Setup the Modbus TCP or RTU 
 */	
 /**************************************************************************/
-U8 ModbusInit()
+U8 ModbusInit(U8 *memory_map)
 {
 #if(MODBUS_RTU)
 	// The Serial class and the USART interrupt are automatically set by the
@@ -130,6 +130,10 @@ U8 ModbusInit()
 	// Set a listening Modbus port
 	srv_listen(MODBUS_TCP_PORT); 
 #endif	
+
+	// Set an internal subscription in order to collect data from other
+	// nodes in the network
+	MaCaco_InternalSubcription(memory_map);
 }
 
 /**************************************************************************
@@ -831,7 +835,7 @@ U8 ModbusReply(U8 *memory_map)
 		
 		// Calculate the id and slot for the remote node
 		modbustranfer_id = index/MaCaco_SLOT;
-		modbustranfer_slot = index-(modbustranfer_id*MaCaco_SLOT);
+		modbustranfer_slot = index-(modbustranfer_id*MaCaco_SLOT)-modbustranfer_id;
 		
 		// Just store the data to be processed at later time, the answer is an echo
 		modbustranfer_var = (U8)(modbusframe->registers);

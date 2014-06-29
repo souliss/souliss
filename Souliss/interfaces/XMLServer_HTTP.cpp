@@ -28,9 +28,9 @@
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#include "openHAB.h"
+#include "XMLServer.h"
 
-#if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
+#if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
 
 #include "ASCIItools.c"
 #include "BUFFERtools.c"
@@ -48,7 +48,7 @@ const char* xml[] = {"<s", ">", "</s", "<id", "</id"};
 	Init the interface
 */	
 /**************************************************************************/
-void openHABInit(U8 *memory_map)
+void XMLSERVERInit(U8 *memory_map)
 {
 	// Set an internal subscription in order to collect data from other
 	// nodes in the network
@@ -61,7 +61,7 @@ void openHABInit(U8 *memory_map)
 	Parse incoming HTTP GET for incoming commands
 */	
 /**************************************************************************/
-void openHABInterface(U8 *memory_map)
+void XMLSERVERInterface(U8 *memory_map)
 {
 	// Set the socket
 	srvcln_setsocket(SRV_SOCK1);
@@ -76,10 +76,10 @@ void openHABInterface(U8 *memory_map)
 		if (srvcln_connected(HTTPPORT))													// If data are available
 		{
 			// Include debug functionalities, if required
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(HTTP/XML)Indata <0x");
-				OPENHAB_LOG(data_len,HEX);
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(HTTP/XML)Indata <0x");
+				XMLSERVER_LOG(data_len,HEX);
+				XMLSERVER_LOG(">\r\n");		
 			#endif
 			
 			// Retrieve data from the Ethernet controller
@@ -87,21 +87,21 @@ void openHABInterface(U8 *memory_map)
 				data_len = HTTP_REQBYTES;
 			
 			// Include debug functionalities, if required
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(HTTP/XML)Trunked Indata <0x");
-				OPENHAB_LOG(data_len,HEX);
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(HTTP/XML)Trunked Indata <0x");
+				XMLSERVER_LOG(data_len,HEX);
+				XMLSERVER_LOG(">\r\n");		
 			#endif
 			
 			srvcln_retrieve(buff, data_len);	
 			
 			// Include debug functionalities, if required
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(HTTP/XML)Instring<");
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(HTTP/XML)Instring<");
 				for(i=0;i<data_len;i++)
-					OPENHAB_LOG(buf[i]);
+					XMLSERVER_LOG(buf[i]);
 
-				OPENHAB_LOG(">\r\n");					
+				XMLSERVER_LOG(">\r\n");					
 			#endif
 			
 			// Move data into a string for parsing
@@ -136,10 +136,10 @@ void openHABInterface(U8 *memory_map)
 		if(incomingURL.startsWith("GET /force") || ((incomingURL.indexOf("GET /force",0) > 0)))
 		{			
 			// Include debug functionalities, if required
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(HTTP/XML)<GET /force");
-				OPENHAB_LOG(data_len,HEX);
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(HTTP/XML)<GET /force");
+				XMLSERVER_LOG(data_len,HEX);
+				XMLSERVER_LOG(">\r\n");		
 			#endif		
 		
 			// Find start and end index for callback request
@@ -184,33 +184,33 @@ void openHABInterface(U8 *memory_map)
 				}
 			
 			
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(HTTP/XML)<GET /force");
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(HTTP/XML)<GET /force");
+				XMLSERVER_LOG(">\r\n");		
 				
-				OPENHAB_LOG("(HTTP/XML)<id=");
-				OPENHAB_LOG(id,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(HTTP/XML)<id=");
+				XMLSERVER_LOG(id,DEC);
+				XMLSERVER_LOG(">\r\n");		
 				
-				OPENHAB_LOG("(HTTP/XML)<slot=");
-				OPENHAB_LOG(slot,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(HTTP/XML)<slot=");
+				XMLSERVER_LOG(slot,DEC);
+				XMLSERVER_LOG(">\r\n");		
 				
-				OPENHAB_LOG("(HTTP/XML)<val=");
-				OPENHAB_LOG(val_s,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(HTTP/XML)<val=");
+				XMLSERVER_LOG(val_s,DEC);
+				XMLSERVER_LOG(">\r\n");		
 			
 				for(i=0;i<MAXVALUES;i++)
 				{				
-					OPENHAB_LOG(vals[i]);
-					OPENHAB_LOG(">\r\n");		
+					XMLSERVER_LOG(vals[i]);
+					XMLSERVER_LOG(">\r\n");		
 				}
-				OPENHAB_LOG("id=");
-				OPENHAB_LOG(id);
-				OPENHAB_LOG(">\r\n");		
-				OPENHAB_LOG("slot=");
-				OPENHAB_LOG(slot);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("id=");
+				XMLSERVER_LOG(id);
+				XMLSERVER_LOG(">\r\n");		
+				XMLSERVER_LOG("slot=");
+				XMLSERVER_LOG(slot);
+				XMLSERVER_LOG(">\r\n");		
 			#endif				
 			
 				// Send a command to the node	
@@ -221,11 +221,11 @@ void openHABInterface(U8 *memory_map)
 					i = 0;
 					while((vals[i] != 0) && (i < MAXVALUES))
 					{
-						#if(OPENHAB_DEBUG)
-							OPENHAB_LOG(slot);
-							OPENHAB_LOG(" ");
-							OPENHAB_LOG(vals[i]);
-							OPENHAB_LOG(">\r\n");
+						#if(XMLSERVER_DEBUG)
+							XMLSERVER_LOG(slot);
+							XMLSERVER_LOG(" ");
+							XMLSERVER_LOG(vals[i]);
+							XMLSERVER_LOG(">\r\n");
 						#endif		
 						memory_map[MaCaco_IN_s+slot] = vals[i];
 						slot++;
@@ -242,13 +242,13 @@ void openHABInterface(U8 *memory_map)
 				typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum lenght of "?typ="
 				val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum lenght of "&val="								
 
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(HTTP/XML)<GET /typ");
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(HTTP/XML)<GET /typ");
+				XMLSERVER_LOG(">\r\n");		
 			
-				OPENHAB_LOG("(HTTP/XML)<val=");
-				OPENHAB_LOG(val_s,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(HTTP/XML)<val=");
+				XMLSERVER_LOG(val_s,DEC);
+				XMLSERVER_LOG(">\r\n");		
 			#endif		
 				
 				U8* val_sp = &val_s;
@@ -313,13 +313,13 @@ void openHABInterface(U8 *memory_map)
 		if(!(id_for<MaCaco_NODES))
 			return;	
 	
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(HTTP/XML)<GET /status");
-			OPENHAB_LOG(">\r\n");		
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(HTTP/XML)<GET /status");
+			XMLSERVER_LOG(">\r\n");		
 								
-			OPENHAB_LOG("(HTTP/XML)<id=");
-			OPENHAB_LOG(id_for,DEC);
-			OPENHAB_LOG(">\r\n");		
+			XMLSERVER_LOG("(HTTP/XML)<id=");
+			XMLSERVER_LOG(id_for,DEC);
+			XMLSERVER_LOG(">\r\n");		
 		#endif			
 	
 			// Print "<id"
@@ -421,13 +421,13 @@ void openHABInterface(U8 *memory_map)
 			id_for=0;
 		#endif
 	
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(HTTP/XML)<GET /typicals");
-			OPENHAB_LOG(">\r\n");		
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(HTTP/XML)<GET /typicals");
+			XMLSERVER_LOG(">\r\n");		
 								
-			OPENHAB_LOG("(HTTP/XML)<id=");
-			OPENHAB_LOG(id_for,DEC);
-			OPENHAB_LOG(">\r\n");		
+			XMLSERVER_LOG("(HTTP/XML)<id=");
+			XMLSERVER_LOG(id_for,DEC);
+			XMLSERVER_LOG(">\r\n");		
 		#endif			
 	
 			// The request has a wrong id value

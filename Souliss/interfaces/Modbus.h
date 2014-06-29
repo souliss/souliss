@@ -140,7 +140,7 @@ void ModbusEcho();
 U8 ModbusExecption();
 
 // Methods for public use
-U8 ModbusInit();
+U8 ModbusInit(U8 *memory_map);
 U8 Modbus(U8 *memory_map);
 
 #endif

@@ -1031,7 +1031,7 @@ U8 vNet_RoutingBridging(U8 media)
 	else if((vNet_Media_Data[media-1].f_dest_addr) == (vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask))
 	{
 		// If the source address is between 0xFF01 and 0xFFFE
-		if(((vNet_Media_Data[media-1].src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].src_addr & 0x00FF) && (vNet_Media_Data[media-1].src_addr & 0x00FF != 0x00FF))
+		if(((vNet_Media_Data[media-1].src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].src_addr & 0x00FF) && ((vNet_Media_Data[media-1].src_addr & 0x00FF) != 0x00FF))
 		{
 			U8 i=0;
 			// Match the multicast address with the subscribed ones

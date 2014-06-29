@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss
-    Copyright (C) 2014  Veseo
+	Souliss Home Automation
+    Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,12 +22,21 @@
     \file 
     \ingroup
 */
-#ifndef bconf_ssMODBUSTCP_H
-#define bconf_ssMODBUSTCP_H
+#ifndef bconf_DINOv2_H
+#define bconf_DINOv2_H
 
+// List QuickCfg.h parameters that want to be configured as standard
+#define	BOARDTYPE_INSKETCH
 #define GATEWAYTYPE_INSKETCH
-#define INTERFACE_INSKETCH
-#define	QC_GATEWAYTYPE			0x02			// Gateway with Persistance Mode
-#define	QC_INTERFACE			0x04			// Modbus TCP/IP
+#define	DYNAMICADDRESSING_INSKETCH
+#define	ETHERNETMACRAW_INSKETCH
+#define	USARTDRIVER_INSKETCH
 
+#define	QC_BOARDTYPE			0x21
+#define	QC_GATEWAYTYPE			0x00
+#define DYNAMICADDRESSING  		0x01
+#define ETHERNETMACRAW  		0x00
+#define	USARTDRIVER				Serial1	
+#define	USART_TXENABLE			1
+#define	USART_TXENPIN			RS485ENABLE
 #endif

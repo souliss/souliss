@@ -45,8 +45,8 @@
 #	include "interfaces/HTTP_uIP.h"
 #elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 #	include	"webhook/webhook.h"
-#elif(OPENHAB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
-#	include "interfaces/openHAB.h"
+#elif(XMLSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
+#	include "interfaces/XMLServer.h"
 #elif(MODBUS)
 #	include "interfaces/Modbus.h"
 #endif
@@ -65,12 +65,12 @@
 	#include "interfaces/HTTP.cpp"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
 	#include "interfaces/HTTP_uIP.cpp"
-#elif((OPENHAB == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-#	include "interfaces/openHAB_HTTP.cpp"
-#elif((OPENHAB == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-#	include "interfaces/openHAB_UDP.cpp"
-#elif((OPENHAB == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
-#	include "interfaces/openHAB_HTTP_uIP.cpp"
+#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
+#	include "interfaces/XMLServer_HTTP.cpp"
+#elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
+#	include "interfaces/XMLServer_UDP.cpp"
+#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
+#	include "interfaces/XMLServer_HTTP_uIP.cpp"
 #elif(MODBUS)
 #	include "interfaces/Modbus.cpp"
 #endif

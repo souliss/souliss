@@ -28,9 +28,9 @@
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#include "openHAB.h"
+#include "XMLServer.h"
 
-#if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
+#if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
 
 #include "ASCIItools.c"
 #include "BUFFERtools.c"
@@ -51,7 +51,7 @@ const char* xml[] = {"<s", ">", "</s", "<id", "</id"};
 	Init the interface
 */	
 /**************************************************************************/
-void openHABInit(U8 *memory_map)
+void XMLSERVERInit(U8 *memory_map)
 {
 	// Set an internal subscription in order to collect data from other
 	// nodes in the network
@@ -70,7 +70,7 @@ void openHABInit(U8 *memory_map)
 	Parse incoming HTTP GET for incoming commands
 */	
 /**************************************************************************/
-void openHABInterface(U8 *memory_map)
+void XMLSERVERInterface(U8 *memory_map)
 {
 	data_len = W5x00.getRXReceivedSize(SRV_SOCK1);
 
@@ -78,10 +78,10 @@ void openHABInterface(U8 *memory_map)
 	if(data_len) 
 	{	
 		// Include debug functionalities, if required
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(UDP/XML)Indata from controller<0x");
-			OPENHAB_LOG(data_len,HEX);
-			OPENHAB_LOG(">\r\n");		
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(UDP/XML)Indata from controller<0x");
+			XMLSERVER_LOG(data_len,HEX);
+			XMLSERVER_LOG(">\r\n");		
 		#endif
 			
 		// Retrieve data from the UDP socket
@@ -100,18 +100,18 @@ void openHABInterface(U8 *memory_map)
 		}
 		
 		// Include debug functionalities, if required
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(UDP/XML)Indata <0x");
-			OPENHAB_LOG(data_len,HEX);
-			OPENHAB_LOG(">\r\n");		
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(UDP/XML)Indata <0x");
+			XMLSERVER_LOG(data_len,HEX);
+			XMLSERVER_LOG(">\r\n");		
 		#endif
 			
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(UDP/XML)Instring buffer<");
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(UDP/XML)Instring buffer<");
 			for(i=0;i<data_len;i++)
-				OPENHAB_LOG(buf[i]);
+				XMLSERVER_LOG(buf[i]);
 
-			OPENHAB_LOG(">\r\n");					
+			XMLSERVER_LOG(">\r\n");					
 		#endif
 			
 		// Move data into a string for parsing
@@ -123,10 +123,10 @@ void openHABInterface(U8 *memory_map)
 			for(i=0;i<data_len && buf[i] !=0;i++)						
 				incomingURL = incomingURL + buf[i];	
 				
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(UDP/XML)incomingURL<");
-				OPENHAB_LOG(incomingURL);
-				OPENHAB_LOG(">\r\n");					
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(UDP/XML)incomingURL<");
+				XMLSERVER_LOG(incomingURL);
+				XMLSERVER_LOG(">\r\n");					
 			#endif
 			
 			// Flag the incoming data and quit
@@ -136,8 +136,8 @@ void openHABInterface(U8 *memory_map)
 		{
 			indata=0;
 			
-			#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(UDP/XML)Bad request");
+			#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(UDP/XML)Bad request");
 			#endif
 		}
 	}
@@ -159,9 +159,9 @@ void openHABInterface(U8 *memory_map)
 	// Look for data available from the LASTIN buffer
 	if(MaCaco_isLastIn(memory_map))
 	{
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(UDP/XML)<LASTIN");
-			OPENHAB_LOG(">\r\n");								
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(UDP/XML)<LASTIN");
+			XMLSERVER_LOG(">\r\n");								
 		#endif		
 	
 		incomingURL = "GET /status";
@@ -178,9 +178,9 @@ void openHABInterface(U8 *memory_map)
 			// Init the buffer
 			bufferlen=0;
 		
-		#if(OPENHAB_DEBUG)
-			OPENHAB_LOG("(UDP/XML)<GET /status");
-			OPENHAB_LOG(">\r\n");								
+		#if(XMLSERVER_DEBUG)
+			XMLSERVER_LOG("(UDP/XML)<GET /status");
+			XMLSERVER_LOG(">\r\n");								
 		#endif			
 	
 			// Indentify if there are available data from LASTIN
@@ -287,10 +287,10 @@ void openHABInterface(U8 *memory_map)
 		if(incomingURL.startsWith("GET /force") || ((incomingURL.indexOf("GET /force",0) > 0)))
 		{			
 			// Include debug functionalities, if required
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(UDP/XML)<GET /force");
-				OPENHAB_LOG(data_len,HEX);
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(UDP/XML)<GET /force");
+				XMLSERVER_LOG(data_len,HEX);
+				XMLSERVER_LOG(">\r\n");		
 			#endif		
 		
 			// Find start and end index for callback request
@@ -333,34 +333,34 @@ void openHABInterface(U8 *memory_map)
 				}
 			
 			
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(UDP/XML)<GET /force");
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(UDP/XML)<GET /force");
+				XMLSERVER_LOG(">\r\n");		
 				
-				OPENHAB_LOG("(UDP/XML)<id=");
-				OPENHAB_LOG(id,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(UDP/XML)<id=");
+				XMLSERVER_LOG(id,DEC);
+				XMLSERVER_LOG(">\r\n");		
 				
-				OPENHAB_LOG("(UDP/XML)<slot=");
-				OPENHAB_LOG(slot,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(UDP/XML)<slot=");
+				XMLSERVER_LOG(slot,DEC);
+				XMLSERVER_LOG(">\r\n");		
 				
-				OPENHAB_LOG("(UDP/XML)<val=");
-				OPENHAB_LOG(val_s,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(UDP/XML)<val=");
+				XMLSERVER_LOG(val_s,DEC);
+				XMLSERVER_LOG(">\r\n");		
 			
 				for(i=0;i<MAXVALUES;i++)
 				{				
-					OPENHAB_LOG("<");		
-					OPENHAB_LOG(vals[i]);
-					OPENHAB_LOG(">\r\n");		
+					XMLSERVER_LOG("<");		
+					XMLSERVER_LOG(vals[i]);
+					XMLSERVER_LOG(">\r\n");		
 				}
-				OPENHAB_LOG("id=<");
-				OPENHAB_LOG(id);
-				OPENHAB_LOG(">\r\n");		
-				OPENHAB_LOG("slot=<");
-				OPENHAB_LOG(slot);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("id=<");
+				XMLSERVER_LOG(id);
+				XMLSERVER_LOG(">\r\n");		
+				XMLSERVER_LOG("slot=<");
+				XMLSERVER_LOG(slot);
+				XMLSERVER_LOG(">\r\n");		
 			#endif				
 			
 				// Send a command to the node	
@@ -371,12 +371,12 @@ void openHABInterface(U8 *memory_map)
 					i = 0;
 					while((vals[i] != 0) && (i < MAXVALUES))
 					{
-						#if(OPENHAB_DEBUG)
-							OPENHAB_LOG("slot-vals=<");
-							OPENHAB_LOG(slot);
-							OPENHAB_LOG(" ");
-							OPENHAB_LOG(vals[i]);
-							OPENHAB_LOG(">\r\n");
+						#if(XMLSERVER_DEBUG)
+							XMLSERVER_LOG("slot-vals=<");
+							XMLSERVER_LOG(slot);
+							XMLSERVER_LOG(" ");
+							XMLSERVER_LOG(vals[i]);
+							XMLSERVER_LOG(">\r\n");
 						#endif		
 						memory_map[MaCaco_IN_s+slot] = vals[i];
 						slot++;
@@ -393,13 +393,13 @@ void openHABInterface(U8 *memory_map)
 				typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum lenght of "?typ="
 				val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum lenght of "&val="								
 
-			#if(OPENHAB_DEBUG)
-				OPENHAB_LOG("(UDP/XML)<GET /typ");
-				OPENHAB_LOG(">\r\n");		
+			#if(XMLSERVER_DEBUG)
+				XMLSERVER_LOG("(UDP/XML)<GET /typ");
+				XMLSERVER_LOG(">\r\n");		
 			
-				OPENHAB_LOG("(UDP/XML)<val=");
-				OPENHAB_LOG(val_s,DEC);
-				OPENHAB_LOG(">\r\n");		
+				XMLSERVER_LOG("(UDP/XML)<val=");
+				XMLSERVER_LOG(val_s,DEC);
+				XMLSERVER_LOG(">\r\n");		
 			#endif		
 				
 				U8* val_sp = &val_s;

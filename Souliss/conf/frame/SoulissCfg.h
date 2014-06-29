@@ -44,7 +44,7 @@
 							
 /**************************************************************************/
 /*!
-	The openHAB Server is an TCP or UDP server listening for HTTP URLs and 
+	The XML Server is an TCP or UDP server listening for HTTP URLs and 
 	enable data transfer using a XML string.
 	
 	Enabled in TCP mode, the node can be polled using a standard HTTP URL
@@ -54,20 +54,20 @@
 	
 	Data are available in XML format.
 	
-	The openHAB Server is supported only for Ethernet based nodes equipped with
+	The XML Server is supported only for Ethernet based nodes equipped with
 	Wiznet W5100/W5200/W5500 controller.
 	
         Value       
         0x0         Disable (Default)
-        0x1         Enable in TCP
-		0x2			Enable in UDP
+        0x1         Enable in TCP (Polling)
+		0x2			Enable in UDP (Event-driven)
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
-#	define OPENHAB  	0
+#	define XMLSERVER  	0
 #endif
 
-#define	OPENHAB_DEBUG	0
+#define	XMLSERVER_DEBUG	0
 			
 /**************************************************************************/
 /*!

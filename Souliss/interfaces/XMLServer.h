@@ -22,8 +22,8 @@
     \file 
     \ingroup
 */
-#ifndef OPENHAB_H
-#define OPENHAB_H
+#ifndef XMLSERVER_H
+#define XMLSERVER_H
 
 #include "GetConfig.h"						// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h
 
@@ -52,13 +52,13 @@ typedef struct
 	U8  slot;								// Node Slot
 } CommandBufferHeader;
 
-#if (OPENHAB_DEBUG)
-	#define OPENHAB_LOG Serial.print
+#if (XMLSERVER_DEBUG)
+	#define XMLSERVER_LOG Serial.print
 #endif
 
-#if(OPENHAB && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
-void openHABInit(U8 *memory_map);
-void openHABInterface(U8 *memory_map);
+#if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
+void XMLSERVERInit(U8 *memory_map);
+void XMLSERVERInterface(U8 *memory_map);
 #endif
 
 #endif

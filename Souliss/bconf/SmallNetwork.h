@@ -35,7 +35,7 @@
 // configuration.
 
 #define	NODESIZE_INSKETCH
-#define MaCaco_NODES			5				// Number of remote nodes
-#define MaCaco_SLOT				12				// Number of slot
+#define MaCaco_NODES			8				// Number of remote nodes
+#define MaCaco_SLOT				0xF				// Number of slot
 
 #endif
