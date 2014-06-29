@@ -118,11 +118,14 @@ U8 oFrame_Available()
 	// If a frame is defined
 	if(actualframe)
 	{
-		if (oFrame_GetLenght())
-			return 1;
-	}		
+		if (oFrame_GetLenght())		// Check if there are still data in the oFrame
+			return 1;	
+		else
+			return 0;
+	}
 	else
 		return 0;
+	
 }
 
 /**************************************************************************/
