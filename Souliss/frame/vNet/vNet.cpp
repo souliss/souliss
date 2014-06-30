@@ -987,8 +987,10 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 			
 		// Apply the routing path found in route table, if any
 		if (route_table[route_index] == subn)
-			*routed_addr = dest_route_table[route_index];	
-			
+		{
+			*routed_addr = dest_route_table[route_index];
+			*media = vNet_GetMedia(*routed_addr);	
+		}	
 		#else	
 		// Route to my supernode
 			
