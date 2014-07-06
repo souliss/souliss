@@ -16,6 +16,7 @@
 
 // Define the type of board, available values and their meaning are listed in QuickCfg.h
 #include "bconf/inSketch.h"
+#include "bconf/SmallNetwork.h"
 #define	QC_BOARDTYPE				0x04	// Arduino with Ethernet Shield (W5100)
 #define	QC_GATEWAYTYPE				0x00	// Disabled
 #define	QC_INTERFACE				0x00	// Disabled

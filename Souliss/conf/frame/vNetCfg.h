@@ -83,10 +83,11 @@
     Useful definition   
 */
 /**************************************************************************/
-#define VNET_FAIL				   0
-#define VNET_DATA_FAIL			   0
-#define VNET_DATA_SUCCESS		   1
-#define VNET_DATA_ROUTED		   255
+#define VNET_FAIL				   	0
+#define VNET_DATA_FAIL			   	0
+#define VNET_DATA_SUCCESS		   	1
+#define VNET_SUCCESS				1
+#define VNET_DATA_ROUTED		   	255
 
 /**************************************************************************/
 /*!

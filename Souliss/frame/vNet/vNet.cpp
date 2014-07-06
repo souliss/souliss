@@ -163,8 +163,10 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	// Upper layers cannot use broadcast, broadcast can be used only at vNet level
 	if(addr == 0xFFFF)
 		return	vNet_SendBroadcast(frame, len, port);
+	else if((addr > VNET_ADDR_NULL) && (addr < VNET_ADDR_BRDC))	// If destination is a multicast address
+		return vNet_SendMulticast(frame, len, port, addr);
 	else
-		vNet_OutPath(addr, &routed_addr, &media);	// Look for outpath message
+		vNet_OutPath(addr, &routed_addr, &media);			// Look for outpath message
 	
 	frame_pnt = &vNet_header[0];							// Get header pointer
 
@@ -371,7 +373,7 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		// Include debug functionalities, if required
 		#if(VNET_DEBUG)
 		// Print address  
-		VNET_LOG("(vNet)<BRD><Media><|0x");
+		VNET_LOG("(vNet)<MLT><Media><|0x");
 		VNET_LOG(media+1,HEX);
 		VNET_LOG("><|0x");
 		VNET_LOG(len+VNET_HEADER_SIZE,HEX);
@@ -913,7 +915,7 @@ U8 vNet_SetBridgingTable(U8 media_in, U8 media_out)
  
 /**************************************************************************/
 /*!
-    Return the code of the media active for the borad, this has to be
+    Return the code of the media active for the board, this has to be
 	used only for devices that has no more than one media active.
 */
 /**************************************************************************/
@@ -946,6 +948,30 @@ U8 vNet_GetMedia(U16 addr)
 	
 	// if address is not in range
 	return 0;
+}
+
+/**************************************************************************/
+/*!
+    Return the code of the media active that hasn't yet a valid address
+*/
+/**************************************************************************/
+U8 vNet_MyMediasWithoutAddress(U8* media)
+{
+	U8 i = 0;
+	
+	// Returns the fist media that needs an Address
+	for(i=0; i<VNET_MEDIA_NUMBER; i++)
+	{
+		// Return if an active media without an address set if found
+		if(vnet_media_en[i] && !(vNet_Media[i].src_addr))
+		{
+			*media = i+1;
+			return VNET_SUCCESS;
+		}	
+	}
+	
+	// No media needs an address
+	return VNET_FAIL;
 }
 
 /**************************************************************************/
@@ -1029,16 +1055,16 @@ U8 vNet_RoutingBridging(U8 media)
 		
 		return vNet_Media_Data[media-1].len;	// No need to route
 	}
-	// If is a 0xNNoo broadcast
+	// If is a 0xNN00 broadcast
 	else if((vNet_Media_Data[media-1].f_dest_addr) == (vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask))
 	{
 		// If the source address is between 0xFF01 and 0xFFFE
-		if(((vNet_Media_Data[media-1].src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].src_addr & 0x00FF) && ((vNet_Media_Data[media-1].src_addr & 0x00FF) != 0x00FF))
+		if(((vNet_Media_Data[media-1].o_src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].o_src_addr & 0x00FF) && ((vNet_Media_Data[media-1].o_src_addr & 0x00FF) != 0x00FF))
 		{
 			U8 i=0;
 			// Match the multicast address with the subscribed ones
 			for(i=0; i<VNET_MULTICAST_SIZE; i++)
-				if(vNet_Media_Data[media-1].src_addr == multicast_groups[i])
+				if(vNet_Media_Data[media-1].o_src_addr == multicast_groups[i])
 					break;
 			
 			// If there is no match discard
@@ -1074,12 +1100,12 @@ U8 vNet_RoutingBridging(U8 media)
 				vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
 		
 		// If the source address is between 0xFF01 and 0xFFFE
-		if((vNet_Media_Data[media-1].src_addr & 0xFF00 == 0xFF00) && (vNet_Media_Data[media-1].src_addr & 0x00FF) && (vNet_Media_Data[media-1].src_addr & 0x00FF != 0x00FF))
+		if(((vNet_Media_Data[media-1].o_src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].o_src_addr & 0x00FF) && ((vNet_Media_Data[media-1].o_src_addr & 0x00FF) != 0x00FF))
 		{
 			U8 i=0;
 			// Match the multicast address with the subscribed ones
 			for(i=0; i<VNET_MULTICAST_SIZE; i++)
-				if(vNet_Media_Data[media-1].src_addr == multicast_groups[i])
+				if(vNet_Media_Data[media-1].o_src_addr == multicast_groups[i])
 					break;
 			
 			// If there is no match discard
@@ -1095,12 +1121,12 @@ U8 vNet_RoutingBridging(U8 media)
 	#else	// Only supernodes can spread a broadcast message across the network
 	
 		// If the source address is between 0xFF01 and 0xFFFE
-		if((vNet_Media_Data[media-1].src_addr & 0xFF00 == 0xFF00) && (vNet_Media_Data[media-1].src_addr & 0x00FF) && (vNet_Media_Data[media-1].src_addr & 0x00FF != 0x00FF))
+		if(((vNet_Media_Data[media-1].o_src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].o_src_addr & 0x00FF) && ((vNet_Media_Data[media-1].o_src_addr & 0x00FF) != 0x00FF))
 		{
 			U8 i=0;
 			// Match the multicast address with the subscribed ones
 			for(i=0; i<VNET_MULTICAST_SIZE; i++)
-				if(vNet_Media_Data[media-1].src_addr == multicast_groups[i])
+				if(vNet_Media_Data[media-1].o_src_addr == multicast_groups[i])
 					break;
 			
 			// If there is no match discard
@@ -1185,7 +1211,7 @@ void vNet_ParseFrame(U8 media)
 	#endif	
 		
 	}
-
+	
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
@@ -1206,6 +1232,31 @@ void vNet_ParseFrame(U8 media)
 	VNET_LOG(">\r\n");
 	#endif
 		
+	#if(VNET_SUPERNODE && VNET_BRDCAST)
+	// Sometimes broadcasted data can be used to build routing and bridging paths
+	if((vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask | 0x0001)))
+	{
+		// The frame is coming from an unconventional path
+		U8 i=0;
+			
+		// If there is yet an entry there is not more to do
+		for(i=0; i<VNET_ROUTING_TABLE; i++)
+			if(route_table[i] == (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask))
+				return;
+			
+		// Look and empty entry
+		i=0;
+		while((route_table[i] != 0x0000) && (i<VNET_ROUTING_TABLE)) i++;
+			
+		// Update the routing table
+		if(i < VNET_ROUTING_TABLE)
+		{
+			route_table[i] = (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask);
+			dest_route_table[i] = vNet_Media_Data[media-1].src_addr;
+		}	
+	}
+	#endif	
+		
 }
 
 /**************************************************************************/
@@ -1213,7 +1264,7 @@ void vNet_ParseFrame(U8 media)
     Subscribe to a multicast group
 */
 /**************************************************************************/
-void vNet_MulticastGroup(U16 multicastgroup, U8 multicastnumber)
+void vNet_SetMulticastGroup(U16 multicastgroup, U8 multicastnumber)
 {
 	if(multicastnumber < VNET_MULTICAST_SIZE)
 		multicast_groups[multicastnumber] = multicastgroup;

@@ -7,14 +7,15 @@ Release note for revision Alpha 6.0.1, on dd/mm/yyyy
 	a buffer for the XML interface for either TCP and UDP cases
 	to handle multiple commands in short time.
 		- Modbus TCP/RTU interface
-		- Modified the memory handling, saving more RAM on Peers
+		- Modified the memory handling, save more RAM on Peers
 		- Nodes can dynamically join a Gateway even if has a fixed vNet address
 		- Command buffer for HTTP/XML Interface
 		- Command buffer for UDP/XML  Interface
 		- The openHAB Interfaces are now generic and called XMLServer Interfaces
-		- Support for Multicast (preliminary)
+		- Support for Multicast
+		- Automatic update of the routing table in case of dynamic join of a gateway
 		- All Souliss DigIn can now returns the results without affect slots values
-		- Support of DINo over RS485 (max 1 node over RS485, without hardware mods)
+		- Support of DINo over RS485
 		- Examples with Modbus TCP over DINo with plug&play
 		- Bugfix
 

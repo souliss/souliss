@@ -115,6 +115,7 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index);
 U8 vNet_SetBridgingTable(U8 media_in, U8 media_out);
 U8 vNet_MyMedia();
 U8 vNet_GetMedia(U16 addr);
-void vNet_MulticastGroup(U16 multicastgroup, U8 multicastnumber);
+U8 vNet_MyMediasWithoutAddress(U8* media);
+void vNet_SetMulticastGroup(U16 multicastgroup, U8 multicastnumber);
 
 #endif

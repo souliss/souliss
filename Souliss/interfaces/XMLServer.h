@@ -59,6 +59,10 @@ typedef struct
 #if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
 void XMLSERVERInit(U8 *memory_map);
 void XMLSERVERInterface(U8 *memory_map);
-#endif
 
+// Get back compatibility with previous APIs
+#define openHABInit XMLSERVERInit
+#define openHABInterface XMLSERVERInterface
+
+#endif
 #endif

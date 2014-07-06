@@ -217,10 +217,10 @@ void Souliss_SetDynamicAddressing()
 /**************************************************************************/
 void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
-	U8 i, usedmedia = vNet_MyMedia();			
+	U8 i, usedmedia;			
 			
 	// If no address is set
-	if(!vNet_GetAddress(usedmedia))
+	if(vNet_MyMediasWithoutAddress(&usedmedia))
 	{
 		// Generate a a key identifier
 		if(!keyidval)
@@ -240,7 +240,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			{
 				// Load the address
 				confparameters_p++;
-				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
+				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, ((*(U16 *)confparameters_p) && DYNAMICADDR_GATEWAY));
 					
 				// Clear the actual configuration parameters, the addressing server will load there
 				// the requested address
@@ -257,7 +257,11 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			*(memory_map + MaCaco_CONFPARAM + i) = 0;
 
 		// Request a new address
-		MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, usedmedia, 0, 0);
+		#if(VNET_SUPERNODE)
+			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF + usedmedia), 0, 0);
+		#else
+			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (usedmedia), 0, 0);
+		#endif
 	}	
 }
 

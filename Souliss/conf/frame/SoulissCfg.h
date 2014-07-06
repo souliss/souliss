@@ -130,7 +130,7 @@
 
 #define	DYNAMICADDR_GATEWAYNODE	0x004D
 #define	DYNAMICADDR_SUBNETMASK	0xFF00
-#define	DYNAMICADDR_GATEWAY		0x0000
+#define	DYNAMICADDR_GATEWAY		0xFF01
 
 /**************************************************************************/
 /*!

@@ -17,6 +17,7 @@
 
 // Define the type of board, available values and their meaning are listed in QuickCfg.h
 #include "bconf/inSketch.h"
+#include "bconf/SmallNetwork.h"
 #define	QC_BOARDTYPE				0x04	// Arduino with Ethernet Shield (W5100)
 #define	QC_GATEWAYTYPE				0x02	// Gateway and Data Persistance
 #define	QC_INTERFACE				0x02	// openHAB HTTP XML Interface
@@ -68,7 +69,7 @@ void setup()
 	pinMode(26, OUTPUT);													// Output to control the LIGHT (relay)
 
 	// Init the openHAB HTTP/XML Interface
-	openHABInit(myMap);
+	XMLSERVERInit(myMap);
 	
 	// Init the DHT sensor
 	ssDHT_Begin(DHT_id1);	
@@ -83,7 +84,7 @@ void loop()
 		FAST_GatewayComms();	
 
 		FAST_110ms() {   // We check the openHAB HTTP/XML interface every 70 milliseconds
-			openHABInterface(myMap);		
+			XMLSERVERInterface(myMap);		
 		}
 		
 		FAST_510ms() {   // We check incoming communication data every 510 milliseconds
