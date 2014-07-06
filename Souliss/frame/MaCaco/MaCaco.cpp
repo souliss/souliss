@@ -713,11 +713,11 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 			// Look for the subcription index
 			i = 0;
-			while ((subscr_outaddr[i] != addr) && i < MaCaco_INMAXSUBSCR)
+			while ((subscr_outaddr[i] != addr) && i < MaCaco_OUTMAXSUBSCR)
 				i++;
 			
 			// If no entry was found
-			if(i == MaCaco_INMAXSUBSCR)
+			if(i == MaCaco_OUTMAXSUBSCR)
 				return MaCaco_FUNCODE_ERR;
 			
 			// Set the subcription status flag
