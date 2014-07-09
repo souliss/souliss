@@ -71,10 +71,10 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 		float32((U16*)(memory_map + MaCaco_IN_s + slot), &m_in);
 		float32((U16*)(memory_map + MaCaco_OUT_s + slot), &m_out);
 		
-		// If previously set as NaN or if there is a change grather than the deadband, update the output
+		// If previously set as NaN or if there is a change greater than the deadband, update the output
 		if((((*(U16*)(memory_map + MaCaco_IN_s + slot)) != (*(U16*)(memory_map + MaCaco_OUT_s + slot))) && 
 				*(U16*)(memory_map + MaCaco_OUT_s + slot) == 0xFE00) || 
-				(abs((m_in - m_out)/m_in) > deadband))
+				(abs(m_in - m_out) > abs(deadband*m_in)))
 		{
 			// Store the new value
 			memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];

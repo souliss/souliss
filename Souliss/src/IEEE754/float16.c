@@ -81,7 +81,7 @@
 
 /**************************************************************************
 /*!
-	Convert a single precision floatint point into an half precision one
+	Convert a single precision floating point into an half precision one
 */	
 /**************************************************************************/ 
 void float16(uint16_t *output, float *input)
@@ -150,7 +150,7 @@ void float16(uint16_t *output, float *input)
 
 /**************************************************************************
 /*!
-	Convert an half precision floatint point into an single precision one
+	Convert an half precision floating point into an single precision one
 */	
 /**************************************************************************/ 
 void float32(uint16_t *input, float *output)
