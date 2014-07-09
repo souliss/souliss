@@ -848,6 +848,8 @@ void vNet_SetSubnetMask(U16 subnetmask, U8 media)
 {
 	// If the selected media is not ethernet (ethernet media is equal to 1)
 	// assign the subnetmask, otherwise place the subnet mask to 0.
+	// In this way we cannot create any subnet on the Ethernet side and all
+	// data in Media 1 addresses range are shared over the same Ethernet media.
 	if(media != 1)
 		vNet_Media[media-1].subnetmask = subnetmask;
 	else
@@ -1233,28 +1235,36 @@ void vNet_ParseFrame(U8 media)
 	#endif
 		
 	#if(VNET_SUPERNODE && VNET_BRDCAST)
-	// Sometimes broadcasted data can be used to build routing and bridging paths
-	if((vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask | 0x0001)))
+	// Sometimes broadcast data can be used to build routing and bridging paths
+	if((vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != vNet_Media_Data[media-1].o_src_addr))
 	{
-		// The frame is coming from an unconventional path
-		U8 i=0;
-			
-		// If there is yet an entry there is not more to do
-		for(i=0; i<VNET_ROUTING_TABLE; i++)
-			if(route_table[i] == (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask))
-				return;
-			
-		// Look and empty entry
-		i=0;
-		while((route_table[i] != 0x0000) && (i<VNET_ROUTING_TABLE)) i++;
-			
-		// Update the routing table
-		if(i < VNET_ROUTING_TABLE)
+		// Get the media from the original source address
+		U8 src_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);	
+		
+		// If there is no direct connection, store the path
+		if((vnet_media_en[src_media-1]) ||
+			(vNet_Media_Data[media-1].src_addr != (vNet_Media_Data[media-1].o_src_addr & vNet_Media[src_media-1].subnetmask | 0x0001)))
 		{
-			route_table[i] = (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask);
-			dest_route_table[i] = vNet_Media_Data[media-1].src_addr;
-		}	
-	}
+			// The frame is coming from an unconventional path
+			U8 i=0;
+				
+			// If there is yet an entry there is not more to do
+			for(i=0; i<VNET_ROUTING_TABLE; i++)
+				if(route_table[i] == (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask))
+					return;
+				
+			// Look and empty entry
+			i=0;
+			while((route_table[i] != 0x0000) && (i<VNET_ROUTING_TABLE)) i++;
+				
+			// Update the routing table
+			if(i < VNET_ROUTING_TABLE)
+			{
+				route_table[i] = (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask);
+				dest_route_table[i] = vNet_Media_Data[media-1].src_addr;
+			}	
+		}
+	}	
 	#endif	
 		
 }
