@@ -9,11 +9,12 @@ Release note for revision Alpha 6.0.1, on dd/mm/yyyy
 		- Modbus TCP/RTU interface
 		- Modified the memory handling, save more RAM on Peers
 		- Nodes can dynamically join a Gateway even if has a fixed vNet address
+		- Support for Multicast
+		- Automatic update of the routing table in case of dynamic join of a gateway
+		- vNet Autoreset
 		- Command buffer for HTTP/XML Interface
 		- Command buffer for UDP/XML  Interface
 		- The openHAB Interfaces are now generic and called XMLServer Interfaces
-		- Support for Multicast
-		- Automatic update of the routing table in case of dynamic join of a gateway
 		- All Souliss DigIn can now returns the results without affect slots values
 		- Support of DINo over RS485
 		- Examples with Modbus TCP over DINo with plug&play

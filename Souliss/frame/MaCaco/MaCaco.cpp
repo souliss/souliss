@@ -1096,7 +1096,7 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 	}	
 	else
 	{
-		// if delay is expired subscript again and decrease healty
+		// if delay is expired subscript again and decrease healthy
 		if ((*count < MaCaco_SUBSCRHEALTY))
 			{
 				if ((*healty > 0x00) && (MaCaco_send(addr, MaCaco_SUBSCRREQ, putin, startoffset, numberof, 0x00))) 
@@ -1146,7 +1146,7 @@ void MaCaco_subscribe_battery(U8 subscr_chnl)
 	is generally not required and simulate into the node a subscription
 	request.
 	
-	It can be used to hardcode a subscription in nodes that are not powered
+	It can be used to hard code a subscription in nodes that are not powered
 	24h and that can never match a subscription request (because the request
 	is sent when the node is powered off).
 	

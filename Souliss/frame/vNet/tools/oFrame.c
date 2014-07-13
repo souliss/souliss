@@ -119,12 +119,12 @@ U8 oFrame_Available()
 	if(actualframe)
 	{
 		if (oFrame_GetLenght())		// Check if there are still data in the oFrame
-			return 1;	
+			{return 1;}	
 		else
-			return 0;
+			{return 0;}
 	}
 	else
-		return 0;
+		{return 0;}
 	
 }
 
@@ -141,10 +141,10 @@ U8 oFrame_GetLenght()
 	// While the frame pointer is not null
 	while(frame)
 	{
-
 		len+=frame->header_len+frame->payload_len;		// Get the frame lenght
 		frame = (oFrame*)frame->next;					// Move to next frame
 	}	
+	
 	return len;
 }
 /**************************************************************************/

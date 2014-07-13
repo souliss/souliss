@@ -117,5 +117,6 @@ U8 vNet_MyMedia();
 U8 vNet_GetMedia(U16 addr);
 U8 vNet_MyMediasWithoutAddress(U8* media);
 void vNet_SetMulticastGroup(U16 multicastgroup, U8 multicastnumber);
+void vNet_Reset();
 
 #endif

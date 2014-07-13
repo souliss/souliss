@@ -87,6 +87,7 @@ static U16 multicast_groups[VNET_MULTICAST_SIZE] = {0x0000};
 static U8  bridge_table[VNET_BRIDGING_TABLE] 	 = {0x00};
 
 static U8 last_media = 0;
+static U32 resettime = 0;
 
 U8 vNet_header[VNET_HEADER_SIZE] = {0x00};						// Header for output frame
 oFrame vNet_oFrame;												// Data structure for output frame
@@ -567,6 +568,19 @@ U8 vNet_DataAvailable()
 			i++;
 		}	
 	#endif	
+	
+	// If there are no data available, increase the resettime timer
+	if(!i)	resettime++;
+	else	resettime=0;
+
+	// If we were here too much times without find available data
+	if(resettime>=VNET_RESETTIME)
+	{
+		resettime=0;
+		
+		// Reset all the communication interfaces
+		vNet_Reset();
+	}
 		
 	return i;
 }
@@ -1240,19 +1254,23 @@ void vNet_ParseFrame(U8 media)
 	{
 		// Get the media from the original source address
 		U8 src_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);	
+		U16 submask = vNet_Media[src_media-1].subnetmask;
+		
+		// If we have no subnetmask for that media, use a default one
+		if(!submask) submask = DYNAMICADDR_SUBNETMASK;
 		
 		// If there is no direct connection, store the path
-		if((vnet_media_en[src_media-1]) ||
-			(vNet_Media_Data[media-1].src_addr != (vNet_Media_Data[media-1].o_src_addr & vNet_Media[src_media-1].subnetmask | 0x0001)))
+		if(!(vnet_media_en[src_media-1]) ||
+			(vNet_Media_Data[media-1].src_addr != (vNet_Media_Data[media-1].o_src_addr & submask | 0x0001)))
 		{
 			// The frame is coming from an unconventional path
 			U8 i=0;
 				
 			// If there is yet an entry there is not more to do
 			for(i=0; i<VNET_ROUTING_TABLE; i++)
-				if(route_table[i] == (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask))
+				if(route_table[i] == (vNet_Media_Data[media-1].o_src_addr & submask))
 					return;
-				
+					
 			// Look and empty entry
 			i=0;
 			while((route_table[i] != 0x0000) && (i<VNET_ROUTING_TABLE)) i++;
@@ -1260,8 +1278,16 @@ void vNet_ParseFrame(U8 media)
 			// Update the routing table
 			if(i < VNET_ROUTING_TABLE)
 			{
-				route_table[i] = (vNet_Media_Data[media-1].o_src_addr & vNet_Media[media-1].subnetmask);
+				route_table[i] = (vNet_Media_Data[media-1].o_src_addr & submask);
 				dest_route_table[i] = vNet_Media_Data[media-1].src_addr;
+				
+				#if(VNET_DEBUG)
+				VNET_LOG("(vNet)<ROUTEUPDATE><|0x");
+				VNET_LOG(vNet_Media_Data[media-1].o_src_addr & submask,HEX);
+				VNET_LOG("|0x");
+				VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
+				VNET_LOG(">\r\n");
+				#endif
 			}	
 		}
 	}	
@@ -1279,4 +1305,71 @@ void vNet_SetMulticastGroup(U16 multicastgroup, U8 multicastnumber)
 	if(multicastnumber < VNET_MULTICAST_SIZE)
 		multicast_groups[multicastnumber] = multicastgroup;
 	
+}
+
+/**************************************************************************/
+/*!
+    Reset the Virtual Network
+*/
+/**************************************************************************/
+void vNet_Reset()
+{
+	// Init the active media
+	#if (VNET_MEDIA1_ENABLE)
+		vNet_Init_M1();
+	#endif
+
+	#if (VNET_MEDIA2_ENABLE)
+		vNet_Init_M2();	
+	#endif
+	
+	#if (VNET_MEDIA3_ENABLE)
+		vNet_Init_M3();		
+	#endif
+
+	#if (VNET_MEDIA4_ENABLE)
+		vNet_Init_M4();	
+	#endif
+	
+	#if (VNET_MEDIA5_ENABLE)
+		vNet_Init_M5();	
+	#endif	
+
+	// Set the address for the active media
+	for(U8 media=0;media<VNET_MEDIA_NUMBER;i++)
+	{
+		// Write address into the driver
+		switch(media)
+		{
+		#if (VNET_MEDIA1_ENABLE)
+			case(VNET_MEDIA1_ID):	// Write out on Media 1
+				vNet_SetAddress_M1(vNet_Media[media].src_addr);
+			break;
+		#endif	
+		
+		#if (VNET_MEDIA2_ENABLE)
+			case(VNET_MEDIA2_ID):	// Write out on Media 2
+				vNet_SetAddress_M2(vNet_Media[media].src_addr);	
+			break;
+		#endif
+		
+		#if (VNET_MEDIA3_ENABLE)	
+			case(VNET_MEDIA3_ID):	// Write out on Media 3
+				vNet_SetAddress_M3(vNet_Media[media].src_addr);	
+			break;
+		#endif
+		
+		#if (VNET_MEDIA4_ENABLE)	
+			case(VNET_MEDIA4_ID):	// Write out on Media 4
+				vNet_SetAddress_M4(vNet_Media[media].src_addr);	
+			break;
+		#endif
+		
+		#if (VNET_MEDIA5_ENABLE)	
+			case(VNET_MEDIA5_ID):	// Write out on Media 5
+				vNet_SetAddress_M5(vNet_Media[media].src_addr);		
+			break;
+		#endif		
+		}
+	}		
 }
