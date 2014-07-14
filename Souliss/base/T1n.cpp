@@ -853,7 +853,7 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnFeedback) &&
 			(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_ResetCoil))	// If the pulse is expired then
 	{                                                                   // set the State Feedback as OFF
-		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnFeedback)  
+		if(memory_map[MaCaco_AUXIN_s + slot] != Souliss_T1n_OnFeedback)  
 			*trigger = Souliss_TRIGGED;	
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnFeedback;		// State Feedback as OFF
