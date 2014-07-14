@@ -121,6 +121,21 @@ unsigned ASCII_long2str(unsigned long val, char *buf, unsigned bufLen, byte widt
 	Convert number in string
 */
 /**************************************************************************/
+uint8_t ASCII_str2num(uint8_t *data, uint8_t *plen) 
+{
+	uint8_t c = 0, n = 0;
+			
+	for (c = 0; ((data[c] != '.') || (data[c] != ',') || (data[c] != '\0')); c++) {
+		n = n * 10 + data[c] - '0';
+	}
+	
+	*plen=+c;
+}
+/**************************************************************************/
+/*!
+	Convert number in string
+*/
+/**************************************************************************/
 void ASCII_num2str(uint8_t *data, uint8_t base, uint8_t *len) 
 {
 	// Convert a number into a string
@@ -155,4 +170,27 @@ void ASCII_num2str(uint8_t *data, uint8_t base, uint8_t *len)
 			data[i-1] = (data[i-1] < 10 ? '0' + data[i-1] : 'A' + data[i-1] - 10);
 		}
 	}
+}
+
+/**************************************************************************/
+/*!
+	Compare a string with a sample one
+*/
+/**************************************************************************/
+uint8_t compare_string(char *string, char *sample, uint8_t len)
+{
+	uint8_t i=0;
+	
+	while((i < len) && (*string==*sample))
+	{ 
+		string++;
+		sample++;
+		
+		i++;
+	}
+	
+	if( i == len )
+		return 1;
+	else
+		return 0;
 }

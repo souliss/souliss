@@ -573,15 +573,31 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				}
 			}
 			
+			#if(MaCaco_DEBUG)
+			MaCaco_LOG("(MaCaco)<ADDRS><");
+			for(nodes=0; nodes<MaCaco_NODES; nodes++)
+			{
+				MaCaco_LOG("|0x");
+				MaCaco_LOG((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
+				
+			}
+			MaCaco_LOG(">\r\n");
+			#endif
 			// restart the subscriptions
 			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
 				subscr_count[i] = 0;			
 	
 			// if the join request is from a nodes that previously got an address, flag the
 			// request as completed
-			for(nodes=0; nodes<MaCaco_NODES; nodes++)
-				if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
-					randomkeyid = 0;
+			if (randomkeyid == (U16)rx->putin)	// identify the node from the keyval
+				randomkeyid = 0;
+			else
+			{
+				// identify the node from the address
+				for(nodes=0; nodes<MaCaco_NODES; nodes++)
+					if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+						randomkeyid = 0;
+			}		
 	
 			return MaCaco_FUNCODE_OK;	
 		}	

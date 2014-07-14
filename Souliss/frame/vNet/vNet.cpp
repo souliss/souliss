@@ -261,7 +261,7 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port)
 		frame_pnt = &vNet_header[0];							// Get header pointer
 
 		// Prepare header
-		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Lenght
+		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 		*frame_pnt++ = port;									// Frame Port
 		*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
 		frame_pnt += sizeof(U16);
@@ -1103,17 +1103,19 @@ U8 vNet_RoutingBridging(U8 media)
 			vNet_Media_Data[media-1].f_dest_addr = ((vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask) || ~vNet_Media[media-1].subnetmask);
 		else
 			vNet_Media_Data[media-1].f_dest_addr = (vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask);
-			
-		// Only for wireless point-to-point networks, a supernode can re-broadcast a frame over the same media
-		// acting as a repetear to extend the listening range of the whole network
+		
+		// Generally there is no need to rebroadcast a frame over the same media from where has been received
+		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
+		// the listening range
 		U8 skip_mymedia = 1;
 		if(VNET_MEDIA2_ENABLE)
-			skip_mymedia = 0;
+			skip_mymedia = 0;		
 		
-		// Rebroadcast the message over the active medias
-		for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
-			if(vnet_media_en[i] && skip_mymedia*(i != media-1))
-				vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
+		// If the source address isn't null, rebroadcast the message over the active media
+		if(vNet_Media_Data[media-1].o_src_addr)
+			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
+				if(vnet_media_en[i] && skip_mymedia*(i != media-1))
+					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
 		
 		// If the source address is between 0xFF01 and 0xFFFE
 		if(((vNet_Media_Data[media-1].o_src_addr & 0xFF00) == 0xFF00) && (vNet_Media_Data[media-1].o_src_addr & 0x00FF) && ((vNet_Media_Data[media-1].o_src_addr & 0x00FF) != 0x00FF))
@@ -1336,7 +1338,7 @@ void vNet_Reset()
 	#endif	
 
 	// Set the address for the active media
-	for(U8 media=0;media<VNET_MEDIA_NUMBER;i++)
+	for(U8 media=0;media<VNET_MEDIA_NUMBER;media++)
 	{
 		// Write address into the driver
 		switch(media)

@@ -258,7 +258,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 
 		// Request a new address
 		#if(VNET_SUPERNODE)
-			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF + usedmedia), 0, 0);
+			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF0 + usedmedia), 0, 0);
 		#else
 			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (usedmedia), 0, 0);
 		#endif
@@ -275,8 +275,7 @@ void Souliss_JoinNetwork()
 {
 	// Request to join a network only if I've got an address
 	if(vNet_GetAddress(vNet_MyMedia()))
-		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, 0, 0, 0, 0);
-
+		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, (U8 *)keyidval, 0, 0, 0);
 }
 
 /**************************************************************************
