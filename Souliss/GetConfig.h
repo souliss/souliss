@@ -502,6 +502,15 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x50)
+#		define	WIFI_LPT200				1	
+#		define	COMMS_MODEL				0x00
+#		define	BOARD_MODEL				0x02
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		0
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x00)

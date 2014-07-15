@@ -137,8 +137,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	// Flag the addressing server
 	addrsrv = true;
 
-	// Use a free address for each media, is supposed that the addressing server
-	// is also the unique bridge/router of the network
+	// Use a free address for each media
 	U8 i=0;
 	for(i=0; i<VNET_MEDIA_NUMBER; i++)
 		if(vnet_media_en[i])

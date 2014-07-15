@@ -48,7 +48,11 @@
 	#if (WIFI_MRF24)
 		#include "drivers/ethMRF24/vNetDriver_eth.cpp"	
 	#endif	
-	
+
+	// Driver for MAuthometion HF-LPT200
+	#if (WIFI_LPT200)
+		#include "drivers/ethLPT200/vNetDriver_eth.cpp"	
+	#endif		
 #endif
 	
 #if (VNET_MEDIA2_ENABLE)
@@ -1251,8 +1255,8 @@ void vNet_ParseFrame(U8 media)
 	#endif
 		
 	#if(VNET_SUPERNODE && VNET_BRDCAST)
-	// Sometimes broadcast data can be used to build routing and bridging paths
-	if((vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != vNet_Media_Data[media-1].o_src_addr))
+	// Sometimes broadcast data can be used to build routing and bridging paths, this doesn't apply to IP based frames
+	if(((media-1)!=VNET_MEDIA1_ID) && (vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != vNet_Media_Data[media-1].o_src_addr))
 	{
 		// Get the media from the original source address
 		U8 src_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);	

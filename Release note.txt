@@ -18,6 +18,7 @@ Release note for revision Alpha 6.0.1, on dd/mm/yyyy
 		- All Souliss DigIn can now returns the results without affect slots values
 		- Support of DINo over RS485
 		- Examples with Modbus TCP over DINo with plug&play
+		- Support for HF-LPT200 (preliminary)
 		- Bugfix
 
 Release note for revision Alpha 5.2, on 22/05/2014

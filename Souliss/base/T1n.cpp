@@ -835,23 +835,19 @@ void Souliss_SetT18(U8 *memory_map, U8 slot)
 /**************************************************************************/
 U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 {
-	U8 i_trigger=0;														// Internal trigger
-
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffFeedback) &&
-			(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_ResetCoil))	// If the pulse is expired then
+	if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffFeedback))	// If the pulse is expired then
 	{                                                                   // set the State Feedback as OFF
 		if(memory_map[MaCaco_AUXIN_s + slot] != Souliss_T1n_OffFeedback)  
 			*trigger = Souliss_TRIGGED;
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffFeedback;		// State Feedback as OFF
-		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OffFeedback;		// Store the actual State Feedback	
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OffFeedback;	// Store the actual State Feedback	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnFeedback) &&
-			(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_ResetCoil))	// If the pulse is expired then
+	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnFeedback))	// If the pulse is expired then
 	{                                                                   // set the State Feedback as OFF
 		if(memory_map[MaCaco_AUXIN_s + slot] != Souliss_T1n_OnFeedback)  
 			*trigger = Souliss_TRIGGED;	
@@ -876,12 +872,8 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 	}	
 	else if (memory_map[MaCaco_OUT_s + slot] > Souliss_T1n_ResetCoil)
 		memory_map[MaCaco_OUT_s + slot]--;
-
-	// Update the trigger
-	if(i_trigger)
-		*trigger = i_trigger;
 	
-	return i_trigger;
+	return *trigger;
 }
 
 /**************************************************************************
