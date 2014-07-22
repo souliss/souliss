@@ -12,8 +12,7 @@ Release note for revision Alpha 6.0.1, on dd/mm/yyyy
 		- Support for Multicast
 		- Automatic update of the routing table in case of dynamic join of a gateway
 		- vNet Autoreset
-		- Command buffer for HTTP/XML Interface
-		- Command buffer for UDP/XML  Interface
+		- Command buffer for HTTP/XML and UDP/XML Interface (bugfix by Alexander Mathis)
 		- The openHAB Interfaces are now generic and called XMLServer Interfaces
 		- All Souliss DigIn can now returns the results without affect slots values
 		- Support of DINo over RS485

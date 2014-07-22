@@ -12,7 +12,7 @@ uint8_t	cmdbuff_vals[CMDBUFF_VALS];
 	Store commands into the buffer
 */	
 /**************************************************************************/
-void command_buffer(uint8_t address, uint8_t slot, uint8_t* val)
+void command_buffer(uint16_t address, uint8_t slot, uint8_t* val)
 {
 	uint8_t i;
 
