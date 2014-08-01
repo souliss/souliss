@@ -182,7 +182,13 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 		return vNet_SendMulticast(frame, len, port, addr);
 	else
 		vNet_OutPath(addr, &routed_addr, &media);			// Look for outpath message
-	
+
+	#if(VNET_DEBUG)
+    VNET_LOG("(vNet)<MEDIA><|0x");
+	VNET_LOG(media,HEX);
+	VNET_LOG(">\r\n");
+	#endif
+		
 	frame_pnt = &vNet_header[0];							// Get header pointer
 
 	// Prepare header
@@ -1005,6 +1011,12 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	// Get media used from destination address
 	*media = vNet_GetMedia(addr);
 
+	#if(VNET_DEBUG)
+    VNET_LOG("(vNet)<OUTPATH><|0x");
+	VNET_LOG(media,HEX);
+	VNET_LOG(">\r\n");
+	#endif
+	
 	// Bridge to a node within the same subnet
 	if ((vnet_media_en[*media-1]) && (vNet_Media[*media-1].src_addr & vNet_Media[*media-1].subnetmask) == (addr & vNet_Media[*media-1].subnetmask))
 		*routed_addr = addr;	
@@ -1012,9 +1024,20 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	{
 		#if (VNET_SUPERNODE)
 		// Route to neighbor			
-		subn = addr & vNet_Media[*media-1].subnetmask;		// Final destination subnet
-		*routed_addr = subn | 0x0001;						// Route to first address of subnet
-			
+		if(vNet_Media[*media-1].subnetmask)
+		{
+			subn = addr & vNet_Media[*media-1].subnetmask;		// Final destination subnet
+			*routed_addr = subn | 0x0001;						// Route to first address of subnet
+		}
+		else
+			subn = addr & DYNAMICADDR_SUBNETMASK;				// Use a standard subnetmask if the media isn't configured
+		
+		#if(VNET_DEBUG)
+		VNET_LOG("(vNet)<NHBOR><|0x");
+		VNET_LOG(media,HEX);
+		VNET_LOG(">\r\n");
+		#endif
+		
 		// Look into the routing table
 		while ((route_table[route_index] != subn) && (route_index < VNET_ROUTING_TABLE))	
 			route_index++;														   	

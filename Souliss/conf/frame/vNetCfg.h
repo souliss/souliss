@@ -107,8 +107,9 @@
         0x1         Enable
 */
 /**************************************************************************/
-#define VNET_DEBUG  		0
-								
+#ifndef	VNET_DEBUG_INSKETCH
+#	define VNET_DEBUG  		0
+#endif								
 /**************************************************************************/
 /*!
 	If enabled allow broadcast support for incoming frames, to work properly
