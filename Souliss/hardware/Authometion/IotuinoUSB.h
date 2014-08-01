@@ -1,6 +1,12 @@
 /**************************************************************************
+	Souliss Support for Authometion IoTuino
+    Copyright (C) 2014  Veseo
+	
+***************************************************************************/
+
+/**************************************************************************
 	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,21 +28,18 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DINOv2_H
-#define bconf_DINOv2_H
+#ifndef IOTUINOUSB_H
+#define IOTUINOUSB_H
 
-// List QuickCfg.h parameters that want to be configured as standard
-#define	BOARDTYPE_INSKETCH
-#define GATEWAYTYPE_INSKETCH
-#define	DYNAMICADDRESSING_INSKETCH
-#define	ETHERNETMACRAW_INSKETCH
-#define	USARTDRIVER_INSKETCH
-
-#define	QC_BOARDTYPE			0x21
-#define	QC_GATEWAYTYPE			0x03
-#define DYNAMICADDRESSING  		0x01
-#define ETHERNETMACRAW  		0x00
-#define	USARTDRIVER				Serial1	
-#define	USART_TXENABLE			1
-#define	USART_TXENPIN			RS485ENABLE
+// Init the Radio and the WiFi module, get the IP address from the module
+// and setup Souliss and vNet					
+#define	InitIoTuino()		Iotuino.initialize();							\
+							Iotuino.setRadioTransmission(18);				\
+							lpt200_init();									\
+							uint8_t t_ipaddr[4];							\
+							getip(t_ipaddr);								\
+							Souliss_SetIPAddress(t_ipaddr, 0, 0);			\
+							Souliss_SetLocalAddress(memory_map, t_ipaddr[3])
+							
+					
 #endif

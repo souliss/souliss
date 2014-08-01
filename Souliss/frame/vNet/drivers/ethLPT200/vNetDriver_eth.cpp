@@ -48,7 +48,11 @@ extern bool addrsrv;
 /**************************************************************************/
 void vNet_Init_M1()
 {
-	lpt200_init();
+	// The Init_M1() is called by vNet_Init() and suppose that a valid address
+	// is yet available. Since this module works in DHCP only, we have to init
+	// the module before the vNet driver.
+
+	// The init shall be called outside before start vNet
 }
 
 /**************************************************************************/
@@ -69,7 +73,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 {
 	uint8_t ip_addr[4];
 	uint16_t vNet_port;
-
+	
 	// Define the standard vNet port
 	vNet_port = ETH_PORT;
 	
@@ -95,20 +99,20 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 		#endif
 			eth_vNettoIP(addr, &ip_addr[0]);	// Get the IP address
 	}
-		
+
 	// Build a frame with len of payload as first byte
 	vNetM1_header = len+1;
 	oFrame_Define(&vNetM1_oFrame);
 	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
 
 	// Send data	
-	if(!sendto((uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
+	if(!sendUDP((uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
 	{
 		oFrame_Reset();		// Free the frame
 		
 		return ETH_FAIL;	// If data sent fail, return
 	}
-	
+
 	// At this stage data are processed or socket is failed, so we can
 	// securely reset the oFrame
 	oFrame_Reset();		
@@ -138,9 +142,9 @@ uint8_t vNet_DataAvailable_M1()
 	dataframe.len = dataaval();
 	
 	// If the incoming size is bigger than the UDP header
-	if((dataframe.len >= 8) && (dataframe.len <= VNET_MAX_FRAME))
+	if((dataframe.len >= 8) && (dataframe.len <= L200_FRAME_LEN))
 		return ETH_SUCCESS;
-	
+		
 	// Discard
 	dataframe.len = 0;
 
@@ -160,9 +164,9 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 
 	data_pnt=data;
 	
-	if(!recvUDP(data, dataframe.len, dataframe.ip, (uint16_t*)(&dataframe.port), d_addr, &d_port))
+	if(!recvUDP(data, VNET_MAX_FRAME, dataframe.ip, (uint16_t*)(&dataframe.port), d_addr, &d_port))
 		return ETH_FAIL;
-		
+				
 	// Verify the incoming address, is a not conventional procedure at this layer
 	// but is required to record the IP address in case of User Mode addresses
 	#if(UMODE_ENABLE)

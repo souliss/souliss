@@ -39,18 +39,19 @@
 #define L200_FAIL				0x00
 #define	L200_UDP				0x10
 #define	L200_TCP				0x20
+#define	L200_JUNK				0x07				// Number of cycle that data can hold in the buffer
 
 // Frame
-#define	L200_MAXPAYLOAD			VNET_MAX_FRAME
+#define	L200_MAXPAYLOAD			(VNET_MAX_FRAME)
 #define	L200_OVERHEAD			7					// Additional bytes out of the frame
 #define L200_TYPECODE			7					// Biggest code size (SNDUDP, RCVUDP, CMDAT, GETMYIP)
 #define L200_IPSIZE				15					// ASCII size of 255.255.255.255
 #define L200_PORTSIZE			5					// ASCII size of 65536
-#define	L200_HEADER_LEN			(L200_OVERHEAD+L200_TYPECODE+L200_IPSIZE+L200_PORTSIZE)
-#define	L200_FRAME_LEN			(VNET_MAX_FRAME+L200_OVERHEAD+L200_TYPECODE+L200_IPSIZE+L200_PORTSIZE)
+#define	L200_HEADER_LEN			(L200_OVERHEAD+L200_TYPECODE+2*L200_IPSIZE+2*L200_PORTSIZE)
+#define	L200_HEADER_MIN			29					// Size of #RCVUDP,1.1.1.1,9,1.1.1.2,9,1,
+#define	L200_FRAME_LEN			(L200_MAXPAYLOAD+L200_HEADER_LEN)
 
 // Boot
-#define L200_READYPIN			3
 #define	L200_BOOTTIME			10000
 #define	L200_WAITTIME			1000
 
@@ -77,11 +78,17 @@
 /**************************************************************************/
 #define LPT200_DEBUG  			0
 
+// The name of the class that refers to the USART, change it accordingly to the used device
+#ifndef USARTDRIVER_INSKETCH
+#	define	USARTDRIVER	Serial				
+#endif
+
 uint8_t lpt200_init();
 void getip(uint8_t * addr);
-uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port); 
+uint8_t sendUDP(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port); 
 uint8_t dataaval();
 uint8_t getlen();
 uint8_t recvfrom(uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t *port);
+uint8_t recv(uint8_t * buf, uint16_t len);
 
 #endif

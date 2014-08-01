@@ -81,7 +81,7 @@
 #endif	
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print
+	#define VNET_LOG Serial.print	
 #endif
 
 // Routing and bridging tables
@@ -108,7 +108,7 @@ static vNet_Data vNet_Media_Data[VNET_MEDIA_NUMBER];
 /**************************************************************************/
 void vNet_Init()
 {
-	U8 media = 0;
+	U8 i, media = 0;
 	
 	// Set to zero
 	for(media=1;media<=VNET_MEDIA_NUMBER;media++)
@@ -124,6 +124,21 @@ void vNet_Init()
 			vNet_Media_Data[media-1].f_dest_addr =  0x0000;
 			vNet_Media_Data[media-1].data	=  0x0000;		 
 	}
+	
+	// Set to zero
+	for(i=0;i<VNET_ROUTING_TABLE;i++)
+	{
+		route_table[i] = 0x0000;
+		dest_route_table[i] = 0x0000;
+	}
+
+	// Set to zero
+	for(i=0;i<VNET_BRIDGING_TABLE;i++)
+		bridge_table[i] = 0x0000;
+	
+	// Set to zero
+	for(i=0;i<VNET_MULTICAST_SIZE;i++)
+		multicast_groups[i] = 0x0000;
 	
 	// Init the active media
 	#if (VNET_MEDIA1_ENABLE)
@@ -1255,13 +1270,17 @@ void vNet_ParseFrame(U8 media)
 	#endif
 		
 	#if(VNET_SUPERNODE && VNET_BRDCAST)
-	// Sometimes broadcast data can be used to build routing and bridging paths, this doesn't apply to IP based frames
-	if(((media-1)!=VNET_MEDIA1_ID) && (vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != vNet_Media_Data[media-1].o_src_addr))
+	// Sometimes broadcast data can be used to build routing and bridging paths
+	if((vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != vNet_Media_Data[media-1].o_src_addr))
 	{
 		// Get the media from the original source address
 		U8 src_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);	
 		U16 submask = vNet_Media[src_media-1].subnetmask;
-		
+	
+		// Data from IP sources doesn't need a vNet route
+		if(src_media==VNET_MEDIA1_ID)
+			return;
+	
 		// If we have no subnetmask for that media, use a default one
 		if(!submask) submask = DYNAMICADDR_SUBNETMASK;
 		

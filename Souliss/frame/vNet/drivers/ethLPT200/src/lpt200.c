@@ -30,7 +30,7 @@
 #include "lpt200.h"
 #include "interfaces/ASCIItools.c"
 
-static uint8_t usartframe[L200_FRAME_LEN], l=0, bootsuccess=0;	
+static uint8_t usartframe[L200_FRAME_LEN], l=0, junkdata=0;	
 static uint16_t myaddress=0;
 static uint8_t dhcpip[4];
 
@@ -41,11 +41,6 @@ static uint8_t dhcpip[4];
 	#define USART_LOG 	myUSARTDRIVER.print
 #endif
 
-// The name of the class that refers to the USART, change it accordingly to the used device
-#ifndef USARTDRIVER_INSKETCH
-#	define	USARTDRIVER	Serial				
-#endif
-
 /**************************************************************************/
 /*!
     Init the LPT200 chip
@@ -53,43 +48,66 @@ static uint8_t dhcpip[4];
 /**************************************************************************/
 uint8_t lpt200_init()
 {
+	// Set LPT200 WiFi ON/OFF pin
+	pinMode(2, OUTPUT);
+  
+	// Power off the module
+	digitalWrite(2, HIGH);
+  
 	// Start the USART
 	USARTDRIVER.begin(USART_BAUD);
+
+	// Power on the module
+	digitalWrite(2, LOW);
 	
 	// Wait till the LPT200 got an address via DHCP
-	pinMode(L200_READYPIN,INPUT);
 	delay(L200_BOOTTIME);
 	
-	// The pin goes LOW if boot has been completed
-	if(digitalRead(L200_READYPIN))
-		delay(L200_BOOTTIME/2);			// Give some more time
+	// Clean the serial buffer
+	while(USARTDRIVER.available())
+		USARTDRIVER.read();
 	
-	// Check again if boot has been completed
-	if(!digitalRead(L200_READYPIN))	
-	{
-		USARTDRIVER.println("#GETMYIP$");
-		delay(L200_WAITTIME);
+	USARTDRIVER.println("#GETMYIP$");
+	USARTDRIVER.flush();					// Wait data send
+	
+	// Wait the answer
+	delay(L200_WAITTIME);
 		
-		l=0;
-		while(USARTDRIVER.available() && (l < L200_FRAME_LEN))	
-			usartframe[l++] = USARTDRIVER.read();
-	
-		// There are at least nine chars #GETMYIP,
-		if(l>L200_TYPECODE)
+	l=0;
+	while(USARTDRIVER.available() && (l < L200_FRAME_LEN))	
+		usartframe[l++] = USARTDRIVER.read();
+		
+	// There are at least nine chars #GETMYIP,
+	if(l>L200_TYPECODE)
+	{
+		l=9;	// Length of #GETMYIP,
+
+		#if (LPT200_DEBUG)		
+		USART_LOG("DHCP IP=");				
+		#endif
+		
+		// Get the source IP address
+		for(uint8_t i=0;i<4;i++)
 		{
-			l=9;	// Length of #GETMYIP,
-			
-			// Get the source IP address
-			for(uint8_t i=0;i<4;i++)
-				dhcpip[i] = ASCII_str2num(usartframe+l, &l);
-		}
-		else
-			return L200_FAIL;
-			
-		return L200_SUCCESS;
-	}	
+			dhcpip[i] = ASCII_str2num(usartframe+l, &l);	
+
+			#if (LPT200_DEBUG)
+			USART_LOG(dhcpip[i],HEX);
+			USART_LOG(",");
+			#endif
+		}	
+		
+		#if (LPT200_DEBUG)
+		USART_LOG("\r\n");
+		#endif
+	}
 	else
 		return L200_FAIL;
+			
+	// There is no more to init, the sockets (open/close/listen) are handlded 
+	// directly by the WiFi module.
+			
+	return L200_SUCCESS;
 }
 
 /**************************************************************************/
@@ -99,9 +117,24 @@ uint8_t lpt200_init()
 /**************************************************************************/
 void getip(uint8_t * addr)
 {
+
+	#if (LPT200_DEBUG)
+	USART_LOG(GETIP=);
+	#endif
+
 	for(uint8_t i=0;i<4;i++)
+	{
 		addr[i]=dhcpip[i];
-	
+
+		#if (LPT200_DEBUG)
+		USART_LOG(addr[i],HEX);
+		USART_LOG(",");
+		#endif
+
+	}
+	#if (LPT200_DEBUG)
+	USART_LOG("\r\n");
+	#endif
 }
 
 /**************************************************************************/
@@ -109,7 +142,7 @@ void getip(uint8_t * addr)
     Send an UDP frame
 */
 /**************************************************************************/
-uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
+uint8_t sendUDP(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
 { 
 	uint8_t i=0;
 	uint8_t header[L200_HEADER_LEN] = "#SNDUDP,";	// Send UDP request in ASCII
@@ -129,7 +162,7 @@ uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
 	}
 	
 	// Last separator is a comma and not a dot
-	header[hedlen--] = ',';
+	header[--hedlen] = ',';
 	hedlen++;
 	
 	// Insert the port number
@@ -148,6 +181,11 @@ uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
 		
 		if(oFrame_Available() && (oFrame_GetLenght() < (L200_FRAME_LEN - hedlen)))
 		{
+			// Insert the number of bytes
+			*(unsigned long*)(header+hedlen) = (unsigned long)(oFrame_GetLenght());
+			ASCII_num2str((uint8_t*)(header+hedlen), DEC, &hedlen);
+			header[hedlen++] = ',';
+		
 			// Send the header
 			i=0;
 			while(i < hedlen)
@@ -155,13 +193,20 @@ uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
 				USARTDRIVER.write(header[i]);
 				i++;
 			}
-			
+			USARTDRIVER.flush();					// Wait data send
+
 			// If len is zero buf points to an oFrame
 			if(len==0)
-			{
+			{		
 				// Send the message content
 				while(oFrame_Available())
-					USARTDRIVER.write(oFrame_GetByte());
+				{
+					//USARTDRIVER.write(oFrame_GetByte());
+					uint8_t databyte= oFrame_GetByte();
+					USARTDRIVER.write(databyte);					
+				}
+				USARTDRIVER.flush();					// Wait data send
+
 			}
 			else
 			{
@@ -172,10 +217,15 @@ uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
 					USARTDRIVER.write(buf[i]);
 					i++;
 				}
+				USARTDRIVER.flush();					// Wait data send
+
 			}
 				
 			// Send $ to close the frame
-			USARTDRIVER.print("$\r\n");
+			USARTDRIVER.print("$");
+			USARTDRIVER.flush();					// Wait data send
+
+			return L200_SUCCESS;
 		}
 		else
 			return L200_FAIL;	
@@ -192,98 +242,79 @@ uint8_t sendto(const uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t port)
 /**************************************************************************/
 uint8_t dataaval()
 {
-	uint8_t i=0,j=0, payload=0;
+	uint8_t i=0, payload=0;
 
-	// Check if buffer is yet full and hasn't been parsed
-	if(l == L200_FRAME_LEN-1)
-	{
+	// Check if buffer is yet full and hasn't been parsed or if contain unparsed data from long time
+	if((l == (L200_FRAME_LEN-1)) || (junkdata > L200_JUNK))
+	{	
 		// Reset data, this avoid fake reads due to old data
 		for(i=0;i<L200_FRAME_LEN;i++)
 			usartframe[i]=0;
 	
 		l=0;		// Buffer is full just before retrieve data, remove junk
+		junkdata=0;
 	}
+	else if (l > 0)
+		junkdata++;
 	
 	// From the USART we get one byte per time, so before has to be identified
 	// if there is an incoming frame	
 	while(USARTDRIVER.available() && (l < L200_FRAME_LEN))	
-		usartframe[l++] = USARTDRIVER.read();	
-	
-	// If there are no incoming data
-	if((l == 0))
-		return L200_FAIL;
+		usartframe[l++] = USARTDRIVER.read();
 
-	#if(LPT200_DEBUG)	
-	USART_LOG("(LPT200)<Read> Data aval\r\n");
-	#endif	
+		#if (LPT200_DEBUG)
+		if(l)
+		{
+			USART_LOG("\r\nData in\r\nl=");
+			USART_LOG(l,DEC);
 	
-	// If there are few bytes, the frame is still incomplete
-	if(l < (L200_TYPECODE))
-		return L200_FAIL;	// Nothing to parse
-	
-	// If the length exceed the buffer size
-	if(l > L200_FRAME_LEN-1)
-	{
-		// Reset data, this avoid fake reads due to old data
-		for(i=0;i<L200_FRAME_LEN;i++)
-			usartframe[i]=0;
-			
-		l=0;		// Buffer is full just before retrieve data, remove junk
+			USART_LOG("\r\nASCII >");
+			i=0;
+			while(i<l)
+			{
+				USART_LOG((char)usartframe[i]);
+				i++;
+			}
 		
-		return L200_FAIL;
-	}
+			USART_LOG("\r\nHEX >");
+			i=0;
+			while(i<l)
+			{
+				USART_LOG(usartframe[i],HEX);
+				USART_LOG(",");
+				i++;
+			}
+		}
+		#endif
 	
-	// Analyse the retrieved frame 
+	// The LPT200 module can receive binary data on the UDP socket or ASCII data
+	// on all the other opened sockets. In case of binary data is always used #RCVUDP
+	// as starting string of the frame, the # character is considered special and cannot
+	// be used in ASCII data.
+	
+	// Look for the # special charater, if is found is a binary data and we can remove the junk
 	for(i=0;i<l;i++)
 	{
 		// Look for starting character
 		if(usartframe[i] == '#')
 		{
-			// Look for the ending character
-				
-			for(j=0;j<(l-i);j++)						
-				if(usartframe[i] == '$')
-					payload = j;
-			
-			if(payload)
+			// The payload
+			if(i < l) payload = l-i;
+	
+			if((payload) && (i!=0))
 			{			
-				// The frame is a valid remove junk
-				memcpy(usartframe, &usartframe[i], payload);		
+				// The frame is valid remove junk
+				memcpy(usartframe, (usartframe+i), payload);		
 				l = payload;
-				
-				return payload;					// Return message length
-			}
-			else if((l-i)<(L200_TYPECODE))		// Frame is incomplete, give a try later
-			{
-				#if(LPT200_DEBUG)	
-				USART_LOG("(LPT200)<Read> Incomplete\r\n");
-				#endif	
-				
-				return L200_FAIL;	
-			}
-			else								// Missing start and ending character, cleanup
-			{
-				#if(LPT200_DEBUG)	
-				USART_LOG("(LPT200)<Read> Corrupted\r\n");
-				#endif				
-				
-				// Reset data, this avoid fake reads due to old data
-				for(i=0;i<L200_FRAME_LEN;i++)
-					usartframe[i]=0;
-					
-				l=0;		// Buffer is full just before retrieve data, remove junk
-		
-				return L200_FAIL;		
 			}
 		}
-	}
-	
-	// Next try
-	#if(LPT200_DEBUG)	
-	USART_LOG("(LPT200)<Read> Next try\r\n");
-	#endif		
-	
-	return L200_FAIL;		
+	}	
+
+	// If there are no incoming data
+	if((l == 0))
+		return L200_FAIL;
+	else
+		return l;	// Return the availale bytes	
 }
 
 /**************************************************************************/
@@ -298,58 +329,125 @@ uint8_t getlen()
 
 /**************************************************************************/
 /*!
-    Parse and get data
+    Parse and get data (binary) from UDP socket
 */
 /**************************************************************************/
 uint8_t recvUDP(uint8_t * buf, uint16_t len, uint8_t * s_addr, uint16_t *s_port, uint8_t * d_addr, uint16_t * d_port)
 {
-	uint8_t i=0;
+	uint8_t i=0, datalen=0;
 	uint8_t header[L200_HEADER_LEN] = "#RCVUDP,";	// Send UDP request in ASCII
-	uint8_t hedlen = 8;								// Starting position after the #SNDUDP,
+	uint8_t hedlen = 8;								// Starting position after the #RCVUDP,
 	
 	// Define the frame type
 	if(compare_string((char*)usartframe, (char*)header, hedlen))
-	{		
+	{
+		// Check the lenght of the header
+		if(l < L200_HEADER_MIN)
+			return L200_FAIL;
+
+		// Check if the received frame has a complete header like #RCVUDP,192.168.1.17,23000,192.168.1.18,230,12,....			
+		if(nof_string((char*)usartframe, ',', L200_HEADER_LEN) < 6)
+			return L200_FAIL;
+			
+		// From this point the header is supposed to be complete, parse it
+	
 		// Get the source IP address
 		for(i=0;i<4;i++)
-		{
 			s_addr[i] = ASCII_str2num(usartframe+hedlen, &hedlen);
-			hedlen++;	// Skip the dot separator
-		}
-
+			
 		// Get the source port number
 		*s_port = ASCII_str2num(usartframe+hedlen, &hedlen);
-		hedlen++;	// Skip the comma separator
-		
+
 		// Get the destination IP address
 		for(i=0;i<4;i++)
-		{
 			d_addr[i] = ASCII_str2num(usartframe+hedlen, &hedlen);
-			hedlen++;	// Skip the dot separator
-		}
 		
 		// Get the destination port number
-		*d_port = ASCII_str2num(usartframe+hedlen, &hedlen);		
-		hedlen++;	// Skip the comma separator
- 
-		// Move till the end of the frame
+		*d_port = ASCII_str2num(usartframe+hedlen, &hedlen);		 
+
+		// The lenght of the payload is the last parameter
+		datalen = ASCII_str2num(usartframe+hedlen, &hedlen);
+		
+		// Retreive the data
 		i=0;
-		while((hedlen<l) && (usartframe[hedlen] != '$') && i < len)
+		if((l-hedlen) >= (datalen-1))
+		{	
+			while((i < datalen) && (hedlen < L200_FRAME_LEN))
+			{
+				// Copy data in the buffer
+				buf[i] = usartframe[hedlen];
+				
+				i++;
+				hedlen++;
+			}
+		
+			// Flag data as read
+			if(hedlen+1 < l)
+			{
+				l=l-hedlen-1;	// Remove the data read and the $ at end of the string
+				
+				// If there are not used data in the buffer, move them at the begin of the buffer
+				if(l)	memcpy(usartframe, (usartframe+hedlen), l);
+			}	
+			else
+				l=0;
+			
+			// Reset the junk timer
+			junkdata=0;
+			
+			// Return the amount of data
+			return i;
+		}
+		else
+			return L200_FAIL;
+	}
+	else
+		return L200_FAIL;	
+}
+
+/**************************************************************************/
+/*!
+    Parse and get data (ASCII) from all other socket
+*/
+/**************************************************************************/
+uint8_t recv(uint8_t * buf, uint16_t len)
+{
+	uint8_t i=0, datalen=l;
+	uint8_t header[L200_HEADER_LEN] = "#RCVUDP,";	// Send UDP request in ASCII
+	uint8_t hedlen = 8;								// Starting position after the #RCVUDP,
+	
+	// We should not process here UDP frames
+	if(compare_string((char*)usartframe, (char*)header, hedlen))
+		return L200_FAIL;
+
+	// Retreive the data
+	if(datalen)
+	{	
+		while((i < datalen) && (i < L200_FRAME_LEN) && (i < len))
 		{
 			// Copy data in the buffer
-			buf[i] = usartframe[hedlen];
+			buf[i] = usartframe[i];
 			
 			i++;
-			hedlen++;
 		}
+
+		// Flag data as read
+		if(i < l) 
+		{
+			l=l-i;
+			
+			// If there are not used data in the buffer, move them at the begin of the buffer
+			if(l)	memcpy(usartframe, (usartframe+hedlen), l);
+		}
+		else
+			l=0;
+			
+		// Reset the junk timer
+		junkdata=0;
 		
-		// If there were available data
-		if(i)
-			return i;
+		// Return the amount of data	
+		return i;
 	}
 	else
 		return L200_FAIL;
-	
-	
-	
 }

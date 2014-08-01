@@ -42,3 +42,9 @@
 #if(IOBOARD_MODEL == 0x03)						
 #	include "hardware/Olimex/MODRGB.cpp"
 #endif
+
+// Include drivers for Authometion IoTuino with LYT RGBW Led Bulb
+#if(IOBOARD_MODEL == 0x04)						
+#	include "hardware/Authometion/Iotuino.cpp"
+#	include "hardware/Authometion/LYT.cpp"
+#endif

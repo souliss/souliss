@@ -60,4 +60,12 @@
 #	include "hardware/Olimex/Souliss_MODRGB.h"
 #endif
 
+
+// Include drivers for Authometion IoTuino with LYT RGBW Led Bulb
+#if(IOBOARD_MODEL == 0x04)						
+#	include "hardware/Authometion/IotuinoUSB.h"
+#	include "hardware/Authometion/Iotuino.h"
+#	include "hardware/Authometion/LYT.h"
+#endif
+
 #endif

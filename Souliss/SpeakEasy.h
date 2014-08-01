@@ -173,7 +173,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 /*****************************************/
 
-/************* Let be lazy ***************/
+/************* Let be lazy ***************/	
 #define	FAST_GatewayComms()						FAST_70ms()    						\
 													ProcessCommunication();			\
 												FAST_1110ms() 						\
@@ -199,9 +199,6 @@ unsigned long tmr_fast=0, tmr_slow=0;
 													ssDynamicAddressing();			\
 													ssJoinNetwork();				\
 												}
-
-
-
 /*****************************************/
 
 

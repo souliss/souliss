@@ -121,15 +121,19 @@ unsigned ASCII_long2str(unsigned long val, char *buf, unsigned bufLen, byte widt
 	Convert number in string
 */
 /**************************************************************************/
-uint8_t ASCII_str2num(uint8_t *data, uint8_t *plen) 
+uint16_t ASCII_str2num(uint8_t *data, uint8_t *plen) 
 {
-	uint8_t c = 0, n = 0;
-			
-	for (c = 0; ((data[c] != '.') || (data[c] != ',') || (data[c] != '\0')); c++) {
-		n = n * 10 + data[c] - '0';
+	uint16_t c = 0, n = 0;	
+	
+	while((data[c] != '.') && (data[c] != ',') && (data[c] != '\0') && (data[c] != '#') && (data[c] != '$')) {	
+		n = ((n * 10) + (data[c] - '0'));
+		c++;
 	}
 	
-	*plen=+c;
+	c++;
+	*plen+=c;
+	
+	return n;
 }
 /**************************************************************************/
 /*!
@@ -193,4 +197,24 @@ uint8_t compare_string(char *string, char *sample, uint8_t len)
 		return 1;
 	else
 		return 0;
+}
+
+/**************************************************************************/
+/*!
+	Returns the number of times that a character is into a string 
+*/
+/**************************************************************************/
+uint8_t nof_string(char *string, char sample, uint8_t len)
+{
+	uint8_t i=0, n=0;
+	
+	// Verify the number of matching chars
+	while(i < len)
+	{
+		if(*(string+i)==sample)	n++;
+		
+		i++;
+	}
+	
+	return n;
 }

@@ -112,7 +112,7 @@
 		0x47		Arduino with Nordic nRF24L01 or nRF24L01+ as range extender
 		0x48		Arduino with W5200 Ethernet Shield
 		0x49		Arduino with W5500 Ethernet Shield
-		0x50		Authometion Iotduino
+		0x50		Authometion Iotuino
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))									// Define manually only in Detailed Configuration Mode

@@ -385,28 +385,28 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// answer to a ping request
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
-
-	#if(MaCaco_USERMODE)	
+	
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
 	{		
 		// Count the number of nodes
 		U8 nodes = 0;	
+		#if(MaCaco_USERMODE)	
 		while(((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
 			nodes++;
+		#endif
 		
 		// Add the actual number of nodes on the database structure frame
 		cmd[0] = nodes;		
 
 		if(rx->numberof >= 0x07)
-			rx->numberof = 0x07;													// Never read more than 7 bytes of data
+			rx->numberof = 0x07;													// Never send more than 7 bytes of data
 		else
 			rx->numberof = 0x04;													// Otherwise send the short frame with only 4 bytes of data
 		
 		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
-	#endif
 	
 	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
@@ -622,9 +622,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// use the last byte from the IP address to define the vNet one
 			vnetaddress += (setbaseipaddr[3] & DYNAMICADDR_SUBNETMASK);
 			
-			vNet_SetAddress(vnetaddress, vNet_GetMedia(vnetaddress));					// Set vNet Address
-			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, vNet_GetMedia(vnetaddress));		// Set vNet Subnetmask
-			vNet_SetMySuperNode(DYNAMICADDR_GATEWAY, vNet_GetMedia(vnetaddress));		// Set vNet Supernode
+			vNet_SetAddress(vnetaddress, vNet_GetMedia(vnetaddress));																// Set vNet Address
+			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, vNet_GetMedia(vnetaddress));													// Set vNet Subnetmask
+			vNet_SetMySuperNode(((vnetaddress & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY), vNet_GetMedia(vnetaddress));		// Set vNet Supernode
 		}
 		#endif
 		

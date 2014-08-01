@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,21 +22,16 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DINOv2_H
-#define bconf_DINOv2_H
+#ifndef bconf_IOTUINO_H
+#define bconf_IOTUINO_H
 
 // List QuickCfg.h parameters that want to be configured as standard
 #define	BOARDTYPE_INSKETCH
 #define GATEWAYTYPE_INSKETCH
 #define	DYNAMICADDRESSING_INSKETCH
-#define	ETHERNETMACRAW_INSKETCH
-#define	USARTDRIVER_INSKETCH
 
-#define	QC_BOARDTYPE			0x21
-#define	QC_GATEWAYTYPE			0x03
+#define	QC_BOARDTYPE			0x50
+#define	QC_GATEWAYTYPE			0x00
 #define DYNAMICADDRESSING  		0x01
-#define ETHERNETMACRAW  		0x00
-#define	USARTDRIVER				Serial1	
-#define	USART_TXENABLE			1
-#define	USART_TXENPIN			RS485ENABLE
+
 #endif

@@ -115,16 +115,16 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	U8 i=0;
 	for(i=0; i<4; i++)
 	{
-		DEFAULT_BASEIPADDRESS[i]=ip_address[i];
-		DEFAULT_SUBMASK[i] = subnet_mask[i];
-		DEFAULT_GATEWAY[i] = ip_gateway[i];
+		if(DEFAULT_BASEIPADDRESS) 	DEFAULT_BASEIPADDRESS[i]=ip_address[i];
+		if(DEFAULT_SUBMASK) 		DEFAULT_SUBMASK[i] = subnet_mask[i];
+		if(DEFAULT_GATEWAY) 		DEFAULT_GATEWAY[i] = ip_gateway[i];
 	}
 	
 	U16 vNet_address = (U16)ip_address[i-1];			// The last byte of the IP address is the vNet one
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 	
 	// Set the address
-	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, ((vNet_address & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 }
 
 /**************************************************************************
@@ -141,7 +141,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	U8 i=0;
 	for(i=0; i<VNET_MEDIA_NUMBER; i++)
 		if(vnet_media_en[i])
-			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
+			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, ((vnet_addr_l[i] & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 	
 	for(i=0; i<VNET_MEDIA_NUMBER; i++)
 		if(vnet_media_en[i])
@@ -199,7 +199,7 @@ void Souliss_SetDynamicAddressing()
 			
 			vNet_SetAddress(0x00, media);								// Set vNet Address
 			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, media);			// Set vNet Subnetmask
-			vNet_SetMySuperNode(DYNAMICADDR_GATEWAY, media);			// Set vNet Supernode
+			vNet_SetMySuperNode(0x00, media);							// Set vNet Supernode
 		}
 	}
 }
@@ -239,7 +239,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			{
 				// Load the address
 				confparameters_p++;
-				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, ((*(U16 *)confparameters_p) && DYNAMICADDR_GATEWAY));
+				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 					
 				// Clear the actual configuration parameters, the addressing server will load there
 				// the requested address

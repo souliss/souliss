@@ -1,6 +1,12 @@
 /**************************************************************************
+	Souliss Support for Authometion IoTuino
+    Copyright (C) 2014  Veseo
+	
+***************************************************************************/
+
+/**************************************************************************
 	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,21 +28,28 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DINOv2_H
-#define bconf_DINOv2_H
+#ifndef LYT_H
+#define LYT_H
 
-// List QuickCfg.h parameters that want to be configured as standard
-#define	BOARDTYPE_INSKETCH
-#define GATEWAYTYPE_INSKETCH
-#define	DYNAMICADDRESSING_INSKETCH
-#define	ETHERNETMACRAW_INSKETCH
-#define	USARTDRIVER_INSKETCH
+#define	LYT_MaxBright	0x11
+#define	LYT_MinBright	0x00
+#define	LYT_MAXNUM		0x0A			// Maximum number of LYT groups
 
-#define	QC_BOARDTYPE			0x21
-#define	QC_GATEWAYTYPE			0x03
-#define DYNAMICADDRESSING  		0x01
-#define ETHERNETMACRAW  		0x00
-#define	USARTDRIVER				Serial1	
-#define	USART_TXENABLE			1
-#define	USART_TXENPIN			RS485ENABLE
+typedef struct
+{
+	U8  mode;
+	U8	addr_a;
+	U8	addr_b;
+	U8	slot;
+} LYT_struct;
+					
+void Souliss_SetLYTLamps(U8 *memory_map, U8 slot);
+U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger);					
+			
+
+void SetLYT(U8 index, U8 mode, U8 addr_a, U8 addr_b, U8 slot);
+U8 FindLYT(U8 slot);
+void LYTSetAddress(U8 slot);
+void LYTClearAddress(U8 slot);
+			
 #endif
