@@ -17,7 +17,6 @@
 
 // Define logic slots, multicolor lights use four slots each
 #define LYTLIGHT1			0					
-#define LYTLIGHT2			4					
 
 void setup()
 {	
@@ -27,11 +26,9 @@ void setup()
 	
 	// Se the LYT bulbs (index, bulb type, addr_a, addr_b, logic slot)
 	SetLYT(0, 2, 0, 1, LYTLIGHT1);
-	SetLYT(1, 2, 0, 2, LYTLIGHT2);
 
 	// Define a logic to handle the bubls
 	Souliss_SetLYTLamps(memory_map, LYTLIGHT1);
-	Souliss_SetLYTLamps(memory_map, LYTLIGHT2);
 }
 
 void loop()
@@ -40,9 +37,11 @@ void loop()
 	EXECUTEFAST() {						
 		UPDATEFAST();	
 		
-		FAST_30ms() {	// We process the logic and relevant input and output every 50 milliseconds
+		FAST_10ms() {	// We process the logic and relevant input and output every 50 milliseconds
+			
+			// Process communication at fast rate, use only if you need better performance
+			/*ProcessCommunication();*/
 			Souliss_Logic_LYTLamps(memory_map, LYTLIGHT1, &data_changed);		
-			Souliss_Logic_LYTLamps(memory_map, LYTLIGHT2, &data_changed);
 		} 
 		
 		// Here we process all communication with other nodes

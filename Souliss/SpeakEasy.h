@@ -42,6 +42,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define UPDATEFAST()	tmr_fast = millis();	\
 						phase_fast = (phase_fast + 1) % num_phases
 
+#define	FAST_10ms()		if (!(phase_fast % 1))	
 #define	FAST_30ms()		if (!(phase_fast % 3))						
 #define	FAST_50ms()		if (!(phase_fast % 5))
 #define	FAST_70ms()		if (!(phase_fast % 7))
