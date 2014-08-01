@@ -88,7 +88,6 @@
 static U16 route_table[VNET_ROUTING_TABLE] 		 = {0x0000};
 static U16 dest_route_table[VNET_ROUTING_TABLE]  = {0x0000};
 static U16 multicast_groups[VNET_MULTICAST_SIZE] = {0x0000};
-static U8  bridge_table[VNET_BRIDGING_TABLE] 	 = {0x00};
 
 static U8 last_media = 0;
 static U32 resettime = 0;
@@ -131,10 +130,6 @@ void vNet_Init()
 		route_table[i] = 0x0000;
 		dest_route_table[i] = 0x0000;
 	}
-
-	// Set to zero
-	for(i=0;i<VNET_BRIDGING_TABLE;i++)
-		bridge_table[i] = 0x0000;
 	
 	// Set to zero
 	for(i=0;i<VNET_MULTICAST_SIZE;i++)
@@ -255,7 +250,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	}
 	
 	#if(VNET_DEBUG) 
-    VNET_LOG("(vNet)<OUT>-FAIL");
+    VNET_LOG("(vNet)<OUT>-FAIL\r\n");
 	#endif
 	
 	return VNET_DATA_FAIL;
@@ -934,19 +929,6 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index)
 	else
 		return VNET_FAIL;
 }
-
-/**************************************************************************/
-/*!
-    Set the entries for the bridging tables
-*/
-/**************************************************************************/
-U8 vNet_SetBridgingTable(U8 media_in, U8 media_out)
-{
-	if(media_in-1 <= VNET_BRIDGING_TABLE)
-		bridge_table[media_in-1] = media_out;
-	else
-		return VNET_FAIL;
-}
  
 /**************************************************************************/
 /*!
@@ -1029,16 +1011,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	else
 	{
 		#if (VNET_SUPERNODE)
-		// Route to neighbor or bridge the frame
-		if(!vnet_media_en[*media-1])			
-		{
-			// If this media is not active, lookup from bridging table the outgoing media
-			if(bridge_table[*media-1] != 0)
-				*media = bridge_table[*media-1];
-			else
-				*media = vNet_MyMedia();	// Else, send out on my active media 
-		}
-			
+		// Route to neighbor			
 		subn = addr & vNet_Media[*media-1].subnetmask;		// Final destination subnet
 		*routed_addr = subn | 0x0001;						// Route to first address of subnet
 			
@@ -1047,7 +1020,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 			route_index++;														   	
 			
 		// Apply the routing path found in route table, if any
-		if (route_table[route_index] == subn)
+		if (subn && (route_table[route_index] == subn))
 		{
 			*routed_addr = dest_route_table[route_index];
 			*media = vNet_GetMedia(*routed_addr);	

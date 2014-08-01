@@ -583,6 +583,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			}
 			MaCaco_LOG(">\r\n");
 			#endif
+			
 			// restart the subscriptions
 			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
 				subscr_count[i] = 0;			
