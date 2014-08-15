@@ -1013,7 +1013,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 
 	#if(VNET_DEBUG)
     VNET_LOG("(vNet)<OUTPATH><|0x");
-	VNET_LOG(media,HEX);
+	VNET_LOG(*media,HEX);
 	VNET_LOG(">\r\n");
 	#endif
 	

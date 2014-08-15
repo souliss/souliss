@@ -545,49 +545,55 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 
 			// if the node wasn't recorded, assign it
 			if((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
+			{
+				// record the new address
 				(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
 	
-			// sort the node addresses	
-			U8 sort_i = 1, sorting = 0;
-			U16	sort_buffer;
-			U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
-	
-			// out of this for all address are sorted, out of the local address
-			for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
-			{
-				// don't sort zeros
-				if(m_address[sort_i] == 0x0000) break;
-				
-				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
+				// sort the node addresses	
+				U8 sort_i = 1, sorting = 0;
+				U16	sort_buffer;
+				U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
+		
+				// out of this for all address are sorted, out of the local address
+				for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
 				{
 					// don't sort zeros
-					if(m_address[sorting] == 0x0000) break; 
-				
-					// sort ascending
-					if(m_address[sort_i] > m_address[sorting])
+					if(m_address[sort_i] == 0x0000) break;
+					
+					for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
 					{
-						sort_buffer         = m_address[sort_i];
-						m_address[sort_i]   = m_address[sorting];
-						m_address[sorting]  = sort_buffer;
+						// don't sort zeros
+						if(m_address[sorting] == 0x0000) break; 
+					
+						// sort ascending
+						if(m_address[sort_i] > m_address[sorting])
+						{
+							sort_buffer         = m_address[sort_i];
+							m_address[sort_i]   = m_address[sorting];
+							m_address[sorting]  = sort_buffer;
+						}
 					}
 				}
-			}
-			
-			#if(MaCaco_DEBUG)
-			MaCaco_LOG("(MaCaco)<ADDRS><");
-			for(nodes=0; nodes<MaCaco_NODES; nodes++)
-			{
-				MaCaco_LOG("|0x");
-				MaCaco_LOG((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
 				
+				#if(MaCaco_DEBUG)
+				MaCaco_LOG("(MaCaco)<ADDRS><");
+				for(nodes=0; nodes<MaCaco_NODES; nodes++)
+				{
+					MaCaco_LOG("|0x");
+					MaCaco_LOG((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
+					
+				}
+				MaCaco_LOG(">\r\n");
+				#endif
+				
+				// restart the subscriptions
+				for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+					subscr_count[i] = 0;
+
+				// request typicals logic values for nodes
+				reqtyp_times = MaCaco_NODES;					
 			}
-			MaCaco_LOG(">\r\n");
-			#endif
 			
-			// restart the subscriptions
-			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-				subscr_count[i] = 0;			
-	
 			// if the join request is from a nodes that previously got an address, flag the
 			// request as completed
 			if (randomkeyid == (U16)rx->putin)	// identify the node from the keyval
@@ -913,7 +919,6 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 	// if there was a change in the memory map
 	if (*data_chg == MaCaco_DATACHANGED)
 	{
-
 		// send data to all subscriptors
 		status = MaCaco_subAnswer(memory_map, data_chg);	
 		
@@ -1312,7 +1317,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 		
 	#endif
 							
-	/** Create a permanent data subscription **/
+	/** Create a permanent data subscription as it was received by an user interface **/
 
 	// look for the subscription channel
 	i = 0;
@@ -1322,14 +1327,14 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	// Store the subscription data
 	if(i < MaCaco_INMAXSUBSCR)
 	{
-		subscr_addr[i]  = VNET_ADDR_NULL;
+		subscr_addr[i]  = VNET_ADDR_NULL;							// This address will not be processed at vNet
 		subscr_funcode[i] = MaCaco_STATEREQ;
 		subscr_putin[i] = 0x00;
 		subscr_startoffset[i] = 0x00;		
 		subscr_numberof[i] = MaCaco_NODES;
 	}
 	
-	/** Create a one time request for typicals logics values **/
+	/** Create a one time request for typicals logics values as it was received by an user interface **/
 
 	// Record the request info
 	reqtyp_addr = VNET_ADDR_NULL;	

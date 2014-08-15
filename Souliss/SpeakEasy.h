@@ -123,8 +123,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Set_Humidity(slot)			Souliss_SetT53(memory_map, slot)
 #define	Logic_Humidity(slot)		Souliss_Logic_T53(memory_map, slot, 0.05, &data_changed)
 
-#define	Set_Pressure(slot)			Souliss_SetT54(memory_map, slot)
-#define	Logic_Pressure(slot)		Souliss_Logic_T54(memory_map, slot, 0.05, &data_changed)
+#define	Set_Light(slot)				Souliss_SetT54(memory_map, slot)
+#define	Logic_Light(slot)			Souliss_Logic_T54(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Voltage(slot)			Souliss_SetT55(memory_map, slot)
 #define	Logic_Voltage(slot)			Souliss_Logic_T55(memory_map, slot, 0.05, &data_changed)
@@ -134,6 +134,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 #define	Set_Power(slot)				Souliss_SetT57(memory_map, slot)
 #define	Logic_Power(slot)			Souliss_Logic_T57(memory_map, slot, 0.05, &data_changed)
+
+#define	Set_Pressure(slot)			Souliss_SetT58(memory_map, slot)
+#define	Logic_Pressure(slot)		Souliss_Logic_T58(memory_map, slot, 0.05, &data_changed)
 
 /******************************************/
 
