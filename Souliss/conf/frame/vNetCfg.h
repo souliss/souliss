@@ -34,7 +34,9 @@
 	allowed by used base protocol.    
 */
 /**************************************************************************/
-#define VNET_MAX_PAYLOAD   46
+#ifndef VNET_MAX_PAYLOAD_INSKETCH
+#	define VNET_MAX_PAYLOAD   46
+#endif
 
 /**************************************************************************/
 /*!

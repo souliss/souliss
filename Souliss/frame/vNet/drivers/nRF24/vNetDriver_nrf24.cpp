@@ -50,11 +50,11 @@ void vNet_SetAddress_M2(uint16_t addr)
 {
 	// Set the pipe address for broadcast
 	radio.openReadingPipe(0, (NRF24_PIPE | ((uint64_t)VNET_ADDR_BRDC)));
-	radio.setAutoAck(0, FALSE);
+	radio.setAutoAck(0, false);
 	
 	// Set the pipe address for unicast	
 	radio.openReadingPipe(1, (NRF24_PIPE | ((uint64_t)addr)));
-	radio.setAutoAck(1, TRUE);
+	radio.setAutoAck(1, true);
 	
 	// Start listening
 	radio.startListening();

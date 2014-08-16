@@ -80,5 +80,9 @@
 							digitalWrite(9, LOW);					\
 							pinMode(1, OUTPUT);						\
 							pinMode(0, INPUT);						\
-							delay(1000)								
+							delay(1000)	
+
+// Reduce power consumption switching off the Wiznet W5200 if not used
+#define	PowerDownEthernet()	digitalWrite(9, LOW)
+							
 #endif

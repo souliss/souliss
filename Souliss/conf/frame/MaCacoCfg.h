@@ -208,7 +208,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 			Due to the maximum addressing space (1 byte) the
 			following constrain shall be verified:
 			
-			1) MaCaco_SLOT < VNET_MAX_PAYLOAD + MaCaco_HEADER
+			1) MaCaco_SLOT < VNET_MAX_PAYLOAD - MaCaco_HEADER
 			2) MaCaco_NODES < 255
 			3) MaCaco_SLOT  < 255
 			

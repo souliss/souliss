@@ -53,8 +53,9 @@
 
 void setup()
 {	
-	// Init the board
+	// Init the board and power down the Ethernet module in order to reduce power consumption
 	InitDINo();
+	PowerDownEthernet();
 	
 	// Set the inputs
 	SetInput1();
