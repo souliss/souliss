@@ -83,6 +83,6 @@
 							delay(1000)	
 
 // Reduce power consumption switching off the Wiznet W5200 if not used
-#define	PowerDownEthernet()	digitalWrite(9, LOW)
+#define	PowerDownEthernet()	digitalWrite(9, HIGH)
 							
 #endif
