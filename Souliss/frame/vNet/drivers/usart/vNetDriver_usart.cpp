@@ -98,7 +98,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	uint16_t crc=0xFFFF;
 	
 	// Check message lenght
-	if ((len == 0) || (len >= USART_MAXPAYLOAD))
+	if ((len == 0) || (len > VNET_MAX_FRAME))
 		return USART_FAIL;
 	
 	// Check if the bus is free
@@ -231,7 +231,7 @@ uint8_t vNet_DataAvailable_M5()
 {
 	uint8_t i=0;
 
-	if(l == USART_FRAME_LEN-1)
+	if(l == USART_FRAME_LEN)
 	{
 		// Reset data, this avoid fake reads due to old data
 		for(i=0;i<USART_FRAME_LEN;i++)
@@ -264,7 +264,7 @@ uint8_t vNet_DataAvailable_M5()
 		return USART_FAIL;	// Nothing to parse
 	
 	// If the lenght exceed the buffer size
-	if(l > USART_FRAME_LEN-1)
+	if(l > USART_FRAME_LEN)
 	{
 		// Reset data, this avoid fake reads due to old data
 		for(i=0;i<USART_FRAME_LEN;i++)

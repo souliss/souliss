@@ -486,9 +486,9 @@ U8 vNet_SendRoute(U16 routed_addr, U8 media, U8 *data, U8 len)
 	VNET_LOG("|0x");
 	VNET_LOG(data[1],HEX);
 	VNET_LOG("|0x");
-	VNET_LOG((U16)data[2],HEX);
+	VNET_LOG(*(U16*)(data+2),HEX);
 	VNET_LOG("|0x");
-	VNET_LOG((U16)data[4],HEX);
+	VNET_LOG(*(U16*)(data+4),HEX);
 		
 	for(U8 i=VNET_HEADER_SIZE;i<len;i++)
 	{
@@ -1274,7 +1274,7 @@ void vNet_ParseFrame(U8 media)
 		U16 submask = vNet_Media[src_media-1].subnetmask;
 	
 		// Data from IP sources doesn't need a vNet route
-		if(src_media==VNET_MEDIA1_ID)
+		if((src_media-1)==VNET_MEDIA1_ID)
 			return;
 	
 		// If we have no subnetmask for that media, use a default one
