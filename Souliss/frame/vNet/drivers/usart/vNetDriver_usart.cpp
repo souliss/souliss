@@ -102,7 +102,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		return USART_FAIL;
 	
 	// Check if the bus is free
-	if(!isBusFree() && !isBusRecv())
+	if(!isBusFree() || !isBusRecv())
 	{
 		#if(USART_DEBUG)	
 		USART_LOG("(USART)<Send> Try\r\n");
