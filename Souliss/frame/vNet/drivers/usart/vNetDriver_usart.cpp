@@ -29,13 +29,19 @@
 
 #include "vNetDriver_usart.h"							
 
+// Global variables used in the driver
+uint8_t usartframe[USART_FRAME_LEN], l=0;	
+uint8_t	busstate=USART_BUSBUSY;
+uint16_t myaddress=0, mysubnet=vNet_GetSubnetMask(5), in_crc=0;
+
 #define	BusIsBusy()		busstate=USART_BUSBUSY
 #define	BusIsRecev()	busstate=USART_BUSRECV
 #define	BusFreeSlot()	if(busstate) busstate--
 #define	isBusFree()		busstate==USART_BUSFREE
 #define	isBusRecv()		busstate==USART_BUSRECV
 #define setBusFree()	busstate=USART_BUSFREE
-#define	waitBusFree()	delay((myaddress-VNET_ADDR_L_M5)*USART_TOKEN_TIME)
+void waitBusFree()		{delay((myaddress & (~mysubnet))*USART_TOKEN_TIME);}
+
 
 #if (USART_DEBUG)
 	#include "SoftwareSerial.h"
@@ -48,10 +54,6 @@
 #ifndef USARTDRIVER_INSKETCH
 #	define	USARTDRIVER	Serial				
 #endif
-
-uint8_t usartframe[USART_FRAME_LEN], l=0;	
-uint8_t	busstate=USART_BUSBUSY;
-uint16_t myaddress=0, in_crc=0;
 
 /**************************************************************************/
 /*!
@@ -229,7 +231,7 @@ uint8_t vNet_DataSize_M5()
 /**************************************************************************/
 uint8_t vNet_DataAvailable_M5()
 {
-	uint8_t i=0;
+	uint8_t i=0, ll=0;
 
 	if(l == USART_FRAME_LEN)
 	{
@@ -240,13 +242,16 @@ uint8_t vNet_DataAvailable_M5()
 		l=0;		// Buffer is full just before retrieve data, remove junk
 	}
 	
+	// Record the number of bytes that are actually in the frame
+	ll = l;
+	
 	// From the USART we get one byte per time, so before has to be identified
 	// if there is an incoming frame	
 	while(USARTDRIVER.available() && (l < USART_FRAME_LEN))	
 		usartframe[l++] = USARTDRIVER.read();	
 	
 	// If there are no incoming data
-	if((l == 0))
+	if((l == 0) || (l == ll))
 	{
 		BusFreeSlot();			// Note that there was a free slot
 		return USART_FAIL;
@@ -266,6 +271,10 @@ uint8_t vNet_DataAvailable_M5()
 	// If the lenght exceed the buffer size
 	if(l > USART_FRAME_LEN)
 	{
+		#if(USART_DEBUG)	
+		USART_LOG("(USART)<Read> Clear junk\r\n");
+		#endif	
+		
 		// Reset data, this avoid fake reads due to old data
 		for(i=0;i<USART_FRAME_LEN;i++)
 			usartframe[i]=0;

@@ -62,8 +62,8 @@
 #define	USART_TOKEN_LENGHT		3
 #define USART_BYTE_TIME			1					// Time in milliseconds required to transmit a byte at slower baud rate
 #define USART_TOKEN_TIME		(USART_TOKEN_LENGHT*USART_BYTE_TIME)
-#define	USART_BUSBUSY			0x05
-#define	USART_BUSRECV			0x09
+#define	USART_BUSBUSY			0x03
+#define	USART_BUSRECV			0x05
 #define	USART_BUSFREE			0x00
 
 void vNet_Init_M5();
