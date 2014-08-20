@@ -63,6 +63,21 @@
 #	define USART_TXENABLE			0
 #	define USART_TXENPIN			3
 #endif
+
+/**************************************************************************/
+/*!
+	Enable the collision avoidance mechanism before sending data
+	        
+		Value       Media
+        0x0         Disable (Default)
+        0x1         Enable
+	
+*/
+/**************************************************************************/
+#ifndef USART_COLLISION_INSKETCH
+#	define USART_COLLISION			0
+#endif
+
 /**************************************************************************/
 /*!
 	If enabled print the header and payload of incoming, outgoing and routed

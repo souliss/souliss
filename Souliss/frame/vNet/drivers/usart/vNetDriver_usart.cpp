@@ -32,7 +32,7 @@
 // Global variables used in the driver
 uint8_t usartframe[USART_FRAME_LEN], l=0;	
 uint8_t	busstate=USART_BUSBUSY;
-uint16_t myaddress=0, mysubnet=vNet_GetSubnetMask(5), in_crc=0;
+uint16_t myaddress=0, mysubnet=DYNAMICADDR_SUBNETMASK, in_crc=0;
 
 #define	BusIsBusy()		busstate=USART_BUSBUSY
 #define	BusIsRecev()	busstate=USART_BUSRECV
@@ -40,19 +40,17 @@ uint16_t myaddress=0, mysubnet=vNet_GetSubnetMask(5), in_crc=0;
 #define	isBusFree()		busstate==USART_BUSFREE
 #define	isBusRecv()		busstate==USART_BUSRECV
 #define setBusFree()	busstate=USART_BUSFREE
-void waitBusFree()		{delay((myaddress & (~mysubnet))*USART_TOKEN_TIME);}
-
-
-#if (USART_DEBUG)
-	#include "SoftwareSerial.h"
-	extern SoftwareSerial myUSARTDRIVER; // RX, TX
-	
-	#define USART_LOG 	myUSARTDRIVER.print
-#endif
+#define waitBusFree()	delay((myaddress & (~mysubnet))*USART_TOKEN_TIME)
 
 // The name of the class that refers to the USART, change it accordingly to the used device
 #ifndef USARTDRIVER_INSKETCH
-#	define	USARTDRIVER	Serial				
+#	define	USARTDRIVER	Serial	
+
+#	if (USART_DEBUG)
+#		include "SoftwareSerial.h"
+		extern SoftwareSerial myUSARTDRIVER; // RX, TX	
+#		define USART_LOG 	myUSARTDRIVER.print
+#	endif			
 #endif
 
 /**************************************************************************/
@@ -104,7 +102,8 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		return USART_FAIL;
 	
 	// Check if the bus is free
-	if(!isBusFree() || !isBusRecv())
+	#if(USART_COLLISION)
+	if(!isBusFree() || isBusRecv())
 	{
 		#if(USART_DEBUG)	
 		USART_LOG("(USART)<Send> Try\r\n");
@@ -155,6 +154,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 			return USART_FAIL;
 		}	
 	}
+	#endif
 	
 	#if(USART_DEBUG)	
 	USART_LOG("(USART)<Send> Bus free\r\n");

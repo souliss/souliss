@@ -37,6 +37,7 @@
 #define DYNAMICADDRESSING  		0x01
 #define ETHERNETMACRAW  		0x00
 #define	USARTDRIVER				Serial1	
+#define USART_LOG 				Serial.print	
 #define	USART_TXENABLE			1
 #define	USART_TXENPIN			RS485ENABLE
 #endif
