@@ -68,6 +68,7 @@
 
 void vNet_Init_M5();
 void vNet_SetAddress_M5(uint16_t addr);
+void vNet_SetCollisionAvoidanceIndex_M5(uint16_t addr, uint16_t submask);
 uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len);
 uint8_t vNet_DataSize_M5();
 uint8_t vNet_DataAvailable_M5();

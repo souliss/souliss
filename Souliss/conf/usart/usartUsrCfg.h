@@ -69,14 +69,24 @@
 	Enable the collision avoidance mechanism before sending data
 	        
 		Value       Media
-        0x0         Disable (Default)
-        0x1         Enable
+        0x0         Disable 
+        0x1         Enable (Default)
 	
 */
 /**************************************************************************/
-#ifndef USART_COLLISION_INSKETCH
-#	define USART_COLLISION			0
-#endif
+#define USART_COLLISION				1
+
+/**************************************************************************/
+/*!
+	Enable the CRC check on transmitted data
+	        
+		Value       Media
+        0x0         Disable 
+        0x1         Enable (Default)
+	
+*/
+/**************************************************************************/
+#define USART_CRCCHECK				1
 
 /**************************************************************************/
 /*!

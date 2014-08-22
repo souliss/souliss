@@ -54,6 +54,12 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	FAST_1110ms()	if (!(phase_fast % 111))
 #define	FAST_2110ms()	if (!(phase_fast % 211))
 #define	FAST_7110ms()	if (!(phase_fast % 711))
+#define	FAST_9110ms()	if (!(phase_fast % 911))
+#define	FAST_11110ms()	if (!(phase_fast % 1111))
+#define	FAST_21110ms()	if (!(phase_fast % 2111))
+#define	FAST_71110ms()	if (!(phase_fast % 7111))
+#define	FAST_91110ms()	if (!(phase_fast % 9111))
+
 
 #define EXECUTESLOW()	else if(abs(millis()-tmr_slow) > time_base_slow)
 #define UPDATESLOW()	tmr_slow = millis();	\
@@ -188,7 +194,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	FAST_PeerComms()						FAST_70ms()    						\
 													ProcessCommunication();			
 													
-#define	START_PeerJoin()						FAST_1110ms()						\
+#define	START_PeerJoin()						FAST_71110ms()						\
 												{									\
 													if(!MaCaco_IsSubscribed())		\
 													{								\
@@ -199,7 +205,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												
 #define	JoinInProgress()						(!MaCaco_IsSubscribed())												
 
-#define	SLOW_PeerJoin()							SLOW_50s() {						\
+#define	SLOW_PeerJoin()							SLOW_510s() {						\
 													ssDynamicAddressing();			\
 													ssJoinNetwork();				\
 												}

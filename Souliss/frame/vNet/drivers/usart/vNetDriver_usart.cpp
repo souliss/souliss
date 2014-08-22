@@ -32,7 +32,7 @@
 // Global variables used in the driver
 uint8_t usartframe[USART_FRAME_LEN], l=0;	
 uint8_t	busstate=USART_BUSBUSY;
-uint16_t myaddress=0, mysubnet=DYNAMICADDR_SUBNETMASK, in_crc=0;
+uint16_t myaddress=0, caindex=0, in_crc=0;
 
 #define	BusIsBusy()		busstate=USART_BUSBUSY
 #define	BusIsRecev()	busstate=USART_BUSRECV
@@ -40,7 +40,7 @@ uint16_t myaddress=0, mysubnet=DYNAMICADDR_SUBNETMASK, in_crc=0;
 #define	isBusFree()		busstate==USART_BUSFREE
 #define	isBusRecv()		busstate==USART_BUSRECV
 #define setBusFree()	busstate=USART_BUSFREE
-#define waitBusFree()	delay((myaddress & (~mysubnet))*USART_TOKEN_TIME)
+#define waitBusFree()	delay(caindex*USART_TOKEN_TIME)
 
 // The name of the class that refers to the USART, change it accordingly to the used device
 #ifndef USARTDRIVER_INSKETCH
@@ -85,6 +85,27 @@ void vNet_Init_M5()
 void vNet_SetAddress_M5(uint16_t addr)
 {
 	myaddress = addr;
+}
+
+/**************************************************************************/
+/*!
+	Set the vNet address 
+	
+	The USART works in broadcast and has no address check, this method is
+	here only for compatiblity with upper vNet layers (that has their own
+	addressing).
+	
+	The address is saved in a local register and is used in the collision
+	avoidance
+*/
+/**************************************************************************/
+void vNet_SetCollisionAvoidanceIndex_M5(uint16_t addr, uint16_t submask)
+{
+	#if(USART_DEBUG)	
+	USART_LOG("(USART)<CA Index>\r\n");
+	#endif	
+		
+	caindex = (addr & (~submask));
 }
 
 /**************************************************************************/
@@ -235,6 +256,10 @@ uint8_t vNet_DataAvailable_M5()
 
 	if(l == USART_FRAME_LEN)
 	{
+		#if(USART_DEBUG)	
+		USART_LOG("(USART)<Read> Frame reset\r\n");
+		#endif	
+			
 		// Reset data, this avoid fake reads due to old data
 		for(i=0;i<USART_FRAME_LEN;i++)
 			usartframe[i]=0;
@@ -267,7 +292,11 @@ uint8_t vNet_DataAvailable_M5()
 	// If there are few bytes, the frame is still incomplete
 	if(l < (USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN))
 		return USART_FAIL;	// Nothing to parse
-	
+
+	#if(USART_DEBUG)	
+	USART_LOG("(USART)<Read> Lenght ok\r\n");
+	#endif	
+			
 	// If the lenght exceed the buffer size
 	if(l > USART_FRAME_LEN)
 	{
@@ -296,7 +325,10 @@ uint8_t vNet_DataAvailable_M5()
 			(usartframe[i+5] == USART_PREAMBLE))
 		{
 			// There is a preamble, look for postamble
-				
+			#if(USART_DEBUG)	
+			USART_LOG("(USART)<Read> Preamble ok\r\n");
+			#endif	
+							
 			// If is a valid vNet message, after the preamble there is the frame lenght
 			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];							
 					
@@ -309,6 +341,10 @@ uint8_t vNet_DataAvailable_M5()
 				(usartframe[i+USART_PREAMBLE_LEN+vNetLen+5] == USART_POSTAMBLE))
 			{
 
+				#if(USART_DEBUG)	
+				USART_LOG("(USART)<Read> Postamble ok\r\n");
+				#endif	
+				
 				// Save the transmitter crc
 				in_crc = *(uint16_t*)(usartframe+i+USART_PREAMBLE_LEN+vNetLen-USART_CRCLEN);	
 				
@@ -374,7 +410,8 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 		#endif	
 		
 		uint8_t k=len;							// The CRC isn't calculated for the USART_HEADER
-			
+		
+		#if(USART_CRCCHECK)	
 		c_crc = 0xFFFF;
 		for(uint8_t k=0;k<len;k++)
 		{
@@ -393,8 +430,15 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 			
 		// Frame is corrupted
 		if(in_crc != c_crc)
+		{
+			#if(USART_DEBUG)	
+			USART_LOG("(USART)<Read> CRC Failed\r\n");
+			#endif	
+					
 			return USART_FAIL;
-			
+		}	
+		#endif
+		
 		// The bus is a broadcast media and every time that we get a byte we consider
 		// it as busy, if the frame is for us, we can consider it free because is our
 		// time to give an answer.
@@ -419,6 +463,11 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 	}
 	else
 	{
+
+		#if(USART_DEBUG)	
+		USART_LOG("(USART)<Read> Retrieve lenght failed\r\n");
+		#endif	
+			
 		l = 0;										// Reset the lenght
 		return ETH_FAIL;							// Data corrupted
 	}
