@@ -65,9 +65,11 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 	}
 	else if(vNet_GetMedia(addr) == 5)
 	{
+	#if(VNET_MEDIA5_ENABLE)	
 		// These information are not available in the driver itself, so are passed directly 
 		// in order to calculate a collision avoidance index
 		vNet_SetCollisionAvoidanceIndex_M5(addr, subnetmask);
+	#endif	
 	}
 	
 	// Set configuration general parameters
