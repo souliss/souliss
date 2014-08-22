@@ -1,7 +1,7 @@
 Souliss
 Copyright (C) 2014  Veseo
 
-Release note for revision Alpha 6.0.1, on dd/mm/yyyy
+Release note for revision Alpha 6.0.1, on 22/08/2014
 	
 	Modbus TCP/RTU interface is back available. Introduced 
 	a buffer for the XML interface for either TCP and UDP cases
