@@ -184,12 +184,16 @@ unsigned long tmr_fast=0, tmr_slow=0;
 /*****************************************/
 
 /************* Let be lazy ***************/	
-#define	FAST_GatewayComms()						FAST_70ms()    						\
+#define	FAST_GatewayComms()						FAST_30ms()    						\
 													ProcessCommunication();			\
 												FAST_1110ms() 						\
 													ssCommunicationChannels();		\
-												FAST_910ms() 						\
-													ssGetTypicals()									
+												FAST_2110ms() 						\
+													ssGetTypicals()																			
+													
+#define	FAST_BridgeComms()						FAST_30ms()    						\
+													ProcessCommunication();			\
+													
 			
 #define	FAST_PeerComms()						FAST_70ms()    						\
 													ProcessCommunication();			

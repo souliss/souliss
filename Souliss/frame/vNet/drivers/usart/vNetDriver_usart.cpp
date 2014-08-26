@@ -115,11 +115,11 @@ void vNet_SetCollisionAvoidanceIndex_M5(uint16_t addr, uint16_t submask)
 /**************************************************************************/
 uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 {
-	uint8_t i, j, data;
+	uint8_t i, j, data, plen;
 	uint16_t crc=0xFFFF;
 	
-	// Check message lenght
-	if ((len == 0) || (len > VNET_MAX_FRAME))
+	// Nothing to send
+	if (len == 0)
 		return USART_FAIL;
 	
 	// Check if the bus is free
@@ -189,13 +189,22 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	// Send the preamble
 	for(i=0; i<USART_PREAMBLE_LEN; i++)
 		USARTDRIVER.write(USART_PREAMBLE);
+	USARTDRIVER.flush();					// Wait data send
 		
 	// Start sending the data
 	oFrame_Define(frame);
-	USARTDRIVER.write(oFrame_GetLenght()+USART_HEADERLEN+USART_CRCLEN);		// The total size is the frame_size + 
-																			// the lenght_as_header + the crc
+	
+	// Define the maximum frame length, total size is  frame_size +
+	// the lenght_as_header + the crc
+	if(oFrame_GetLenght() > USART_MAXPAYLOAD)
+		plen=USART_MAXPAYLOAD+USART_HEADERLEN+USART_CRCLEN;
+	else
+		plen=oFrame_GetLenght()+USART_HEADERLEN+USART_CRCLEN;	
+	
+	// Write frame lenght
+	USARTDRIVER.write(plen);
 																			
-	while(oFrame_Available())					// Send the frame	
+	while(oFrame_Available() && plen)					// Send the frame	
 	{	
 		// Get the next byte to send
 		data = oFrame_GetByte();
@@ -211,7 +220,10 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		}		
 		
 		// Send byte
-		USARTDRIVER.write(data);							
+		USARTDRIVER.write(data);	
+		
+		// Bytes to be sent
+		plen--;	
 	}
 	
 	// This is the CRC
@@ -231,6 +243,9 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	#if(USART_TXENABLE)
 	digitalWrite(USART_TXENPIN, LOW);
 	#endif
+	
+	// Remove non processed bytes [if(oFrame_GetLenght() > USART_MAXPAYLOAD)]
+	oFrame_Reset();
 	
 	return USART_SUCCESS;
 }
@@ -413,9 +428,9 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 		
 		#if(USART_CRCCHECK)	
 		c_crc = 0xFFFF;
-		for(uint8_t k=0;k<len;k++)
+		for(uint8_t k=1;k<len;k++)
 		{
-			c_crc = c_crc ^ (*(usartframe+k+1));
+			c_crc = c_crc ^ (*(usartframe+k));
 			for (uint8_t j=0; j < 8; j++) 
 			{
 				if (c_crc & 0x0001)
@@ -453,7 +468,13 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 			
 		// Send data to the top layer
 		memcpy(data, usartframe+1, len);
-		
+
+		// The vNet USART driver support small payloads, cut of payload can happen before sending
+		// at this stage we verify the original length and fill the missing with zeros.
+		if(*(usartframe+1) > len)
+			for(uint8_t i=0; i<(*(usartframe+1)-len); i++)
+				*(data+len+i) = 0;
+			
 		// Move forward not parsed data
 		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len-1);
 		if(l>(USART_FRAME_LEN-len-1))

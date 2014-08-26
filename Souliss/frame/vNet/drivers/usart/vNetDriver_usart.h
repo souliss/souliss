@@ -54,9 +54,9 @@
 	frame size, a valid frame can heave as head some junk and without additional space data we may not have enough room to store
 	some bytes from the valid frame.
 ***/
-#define USART_JUNKROOM			((VNET_MAX_PAYLOAD-(VNET_MAX_PAYLOAD-MaCaco_SLOT))/2)
+#define USART_JUNKROOM			(VNET_MAX_PAYLOAD/2)
 #define	USART_FRAME_LEN			(USART_JUNKROOM+VNET_MAX_FRAME+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN+3*USART_TOKEN_LENGHT)
-#define	USART_MAXPAYLOAD		VNET_MAX_PAYLOAD
+#define	USART_MAXPAYLOAD		32
 
 #define USART_TOKEN				0xAA
 #define	USART_TOKEN_LENGHT		3
