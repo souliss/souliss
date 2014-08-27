@@ -342,11 +342,32 @@ uint8_t vNet_DataAvailable_M5()
 			// There is a preamble, look for postamble
 			#if(USART_DEBUG)	
 			USART_LOG("(USART)<Read> Preamble ok\r\n");
+			USART_LOG("(USART)<Read> Index 0x\r\n");
+			USART_LOG(i,HEX);
+			USART_LOG("\r\n");
 			#endif	
 							
 			// If is a valid vNet message, after the preamble there is the frame lenght
-			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];							
-					
+			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];		
+
+			// If there isn't room enough in the buffer
+			if(i && (vNetLen > (USART_FRAME_LEN-i)))
+			{
+				// Clean up the buffer from not used data
+				memcpy(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
+				l=0;
+			
+				// If we are here, the frame is incomplete just wait for next data
+				BusIsRecev();			// We are receiving data on the bus cannot send	
+
+				#if(USART_DEBUG)	
+				USART_LOG("(USART)<Read> Clean up\r\n");
+				#endif	
+				
+				return USART_FAIL;				
+			}
+			
+			// Check the complete frame			
 			if((vNetLen)&& ((i+USART_PREAMBLE_LEN+vNetLen) < USART_FRAME_LEN) &&
 				(usartframe[i+USART_PREAMBLE_LEN+vNetLen] == USART_POSTAMBLE) &&
 				(usartframe[i+USART_PREAMBLE_LEN+vNetLen+1] == USART_POSTAMBLE) &&
@@ -414,7 +435,7 @@ uint8_t vNet_DataAvailable_M5()
 /**************************************************************************/
 uint8_t vNet_RetrieveData_M5(uint8_t *data)
 {
-	uint8_t len=*(usartframe)-USART_HEADERLEN-USART_CRCLEN;		// Retrieve the first byte of the message
+	uint8_t len=*(usartframe)-USART_HEADERLEN-USART_CRCLEN-1;		// Retrieve the first byte of the message
 	uint16_t c_crc;												// Calculate the CRC from the frame
 
 	// Retrieve the complete message
@@ -476,9 +497,9 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 				*(data+len+i) = 0;
 			
 		// Move forward not parsed data
-		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len-1);
-		if(l>(USART_FRAME_LEN-len-1))
-			l-=USART_FRAME_LEN-len-1;				// Reset the lenght
+		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len);
+		if(l>(USART_FRAME_LEN-len))
+			l-=USART_FRAME_LEN-len;				// Reset the lenght
 		else
 			l = 0;
 	}
