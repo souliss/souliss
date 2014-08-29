@@ -210,7 +210,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 			
 			1) MaCaco_SLOT < VNET_MAX_PAYLOAD - MaCaco_HEADER
 			2) MaCaco_NODES < 255
-			3) MaCaco_SLOT  < 255
+			3) MaCaco_SLOT  < 255 / 3
 			
 			You can modify VNET_MAX_PAYLOAD in order to suit your needs, rather
 			MaCaco_HEADER shall not be modified.
