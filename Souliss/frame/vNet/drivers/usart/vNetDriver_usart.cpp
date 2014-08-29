@@ -435,8 +435,8 @@ uint8_t vNet_DataAvailable_M5()
 /**************************************************************************/
 uint8_t vNet_RetrieveData_M5(uint8_t *data)
 {
-	uint8_t len=*(usartframe)-USART_HEADERLEN-USART_CRCLEN-1;		// Retrieve the first byte of the message
-	uint16_t c_crc;												// Calculate the CRC from the frame
+	uint8_t len=*(usartframe)-USART_HEADERLEN-USART_CRCLEN;			// Retrieve the first byte of the message
+	uint16_t c_crc;													// Calculate the CRC from the frame
 
 	// Retrieve the complete message
 	if(len > 0 && len <= l)
@@ -488,12 +488,12 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 		}	
 			
 		// Send data to the top layer
-		memcpy(data, usartframe+1, len);
+		memcpy(data, usartframe+1, (len-1));
 
 		// The vNet USART driver support small payloads, cut of payload can happen before sending
 		// at this stage we verify the original length and fill the missing with zeros.
-		if(*(usartframe+1) > len)
-			for(uint8_t i=0; i<(*(usartframe+1)-len); i++)
+		if(*(usartframe+1) > (len-1))
+			for(uint8_t i=0; i<(*(usartframe+1)-(len-1)); i++)
 				*(data+len+i) = 0;
 			
 		// Move forward not parsed data
