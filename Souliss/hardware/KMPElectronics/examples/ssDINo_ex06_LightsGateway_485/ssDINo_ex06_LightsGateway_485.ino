@@ -51,9 +51,9 @@
 #define RELAY3					2			
 #define RELAY4					3			
 
-// Network parameters, this are used only if the DHCP fails
+// Define the network configuration
 uint8_t ip_address[4]  = {192, 168, 1, 17};
-uint8_t subnet_mask[4] = {255, 255, 0, 0};
+uint8_t subnet_mask[4] = {255, 255, 255, 0};
 uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 
 void setup()
@@ -83,15 +83,13 @@ void setup()
 	Set_SimpleLight(RELAY3);
 	Set_SimpleLight(RELAY4);	
 	
-	// The nodes try to get an IP address directly from the DHCP, in SoulissApp use the 
-	// Broadcast Discovery option, the app will connect directly without require to manually
-	// fill the Gateway IP address
-	if(Ethernet.begin()==0)
-		Ethernet.begin(ip, gateway, subnet);            
-	else
-		ip = Ethernet.localIP(); 
-	
-	SetAsGateway((U16)ip_address[3]);                                        // Last byte of the IP address is the vNet address
+	// Setup the network configuration
+	//
+	// The vNet address will be equal to the last byte of the IP address
+	// with the most significant one at zero, so in this case 0x0011.
+	// Board reply to pings at 192.168.1.17
+	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
+	SetAsGateway((U16)ip_address[3]);										// Last byte of the IP address is the vNet address
 	
 	// Define the address for the RS485 interface
 	Souliss_SetAddress(gateway_rs485, subnetmask, 0x0000);         
