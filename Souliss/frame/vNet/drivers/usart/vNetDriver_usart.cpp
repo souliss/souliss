@@ -349,23 +349,6 @@ uint8_t vNet_DataAvailable_M5()
 							
 			// If is a valid vNet message, after the preamble there is the frame lenght
 			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];		
-
-			// If there isn't room enough in the buffer
-			if(i)
-			{
-				// Clean up the buffer from not used data
-				memcpy(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
-				l=0;
-			
-				// If we are here, the frame is incomplete just wait for next data
-				BusIsRecev();			// We are receiving data on the bus cannot send	
-
-				#if(USART_DEBUG)	
-				USART_LOG("(USART)<Read> Clean up\r\n");
-				#endif	
-				
-				return USART_FAIL;				
-			}
 			
 			// Check the complete frame			
 			if((vNetLen)&& ((i+USART_PREAMBLE_LEN+vNetLen) < USART_FRAME_LEN) &&
@@ -386,7 +369,8 @@ uint8_t vNet_DataAvailable_M5()
 				
 				// The frame is a valid vNet message, remove the preamble
 				memcpy(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
-
+				l=l-i;
+				
 				return vNetLen;			// Return message lenght
 			}
 			else if((l-i)<(vNetLen+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN))
@@ -397,6 +381,21 @@ uint8_t vNet_DataAvailable_M5()
 				#if(USART_DEBUG)	
 				USART_LOG("(USART)<Read> Incomplete\r\n");
 				#endif	
+
+				// If the frame doesn't start at zero, free up the space
+				if(i)
+				{
+					// Clean up the buffer from not used data
+					memcpy(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
+					l=l-i;
+				
+					// If we are here, the frame is incomplete just wait for next data
+					BusIsRecev();			// We are receiving data on the bus cannot send	
+
+					#if(USART_DEBUG)	
+					USART_LOG("(USART)<Read> Defragment\r\n");
+					#endif						
+				}
 				
 				return USART_FAIL;	
 			}
@@ -497,9 +496,9 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 				*(data+len+i) = 0;
 			
 		// Move forward not parsed data
-		memcpy(usartframe, usartframe+len+USART_CRCLEN+USART_POSTAMBLE_LEN, USART_FRAME_LEN-len-USART_CRCLEN-USART_POSTAMBLE_LEN);
-		if(l>(USART_FRAME_LEN-len-USART_CRCLEN-USART_POSTAMBLE_LEN))
-			l-=USART_FRAME_LEN-len-USART_CRCLEN-USART_POSTAMBLE_LEN;				// Reset the lenght
+		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len);
+		if(l>(USART_FRAME_LEN-len))
+			l-=USART_FRAME_LEN-len;				// Reset the lenght
 		else
 			l = 0;
 	}
