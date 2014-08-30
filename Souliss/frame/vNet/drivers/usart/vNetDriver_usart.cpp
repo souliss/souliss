@@ -351,7 +351,7 @@ uint8_t vNet_DataAvailable_M5()
 			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];		
 
 			// If there isn't room enough in the buffer
-			if(i && (vNetLen > (USART_FRAME_LEN-i)))
+			if(i)
 			{
 				// Clean up the buffer from not used data
 				memcpy(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
@@ -497,9 +497,9 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 				*(data+len+i) = 0;
 			
 		// Move forward not parsed data
-		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len);
-		if(l>(USART_FRAME_LEN-len))
-			l-=USART_FRAME_LEN-len;				// Reset the lenght
+		memcpy(usartframe, usartframe+len+USART_CRCLEN+USART_POSTAMBLE_LEN, USART_FRAME_LEN-len-USART_CRCLEN-USART_POSTAMBLE_LEN);
+		if(l>(USART_FRAME_LEN-len-USART_CRCLEN-USART_POSTAMBLE_LEN))
+			l-=USART_FRAME_LEN-len-USART_CRCLEN-USART_POSTAMBLE_LEN;				// Reset the lenght
 		else
 			l = 0;
 	}
