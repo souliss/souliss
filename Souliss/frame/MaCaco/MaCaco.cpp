@@ -380,8 +380,18 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	
 	// answer to a node healty request
 	if (rx->funcode == MaCaco_HEALTYREQ)	
-		return MaCaco_send(addr, MaCaco_HEALTYANS, rx->putin, rx->startoffset, rx->numberof, (memory_map + MaCaco_HEALTY_s + rx->startoffset));
+	{
+		// reply with the actual node helty value
+		U8 ret = MaCaco_send(addr, MaCaco_HEALTYANS, rx->putin, rx->startoffset, rx->numberof, (memory_map + MaCaco_HEALTY_s + rx->startoffset));
 	
+		// resume nodes that has failed
+		U8* healty = memory_map+MaCaco_HEALTY_s;
+		for(U8 i=0;i<MaCaco_NODES;i++)
+			if(*(healty+i)<MaCaco_SUBSCRHEALTY)
+				*(healty+i) = MaCaco_SUBINITHEALTY;
+		
+		return ret;
+	}
 	// answer to a ping request
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
@@ -1120,12 +1130,21 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 	{
 		// if delay is expired subscript again and decrease healthy
 		if ((*count < MaCaco_SUBSCRHEALTY))
+		{
+			if (*healty > MaCaco_SUBSDECREASE)
 			{
-				if ((*healty > 0x00) && (MaCaco_send(addr, MaCaco_SUBSCRREQ, putin, startoffset, numberof, 0x00))) 
-					(*healty)-=MaCaco_SUBSDECREASE;
-								
-				*count = MaCaco_SUBMAXHEALTY;	// Delay the next try
+				// if a subscription is sent, reduce the healty and delay the next try
+				if(MaCaco_send(addr, MaCaco_SUBSCRREQ, putin, startoffset, numberof, 0x00)) 
+				{
+					(*healty)-=MaCaco_SUBSDECREASE;		
+					*count = MaCaco_SUBMAXHEALTY;	// Delay the next try
+				}
+				else	// try sooner to send a new subscription request
+					*count = MaCaco_SUBINITHEALTY;	// Delay the next try
 			}
+			else	// subscription is failed
+				(*healty)=0x00;
+		}
 		else
 			if (*count > 0x00) (*count)--;
 	}		

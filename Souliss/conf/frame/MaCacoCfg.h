@@ -340,12 +340,12 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_NODATACHANGED		0x00
 #define MaCaco_DATACHANGED			0x01
 
-#define MaCaco_SUBSDECREASE			0x20
+#define MaCaco_SUBSDECREASE			0x0C
 #define MaCaco_SUBSINCREASE			0x50
 
 #define MaCaco_NOSUBSCRANSWER		0x00
 #define MaCaco_SUBSCRANSWER			0x01
-#define MaCaco_SUBSCRHEALTY			0x10
+#define MaCaco_SUBSCRHEALTY			0x01
 #define MaCaco_SUBINITHEALTY		0x25
 #define MaCaco_SUBMAXHEALTY			0xFF
 
