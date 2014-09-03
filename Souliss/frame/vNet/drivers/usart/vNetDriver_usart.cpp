@@ -41,6 +41,7 @@ uint16_t myaddress=0, caindex=0, in_crc=0;
 #define	isBusRecv()		busstate==USART_BUSRECV
 #define setBusFree()	busstate=USART_BUSFREE
 #define waitBusFree()	delay(caindex*USART_TOKEN_TIME)
+#define	startupDelay()	delay(caindex*USART_STARTDELAY*1000)
 
 // The name of the class that refers to the USART, change it accordingly to the used device
 #ifndef USARTDRIVER_INSKETCH
@@ -68,6 +69,10 @@ void vNet_Init_M5()
 	pinMode(USART_TXENPIN, OUTPUT);
 	digitalWrite(USART_TXENPIN, LOW);
 	#endif
+	
+	// Hold here for a couple of seconds, this avoid that all nodes startup
+	// at same time
+	startupDelay();
 }
 
 /**************************************************************************/
@@ -89,14 +94,11 @@ void vNet_SetAddress_M5(uint16_t addr)
 
 /**************************************************************************/
 /*!
-	Set the vNet address 
+	Set the vNet Collision Avoidance Index
 	
-	The USART works in broadcast and has no address check, this method is
-	here only for compatiblity with upper vNet layers (that has their own
-	addressing).
-	
-	The address is saved in a local register and is used in the collision
-	avoidance
+	This shall be called before the Init and SetAddress, it define the
+	collision avoidance index that is used to identify the priority on the
+	bus.
 */
 /**************************************************************************/
 void vNet_SetCollisionAvoidanceIndex_M5(uint16_t addr, uint16_t submask)
@@ -484,7 +486,21 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 			#if(USART_DEBUG)	
 			USART_LOG("(USART) Set bus free\r\n");
 			#endif	
-		}	
+		}
+		else if(((*(U16*)(usartframe+3)) > VNET_ADDR_NULL) && ((*(U16*)(usartframe+3)) <= VNET_ADDR_BRDC)) 
+		{
+			// If is a broadcast or unicast frame we are supposed to give an answer, but
+			// all nodes will probably do the same. In order to avoid collision, we wait a bit
+			// before processing the data
+			waitBusFree();
+			
+			// Now we set bus as free and proceed processing data
+			setBusFree();
+			
+			#if(USART_DEBUG)	
+			USART_LOG("(USART) Set bus delay\r\n");
+			#endif	
+		}
 			
 		// Send data to the top layer
 		memcpy(data, usartframe+1, len);

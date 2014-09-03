@@ -48,15 +48,8 @@
 #define	USART_PREAMBLE_LEN		6
 #define	USART_POSTAMBLE			0xCA
 #define	USART_POSTAMBLE_LEN		6
-
-/***
-	On the bus there may be collision that generate junk data, that's why the incoming buffer shall be grater than the maximum
-	frame size, a valid frame can heave as head some junk and without additional space data we may not have enough room to store
-	some bytes from the valid frame.
-***/
-#define USART_JUNKROOM			(VNET_MAX_PAYLOAD/2)
-#define	USART_FRAME_LEN			(USART_JUNKROOM+VNET_MAX_FRAME+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN+3*USART_TOKEN_LENGHT)
-#define	USART_MAXPAYLOAD		VNET_MAX_FRAME
+#define	USART_FRAME_LEN			((VNET_MAX_PAYLOAD/2)+VNET_MAX_FRAME+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN+3*USART_TOKEN_LENGHT)
+#define	USART_MAXPAYLOAD		36					// Increasing this value may affect the network stability
 
 #define USART_TOKEN				0xAA
 #define	USART_TOKEN_LENGHT		3
@@ -65,6 +58,7 @@
 #define	USART_BUSBUSY			0x03
 #define	USART_BUSRECV			0x05
 #define	USART_BUSFREE			0x00
+#define	USART_STARTDELAY		0x03				// Delay in second before node startup
 
 void vNet_Init_M5();
 void vNet_SetAddress_M5(uint16_t addr);

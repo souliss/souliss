@@ -748,12 +748,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 
 			// force typical on the remote node
 			#if(MaCaco_USERMODE)
-			for(U8 j=0; j<(MaCaco_NODES-1-1); j++) 
-			{
-				// Send the force
-				if(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*(j+1)))											// The space used for data coming from other nodes has index 0 for node 1
-					MaCaco_send(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*(j+1)), MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);				
-			}
+			MaCaco_send(0xFFFF, MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);
 			#endif
 									
 			return MaCaco_FUNCODE_OK;
