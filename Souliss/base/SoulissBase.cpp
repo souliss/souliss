@@ -235,7 +235,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		// parameters of the memory map
 		
 		// The first parameter is the keyidval number used to identify my previous request
-		U8 *confparameters_p = (memory_map + MaCaco_CONFPARAM);
+		U8 *confparameters_p = (memory_map + MaCaco_QUEUE_s);
 		if((*(U16 *)confparameters_p) == keyidval)
 		{
 			// The next parameter is the media
@@ -246,10 +246,9 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 				confparameters_p++;
 				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 					
-				// Clear the actual configuration parameters, the addressing server will load there
-				// the requested address
-				for(U8 i=0; i<MaCaco_CONFPARAM; i++)
-					*(memory_map + MaCaco_CONFPARAM + i) = 0;
+				// Configuration data can be now removed
+				for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+					*(memory_map + MaCaco_QUEUE_s + i) = 0;
 				
 				return;
 			}	
@@ -257,8 +256,8 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		
 		// Clear the actual configuration parameters, the addressing server will load there
 		// the requested address
-		for(i=0; i<MaCaco_CONFPARAM; i++)
-			*(memory_map + MaCaco_CONFPARAM + i) = 0;
+		for(i=0; i<MaCaco_QUEUELEN; i++)
+			*(memory_map + MaCaco_QUEUE_s + i) = 0;
 
 		// Request a new address
 		#if(VNET_SUPERNODE)
@@ -495,6 +494,49 @@ U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command)
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof)
 {
 	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + firstslot, numberof, commands);
+}
+
+/**************************************************************************
+/*!
+	Apply the command on all the logic assigned to that typical in the node
+*/	
+/**************************************************************************/	
+U8 Souliss_MassiveCommand(U16 addr, U8 typ, U8 command)
+{
+	U8 cmd = command;
+	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, typ, 1, &cmd); 
+}
+
+/**************************************************************************
+/*!
+	Apply the command on all the logic assigned to that typical in all the
+	nodes of the network
+*/	
+/**************************************************************************/	
+U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
+{
+	U8 cmd = command;
+	return MaCaco_send(0xFFFF, MaCaco_FORCEREGSTR, 0x00, typ, 1, &cmd); 
+}
+
+/**************************************************************************/
+/*!
+    Broadcast an action message
+*/
+/**************************************************************************/
+U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action)
+{
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+}
+
+/**************************************************************************/
+/*!
+    Multicast an action message
+*/
+/**************************************************************************/
+U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
+{
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
 }
 
 /**************************************************************************
@@ -940,4 +982,21 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 		memory_map[MaCaco_AUXIN_s + slot] = Souliss_NOTTRIGGED;
 		return Souliss_TRIGGED;
 	}	
+}
+
+/**************************************************************************/
+/*!
+    Return if there is a matching action message
+*/
+/**************************************************************************/
+U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action)
+{
+	// action message are in the queue
+	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
+	
+	U8 ret = (((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action));
+	
+	// Configuration data can be now removed
+	for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+		*(memory_map + MaCaco_QUEUE_s + i) = 0;
 }

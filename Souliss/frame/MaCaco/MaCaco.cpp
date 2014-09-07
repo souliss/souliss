@@ -649,11 +649,11 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// record the dynamic address provided
 		if (rx->funcode == MaCaco_DINADDRESSANS)
 		{			
-			if(rx->numberof + 3 < MaCaco_CONFPARAM) // if the number of payload bytes, plus the size of rx->putin and rx->startoffset
+			if(rx->numberof + 3 < MaCaco_QUEUELEN) // if the number of payload bytes, plus the size of rx->putin and rx->startoffset
 			{
 				// load data into the configuration parameters, an upper method will use them
 				// for configuration purpose
-				U8*	confparameters_p = (memory_map + MaCaco_CONFPARAM);
+				U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 				
 				// store the putin value
 				(*(U16 *)confparameters_p) = (U16)rx->putin;
@@ -669,11 +669,49 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			}
 		}
 		#endif
+
+		// record an action message
+		if (rx->funcode == MaCaco_ACTIONMSG)
+		{			
+			// load the action message
+			U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
+				
+			// store the putin value, this is the action message identifier
+			(*(U16 *)confparameters_p) = (U16)rx->putin;
+			confparameters_p += sizeof(U16);
+				
+			// store the startoffset value, this is the action required
+			*confparameters_p = rx->startoffset;
+			confparameters_p++;				
+		}
 		
 		// Return for not expected functional codes
 		if((rx->funcode == MaCaco_STATEANS))	// This functional codes is used only by user interfaces
 			return MaCaco_FUNCODE_ERR;
-	
+
+		// force by typical logic number
+		if((rx->funcode == MaCaco_TYP) || (rx->funcode == MaCaco_FORCETYP))
+		{
+			// identify if the command is issued for a typical or a typical class
+			if((rx->startoffset & 0x0F) == 0x00)
+				typ_mask = 0xF0;	// we look only to the typical class value
+			else
+				typ_mask = 0xFF;	// we look to whole typical value
+
+			// force typical on the local node
+			for(U8 i=0; i<(MaCaco_TYPLENGHT - rx->numberof + 1); i++)		
+				if((*(memory_map + MaCaco_TYP_s + i) & typ_mask) == rx->startoffset)	// Start offset used as typical logic indication
+					for(U8 j=0; j < rx->numberof; j++)
+						*(memory_map+MaCaco_IN_s + i + j) = *(rx->data + j);
+
+			// force typical on the remote node
+			#if(MaCaco_USERMODE)
+			if(rx->funcode == MaCaco_TYP)	MaCaco_send(0xFFFF, MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);
+			#endif
+									
+			return MaCaco_FUNCODE_OK;
+		}	
+			
 		// check for operation type to separate bit-wise and not bit-wise operation
 		switch(rx->funcode) 
 		{
@@ -730,30 +768,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 		break;
 		#endif
-	
-		// force by typical logic number
-		case(MaCaco_TYP) :
-	
-			// identify if the command is issued for a typical or a typical class
-			if((rx->startoffset & 0x0F) == 0x00)
-				typ_mask = 0xF0;	// we look only to the typical class value
-			else
-				typ_mask = 0xFF;	// we look to whole typical value
-
-			// force typical on the local node
-			for(U8 i=0; i<(MaCaco_TYPLENGHT - rx->numberof + 1); i++)		
-				if((*(memory_map + MaCaco_TYP_s + i) & typ_mask) == rx->startoffset)	// Start offset used as typical logic indication
-					for(U8 j=0; j < rx->numberof; j++)
-						*(memory_map+MaCaco_IN_s + i + j) = *(rx->data + j);
-
-			// force typical on the remote node
-			#if(MaCaco_USERMODE)
-			MaCaco_send(0xFFFF, MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);
-			#endif
-									
-			return MaCaco_FUNCODE_OK;
-			
-		break;
 		
 		// Typical logic answer
 		#if(MaCaco_SUBSCRIBERS)

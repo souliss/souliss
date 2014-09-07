@@ -83,12 +83,16 @@
 			0x36	Database structure answer.
 			0x27	Read state request without subscription,
 			0x37	Read state answer without subscription,
-			0x28	Discover a gateway node request (broadcasted)
-			0x38	Discover a gateway node answer (broadcasted)
-			0x29	Dynamic addressing request (broadcasted)
-			0x39	Dynamic addressing answer (broadcasted)
-			0x3A	Join a network gateway (broadcasted)
-			0x3B	Set an IP address at runtime (broadcasted)
+			0x28	Discover a gateway node request (broadcast),
+			0x38	Discover a gateway node answer (broadcast),
+			0x29	Dynamic addressing request (broadcast),
+			0x39	Dynamic addressing answer (broadcast),
+			0x3A	Join a network gateway (broadcast),
+			0x3B	Set an IP address at runtime (broadcast)
+			
+		Unstructured Functional Codes:
+			0xA1	Force input values by typical logic (broadcast or multicast),
+			0xA2	Send an Action Message (broadcast or multicast)
 */
 /**************************************************************************/
 #define MaCaco_READREQDIG		0x01	// Read request for digital values,
@@ -128,10 +132,13 @@
 #define	MaCaco_JOINNETWORK		0x3A	// Join a network gateway (broadcasted)
 #define	MaCaco_SETIP			0x3B	// Set an IP address at runtime (broadcasted)
 
+#define	MaCaco_FORCETYP			0xA1	// Force input values by typical logic (from a peer)
+#define	MaCaco_ACTIONMSG		0xA2	// Send an Action Message
+
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01
 
-#define	MaCaco_FUNCODE_NO (17+18)
+#define	MaCaco_FUNCODE_NO (17+18+2)
 
 const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x08, 0x18, 0x09, 0x19, 
@@ -142,7 +149,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x33, 0x34, 0x25, 0x35,
 											   0x26, 0x36, 0x27, 0x37,
 											   0x28, 0x38, 0x29, 0x39,
-											   0x3A, 0x3B};
+											   0x3A, 0x3B, 
+											   0xA1, 0xA2};
 		  
 /**************************************************************************/
 /*!
@@ -215,7 +223,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 			You can modify VNET_MAX_PAYLOAD in order to suit your needs, rather
 			MaCaco_HEADER shall not be modified.
 			
-			The MaCaco protocol use (3*MaCaco_NODES + 4*MaCaco_SLOT + MaCaco_CONFPARAM)
+			The MaCaco protocol use (3*MaCaco_NODES + 4*MaCaco_SLOT + MaCaco_QUEUELEN)
 			bytes of RAM in case of MaCaco_SUBSCRIBERS selected, if not the 3*MaCaco_NODES
 			quantity doesn't apply.
 			
@@ -236,12 +244,12 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #if(!(QC_ENABLE))																// Define manually only in Detailed Configuration Mode
 #	define MaCaco_USERMODE		1												// User Mode
 #	define MaCaco_SUBSCRIBERS	1												// Enable subscribing to other nodes
-#	define MaCaco_PERSISTANCE	0												// Data Persistance (increase RAM usage)
-#	define MaCaco_LASTIN		0												// Data Persistance for last incoming values
+#	define MaCaco_PERSISTANCE	0												// Data Persistence (increase RAM usage)
+#	define MaCaco_LASTIN		0												// Data Persistence for last incoming values
 #endif
 
 #define MaCaco_LOCNODE			0												// Node number for local data (cannot be changed)
-#define	MaCaco_CONFPARAM		15												// Define the number of configuration parameters
+#define	MaCaco_QUEUELEN			15												// Define the number of configuration parameters
 
 #if(!defined(NODESIZE_INSKETCH))
 #define MaCaco_NODES			45												// Number of remote nodes
@@ -252,9 +260,9 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_TYPLENGHT		MaCaco_SLOT										// Number of slot
 #define MaCaco_OUTLENGHT		MaCaco_SLOT										// Number of slot
 
-#define MaCaco_CONF_s			0												// First byte of the configuration parameters
-#define MaCaco_CONF_f			(MaCaco_CONF_s+MaCaco_CONFPARAM-1)				// Last  byte of the configuration parameters
-#define MaCaco_AUXIN_s			(MaCaco_CONF_f+1)								// First byte of the auxiliary inputs
+#define MaCaco_QUEUE_s			0												// First byte of the configuration parameters
+#define MaCaco_QUEUE_f			(MaCaco_QUEUE_s+MaCaco_QUEUELEN-1)				// Last  byte of the configuration parameters
+#define MaCaco_AUXIN_s			(MaCaco_QUEUE_f+1)								// First byte of the auxiliary inputs
 #define MaCaco_AUXIN_f			(MaCaco_AUXIN_s+MaCaco_SLOT-1)					// Last  byte of the auxiliary inputs
 #define MaCaco_IN_s				(MaCaco_AUXIN_f+1)								// First byte for input data
 #define MaCaco_IN_f				(MaCaco_IN_s+MaCaco_SLOT-1)						// Last  byte for input data
@@ -268,8 +276,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_HEALTY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
 #define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
 
-#define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeble data by a remote device
-#define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeble data by a remote device
+#define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeable data by a remote device
+#define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeable data by a remote device
 
 #define	MaCaco_P_TYP_s			(MaCaco_HEALTY_f+1)								// First byte for typical logic definitions in PERSISTANCE mode
 #define MaCaco_P_TYP_f			(MaCaco_P_TYP_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for typical logic definitions in PERSISTANCE mode
