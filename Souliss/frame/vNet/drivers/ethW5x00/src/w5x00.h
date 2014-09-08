@@ -310,6 +310,14 @@ private:
   inline static void initSS()    { DDRB  |=  _BV(4); };
   inline static void setSS()     { PORTB &= ~_BV(4); };
   inline static void resetSS()   { PORTB |=  _BV(4); }; 
+#elif defined(__AVR_ATmega1280__) && (BOARD_MODEL == 0x0A)	// Moteino Mega use the PORTB4 for the onboard radio   
+  inline static void initSS()    { DDRL  |=  _BV(0); };
+  inline static void setSS()     { PORTL &= ~_BV(0); };
+  inline static void resetSS()   { PORTL |=  _BV(0); }; 
+#elif (BOARD_MODEL == 0x0A)  								// Moteino use the PORTB2 for the onboard radio
+  inline static void initSS()    { DDRB  |=  _BV(0); };
+  inline static void setSS()     { PORTB &= ~_BV(0); };
+  inline static void resetSS()   { PORTB |=  _BV(0); }; 
 #elif defined(__AVR_ATmega32U4__)
   inline static void initSS()    { DDRB  |=  _BV(6); };
   inline static void setSS()     { PORTB &= ~_BV(6); };

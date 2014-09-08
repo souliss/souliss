@@ -59,7 +59,11 @@
 	
 	#if(NRF24)
 		#include "drivers/nRF24/vNetDriver_nrf24.h"
-	#endif		
+	#endif	
+	
+	#if(HOPERF_RFM69)
+		#include "drivers/RFM69/vNetDriver_rfm69.h"
+	#endif	
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)

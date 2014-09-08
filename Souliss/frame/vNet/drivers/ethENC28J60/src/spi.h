@@ -40,9 +40,15 @@
 #    define SPI0_MISO_PORT           PORTB
 
 // Chip select
-#    define ENC28J60_CS_BIT      	BIT4        // ATmega2560 PB4 - Arduino pin 10   
-#    define ENC28J60_CS_DDR         DDRB
-#    define ENC28J60_CS_PORT        PORTB
+#	if(BOARD_MODEL == 0x0A)
+#		define ENC28J60_CS_BIT			BIT0        // ATmega1280/2560 PL0 - Arduino pin 49   
+#		define ENC28J60_CS_DDR       	DDRL
+#		define ENC28J60_CS_PORT      	PORTL
+#	else
+#		define ENC28J60_CS_BIT			BIT4        // ATmega2560 PB4 - Arduino pin 10   
+#		define ENC28J60_CS_DDR       	DDRB
+#		define ENC28J60_CS_PORT      	PORTB
+#endif
 
 #    define SPI0_Init()    DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT;\
                                         DDRB  &= ~SPI0_MISO_BIT;\
@@ -91,7 +97,6 @@
 #		define ENC28J60_CS_BIT            BIT7        // ATmega32U4 PC7 - UEXT Chip Select   
 #		define ENC28J60_CS_DDR            DDRC
 #		define ENC28J60_CS_PORT           PORTC
-#	else
 #		define ENC28J60_CS_BIT            BIT6        // ATmega32U4  PB6 - Arduino pin 10   
 #		define ENC28J60_CS_DDR            DDRB
 #		define ENC28J60_CS_PORT           PORTB
@@ -121,6 +126,10 @@
 #		define ENC28J60_CS_BIT            BIT7        // ATmega328  PD7 - UEXT Chip Select
 #		define ENC28J60_CS_DDR            DDRD
 #		define ENC28J60_CS_PORT           PORTD
+#	elif(BOARD_MODEL == 0x0A)
+#		define ENC28J60_CS_BIT            BIT0        // ATmega32U4  PB0 - Arduino pin 8   
+#		define ENC28J60_CS_DDR            DDRB
+#		define ENC28J60_CS_PORT           PORTB
 #	else
 #		define ENC28J60_CS_BIT            BIT2        // ATmega328  PB2 - Arduino pin 10   
 #		define ENC28J60_CS_DDR            DDRB

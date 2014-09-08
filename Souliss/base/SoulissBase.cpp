@@ -531,6 +531,23 @@ U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action)
 
 /**************************************************************************/
 /*!
+    Return if there is a matching action message
+*/
+/**************************************************************************/
+U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action)
+{
+	// action message are in the queue
+	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
+	
+	U8 ret = (((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action));
+	
+	// Configuration data can be now removed
+	for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+		*(memory_map + MaCaco_QUEUE_s + i) = 0;
+}
+
+/**************************************************************************/
+/*!
     Multicast an action message
 */
 /**************************************************************************/
@@ -984,19 +1001,3 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 	}	
 }
 
-/**************************************************************************/
-/*!
-    Return if there is a matching action message
-*/
-/**************************************************************************/
-U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action)
-{
-	// action message are in the queue
-	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
-	
-	U8 ret = (((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action));
-	
-	// Configuration data can be now removed
-	for(U8 i=0; i<MaCaco_QUEUELEN; i++)
-		*(memory_map + MaCaco_QUEUE_s + i) = 0;
-}

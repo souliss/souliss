@@ -512,6 +512,47 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x60)
+#		define	ETH_W5100				1
+#		define	HOPERF_RFM69			1	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x61)
+#		define	ETH_ENC28J60			1	
+#		define	HOPERF_RFM69			1	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x62)	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define	HOPERF_RFM69			1	
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x63)	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define	HOPERF_RFM69			1	
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x00)
@@ -592,6 +633,7 @@
 #	include "conf/uIP/uIPopt.h"
 #	include "conf/chibi/chibiUsrCfg.h"
 #	include "conf/nRF24/nRF24UsrCfg.h"
+#	include "conf/RFM69/RFM69UsrCfg.h"
 #	include "conf/usart/usartUsrCfg.h"												
 #	include "conf/eth/ethUsrCfg.h"
 #	include "conf/hardware/hwBoards.h"
@@ -612,6 +654,7 @@
 #	include "conf/uIP/uIPopt.h"
 #	include "conf/chibi/chibiUsrCfg.h"
 #	include "conf/nRF24/nRF24UsrCfg.h"
+#	include "conf/RFM69/RFM69UsrCfg.h"
 #	include "conf/usart/usartUsrCfg.h"												
 #	include "conf/eth/ethUsrCfg.h"
 #	include "conf/hardware/hwBoards.h"

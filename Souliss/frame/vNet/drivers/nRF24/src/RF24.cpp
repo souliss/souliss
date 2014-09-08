@@ -136,7 +136,7 @@ uint8_t RF24::write_payload(const void* buf, uint8_t len)
 	
 		frame = (oFrame*)buf;				// Pointer to output frame
 		oFrame_Define(frame);				// Set the frame
-		len = oFrame_GetLenght();			// Get the total lenght	
+		len = oFrame_GetLenght();			// Get the total length	
 
 		if(len > NRF24_MAX_PAYLOAD)			// The nRF24L01 support small payloads, we simply cut here
 			len = NRF24_MAX_PAYLOAD;		// and fill with zero once received	

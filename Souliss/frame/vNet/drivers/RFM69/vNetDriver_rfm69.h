@@ -29,10 +29,10 @@
 #define VNET_NRF24_H
 
 #include "Arduino.h"
-#include "GetConfig.h"				// need : nRF24UsrCfg.h
+#include "GetConfig.h"				// need : RFM69UsrCfg.h
 
-#include "src/RF24.h"
-#include "src/nRF24L01.h"
+#include "src/RFM69.h"
+#include "src/RFM69registers.h"
 #include "SPI.h"
 
 void vNet_Init_M2();

@@ -63,6 +63,10 @@
 	#if(NRF24)
 		#include "drivers/nRF24/vNetDriver_nrf24.cpp"
 	#endif	
+	
+	#if(HOPERF_RFM69)
+		#include "drivers/RFM69/vNetDriver_rfm69.cpp"
+	#endif		
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)
