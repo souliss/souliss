@@ -40,10 +40,10 @@
 #    define SPI0_MISO_PORT           PORTB
 
 // Chip select
-#	if(BOARD_MODEL == 0x0A)
-#		define ENC28J60_CS_BIT			BIT0        // ATmega1280/2560 PL0 - Arduino pin 49   
-#		define ENC28J60_CS_DDR       	DDRL
-#		define ENC28J60_CS_PORT      	PORTL
+#	if(BOARD_MODEL == 0x0A)							// Moteino Mega
+#		define ENC28J60_CS_BIT			BIT0        // ATmega1280 PB0 - Moteino pin 0
+#		define ENC28J60_CS_DDR       	DDRD
+#		define ENC28J60_CS_PORT      	PORTD
 #	else
 #		define ENC28J60_CS_BIT			BIT4        // ATmega2560 PB4 - Arduino pin 10   
 #		define ENC28J60_CS_DDR       	DDRB
@@ -127,9 +127,9 @@
 #		define ENC28J60_CS_DDR            DDRD
 #		define ENC28J60_CS_PORT           PORTD
 #	elif(BOARD_MODEL == 0x0A)
-#		define ENC28J60_CS_BIT            BIT0        // ATmega32U4  PB0 - Arduino pin 8   
-#		define ENC28J60_CS_DDR            DDRB
-#		define ENC28J60_CS_PORT           PORTB
+#		define ENC28J60_CS_BIT            BIT7        // Moteino  PD7 - Moteino pin    
+#		define ENC28J60_CS_DDR            DDRD
+#		define ENC28J60_CS_PORT           PORTD
 #	else
 #		define ENC28J60_CS_BIT            BIT2        // ATmega328  PB2 - Arduino pin 10   
 #		define ENC28J60_CS_DDR            DDRB

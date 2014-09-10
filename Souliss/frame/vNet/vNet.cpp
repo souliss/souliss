@@ -1027,7 +1027,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	else
 	{
 		#if (VNET_SUPERNODE)
-		// Route to neighbor			
+		// Route to neighbour			
 		if(vNet_Media[*media-1].subnetmask)
 		{
 			subn = addr & vNet_Media[*media-1].subnetmask;		// Final destination subnet
