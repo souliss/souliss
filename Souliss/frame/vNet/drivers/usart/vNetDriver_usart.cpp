@@ -41,6 +41,7 @@ uint16_t myaddress=0, caindex=0, in_crc=0;
 #define	isBusRecv()		busstate==USART_BUSRECV
 #define setBusFree()	busstate=USART_BUSFREE
 #define waitBusFree()	delay(caindex*USART_TOKEN_TIME)
+#define waitSend()		delay(caindex*USART_MAX_TIME)
 #define	startupDelay()	delay(caindex*USART_STARTDELAY*1000)
 
 // The name of the class that refers to the USART, change it accordingly to the used device
@@ -311,10 +312,10 @@ uint8_t vNet_DataAvailable_M5()
 		return USART_FAIL;	// Nothing to parse
 
 	#if(USART_DEBUG)	
-	USART_LOG("(USART)<Read> Lenght ok\r\n");
+	USART_LOG("(USART)<Read> Length ok\r\n");
 	#endif	
 			
-	// If the lenght exceed the buffer size
+	// If the length exceed the buffer size
 	if(l > USART_FRAME_LEN)
 	{
 		#if(USART_DEBUG)	
@@ -370,7 +371,7 @@ uint8_t vNet_DataAvailable_M5()
 				in_crc = *(uint16_t*)(usartframe+i+USART_PREAMBLE_LEN+vNetLen-USART_CRCLEN);	
 				
 				// The frame is a valid vNet message, remove the preamble
-				memcpy(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
+				memmove(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
 				l=l-i;
 				
 				return vNetLen;			// Return message lenght
@@ -388,7 +389,7 @@ uint8_t vNet_DataAvailable_M5()
 				if(i)
 				{
 					// Clean up the buffer from not used data
-					memcpy(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
+					memmove(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
 					l=l-i;
 				
 					// If we are here, the frame is incomplete just wait for next data
@@ -492,7 +493,7 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 			// If is a broadcast or unicast frame we are supposed to give an answer, but
 			// all nodes will probably do the same. In order to avoid collision, we wait a bit
 			// before processing the data
-			waitBusFree();
+			waitSend();
 			
 			// Now we set bus as free and proceed processing data
 			setBusFree();
@@ -512,7 +513,7 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 				*(data+len+i) = 0;
 			
 		// Move forward not parsed data
-		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len);
+		memmove(usartframe, usartframe+len, USART_FRAME_LEN-len);
 		if(l>(USART_FRAME_LEN-len))
 			l-=USART_FRAME_LEN-len;				// Reset the lenght
 		else
@@ -522,14 +523,14 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 	{
 
 		#if(USART_DEBUG)	
-		USART_LOG("(USART)<Read> Retrieve lenght failed\r\n");
+		USART_LOG("(USART)<Read> Retrieve length failed\r\n");
 		#endif	
 			
 		l = 0;										// Reset the lenght
 		return ETH_FAIL;							// Data corrupted
 	}
 		
-	// Return lenght of the data
+	// Return length of the data
 	return len;
 }
 
