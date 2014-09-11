@@ -113,7 +113,7 @@
 		0x48		Arduino with W5200 Ethernet Shield
 		0x49		Arduino with W5500 Ethernet Shield
 		0x50		Authometion Iotuino
-		0x60		Moteino or Moteino Mega plus W5100/W5200/W5500 Ethernet transceiver
+		0x60		Moteino or Moteino Mega plus W5100 Ethernet transceiver
 		0x61		Moteino or Moteino Mega plus ENC28J60 Ethernet transceiver		
 		0x62		Moteino or Moteino Mega with RFM69CW/RFM69HCW
 		0x63		Moteino or Moteino Mega with RFM69CW/RFM69HCW as range extender

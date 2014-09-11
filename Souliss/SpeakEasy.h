@@ -170,7 +170,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define ssnDigOut(pin,value,slot)								Souliss_nDigOut(pin, value, memory_map, slot)
 #define ssLowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
 #define ssnLowDigOut(pin,valueslot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
+#define	ssImportAnalog(slot,analogvalue)						Souliss_ImportAnalog(memory_map, slot, analogvalue)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)
+
 
 #define	ssGetTemperatureDHT(sensor, slot)	float tmpdhtval = ssDHT_readTemperature(sensor);	\
 											Souliss_ImportAnalog(memory_map, slot, &tmpdhtval)

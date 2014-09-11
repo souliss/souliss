@@ -17,6 +17,7 @@
 	
 	Originally developed by Dario Di Maio
 	
+    Kim Mølgaard		11/9/2014	Added support for Moteino boards.
 ***************************************************************************/
 /*!
     \file 
@@ -38,6 +39,8 @@
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #	define MAXINPIN		69		// Max number of input pins
+#elif defined(__AVR_ATmega1284P__)
+#	define MAXINPIN		40		// Max number of input pins
 #elif defined(__AVR_ATmega32U4__)
 #	define MAXINPIN		29		// Max number of input pins
 #else
