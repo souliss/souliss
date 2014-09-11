@@ -133,7 +133,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		USART_LOG("(USART)<Send> Try\r\n");
 		#endif
 	
-		while(retry)
+		while(retry) && (!isBusFree()))
 		{
 			// The bus was used recently, if not yet in use try to get it
 			if(!USARTDRIVER.available())
@@ -170,6 +170,8 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 
 					retry--;	// Retry
 				}	
+				else
+					setBusFree();	// Skip out and send data
 			}
 			else
 			{
@@ -190,7 +192,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 					
 				return USART_FAIL;
 			}
-			else
+			else if(!isBusFree())
 				waitSend();		// Wait a time of a frame
 		}
 	}
