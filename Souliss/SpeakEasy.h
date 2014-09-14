@@ -180,8 +180,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	ssGetHumidityDHT(sensor, slot)		float hmtdhtval = ssDHT_readHumidity(sensor);		\
 											Souliss_ImportAnalog(memory_map, slot, &hmtdhtval)													
 
-#define ssInput(slot)											memory_map[IN+slot]
-#define ssOutput(slot)											memory_map[OUT+slot]
+#define ssInput(slot)						memory_map[IN+slot]
+#define ssOutput(slot)						memory_map[OUT+slot]
+
+#define	Initialize()						MaCaco_init(memory_map)
 
 /*****************************************/
 

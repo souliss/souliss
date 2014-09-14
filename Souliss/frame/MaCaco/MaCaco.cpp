@@ -72,6 +72,36 @@ U8 ipaddrs[4], cmd[7] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR, MaCac
 
 /**************************************************************************/
 /*!
+    Init the memory map
+*/
+/**************************************************************************/
+void MaCaco_init(U8* memory_map)
+{
+	U8 i=0;
+	
+	for(i=0;i<MaCaco_MEMMAP;i++)
+		*(memory_map+i)=0;
+		
+	for(i=0;i<MaCaco_INMAXSUBSCR;i++)	
+	{
+		subscr_addr[i] = 0;	
+		subscr_putin[i] = 0;
+		subscr_startoffset[i] = 0;
+		subscr_numberof[i] = 0;
+		subscr_funcode[i] = 0;		
+	}
+	
+	for(i=0;i<MaCaco_OUTMAXSUBSCR;i++)	
+	{
+		subscr_outaddr[i] = 0;	
+		subscr_status[i] = 0;		
+		subscr_battery[i] = 0;		
+		subscr_count[i] = 0;	
+	}	
+}
+
+/**************************************************************************/
+/*!
     Send MaCaco frame over the vNet
 */
 /**************************************************************************/

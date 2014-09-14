@@ -30,7 +30,7 @@
 #include "vNetDriver_usart.h"							
 
 // Global variables used in the driver
-uint8_t usartframe[USART_FRAME_LEN], l=0;	
+uint8_t usartframe[USART_FRAME_LEN], l=0, retry=USART_MAXRETRY;	
 uint8_t	busstate=USART_BUSBUSY;
 uint16_t myaddress=0, caindex=0, in_crc=0;
 
@@ -41,6 +41,7 @@ uint16_t myaddress=0, caindex=0, in_crc=0;
 #define	isBusRecv()		busstate==USART_BUSRECV
 #define setBusFree()	busstate=USART_BUSFREE
 #define waitBusFree()	delay(caindex*USART_TOKEN_TIME)
+#define waitSend()		delay(caindex*USART_MAX_TIME)
 #define	startupDelay()	delay(caindex*USART_STARTDELAY*1000)
 
 // The name of the class that refers to the USART, change it accordingly to the used device
@@ -132,50 +133,68 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		USART_LOG("(USART)<Send> Try\r\n");
 		#endif
 	
-		// The bus was used recently, if not yet in use try to get it
-		if(!USARTDRIVER.available())
-		{	
-			// Set the write mode pin of the RS485
-			#if(USART_TXENABLE)
-			digitalWrite(USART_TXENPIN, HIGH);
-			#endif
-	
-			// Send a token to notify that we are willing to use the bus
-			for(i=0; i<USART_TOKEN_LENGHT; i++)
-				USARTDRIVER.write(USART_TOKEN);	
-			USARTDRIVER.flush();					// Wait data send
-			
-			// Set the write mode pin of the RS485
-			#if(USART_TXENABLE)
-			digitalWrite(USART_TXENPIN, LOW);
-			#endif
+		while((retry) && (!isBusFree()))
+		{
+			// The bus was used recently, if not yet in use try to get it
+			if(!USARTDRIVER.available())
+			{	
+				// Set the write mode pin of the RS485
+				#if(USART_TXENABLE)
+				digitalWrite(USART_TXENPIN, HIGH);
+				#endif
+		
+				// Send a token to notify that we are willing to use the bus
+				for(i=0; i<USART_TOKEN_LENGHT; i++)
+					USARTDRIVER.write(USART_TOKEN);	
+				USARTDRIVER.flush();					// Wait data send
 				
-			// Wait for a given number of token times before proceed,
-			// nodes with lower address has major priority.
-			// This is a collision avoidance with fixed priority, in
-			// a busy network, nodes with lower priority may never 
-			// found a slot
-			waitBusFree();
+				// Set the write mode pin of the RS485
+				#if(USART_TXENABLE)
+				digitalWrite(USART_TXENPIN, LOW);
+				#endif
+					
+				// Wait for a given number of token times before proceed,
+				// nodes with lower address has major priority.
+				// This is a collision avoidance with fixed priority, in
+				// a busy network, nodes with lower priority may never 
+				// found a slot
+				waitBusFree();
+				
+				// Check if someone started while waiting for the slot
+				if(USARTDRIVER.available())
+				{
+					// From the USART we get one byte per time, so before has to be identified
+					// if there is an incoming frame	
+					while(USARTDRIVER.available() && (l < USART_FRAME_LEN))	
+						usartframe[l++] = USARTDRIVER.read();
+
+					retry--;	// Retry
+				}	
+				else
+					setBusFree();	// Skip out and send data
+			}
+			else
+			{
+				// From the USART we get one byte per time, so before has to be identified
+				// if there is an incoming frame	
+				while(USARTDRIVER.available() && (l < USART_FRAME_LEN))	
+					usartframe[l++] = USARTDRIVER.read();
+
+				retry--;		// Retry
+			}
 			
-			// Check if someone started while waiting for the slot
-			if(USARTDRIVER.available())
+			// No more retries available, return
+			if(retry==0)
 			{
 				#if(USART_DEBUG)	
 				USART_LOG("(USART)<Send> Bus busy\r\n");
 				#endif
-			
-				BusIsBusy();
+					
 				return USART_FAIL;
-			}	
+			}
+			else if(!isBusFree())
+				waitSend();		// Wait a time of a frame
 		}
-		else
-		{
-			#if(USART_DEBUG)	
-			USART_LOG("(USART)<Send> Waiting data\r\n");
-			#endif
-			
-			return USART_FAIL;
-		}	
 	}
 	#endif
 	
@@ -183,6 +202,9 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	USART_LOG("(USART)<Send> Bus free\r\n");
 	#endif	
 
+	// Reset the number of available retry
+	retry = USART_MAXRETRY;
+	
 	// Set the write mode pin of the RS485
 	#if(USART_TXENABLE)
 	digitalWrite(USART_TXENPIN, HIGH);
@@ -311,10 +333,10 @@ uint8_t vNet_DataAvailable_M5()
 		return USART_FAIL;	// Nothing to parse
 
 	#if(USART_DEBUG)	
-	USART_LOG("(USART)<Read> Lenght ok\r\n");
+	USART_LOG("(USART)<Read> Length ok\r\n");
 	#endif	
 			
-	// If the lenght exceed the buffer size
+	// If the length exceed the buffer size
 	if(l > USART_FRAME_LEN)
 	{
 		#if(USART_DEBUG)	
@@ -370,7 +392,7 @@ uint8_t vNet_DataAvailable_M5()
 				in_crc = *(uint16_t*)(usartframe+i+USART_PREAMBLE_LEN+vNetLen-USART_CRCLEN);	
 				
 				// The frame is a valid vNet message, remove the preamble
-				memcpy(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
+				memmove(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
 				l=l-i;
 				
 				return vNetLen;			// Return message lenght
@@ -388,7 +410,7 @@ uint8_t vNet_DataAvailable_M5()
 				if(i)
 				{
 					// Clean up the buffer from not used data
-					memcpy(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
+					memmove(usartframe, &usartframe[i], USART_FRAME_LEN-i);	
 					l=l-i;
 				
 					// If we are here, the frame is incomplete just wait for next data
@@ -492,7 +514,7 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 			// If is a broadcast or unicast frame we are supposed to give an answer, but
 			// all nodes will probably do the same. In order to avoid collision, we wait a bit
 			// before processing the data
-			waitBusFree();
+			waitSend();
 			
 			// Now we set bus as free and proceed processing data
 			setBusFree();
@@ -512,9 +534,9 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 				*(data+len+i) = 0;
 			
 		// Move forward not parsed data
-		memcpy(usartframe, usartframe+len, USART_FRAME_LEN-len);
+		memmove(usartframe, usartframe+len, USART_FRAME_LEN-len);
 		if(l>(USART_FRAME_LEN-len))
-			l-=USART_FRAME_LEN-len;				// Reset the lenght
+			l-=USART_FRAME_LEN-len;				// Reset the length
 		else
 			l = 0;
 	}
@@ -522,14 +544,14 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 	{
 
 		#if(USART_DEBUG)	
-		USART_LOG("(USART)<Read> Retrieve lenght failed\r\n");
+		USART_LOG("(USART)<Read> Retrieve length failed\r\n");
 		#endif	
 			
 		l = 0;										// Reset the lenght
 		return ETH_FAIL;							// Data corrupted
 	}
 		
-	// Return lenght of the data
+	// Return length of the data
 	return len;
 }
 

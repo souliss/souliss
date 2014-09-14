@@ -40,6 +40,7 @@ typedef struct
 	U8  *data;			// Message Data
 } MaCaco_rx_data_t;
 
+void MaCaco_init(U8* memory_map);
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl);
 void MaCaco_subscribe_reset();
 void MaCaco_subscribe_battery(U8 subscr_chnl);

@@ -35,17 +35,17 @@
 	Never select more than one driver per time
 	        
 		Value       Media
-        0x0         Disable (Default)
+        0x0         Disable 
         0x1         Enable
 	
-		USART_BAUD9k6		-  USART at 9600   bps
-		USART_BAUD19k2		-  USART at 19200  bps
-		USART_BAUD115k2		-  USART at 115200 bps
+		USART_BAUD9k6		-  USART at 9600   bps	
+		USART_BAUD19k2		-  USART at 19200  bps	
+		USART_BAUD115k2		-  USART at 115200 bps	(Default)
 */
 /**************************************************************************/
-#define USART_BAUD9k6			1
+#define USART_BAUD9k6			0
 #define USART_BAUD19k2			0
-#define USART_BAUD115k2			0
+#define USART_BAUD115k2			1
 
 /**************************************************************************/
 /*!
@@ -75,6 +75,13 @@
 */
 /**************************************************************************/
 #define USART_COLLISION				1
+
+/**************************************************************************/
+/*!
+	Maximum number of retry if the bus has been found busy
+*/
+/**************************************************************************/
+#define USART_MAXRETRY				5
 
 /**************************************************************************/
 /*!
