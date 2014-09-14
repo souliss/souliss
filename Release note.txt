@@ -1,14 +1,14 @@
 Souliss
 Copyright (C) 2014  Veseo
 
-Release note for revision Alpha 6.0.2, on dd/mm/yyyy
+Release note for revision Alpha 6.0.2, on 14/09/2014
 
 	Major improvement on USART drivers for vNet
 		- vNet USART driver buffer handling improvement
 		- vNet USART max frame is now a parameter
 		- vNet USART nodex startup delay is introduced
+		- vNet USART retry in case of bus busy
 		- MaCaco TYP commands are now in broadcast (before unicast was used)
-		
 
 Release note for revision Alpha 6.0.1, on 22/08/2014
 	

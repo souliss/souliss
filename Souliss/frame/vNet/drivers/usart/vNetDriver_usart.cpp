@@ -133,7 +133,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 		USART_LOG("(USART)<Send> Try\r\n");
 		#endif
 	
-		while(retry) && (!isBusFree()))
+		while((retry) && (!isBusFree()))
 		{
 			// The bus was used recently, if not yet in use try to get it
 			if(!USARTDRIVER.available())
