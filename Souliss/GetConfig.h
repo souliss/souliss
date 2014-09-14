@@ -617,12 +617,15 @@
 #		define 	MODBUS_RTU  			1
 #	endif
 
-// If dynamic request is used over Ethernet, communication between Ethernet
-// devices is done via MAC-RAW and only the gateway node use both UDP/IP and
-// MAC-RAW communication
-#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && ETHERNETMACRAW)
+// In case of DYNAMIC ADDRESSING if the IP BROADCAST option is set, data between nodes will
+// flow over Media3 as IP broadcast. Only the Gateway node will be able to process unicast vNet
+// frames.
+// This option remove the need of a bind between vNet and IP addresses, this is useful when a 
+// static IP address could not be applied and there is not enough RAM to run a DHCP to get an IP
+// address.
+#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && IPBROADCAST)
 #		define VNET_MEDIA3_ENABLE  		1
-#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && ETHERNETMACRAW)
+#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && IPBROADCAST)
 #		define VNET_MEDIA1_ENABLE  		0
 #		define VNET_MEDIA3_ENABLE  		1
 #	else

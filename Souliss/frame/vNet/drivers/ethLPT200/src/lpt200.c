@@ -68,7 +68,6 @@ uint8_t lpt200_init()
 		USARTDRIVER.read();
 	
 	USARTDRIVER.println("#GETMYIP$");
-	USARTDRIVER.flush();					// Wait data send
 	
 	// Wait the answer
 	delay(L200_WAITTIME);
@@ -286,17 +285,17 @@ uint8_t dataaval()
 			}
 		}
 		#endif
-	
+/*	
 	// The LPT200 module can receive binary data on the UDP socket or ASCII data
 	// on all the other opened sockets. In case of binary data is always used #RCVUDP
 	// as starting string of the frame, the # character is considered special and cannot
 	// be used in ASCII data.
 	
-	// Look for the # special charater, if is found is a binary data and we can remove the junk
+	// Look for the # special character, if is found is a binary data and we can remove the junk
 	for(i=0;i<l;i++)
 	{
 		// Look for starting character
-		if(usartframe[i] == '#')
+		if(usartframe[i] == '#')	//isn't enough, the # could be also a char into the frame
 		{
 			// The payload
 			if(i < l) payload = l-i;
@@ -304,12 +303,12 @@ uint8_t dataaval()
 			if((payload) && (i!=0))
 			{			
 				// The frame is valid remove junk
-				memcpy(usartframe, (usartframe+i), payload);		
+				memmove(usartframe, (usartframe+i), payload);		
 				l = payload;
 			}
 		}
 	}	
-
+*/
 	// If there are no incoming data
 	if((l == 0))
 		return L200_FAIL;
@@ -337,72 +336,72 @@ uint8_t recvUDP(uint8_t * buf, uint16_t len, uint8_t * s_addr, uint16_t *s_port,
 	uint8_t i=0, datalen=0;
 	uint8_t header[L200_HEADER_LEN] = "#RCVUDP,";	// Send UDP request in ASCII
 	uint8_t hedlen = 8;								// Starting position after the #RCVUDP,
+
+	// Parse the frame till the #RCVUDP is found
+	for(uint8_t p=0;p<l-L200_HEADER_LEN;p++)
+	{	
+		uint8_t* uframe = usartframe+p;				// Move the pointer
 	
-	// Define the frame type
-	if(compare_string((char*)usartframe, (char*)header, hedlen))
-	{
-		// Check the lenght of the header
-		if(l < L200_HEADER_MIN)
-			return L200_FAIL;
+		// Define the frame type
+		if(compare_string((char*)uframe, (char*)header, hedlen))
+		{
+			// Check the lenght of the header
+			if(l < L200_HEADER_MIN)
+				return L200_FAIL;
 
-		// Check if the received frame has a complete header like #RCVUDP,192.168.1.17,23000,192.168.1.18,230,12,....			
-		if(nof_string((char*)usartframe, ',', L200_HEADER_LEN) < 6)
-			return L200_FAIL;
-			
-		// From this point the header is supposed to be complete, parse it
-	
-		// Get the source IP address
-		for(i=0;i<4;i++)
-			s_addr[i] = ASCII_str2num(usartframe+hedlen, &hedlen);
-			
-		// Get the source port number
-		*s_port = ASCII_str2num(usartframe+hedlen, &hedlen);
-
-		// Get the destination IP address
-		for(i=0;i<4;i++)
-			d_addr[i] = ASCII_str2num(usartframe+hedlen, &hedlen);
+			// Check if the received frame has a complete header like #RCVUDP,192.168.1.17,23000,192.168.1.18,230,12,....			
+			if(nof_string((char*)uframe, ',', L200_HEADER_LEN) < 6)
+				return L200_FAIL;
+				
+			// From this point the header is supposed to be complete, parse it
 		
-		// Get the destination port number
-		*d_port = ASCII_str2num(usartframe+hedlen, &hedlen);		 
+			// Get the source IP address
+			for(i=0;i<4;i++)
+				s_addr[i] = ASCII_str2num(uframe+hedlen, &hedlen);
+				
+			// Get the source port number
+			*s_port = ASCII_str2num(uframe+hedlen, &hedlen);
 
-		// The lenght of the payload is the last parameter
-		datalen = ASCII_str2num(usartframe+hedlen, &hedlen);
-		
-		// Retreive the data
-		i=0;
-		if((l-hedlen) >= (datalen-1))
-		{	
-			while((i < datalen) && (hedlen < L200_FRAME_LEN))
+			// Get the destination IP address
+			for(i=0;i<4;i++)
+				d_addr[i] = ASCII_str2num(uframe+hedlen, &hedlen);
+			
+			// Get the destination port number
+			*d_port = ASCII_str2num(uframe+hedlen, &hedlen);		 
+
+			// The lenght of the payload is the last parameter
+			datalen = ASCII_str2num(uframe+hedlen, &hedlen);
+			
+			// Retreive the data
+			i=0;
+			while((i < datalen) && ((uframe+hedlen) < (usartframe+L200_FRAME_LEN)))
 			{
 				// Copy data in the buffer
-				buf[i] = usartframe[hedlen];
+				buf[i] = uframe[hedlen];
 				
 				i++;
 				hedlen++;
 			}
-		
+			
 			// Flag data as read
-			if(hedlen+1 < l)
+			if(hedlen < l)
 			{
-				l=l-hedlen-1;	// Remove the data read and the $ at end of the string
-				
+				hedlen++;		// Remove the last byte, the $ end of line
+				l=l-hedlen;		// Remove the data that has been read
+					
 				// If there are not used data in the buffer, move them at the begin of the buffer
-				if(l)	memcpy(usartframe, (usartframe+hedlen), l);
+				if(l)	memmove(uframe, (uframe+hedlen), l);
 			}	
 			else
 				l=0;
-			
+				
 			// Reset the junk timer
 			junkdata=0;
-			
+				
 			// Return the amount of data
 			return i;
 		}
-		else
-			return L200_FAIL;
-	}
-	else
-		return L200_FAIL;	
+	}		
 }
 
 /**************************************************************************/
@@ -437,7 +436,7 @@ uint8_t recv(uint8_t * buf, uint16_t len)
 			l=l-i;
 			
 			// If there are not used data in the buffer, move them at the begin of the buffer
-			if(l)	memcpy(usartframe, (usartframe+hedlen), l);
+			if(l)	memmove(usartframe, (usartframe+hedlen), l);
 		}
 		else
 			l=0;

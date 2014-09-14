@@ -22,10 +22,10 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DINOv2NOMACRAW_H
-#define bconf_DINOv2NOMACRAW_H
+#ifndef bconf_DINOv2NOIPBROADCAST_H
+#define bconf_DINOv2NOIPBROADCAST_H
 
 // Assume that somewhere else has been set and defined
-#define ETHERNETMACRAW  		0x00
+#define IPBROADCAST  		0x00
 
 #endif

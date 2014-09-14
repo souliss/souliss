@@ -173,6 +173,7 @@
 #	define	ARDUINO_DHCP		0x0
 #	define	ARDUINO_DNS			0x0
 #endif
+
 /**************************************************************************/
 /*!
     IP Base Configuration 
@@ -198,6 +199,28 @@
 	const uint8_t DEFAULT_SUBMASK[] 	  = {255, 255, 255, 0};
 	const uint8_t DEFAULT_GATEWAY[] 	  = {192, 168, 1, 1};
 #endif
+
+/**************************************************************************/
+/*!
+	IP Broadcasting Configuration
+	
+	If enabled, nodes use IP broadcast frames instead of unicast ones. This
+	remove the need of a bind between the vNet and the IP address, from the 
+	vNet point of view, this communication flows as Media3.
+	
+	Use this option if a node cannot have a static IP address and at same time
+	could not use DHCP due to short RAM available.
+	
+	
+		Value       ARDUINO_DHCP
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#if(!defined(IPBROADCAST_INSKETCH))
+#	define IPBROADCAST 		0x00
+#endif	
+	
 /**************************************************************************/
 /*!
 	MAC Configuration
@@ -240,6 +263,7 @@
 #	define AUTO_MAC  		1
 #	define MAC_DEBUG	  	0
 #endif							
+
 /**************************************************************************/
 /*!
 	WiFi Configuration

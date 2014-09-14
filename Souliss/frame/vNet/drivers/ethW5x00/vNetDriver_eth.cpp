@@ -158,7 +158,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	vNet_port = ETH_PORT;
 	
 	// Define the IP address to be used
-	if(addr == 0xFFFF)
+	if((addr == 0xFFFF) || ((addr > VNET_ADDR_L_M3) && (addr < VNET_ADDR_H_M3)))
 	{
 		// Set the IP broadcast address
 		for(U8 i=0;i<4;i++)
@@ -172,7 +172,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 		{	
 			// The first byte is the User Mode Index, if in range 0x01 - 0x64
 			// a standard client/server connection is used with the user interface
-			// this give rounting and NATting passthrough
+			// this give routing and NATting passthrough
 			UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
 		}
 		else
@@ -254,9 +254,10 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		return ETH_FAIL;
 		
 	// Verify the incoming address, is a not conventional procedure at this layer
-	// but is required to record the IP address in case of User Mode addresses
+	// but is required to record the IP address in case of User Mode addresses (0x0100 - 0x64FF)
 	#if(UMODE_ENABLE)
-	if(((*(U16*)&data_pnt[5]) & 0xFF00) != 0x0000)
+	uint16_t umrec = ((*(U16*)&data_pnt[5]) & 0xFF00);
+	if((umrec != 0x0000) && (umrec <= VNET_ADDR_H_M1))
 		UserMode_Record((*(U16*)&data_pnt[5]), dataframe.ip, (uint8_t *)(&dataframe.port));	
 	#endif
 	

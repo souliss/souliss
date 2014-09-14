@@ -8,6 +8,7 @@ Release note for revision Alpha 6.1.1, on dd/mm/yyyy
 		- Introduction of Action Messages 
 		- Massive commands can be used between nodes
 		- Preliminary support for Moteino and HopeRF RFM69CW/RFM69HCW
+		- Media 3 has been moved from MAC broadcast to IP broadcast
 
 Release note for revision Alpha 6.0.2, on dd/mm/yyyy
 

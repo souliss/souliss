@@ -178,28 +178,6 @@
 
 /**************************************************************************/
 /*!
-	In case of a network with multiple Ethernet based boards, the use of 
-	MAC RAW communication remove the need of a dedicated IP address for each
-	board.
-	
-	This settings has effect only on Ethernet boards with DYNAMICADDRESSING
-	option set, following scenario are forseen:
-		- Gateway : Is configured with either IP and MACRAW, bridges data from
-					IP to MACRAW and viceversa.
-		- Peer (not Gateway) : Is configured only as MACRAW, doesn't need an IP
-					address.
-	
-        Value       ETHERNETMACRAW
-        0x0         Disable (Default)
-        0x1         Enable	
-*/
-/**************************************************************************/
-#if(QC_ENABLE && !defined(ETHERNETMACRAW_INSKETCH))								// Define manually only in Detailed Configuration Mode
-#	define ETHERNETMACRAW  		0x00
-#endif
-
-/**************************************************************************/
-/*!
     IP Base Configuration 
 
 	The IP address of Ethernet boards is defined as merge of a IP Base Address

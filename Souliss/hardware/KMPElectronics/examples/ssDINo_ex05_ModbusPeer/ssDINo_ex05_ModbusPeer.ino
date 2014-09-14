@@ -11,7 +11,7 @@
 	
 ***************************************************************************/
 #include "bconf/DINo_v2_Peer.h"				// Load QuickCfg.h configuration parameters automatically
-#include "bconf/DINo_v2_DisableMACRAW.h"
+#include "bconf/DINo_v2_DisableIPBROADCAST.h"
 #include "bconf/SmallNetwork.h"				// Modbus as a smaller addressing area compared to MaCaco
 
 #include "Souliss.h"

@@ -150,9 +150,9 @@
         0x0         Disable (Default)
         0x1         Enable
 	
-		Communication Media 1	-	Ethernet TCP/IP 
+		Communication Media 1	-	Ethernet UDP/IP 
 		Communication Media 2	-	Wireless - 2.4 GHz IEEE 802.15.4 
-		Communication Media 3	-	Ethernet RAW 
+		Communication Media 3	-	IP Broadcast only
 		Communication Media 4	-	Not used
 		Communication Media 5	-	USART with collision avoidance 	
 */
