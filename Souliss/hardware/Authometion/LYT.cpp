@@ -81,7 +81,7 @@ void LYTOn(U8 slot)
 	// Set transmission parameters
     Iotuino.setRadioTransmission(118);
        
-    if(LYT[index].mode == 0)						//Mode LYT RGB
+    if(LYT[index].mode == 0)								//Mode LYT RGB
       Iotuino.rgbOn(LYT[index].addr_a,LYT[index].addr_b);
     else if(LYT[index].mode == 1)							//Mode LYT WHITYE 
       Iotuino.whiteOn(LYT[index].addr_a,LYT[index].addr_b);
@@ -236,7 +236,7 @@ void LYTSetBright(U8 bright, U8 slot)
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
        
-	if(LYT[index].mode == 1)							//Mode LYT WHITYE 
+	if(LYT[index].mode == 1)								//Mode LYT WHITYE 
       Iotuino.whiteSetBrightness(LYT[index].addr_a,LYT[index].addr_b, bright);
     else if(LYT[index].mode == 2)							//Mode New LYT RGBW
       Iotuino.rgbwSetBrightness(LYT[index].addr_a,LYT[index].addr_b, bright);  
@@ -252,6 +252,7 @@ void LYTSetBright(U8 bright, U8 slot)
 void Souliss_SetLYTLamps(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T16;
+	memory_map[MaCaco_AUXIN_s + slot] = LYT_MedBright;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 	memory_map[MaCaco_TYP_s + slot + 2] = Souliss_TRL;
 	memory_map[MaCaco_TYP_s + slot + 3] = Souliss_TRL;
@@ -398,6 +399,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		else // Set the color
 			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
 		
+		// Set bright
+		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
+		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
@@ -472,4 +476,38 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	
 	return i_trigger;	
 	
+}
+
+/**************************************************************************
+/*!
+	Timer associated to T16
+*/	
+/**************************************************************************/
+void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot)
+{
+	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)		// Memory value is used as timer
+	{
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_GoodNight)
+		{
+			// Set the good night mode
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
+			
+			// Notify with a quick bright change
+			uint8_t actualbright = memory_map[MaCaco_AUXIN_s + slot];
+			while(actualbright)
+				LYTSetBright(actualbright--, slot);
+			
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);	
+		}
+		
+		// Decrease timer and check the expiration
+		if((--memory_map[MaCaco_IN_s + slot]) == Souliss_T1n_Timed)		
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
+		
+		// Bright down the light
+		if(memory_map[MaCaco_AUXIN_s + slot])
+			LYTSetBright(--memory_map[MaCaco_AUXIN_s + slot], slot);
+		else
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;	// Lamp off
+	}	
 }

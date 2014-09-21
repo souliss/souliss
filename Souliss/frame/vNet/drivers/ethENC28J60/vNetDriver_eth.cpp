@@ -256,7 +256,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		// in vNet_UDP_callback() with a callback from the uIP stack.
 		
 		// Is an UserMode frame, record the incoming source information
-		uint16_t umrec = ((*(U16*)&data_pnt[4]) & 0xFF00);
+		uint16_t umrec = ((*(U16*)&data[4]) & 0xFF00);
 		if((umrec != 0x0000) && (umrec <= VNET_ADDR_H_M1))
 		{
 			sportnumber = HTONS(sportnumber);										// Swap byte before record the source port

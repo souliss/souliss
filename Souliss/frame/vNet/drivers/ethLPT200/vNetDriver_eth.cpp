@@ -142,7 +142,7 @@ uint8_t vNet_DataAvailable_M1()
 	dataframe.len = dataaval();
 	
 	// If the incoming size is bigger than the UDP header
-	if((dataframe.len >= 8) && (dataframe.len <= L200_FRAME_LEN))
+	if((dataframe.len >= 8) && (dataframe.len <= VNET_MAX_FRAME))
 		return ETH_SUCCESS;
 		
 	// Discard

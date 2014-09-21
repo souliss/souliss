@@ -9,6 +9,7 @@ Release note for revision Alpha 6.1.1, on dd/mm/yyyy
 		- Massive commands can be used between nodes
 		- Preliminary support for Moteino and HopeRF RFM69CW/RFM69HCW
 		- Media 3 has been moved from MAC broadcast to IP broadcast
+		- Iotuino USART drivers are now based on SerialPort by William Greiman
 
 Release note for revision Alpha 6.0.2, on 14/09/2014
 

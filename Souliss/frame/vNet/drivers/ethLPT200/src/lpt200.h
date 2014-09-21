@@ -31,25 +31,30 @@
 #define VNET_LPT200_H
 
 #include "Arduino.h"
+#include "SerialPort.h"
 
-#define USART_BAUD				115200	
+#define USART_BAUD				19200	
 
 // General
 #define L200_SUCCESS			0x01
 #define L200_FAIL				0x00
 #define	L200_UDP				0x10
 #define	L200_TCP				0x20
-#define	L200_JUNK				0x07				// Number of cycle that data can hold in the buffer
+#define	L200_JUNK				0x05				// Number of cycle that data can hold in the buffer
+
+// Commands for LPT200 Wifi Module
+#define	SNDUDP					0x01
+#define	RCVUDP					0x02
+#define	CMDAT					0x03
+#define	GETMYIP					0x04
+#define	FRAMESTART				0x23
+#define	FRAMESTOP				0x24
+#define	FRAMESPACE				0x2C
 
 // Frame
 #define	L200_MAXPAYLOAD			(VNET_MAX_FRAME)
-#define	L200_OVERHEAD			7					// Additional bytes out of the frame
-#define L200_TYPECODE			7					// Biggest code size (SNDUDP, RCVUDP, CMDAT, GETMYIP)
-#define L200_IPSIZE				15					// ASCII size of 255.255.255.255
-#define L200_PORTSIZE			5					// ASCII size of 65536
-#define	L200_HEADER_LEN			(L200_OVERHEAD+L200_TYPECODE+2*L200_IPSIZE+2*L200_PORTSIZE)
-#define	L200_HEADER_MIN			29					// Size of #RCVUDP,1.1.1.1,9,1.1.1.2,9,1,
-#define	L200_FRAME_LEN			(L200_MAXPAYLOAD+L200_HEADER_LEN)
+#define L200_HEADER_LEN			25
+#define	L200_USARTBUFFER		192
 
 // Boot
 #define	L200_BOOTTIME			10000
@@ -79,9 +84,9 @@
 #define LPT200_DEBUG  			0
 
 // The name of the class that refers to the USART, change it accordingly to the used device
-#ifndef USARTDRIVER_INSKETCH
-#	define	USARTDRIVER	Serial				
-#endif
+//#ifndef USARTDRIVER_INSKETCH
+//#	define	USARTDRIVER	Serial				
+//#endif
 
 uint8_t lpt200_init();
 void getip(uint8_t * addr);

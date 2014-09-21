@@ -171,6 +171,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define ssLowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
 #define ssnLowDigOut(pin,valueslot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
 #define	ssImportAnalog(slot,analogvalue)						Souliss_ImportAnalog(memory_map, slot, analogvalue)
+#define	ssAnalogIn(pin, slot)									Souliss_AnalogIn(pin, memory_map, slot, 0.05, 0)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)
 
 
