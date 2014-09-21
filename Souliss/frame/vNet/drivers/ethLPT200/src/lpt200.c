@@ -448,7 +448,7 @@ uint8_t recvUDP(uint8_t * buf, uint16_t len, uint8_t * s_addr, uint16_t *s_port,
 					#endif
 				}	
 
-				return L200_FAIL;	
+				break;	
 			}	
 		}
 	}
