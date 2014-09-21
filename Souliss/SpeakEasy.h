@@ -194,8 +194,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												FAST_1110ms() 						\
 													ssCommunicationChannels();		\
 												FAST_2110ms() 						\
-													ssGetTypicals()																			
-													
+													ssGetTypicals()
+										
 #define	FAST_BridgeComms()						FAST_30ms()    						\
 													ProcessCommunication();			\
 													

@@ -118,14 +118,14 @@ void loop()
 		UPDATEFAST();   
 		
 		// Execute the code every 30 milliseconds
-		FAST_30ms() { 
+		FAST_50ms() { 
 			// dummy input
 			Souliss_DigIn(SWITCH_PIN, Souliss_T1n_OnCmd, memory_map, SWITCH);
 			Logic_DigitalInput(SWITCH);
 		}
 
 		// Execute the code every 50 milliseconds
-		FAST_30ms {
+		FAST_30ms() {
 			// Retreive data from the MaCaco communication channel
 			Souliss_CommunicationData(memory_map, &data_changed);
 		}

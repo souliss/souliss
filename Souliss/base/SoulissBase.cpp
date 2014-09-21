@@ -433,17 +433,16 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 		if (s == MaCaco_NODES) 
 			roundrob_1 = 1;		// Reset, node 0 is the node it-self, doesn't need to send data out
 		
-		// Retreive once the typical definitions data
+		// Retrieve once the typical definitions data
 		if ((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)) != 0x0000)
 		{
-			ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+			ret = MaCaco_send((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
 			
 			// Increase the index
 			if(roundrob_1 < MaCaco_NODES) 
 				roundrob_1++;
 			else
 				roundrob_1 = 1;		// Reset	
-				
 		}
 	}
 	else

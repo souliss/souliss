@@ -31,6 +31,7 @@
 #include "Iotuino.h"
 #include "Typicals.h"
 #include "GetConfig.h"
+#include "LYT.h"
 
 LYT_struct LYT[LYT_MAXNUM];								// Each RGB light use 
 IOTUINO Iotuino;										// Define a class to control Iotuino wireless radio
@@ -168,39 +169,6 @@ void LYTSetColor(U8 color, U8 slot)
       Iotuino.rgbwRgb(LYT[index].addr_a,LYT[index].addr_b, color);  
 }
 
-/**************************************************************************
-/*!
-	Set the color as RGB
-*/	
-/**************************************************************************/
-void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
-{
-	U16 s1, s2, s3;
-	float color, r, g, b;
-	s1 = R+B;												// Sector 1
-	s2 = R+G;												// Sector 2
-	s3 = B+G;												// Sector 3
-	r = (float)R;
-	g = (float)G;
-	b = (float)B;
-
-	// Identify the prevalent sector
-	if((s1 >= s2) && (s1 >= s3))
-		color = (285.0 - (95.0*(b-r+255.0)/510.0));
-	else if((s2 >= s1) && (s2 >= s3))
-		color = (30.0 + (90.0*(g-r+255.0)/510.0));
-	else if((s3 >= s1) && (s3 >= s2))
-		color = (120.0 - (70.0*(b-g+255.0)/510.0));
-
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(10);
-
-	LYTSetColor((U8)color, slot);
-
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(18);
-	
-}	
 
 /**************************************************************************
 /*!
@@ -241,6 +209,49 @@ void LYTSetBright(U8 bright, U8 slot)
     else if(LYT[index].mode == 2)							//Mode New LYT RGBW
       Iotuino.rgbwSetBrightness(LYT[index].addr_a,LYT[index].addr_b, bright);  
 }
+
+/**************************************************************************
+/*!
+	Set the color as RGB
+*/	
+/**************************************************************************/
+void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
+{
+	U16 s1, s2, s3;
+	float color, r, g, b, lum;
+	s1 = R+B;												// Sector 1
+	s2 = R+G;												// Sector 2
+	s3 = B+G;												// Sector 3
+	r = (float)R;
+	g = (float)G;
+	b = (float)B;
+
+	// Identify the prevalent sector
+	if((s1 >= s2) && (s1 >= s3))
+	{
+		color = (285.0 - (95.0*(b-r+255.0)/510.0));
+		lum=s1*0.034;
+	}	
+	else if((s2 >= s1) && (s2 >= s3))
+	{
+		color = (30.0 + (90.0*(g-r+255.0)/510.0));
+		lum=s2*0.034;		
+	}	
+	else if((s3 >= s1) && (s3 >= s2))
+	{
+		color = (180.0 - (70.0*(b-g+255.0)/510.0));
+		lum=s3*0.034;		
+	}	
+
+	// Reset transmission parameters
+	Iotuino.setRadioTransmission(5);
+
+	LYTSetColor((U8)color, slot);
+	LYTSetBright((U8)lum, slot);
+	
+	// Reset transmission parameters
+	Iotuino.setRadioTransmission(18);	
+}	
 
 /**************************************************************************
 /*!

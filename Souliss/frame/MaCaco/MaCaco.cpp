@@ -52,6 +52,7 @@ bool subscr_status[MaCaco_OUTMAXSUBSCR] = {0};		// Flag if last incoming data wa
 bool subscr_battery[MaCaco_OUTMAXSUBSCR] = {0};		// Flag battery operated devices	
 U8 subscr_count[MaCaco_OUTMAXSUBSCR] = {0x00};
 
+#if(MaCaco_USERMODE)
 // store incoming typical logic request
 U16 reqtyp_addr = 0x0000;	
 U8* reqtyp_putin = 0x0000;
@@ -65,6 +66,7 @@ U16 proposedaddress = 0;
 
 // buffer for temporary use
 U8 ipaddrs[4], cmd[7] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR, MaCaco_IN_s, MaCaco_TYP_s, MaCaco_OUT_s};
+#endif
 
 #if (MaCaco_DEBUG)
 	#define MaCaco_LOG Serial.print
@@ -312,6 +314,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// answer to a typical logic read request
 	if ((rx->funcode == MaCaco_TYPREQ))
 	{
+		#if(MaCaco_SUBSCRIBERS)
 			U16 nodeoffest, len;
 			
 			// These points the local data
@@ -330,7 +333,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// In passthrough mode data from other nodes are not stored, at this time we can send out only local
 			// data, then when other nodes will send back data these will be bridged to the User Interface
 			if(rx->putin == 0) 
-				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));					
+				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));
+		#else
+			return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
+		#endif
 	}
 		
 	// answer to a subscription request
@@ -830,7 +836,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 			if(reqtyp_addr)		// If there is a stored address from a User Interface
 				MaCaco_send(reqtyp_addr, MaCaco_TYPANS, reqtyp_putin, nodeindex, rx->numberof, rx->data);								
-
 		break;
 		#endif
 		
