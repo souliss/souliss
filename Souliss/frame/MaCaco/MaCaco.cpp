@@ -432,6 +432,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
 	
+	#if(MaCaco_USERMODE)
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
 	{		
@@ -453,6 +454,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
+	#endif
 	
 	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
@@ -634,10 +636,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 				// restart the subscriptions
 				for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-					subscr_count[i] = 0;
-
-				// request typicals logic values for nodes
-				reqtyp_times = MaCaco_NODES;					
+					subscr_count[i] = 0;	
 			}
 			
 			// if the join request is from a nodes that previously got an address, flag the
@@ -1109,12 +1108,13 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 	the number of nodes to be requested.
 */
 /**************************************************************************/
+#if(MaCaco_SUBSCRIBERS)
 U8 MaCaco_reqtyp()
 {	
 	if(reqtyp_times)
 		return reqtyp_times--;
 }
-
+#endif
 
 /**************************************************************************/
 /*!
@@ -1350,6 +1350,7 @@ U8 MaCaco_IsSubscribed()
 		interface is also used for external protocols.
 */
 /**************************************************************************/
+#if(MaCaco_SUBSCRIBERS)
 void MaCaco_InternalSubcription(U8 *memory_map)
 {
 	U8 i=0;
@@ -1409,6 +1410,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	reqtyp_times = MaCaco_NODES;		
 			
 }
+#endif
 
 /**************************************************************************/
 /*!
