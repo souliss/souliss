@@ -628,10 +628,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 				// restart the subscriptions
 				for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-					subscr_count[i] = 0;
-
-				// request typicals logic values for nodes
-				reqtyp_times = MaCaco_NODES;					
+					subscr_count[i] = 0;					
 			}
 			
 			// if the join request is from a nodes that previously got an address, flag the
