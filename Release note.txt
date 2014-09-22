@@ -1,6 +1,9 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+Release note for revision Alpha 6.0.3, on 23/09/2014
+	Fix a major bug while retrieving typicals for logics loaded in the network nodes
+
 Release note for revision Alpha 6.0.2, on 14/09/2014
 
 	Major improvement on USART drivers for vNet
