@@ -48,6 +48,8 @@ void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8
 U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg);
 U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data);
 U8 MaCaco_reqtyp();
+void MaCaco_reqtyp_decrease();
+U16 MaCaco_reqtyp_lastaddr();
 void MaCaco_DataIn();
 U8 MaCaco_retrieve(U8* memory_map, U8* data_chg);
 U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 *data);

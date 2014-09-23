@@ -425,8 +425,54 @@ void Souliss_BatteryChannels(U8 *memory_map, U16 addr)
 /**************************************************************************/	
 U8 Souliss_GetTypicals(U8 *memory_map)
 { 
-	U8 ret=0, s=MaCaco_reqtyp();
-
+	U8 s=MaCaco_reqtyp();
+	
+	// Pointer to the node address
+	U16* m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+			
+	if(s)
+	{
+		// Start from first node if is a new request from an user interface
+		if (s == MaCaco_NODES)
+			roundrob_1 = 1;				// Reset, node 0 is the node it-self, doesn't need to send data out
+		
+		// Pointer to the node address
+		m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+			
+		// If the node answer has been received
+		if((*m_addr != 0x0000) && (*m_addr == MaCaco_reqtyp_lastaddr()))
+		{
+			// At next cycle move to next node
+			if(roundrob_1 < MaCaco_NODES) 
+				roundrob_1++;
+			else
+			{
+				// Reset
+				while(MaCaco_reqtyp()) MaCaco_reqtyp_decrease();
+				roundrob_1 = 1;		
+			}
+				
+			// Next node
+			MaCaco_reqtyp_decrease();
+			return 1;
+		}
+			
+		// Send a request to the node, if the address is zero there are no more node to process
+		if (*m_addr != 0x0000)	MaCaco_send(*m_addr, MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+		else 
+		{
+			// Reset
+			while(MaCaco_reqtyp()) MaCaco_reqtyp_decrease();
+			roundrob_1 = 1;	
+		}
+			
+		// At next cycle the answer will be received
+		return 0;
+	}
+	
+	return 0;
+	
+/*
 	if(s)
 	{
 		// Reset the round robin loop
@@ -444,12 +490,16 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 			else
 				roundrob_1 = 1;		// Reset	
 		}
+		
+		// Notify that typicals has been requested for this node
+		MaCaco_reqtyp_decrease();
 	}
 	else
 		if(roundrob_1 != 1)
 			roundrob_1 = 1;		// Reset
 		
-	return ret;	
+	return ret;
+*/	
 } 
 #endif
 

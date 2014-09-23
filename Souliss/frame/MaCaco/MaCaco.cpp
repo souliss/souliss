@@ -55,6 +55,7 @@ U8 subscr_count[MaCaco_OUTMAXSUBSCR] = {0x00};
 #if(MaCaco_USERMODE)
 // store incoming typical logic request
 U16 reqtyp_addr = 0x0000;	
+U16 lasttyp_addr = 0x0000;
 U8* reqtyp_putin = 0x0000;
 U8 reqtyp_startoffset = 0x00;
 U8 reqtyp_numberof = 0x00;
@@ -813,8 +814,14 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// Identify the node index
 			U8 nodeindex;
 			for(nodeindex=MaCaco_LOCNODE+1; nodeindex<MaCaco_NODES ; nodeindex++)
+			{
 				if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
+				{
+					lasttyp_addr = addr;	// Store the address of the nodes that gives this reply
 					break;
+				}	
+			}	
+			
 			
 			// Data persistance is active, store information
 			#if(MaCaco_PERSISTANCE)
@@ -1101,6 +1108,7 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 	return status;
 }
 
+#if(MaCaco_SUBSCRIBERS)
 /**************************************************************************/
 /*!
     Count for how many nodes typicals values was requested, this is set
@@ -1108,11 +1116,30 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 	the number of nodes to be requested.
 */
 /**************************************************************************/
-#if(MaCaco_SUBSCRIBERS)
 U8 MaCaco_reqtyp()
 {	
-	if(reqtyp_times)
-		return reqtyp_times--;
+	return reqtyp_times;
+}
+
+/**************************************************************************/
+/*!
+    Notify that the relevant node has provided typicals or the relevant
+	timeout has expired
+*/
+/**************************************************************************/
+void MaCaco_reqtyp_decrease()
+{
+	reqtyp_times--;
+}
+
+/**************************************************************************/
+/*!
+    Get the address of the last node that provided its typicals
+*/
+/**************************************************************************/
+U16 MaCaco_reqtyp_lastaddr()
+{
+	return lasttyp_addr;
 }
 #endif
 
