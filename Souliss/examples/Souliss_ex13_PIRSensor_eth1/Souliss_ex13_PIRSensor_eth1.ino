@@ -118,10 +118,10 @@ void loop()
 			Souliss_Logic_T12(memory_map, LIGHT2_NODE1, &data_changed);
 
 			// Use Pin8 as output on the electrical load
-			Souliss_DigOut(8, Souliss_T1n_Coil, memory_map, LIGHT1_NODE1);	
+			Souliss_nDigOut(8, Souliss_T1n_Coil, memory_map, LIGHT1_NODE1);	
 
 			// Use Pin9 as output on the electrical load
-			Souliss_DigOut(9, Souliss_T1n_Coil, memory_map, LIGHT2_NODE1);						
+			Souliss_nDigOut(9, Souliss_T1n_Coil, memory_map, LIGHT2_NODE1);						
 		} 
 		
 		// Execute the code every 5 time_base_fast		  

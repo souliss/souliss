@@ -129,11 +129,11 @@
 #define MaCaco_DISCOVERANS		0x38	// Discover a gateway node answer (broadcasted)
 #define	MaCaco_DINADDRESSREQ	0x29	// Dynamic addressing request (broadcasted)
 #define	MaCaco_DINADDRESSANS	0x39	// Dynamic addressing answer (broadcasted)
-#define	MaCaco_JOINNETWORK		0x3A	// Join a network gateway (broadcasted)
-#define	MaCaco_SETIP			0x3B	// Set an IP address at runtime (broadcasted)
+#define	MaCaco_JOINNETWORK		0x41	// Join a network gateway (broadcasted)
+#define	MaCaco_SETIP			0x42	// Set an IP address at runtime (broadcasted)
 
-#define	MaCaco_FORCETYP			0xA1	// Force input values by typical logic (from a peer)
-#define	MaCaco_ACTIONMSG		0xA2	// Send an Action Message
+#define	MaCaco_FORCETYP			0x71	// Force input values by typical logic (from a peer)
+#define	MaCaco_ACTIONMSG		0x72	// Send an Action Message
 
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01

@@ -35,7 +35,7 @@
 #define	QC_BOARDTYPE			0x21
 #define	QC_GATEWAYTYPE			0x03
 #define DYNAMICADDRESSING  		0x01
-#define ETHERNETMACRAW  		0x00
+#define IPBROADCAST		  		0x00
 #define	USARTDRIVER				Serial1	
 #define USART_LOG 				Serial.print	
 #define	USART_TXENABLE			1

@@ -207,7 +207,7 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 				
 			If INPUTVAL is the input value associated to the external event the 
 			output will be timed for nCYCLES of the associated timer.
-				nCYCLES = INPUTVAL - Souliss_T1n_Timed
+				nCYCLES = INPUTVAL - Souliss_T1n_AutoCmd
 			
 		Command recap, using: 
 		-  1(hex) as command, toogle the output 

@@ -434,11 +434,14 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 	{
 		// Start from first node if is a new request from an user interface
 		if (s == MaCaco_NODES)
+		{
 			roundrob_1 = 1;				// Reset, node 0 is the node it-self, doesn't need to send data out
-		
-		// Pointer to the node address
-		m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+			MaCaco_reset_lastaddr();
 			
+			// Pointer to the node address
+			m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+		}
+		
 		// If the node answer has been received
 		if((*m_addr != 0x0000) && (*m_addr == MaCaco_reqtyp_lastaddr()))
 		{
@@ -449,7 +452,10 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 			{
 				// Reset
 				while(MaCaco_reqtyp()) MaCaco_reqtyp_decrease();
+
+				// Next cycle start again from begin
 				roundrob_1 = 1;		
+				MaCaco_reset_lastaddr();
 			}
 				
 			// Next node
@@ -463,7 +469,10 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 		{
 			// Reset
 			while(MaCaco_reqtyp()) MaCaco_reqtyp_decrease();
-			roundrob_1 = 1;	
+				
+			// Next cycle start again from begin
+			roundrob_1 = 1;		
+			MaCaco_reset_lastaddr();		
 		}
 			
 		// At next cycle the answer will be received

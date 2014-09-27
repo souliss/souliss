@@ -1129,7 +1129,8 @@ U8 MaCaco_reqtyp()
 /**************************************************************************/
 void MaCaco_reqtyp_decrease()
 {
-	reqtyp_times--;
+	if(reqtyp_times)
+		reqtyp_times--;
 }
 
 /**************************************************************************/
@@ -1140,6 +1141,11 @@ void MaCaco_reqtyp_decrease()
 U16 MaCaco_reqtyp_lastaddr()
 {
 	return lasttyp_addr;
+}
+
+void MaCaco_reset_lastaddr()
+{
+	lasttyp_addr=0;
 }
 #endif
 
@@ -1397,7 +1403,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 																	// analog T5n type typical logic, we set it
 																	// at last available value.
 		
-		// Indentify the first and last slot in the typical 5n group (analogue values) 
+		// Identify the first and last slot in the typical 5n group (analogue values) 
 		// this an unconventional check at this layer
 		i=0;
 		while(((*(memory_map+MaCaco_TYP_s+i) & 0xF0) != 0x50) && i < MaCaco_SLOT)	i++;
