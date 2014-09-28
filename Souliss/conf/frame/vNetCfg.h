@@ -174,10 +174,10 @@
 
 
 	const U16 vnet_media_en[VNET_MEDIA_NUMBER] = {VNET_MEDIA1_ENABLE,  // Media 1
-												VNET_MEDIA2_ENABLE,  // Media 2
-												VNET_MEDIA3_ENABLE,  // Media 3
-												VNET_MEDIA4_ENABLE,  // Media 4
-												VNET_MEDIA5_ENABLE   // Media 5	
+												  VNET_MEDIA2_ENABLE,  // Media 2
+												  VNET_MEDIA3_ENABLE,  // Media 3
+												  VNET_MEDIA4_ENABLE,  // Media 4
+												  VNET_MEDIA5_ENABLE   // Media 5	
 												};
 #endif
 
@@ -204,6 +204,7 @@
 #define VNET_ADDR_L_M5	   	0xCE00			// vNet Low Address for Media 5,  size 4 byte
 #define VNET_ADDR_H_M5	   	0xFDFF			// vNet High Address for Media 5, size 4 byte
 
+#define	VNET_ADDR_nBRDC		0xFEFF			// This is a BROADCAST address that cannot be re-broadcasted
 #define	VNET_ADDR_NULL		0xFF00			// This is a NULL address, frames to that address are discarded
 											// in between the NULL and the BROADCAST address there are the
 											// MULTICAST ones										

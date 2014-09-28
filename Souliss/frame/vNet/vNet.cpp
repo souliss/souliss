@@ -1079,12 +1079,13 @@ U8 vNet_RoutingBridging(U8 media)
 	
 	// In vNet there are three type of broadcast addresses, using a subnetmask 0xFF00 the following
 	// broadcast addresses are available:
-	//	1) 0xFFFF - Is the general broadcast address used by nodes
+	//	1) 0xFFFF - Is the general broadcast address used by nodes, can be rebroadcasted
+	//  2) 0xFEFF - Is the general broadcast address used by nodes, cannot be rebroadcasted
 	//	2) 0xNNFF - Is the broadcast address for the 0xNN00 network used by supernodes, can be rebroadcasted
 	//	3) 0xNN00 - Is the broadcast address for the 0xNN00 network used by supernodes, cannot be rebroadcasted
 	
-	// If message is for this node
-	if((vNet_Media[media-1].src_addr == vNet_Media_Data[media-1].f_dest_addr))
+	// If message is for this node or is a 0xFEFF broadcast
+	if((vNet_Media[media-1].src_addr == vNet_Media_Data[media-1].f_dest_addr) || (vNet_Media_Data[media-1].f_dest_addr == 0xFEFF))
 	{	
 		// Remove the header from the message
 		memmove(vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].data+VNET_HEADER_SIZE, vNet_Media_Data[media-1].len-VNET_HEADER_SIZE);
@@ -1129,7 +1130,7 @@ U8 vNet_RoutingBridging(U8 media)
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
 		U8 skip_mymedia = 1;
-		if(VNET_MEDIA2_ENABLE)
+		if((media-1)==VNET_MEDIA2_ID)
 			skip_mymedia = 0;		
 		
 		// If the source address isn't null, rebroadcast the message over the active media

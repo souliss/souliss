@@ -470,7 +470,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	#endif
 	
 	#if(DYNAMICADDRESSING && (MaCaco_USERMODE || VNET_SUPERNODE))	
-	// answer to a dimanyc addressing request
+	// answer to a dynamic addressing request
 	if (rx->funcode == MaCaco_DINADDRESSREQ)
 	{	
 		// Process new and yet issued requests
@@ -576,6 +576,32 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		else
 			return MaCaco_FUNCODE_ERR;		
 	}		
+	
+	// answer to a subnet request
+	if (rx->funcode == MaCaco_SUBNETREQ)
+	{	
+			
+		// the startoffset is used as media number
+		// 
+		// startoffset			media
+		//		1				  1
+		//		2				  2
+		//		3				  3
+		//		4				  4
+		//		5				  5
+		U8  vNetMedia   = rx->startoffset;
+		U16 vNetAddr	= vNet_GetAddress(vNetMedia-1);	
+		
+		// if the media is enabled and the relevant subnet is configured
+		if(vnet_media_en[vNetMedia-1] && (vNetAddr != 0x0000))
+		{
+			// Get the subnet from the address
+			vNetAddr &= (~vNet_GetSubnetMask(vNetMedia-1));
+			
+			// Send as non-rebroadcastable message
+			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, &vNetAddr);
+		}			
+	}
 	#endif
 	
 	/*********** Answer ************/
@@ -683,7 +709,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 		#if(DYNAMICADDRESSING)	
 		// record the dynamic address provided
-		if (rx->funcode == MaCaco_DINADDRESSANS)
+		if ((rx->funcode == MaCaco_DINADDRESSANS) || (rx->funcode == MaCaco_SUBNETANS))
 		{			
 			if(rx->numberof + 3 < MaCaco_QUEUELEN) // if the number of payload bytes, plus the size of rx->putin and rx->startoffset
 			{
