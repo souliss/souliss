@@ -1121,11 +1121,15 @@ U8 vNet_RoutingBridging(U8 media)
 	{
 	#if (VNET_SUPERNODE)
 		// Modify the destination address as subnet broadcast, this will avoid broadcast loops (no more than 3 hops)	
+		routed_addr = vNet_Media_Data[media-1].f_dest_addr;
 		if(vNet_Media_Data[media-1].f_dest_addr == 0xFFFF)
-			vNet_Media_Data[media-1].f_dest_addr = ((vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask) || ~vNet_Media[media-1].subnetmask);
+			routed_addr = ((vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask) || ~vNet_Media[media-1].subnetmask);
 		else
-			vNet_Media_Data[media-1].f_dest_addr = (vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask);
-		
+			routed_addr = (vNet_Media[media-1].src_addr & vNet_Media[media-1].subnetmask);
+	
+		// Apply the new address require alteration of the received frame
+		*(U16*)(vNet_Media_Data[media-1].data+2) = routed_addr;
+	
 		// Generally there is no need to rebroadcast a frame over the same media from where has been received
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
