@@ -125,12 +125,14 @@
 #define MaCaco_DBSTRUCTANS		0x36	// Database structure answer.
 #define MaCaco_DATAREQ			0x27	// Read state request without subscription,
 #define MaCaco_DATAANS			0x37	// Read state answer without subscription,
-#define MaCaco_DISCOVERREQ		0x28	// Discover a gateway node request (broadcasted)
-#define MaCaco_DISCOVERANS		0x38	// Discover a gateway node answer (broadcasted)
-#define	MaCaco_DINADDRESSREQ	0x29	// Dynamic addressing request (broadcasted)
-#define	MaCaco_DINADDRESSANS	0x39	// Dynamic addressing answer (broadcasted)
-#define	MaCaco_JOINNETWORK		0x41	// Join a network gateway (broadcasted)
-#define	MaCaco_SETIP			0x42	// Set an IP address at runtime (broadcasted)
+#define MaCaco_DISCOVERREQ		0x28	// Discover a gateway node request (broadcast)
+#define MaCaco_DISCOVERANS		0x38	// Discover a gateway node answer (broadcast)
+#define	MaCaco_DINADDRESSREQ	0x29	// Dynamic addressing request (broadcast)
+#define	MaCaco_DINADDRESSANS	0x39	// Dynamic addressing answer (broadcast)
+#define	MaCaco_SUBNETREQ		0x2A	// Subnet request (broadcast)
+#define	MaCaco_SUBNETANS		0x3A	// Subnet answer (broadcast)
+#define	MaCaco_JOINNETWORK		0x2B	// Join a network gateway (broadcast)
+#define	MaCaco_SETIP			0x3C	// Set an IP address at runtime (broadcast)
 
 #define	MaCaco_FORCETYP			0x71	// Force input values by typical logic (from a peer)
 #define	MaCaco_ACTIONMSG		0x72	// Send an Action Message
@@ -138,7 +140,7 @@
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01
 
-#define	MaCaco_FUNCODE_NO (17+18+2)
+#define	MaCaco_FUNCODE_NO (17+20+2)
 
 const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x08, 0x18, 0x09, 0x19, 
@@ -149,8 +151,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x33, 0x34, 0x25, 0x35,
 											   0x26, 0x36, 0x27, 0x37,
 											   0x28, 0x38, 0x29, 0x39,
-											   0x3A, 0x3B, 
-											   0xA1, 0xA2};
+											   0x2A, 0x3A, 0x2B, 0x3C
+											   0x71, 0x72};
 		  
 /**************************************************************************/
 /*!

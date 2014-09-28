@@ -597,11 +597,16 @@ U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action)
 	// action message are in the queue
 	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 	
-	U8 ret = (((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action));
+	if(((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action))
+	{
+		// Reset the queue 
+		for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+			*(memory_map + MaCaco_QUEUE_s + i) = 0;
+				
+		return 1;		// Trigger the action
+	}	
 	
-	// Configuration data can be now removed
-	for(U8 i=0; i<MaCaco_QUEUELEN; i++)
-		*(memory_map + MaCaco_QUEUE_s + i) = 0;
+	return 0;			// Nothing to do
 }
 
 /**************************************************************************/
