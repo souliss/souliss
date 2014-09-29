@@ -599,7 +599,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			vNetAddr &= (~vNet_GetSubnetMask(vNetMedia-1));
 			
 			// Send as non-rebroadcastable message
-			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, &vNetAddr);
+			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, (U8*)(&vNetAddr));
 		}			
 	}
 	#endif

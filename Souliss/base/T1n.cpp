@@ -103,8 +103,11 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 			i_trigger = Souliss_TRIGGED;								// Trig change
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
+		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_IN_s + slot]; //Set the timer value
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd ||
+					memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_Timed)		// Off Command
 	{
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
 			i_trigger = Souliss_TRIGGED;
@@ -145,8 +148,8 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_T11_Timer(U8 *memory_map, U8 input_slot)
 {
-	if(memory_map[MaCaco_IN_s + input_slot] > Souliss_T1n_OffCmd)		// Memory value is used as timer
-		memory_map[MaCaco_IN_s + input_slot]--;							// Decrease timer
+	if(memory_map[MaCaco_AUXIN_s + input_slot] > Souliss_T1n_Timed)				// Memory value is used as timer
+		memory_map[MaCaco_AUXIN_s + input_slot]--;									// Decrease timer
 }
 
 /**************************************************************************
@@ -207,7 +210,7 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 				
 			If INPUTVAL is the input value associated to the external event the 
 			output will be timed for nCYCLES of the associated timer.
-				nCYCLES = INPUTVAL - Souliss_T1n_AutoCmd
+				nCYCLES = INPUTVAL - Souliss_T1n_Timed
 			
 		Command recap, using: 
 		-  1(hex) as command, toogle the output 
