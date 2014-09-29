@@ -45,6 +45,7 @@ U8* subscr_putin[MaCaco_INMAXSUBSCR] = {0x0000};
 U8 subscr_startoffset[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_numberof[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_funcode[MaCaco_INMAXSUBSCR] = {0x00};
+bool subscr_init = false;
 
 // store outgoing subscription state
 U16 subscr_outaddr[MaCaco_OUTMAXSUBSCR] = {0x0000};	// Record the address of subscribed nodes	
@@ -1193,7 +1194,10 @@ void MaCaco_reset_lastaddr()
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl)
 {
 	U8 *healty, *count = 0;
-
+	
+	// Remove the init flag
+	subscr_init=false;
+	
 	// Verify the subscription index
 	if(subscr_chnl >= MaCaco_OUTMAXSUBSCR)
 		return MaCaco_NOSUBSCRANSWER;
@@ -1269,8 +1273,12 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 /**************************************************************************/
 void MaCaco_subscribe_reset()
 {
-		for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-			subscr_count[i] = 0;
+	// flag as init
+	subscr_init = true;
+
+	// reset counters
+	for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+		subscr_count[i] = 0;
 }
 
 /**************************************************************************/
@@ -1314,6 +1322,16 @@ void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8
 		subscr_startoffset[i] = startoffset;
 		subscr_numberof[i] = numberof;
 	}
+}
+
+/**************************************************************************/
+/*!
+    Return if the subscriptions are in init
+*/
+/**************************************************************************/
+bool MaCaco_subscribe_is_init()
+{
+	return subscr_init;
 }
 
 /**************************************************************************/

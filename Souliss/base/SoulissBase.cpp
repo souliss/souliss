@@ -379,6 +379,10 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	if (*(memory_map+MaCaco_HEALTY_s+roundrob_2) == 0)
 		*(memory_map+MaCaco_HEALTY_s+roundrob_2) = MaCaco_SUBINITHEALTY;
 	
+	// Check subscription has been reset
+	if((roundrob_2 > 1) && (MaCaco_subscribe_is_init()))
+		roundrob_2=1;		// Start from first remote node
+		
 	// Handle the subscription in round robin
 	if(roundrob_2 < MaCaco_NODES)
 	{
