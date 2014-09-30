@@ -331,6 +331,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 			// Flag that the request shall be processed for all nodes, this is used at an upper level
 			reqtyp_times = MaCaco_NODES;		
+			lasttyp_addr=0;
 			
 			// In passthrough mode data from other nodes are not stored, at this time we can send out only local
 			// data, then when other nodes will send back data these will be bridged to the User Interface

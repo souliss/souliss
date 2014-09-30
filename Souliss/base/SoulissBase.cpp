@@ -440,7 +440,6 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 		if (s == MaCaco_NODES)
 		{
 			roundrob_1 = 1;				// Reset, node 0 is the node it-self, doesn't need to send data out
-			MaCaco_reset_lastaddr();
 			
 			// Pointer to the node address
 			m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
