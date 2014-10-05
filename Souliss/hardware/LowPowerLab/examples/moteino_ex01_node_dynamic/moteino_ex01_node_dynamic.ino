@@ -120,7 +120,7 @@ void loop()
 		}
 	
 		FAST_1110ms() {
-			float analogRaw=analogRead(A0);							// Read analog value from A0
+			float analogRaw=analogRead(A0);			// Read analog value from A0
 			Serial.println(analogRaw);
 
 			ssImportAnalog(INPUT0, &analogRaw); 	// Import value from A0

@@ -1133,14 +1133,14 @@ U8 vNet_RoutingBridging(U8 media)
 		// Generally there is no need to rebroadcast a frame over the same media from where has been received
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
-		U8 skip_mymedia = 1;
+		U8 skip_mymedia = 0;
 		if((media-1)==VNET_MEDIA2_ID)
-			skip_mymedia = 0;		
+			skip_mymedia = 1;		
 		
 		// If the source address isn't null, rebroadcast the message over the active media
 		if(vNet_Media_Data[media-1].o_src_addr)
 			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
-				if(vnet_media_en[i] && skip_mymedia*(i != media-1))
+				if(vnet_media_en[i] && (skip_mymedia || (i != (media-1))))
 					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
 		
 		// If the source address is between 0xFF01 and 0xFFFE
