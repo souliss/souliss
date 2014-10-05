@@ -69,17 +69,13 @@
 #if (VNET_MEDIA3_ENABLE)
 	// Driver for Wiznet W5100 / W5200 / W5500 (broadcast only)
 	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
-		#include "drivers/ethW5x00/vNetDriver_brd.h"	
-		
 		#if(!VNET_MEDIA1_ENABLE)
 			#include "drivers/ethW5x00/vNetDriver_eth.h"	
-		#endif
+		#endif			
 	#endif
 	
 	// Driver for Microchip EN28J60 (broadcast only)
-	#if (ETH_ENC28J60)
-		#include "drivers/ethENC28J60/vNetDriver_brd.h"	
-		
+	#if (ETH_ENC28J60)		
 		#if(!VNET_MEDIA1_ENABLE)
 			#include "drivers/ethENC28J60/vNetDriver_eth.h"	
 		#endif

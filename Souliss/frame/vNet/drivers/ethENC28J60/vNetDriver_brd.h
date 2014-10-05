@@ -30,6 +30,8 @@
 #include "Arduino.h"
 #include "GetConfig.h"						// need : ethUsrCfg.h
 
+#include "vNetDriver_eth.h"
+
 #define	vNet_Init_M3()						vNet_Init_M1()
 #define	vNet_Send_M3(addr, frame, len)		vNet_Send_M1(addr, frame, len)
 #define	vNet_DataAvailable_M3()				vNet_DataAvailable_M1()
