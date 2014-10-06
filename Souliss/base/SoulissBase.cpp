@@ -458,6 +458,7 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 		{
 			roundrob_1 = 1;				// Reset, node 0 is the node it-self, doesn't need to send data out
 			MaCaco_reset_lastaddr();
+			MaCaco_reqtyp_decrease();
 			
 			// Pointer to the node address
 			m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
@@ -538,7 +539,7 @@ U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command)
 	Write on network node, act as a remote input
 	
 	It write directly into the inputs map of another node, data are moved
-	directly without a subscription, so no channel healty is provided.
+	directly without a subscription, so no channel healthy is provided.
 */	
 /**************************************************************************/	
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof)

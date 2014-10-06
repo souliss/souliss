@@ -29,6 +29,8 @@
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
+#include "ActionMessages.h"
+
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
@@ -82,6 +84,7 @@ U8 Souliss_MulticastAction(U16 multicast_addr, U8 *memory_map, U16 message, U8 a
 U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
 U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
 U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action);
+U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8* len);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
