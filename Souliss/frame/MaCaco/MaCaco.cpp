@@ -672,50 +672,11 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		U8  vNetMedia   = rx->startoffset;
 		U16 vNetAddr	= vNet_GetAddress(vNetMedia-1);	
 		
-<<<<<<< HEAD
-				// out of this for all address are sorted, out of the local address
-				for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
-				{
-					// don't sort zeros
-					if(m_address[sort_i] == 0x0000) break;
-					
-					for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
-					{
-						// don't sort zeros
-						if(m_address[sorting] == 0x0000) break; 
-					
-						// sort ascending
-						if(m_address[sort_i] > m_address[sorting])
-						{
-							sort_buffer         = m_address[sort_i];
-							m_address[sort_i]   = m_address[sorting];
-							m_address[sorting]  = sort_buffer;
-						}
-					}
-				}
-				
-				#if(MaCaco_DEBUG)
-				MaCaco_LOG("(MaCaco)<ADDRS><");
-				for(nodes=0; nodes<MaCaco_NODES; nodes++)
-				{
-					MaCaco_LOG("|0x");
-					MaCaco_LOG((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
-					
-				}
-				MaCaco_LOG(">\r\n");
-				#endif
-				
-				// restart the subscriptions
-				for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-					subscr_count[i] = 0;					
-			}
-=======
 		// if the media is enabled and the relevant subnet is configured
 		if(vnet_media_en[vNetMedia-1] && (vNetAddr != 0x0000))
 		{
 			// Get the subnet from the address
 			vNetAddr &= (~vNet_GetSubnetMask(vNetMedia-1));
->>>>>>> chiattillo
 			
 			// Send as non-rebroadcastable message
 			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, (U8*)(&vNetAddr));
