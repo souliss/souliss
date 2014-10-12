@@ -204,7 +204,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	frame_pnt = &vNet_header[0];							// Get header pointer
 
 	// Prepare header
-	*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Lenght
+	*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 	*frame_pnt++ = port;									// Frame Port
 	*(U16 *)frame_pnt = addr;								// Final Destination Address
 	frame_pnt += sizeof(U16);
@@ -1130,7 +1130,7 @@ U8 vNet_RoutingBridging(U8 media)
 
 			// Rebroadcast over wireless media is allowed
 			if((media-1)==VNET_MEDIA2_ID)
-				skip_mymedia = 1;		
+				skip_mymedia = 0;		
 		}
 		#if(VNET_LOOPS)
 		else

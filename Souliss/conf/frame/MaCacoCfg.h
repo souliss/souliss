@@ -87,12 +87,14 @@
 			0x38	Discover a gateway node answer (broadcast),
 			0x29	Dynamic addressing request (broadcast),
 			0x39	Dynamic addressing answer (broadcast),
-			0x3A	Join a network gateway (broadcast),
-			0x3B	Set an IP address at runtime (broadcast)
+			0x2A	Subnet request (broadcast)
+			0x3A    Subnet answer (broadcast)
+			0x2B    Join a network gateway (broadcast)
+			0x3C    Set an IP address at runtime (broadcast)
 			
 		Unstructured Functional Codes:
-			0xA1	Force input values by typical logic (broadcast or multicast),
-			0xA2	Send an Action Message (broadcast or multicast)
+			0x71	Force input values by typical logic (broadcast or multicast),
+			0x72	Send an Action Message (broadcast or multicast)
 */
 /**************************************************************************/
 #define MaCaco_READREQDIG		0x01	// Read request for digital values,
