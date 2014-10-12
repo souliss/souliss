@@ -53,28 +53,6 @@ void IOTUINO::initialize (void)
     //initialize SPI:
     SPI.begin();
     
-    //Open Serial Communication 115200 for WiFi module
-    Serial.begin(115200);
-    Serial.setTimeout(3000);
-    
-    //Wait WiFi module wake up
-    delay(2000);
-    
-    //ECHO MODE OFF
-    Serial.print("+");
-    delay(50);
-    Serial.print("+");
-    delay(50);
-    Serial.print("+");
-    delay(250);
-    Serial.print("a");
-    delay(500);
-    Serial.print("AT+E\r\n");
-    delay(500);
-   
-    //Back to transparent mode
-    Serial.print("AT+ENTM\r\n");
-    
     pinMode(csPin, OUTPUT);
     pinMode(rstPin, OUTPUT);
     

@@ -140,6 +140,14 @@
 #define	WTD_EXPIRE	0x10
 #define	WTD_FAILED	0x00
 #define	WTD_SET		0x19
+
+/**************************************************************************/
+/*!
+	Timeout configuration parameters
+*/
+/**************************************************************************/
+#define	TIMEOUT_EXPIRE	0x00
+#define	TIMEOUT_SET		0x20
 	
 /**************************************************************************/
 /*!
@@ -148,6 +156,19 @@
 /**************************************************************************/
 #define AIN2S_BOTTOM  300
 #define AIN2S_TOP     700
+
+/**************************************************************************/
+/*!
+	If enabled print debug messages
+	
+        Value       Status
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#ifndef	SOULISS_DEBUG_INSKETCH
+#	define SOULISS_DEBUG  		0
+#endif
 	
 #endif
 							  

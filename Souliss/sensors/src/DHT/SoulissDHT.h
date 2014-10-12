@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Home Automation
+	Souliss
     Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify

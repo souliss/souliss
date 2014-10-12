@@ -1,8 +1,21 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+<<<<<<< HEAD
 Release note for revision Alpha 6.0.3, on 23/09/2014
 	Fix a major bug while retrieving typicals for logics loaded in the network nodes
+=======
+Release note for revision Alpha 6.1.1, on dd/mm/yyyy
+
+	Using Action Messages nodes can share action that are no longer
+	related to assigned slots, but can freely be defined into the receiver node
+		- Introduction of Action Messages 
+		- Massive commands can be used between nodes
+		- Preliminary support for Moteino and HopeRF RFM69CW/RFM69HCW
+		- Media 3 has been moved from MAC broadcast to IP broadcast
+		- Iotuino USART drivers are now based on SerialPort by William Greiman
+		- Enhanced dynamic addressing features
+>>>>>>> chiattillo
 
 Release note for revision Alpha 6.0.2, on 14/09/2014
 

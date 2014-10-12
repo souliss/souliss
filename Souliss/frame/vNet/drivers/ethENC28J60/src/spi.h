@@ -2,7 +2,8 @@
 	Souliss - vNet Virtualized Network
     
 	Porting in vNet for Souliss project by Dario Di Maio
-	
+
+    Kim Mølgaard		11/9/2014	Added support for Moteino boards.
 ***************************************************************************/
 
 #ifndef ENCSPI_H_
@@ -39,10 +40,10 @@
 #    define SPI0_MISO_DDR            DDRB
 #    define SPI0_MISO_PORT           PORTB
 
-// Chip select
-#    define ENC28J60_CS_BIT      	BIT4        // ATmega2560 PB4 - Arduino pin 10   
-#    define ENC28J60_CS_DDR         DDRB
-#    define ENC28J60_CS_PORT        PORTB
+#    define ENC28J60_CS_BIT		BIT4        // ATmega2560 PB4 - Arduino pin 10   
+#    define ENC28J60_CS_DDR       	DDRB
+#    define ENC28J60_CS_PORT      	PORTB
+
 
 #    define SPI0_Init()    DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT;\
                                         DDRB  &= ~SPI0_MISO_BIT;\
@@ -64,13 +65,22 @@
 #	define SPI0_MISO_DDR            DDRB
 #	define SPI0_MISO_PORT           PORTB
 
-#	define ENC28J60_CS_BIT          BIT4        // ATmega328  PB2 - 644 pin 4   
-#	define ENC28J60_CS_DDR          DDRB
-#   define ENC28J60_CS_PORT         PORTB
+
+// Chip select
+#	if(BOARD_MODEL == 0x0A)			// Moteino Mega
+#		define ENC28J60_CS_BIT		BIT0        // ATmega1284 PB0 - Moteino pin 0
+#		define ENC28J60_CS_DDR       	DDRB
+#		define ENC28J60_CS_PORT      	PORTB
+#	else
+#		define ENC28J60_CS_BIT          BIT4        // ATmega328  PB2 - 644 pin 4   
+#		define ENC28J60_CS_DDR          DDRB
+#		define ENC28J60_CS_PORT         PORTB
+#endif
 
 #	define SPI0_Init()	DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT;\
 										DDRB  &= ~SPI0_MISO_BIT;\
 										PORTB = SPI0_SS_BIT
+
 #elif defined(__AVR_ATmega32U4__)
 // Arduino Leonardo and ATmega32U4 boards
 #	define SPI0_SS_BIT              BIT0		// Not required, must be set as output             
@@ -91,7 +101,6 @@
 #		define ENC28J60_CS_BIT            BIT7        // ATmega32U4 PC7 - UEXT Chip Select   
 #		define ENC28J60_CS_DDR            DDRC
 #		define ENC28J60_CS_PORT           PORTC
-#	else
 #		define ENC28J60_CS_BIT            BIT6        // ATmega32U4  PB6 - Arduino pin 10   
 #		define ENC28J60_CS_DDR            DDRB
 #		define ENC28J60_CS_PORT           PORTB
@@ -119,6 +128,10 @@
 // Define Chip Select for Olimex OLIMEXINO-328 using MOD-WIFI or MOD-ENC28J60 (UEXT) 
 #	if((BOARD_MODEL == 0x06) && ((COMMS_MODEL == 0x04) || (COMMS_MODEL == 0x05)))
 #		define ENC28J60_CS_BIT            BIT7        // ATmega328  PD7 - UEXT Chip Select
+#		define ENC28J60_CS_DDR            DDRD
+#		define ENC28J60_CS_PORT           PORTD
+#	elif(BOARD_MODEL == 0x0A)
+#		define ENC28J60_CS_BIT            BIT7        // Moteino  PD7 - Moteino pin    
 #		define ENC28J60_CS_DDR            DDRD
 #		define ENC28J60_CS_PORT           PORTD
 #	else

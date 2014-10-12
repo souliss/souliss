@@ -42,6 +42,7 @@
 		0x07		DFRobots XBoard Relay
 		0x08		KMP Electronics DINo v2
 		0x09		Authometion IoTuino
+		0x0A		Moteino RFM69
  
 */
 /**************************************************************************/
@@ -64,6 +65,7 @@
 		0x05		Olimex MOD-WIFI (UEXT) with Microchip MRF24WB0MA
 		0x06		Nordic nRF24L01 and nRF24L01+
 		0x07		HF-LPT200 with Authometion Souliss firmware
+		0x08		HopeRF RFM69CW/RFM69HCW
 */
 /**************************************************************************/
 #if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode

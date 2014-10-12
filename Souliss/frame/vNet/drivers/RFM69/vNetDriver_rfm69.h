@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+	Souliss - vNet Virtualized Network
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,11 +21,25 @@
 /*!
     \file 
     \ingroup
-*/
-#ifndef bconf_DINOv2NOMACRAW_H
-#define bconf_DINOv2NOMACRAW_H
 
-// Assume that somewhere else has been set and defined
-#define ETHERNETMACRAW  		0x00
+
+*/
+/**************************************************************************/
+#ifndef VNET_NRF24_H
+#define VNET_NRF24_H
+
+#include "Arduino.h"
+#include "GetConfig.h"				// need : RFM69UsrCfg.h
+
+#include "src/RFM69.h"
+#include "src/RFM69registers.h"
+#include "SPI.h"
+
+void vNet_Init_M2();
+void vNet_SetAddress_M2(uint16_t addr);
+uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len);
+uint8_t vNet_DataAvailable_M2();
+uint8_t vNet_RetrieveData_M2(uint8_t *data);
+uint16_t vNet_GetSourceAddress_M2();
 
 #endif

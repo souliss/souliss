@@ -24,21 +24,31 @@
 
 */
 /**************************************************************************/
-
-#include "src/RF24.cpp"
+#include "src/RFM69.h"
+#include "src/RFM69.cpp"
 #include "SPI.h"
 
-RF24 radio(NRF24_RADIOEN, NRF24_SPICS);
+// Define the operating frequency
+#if(RFM69_315MHZ)
+#	define	FREQUENCY	RF69_315MHZ
+#elif(RFM69_433MHZ)
+#	define	FREQUENCY	RF69_433MHZ
+#elif(RFM69_868MHZ)
+#	define	FREQUENCY	RF69_868MHZ
+#elif(RFM69_915MHZ)
+#	define	FREQUENCY	RF69_915MHZ
+#endif
+
+RFM69 radio(RF69_SPI_CS, RF69_IRQ_PIN, RFM69_HIGHPOWER, RF69_IRQ_NUM);
 
 /**************************************************************************/
 /*!
-    Init the nRF24L01 radio
+    Init the RFM69 radio, there is nothing to do here. This is just
+	for compatibility with the upper layers
 */
 /**************************************************************************/
 void vNet_Init_M2()
 {
-	radio.begin();
-	radio.enableDynamicPayloads();
 }
 
 /**************************************************************************/
@@ -48,16 +58,21 @@ void vNet_Init_M2()
 /**************************************************************************/
 void vNet_SetAddress_M2(uint16_t addr)
 {
-	// Set the pipe address for broadcast
-	radio.openReadingPipe(0, (NRF24_PIPE | ((uint64_t)VNET_ADDR_BRDC)));
-	radio.setAutoAck(0, false);
+	// Set the radio address
+	radio.initialize(FREQUENCY, (uint8_t)(addr & 0x00FF), RFM69_NETID);
 	
-	// Set the pipe address for unicast	
-	radio.openReadingPipe(1, (NRF24_PIPE | ((uint64_t)addr)));
-	radio.setAutoAck(1, true);
+	// Enable the high power transmission
+	#if(RFM69_HIGHPOWER)
+	radio.setHighPower();
+	#endif
 	
-	// Start listening
-	radio.startListening();
+	// Set the encryption key
+	radio.encrypt(RFM69_ENCRYPTKEY);
+	
+	// The RFM69 radio has only 1 byte as addressing space, this doesn't match the 2 byte
+	// addressing space of vNet. So we set the radio in promiscuous mode, the vNet layer 
+	// will filter data addressed to the node.
+	radio.promiscuous(true);
 }
 
 /**************************************************************************/
@@ -70,26 +85,14 @@ uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len)
 	if(len > VNET_MAX_PAYLOAD)
 		return VNET_DATA_FAIL;
 
-	// Set the pipe address of the destination node
-	radio.openWritingPipe((NRF24_PIPE | ((uint64_t)addr)));
-
-	// Before write, stop listening pipe
-	radio.stopListening();
-	
-	// Send out the oFrame, doesn't need to specify the lenght
-    if(radio.write(frame, 0))
-	{
-		// Listening back
-		radio.startListening();
-		
-		return NRF24_SUCC;
-	}	
+	// Send out the oFrame, doesn't need to specify the length
+    if(radio.sendWithRetry((uint8_t)(addr & 0x00FF), frame, 0))
+		return RFM69_SUCC;
 	else
 	{
 		oFrame_Reset();		// Free the frame
-		radio.startListening();
 	
-		return NRF24_FAIL;
+		return RFM69_FAIL;
 	}	
 }	
 
@@ -100,7 +103,7 @@ uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len)
 /**************************************************************************/
 uint8_t vNet_DataAvailable_M2()
 {
-	return radio.available();
+	return radio.receiveDone();
 }
 
 /**************************************************************************/
@@ -112,28 +115,32 @@ uint8_t vNet_RetrieveData_M2(uint8_t *data)
 {
 	uint8_t* data_pnt = data;
 
-	uint8_t len = radio.getDynamicPayloadSize();
-	uint8_t state = radio.read(data, len);
+	uint8_t len = radio.DATALEN;
+	if(len) memmove(data, (uint8_t *)radio.DATA, len);
+	else	
+		return RFM69_FAIL;
 	
-	if(!state)	return 0;					// Just skip out
+	// The RFM69 support small payloads, that could be cut just before sending
+	// at this stage we verify the original length and fill the missing with zeros.
 	
-	// The nRF24L01 support small payloads and it could be cutted just before sending
-	// at this stage we verify the original lenght and fill the missing with zeros.
-	
-	uint8_t	original_len = *(data);			// First byte is the expected lenght of
+	uint8_t	original_len = *(data);			// First byte is the expected length of
 											// the vNet frame
 	// Fill in the missing bytes
 	if(original_len > len)
 		for(uint8_t i=0; i<(original_len-len); i++)
 			*(data+len+i) = 0;
-			
-	return state;
+	
+	// Reply with an ACK (only if it wasn't a broadcast)
+	if(radio.ACKRequested())
+		radio.sendACK();
+	
+	return RFM69_SUCC;
 }
 
 /**************************************************************************/
 /*!
 	Actually isn't possible to get the source address for the last received
-	frame. Node based on nRF24 cannot identify automatically routing paths.
+	frame. This can affect multiple hop routing.
 */
 /**************************************************************************/
 uint16_t vNet_GetSourceAddress_M2()

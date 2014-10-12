@@ -139,7 +139,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	vNet_port = ETH_PORT;
 
 	// Define the IP address to be used
-	if(addr == 0xFFFF)
+	if((addr == 0xFFFF) || ((addr > VNET_ADDR_L_M3) && (addr < VNET_ADDR_H_M3)))
 	{
 		// Set the IP broadcast address
 		for(U8 i=0;i<4;i++)
@@ -153,7 +153,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 		{	
 			// The first byte is the User Mode Index, if in range 0x01 - 0x64
 			// a standard client/server connection is used with the user interface
-			// this give rounting and NATting passthrough
+			// this give routing and NATting pass through
 			UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
 		}
 		else
@@ -247,7 +247,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	if((len>0 && len <= vnetlenght) && len <= VNET_MAX_FRAME)
 	{	
 		memmove(data, appdata+1, len-1);
-		vnetlenght = 0;							// Reset the lenght
+		vnetlenght = 0;							// Reset the length
 		
 		// Verify the incoming address, is a not conventional procedure at this layer
 		// but is required to record the IP address in case of User Mode addresses
@@ -256,7 +256,8 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		// in vNet_UDP_callback() with a callback from the uIP stack.
 		
 		// Is an UserMode frame, record the incoming source information
-		if(((*(U16*)&data[4]) & 0xFF00) != 0x0000)
+		uint16_t umrec = ((*(U16*)&data[4]) & 0xFF00);
+		if((umrec != 0x0000) && (umrec <= VNET_ADDR_H_M1))
 		{
 			sportnumber = HTONS(sportnumber);										// Swap byte before record the source port
 			UserMode_Record((*(U16*)&data[4]), ripadrr, (uint8_t*)&sportnumber);	

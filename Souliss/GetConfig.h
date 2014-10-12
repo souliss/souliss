@@ -512,6 +512,47 @@
 #		define VNET_MEDIA3_ENABLE  		0
 #		define VNET_MEDIA4_ENABLE  		0
 #		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x60)
+#		define	ETH_W5100				1
+#		define	HOPERF_RFM69			1	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x61)
+#		define	ETH_ENC28J60			1	
+#		define	HOPERF_RFM69			1	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		1
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x62)	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define	HOPERF_RFM69			1	
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
+#	elif(QC_BOARDTYPE == 0x63)	
+#		define	COMMS_MODEL				0x08
+#		define	BOARD_MODEL				0x0A
+#		define	HOPERF_RFM69			1	
+#		define 	VNET_SUPERNODE  		1
+#		define VNET_MEDIA1_ENABLE  		0
+#		define VNET_MEDIA2_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  		0
+#		define VNET_MEDIA4_ENABLE  		0
+#		define VNET_MEDIA5_ENABLE  		0
 #	endif
 
 #	if  (QC_GATEWAYTYPE == 0x00)
@@ -576,12 +617,15 @@
 #		define 	MODBUS_RTU  			1
 #	endif
 
-// If dynamic request is used over Ethernet, communication between Ethernet
-// devices is done via MAC-RAW and only the gateway node use both UDP/IP and
-// MAC-RAW communication
-#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && ETHERNETMACRAW)
+// In case of DYNAMIC ADDRESSING if the IP BROADCAST option is set, data between nodes will
+// flow over Media3 as IP broadcast. Only the Gateway node will be able to process unicast vNet
+// frames.
+// This option remove the need of a bind between vNet and IP addresses, this is useful when a 
+// static IP address could not be applied and there is not enough RAM to run a DHCP to get an IP
+// address.
+#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && IPBROADCAST)
 #		define VNET_MEDIA3_ENABLE  		1
-#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && ETHERNETMACRAW)
+#	elif(VNET_MEDIA1_ENABLE && DYNAMICADDRESSING && IPBROADCAST)
 #		define VNET_MEDIA1_ENABLE  		0
 #		define VNET_MEDIA3_ENABLE  		1
 #	else
@@ -592,6 +636,7 @@
 #	include "conf/uIP/uIPopt.h"
 #	include "conf/chibi/chibiUsrCfg.h"
 #	include "conf/nRF24/nRF24UsrCfg.h"
+#	include "conf/RFM69/RFM69UsrCfg.h"
 #	include "conf/usart/usartUsrCfg.h"												
 #	include "conf/eth/ethUsrCfg.h"
 #	include "conf/hardware/hwBoards.h"
@@ -612,6 +657,7 @@
 #	include "conf/uIP/uIPopt.h"
 #	include "conf/chibi/chibiUsrCfg.h"
 #	include "conf/nRF24/nRF24UsrCfg.h"
+#	include "conf/RFM69/RFM69UsrCfg.h"
 #	include "conf/usart/usartUsrCfg.h"												
 #	include "conf/eth/ethUsrCfg.h"
 #	include "conf/hardware/hwBoards.h"

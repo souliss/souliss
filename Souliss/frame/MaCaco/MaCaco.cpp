@@ -45,6 +45,7 @@ U8* subscr_putin[MaCaco_INMAXSUBSCR] = {0x0000};
 U8 subscr_startoffset[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_numberof[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_funcode[MaCaco_INMAXSUBSCR] = {0x00};
+bool subscr_init = false;
 
 // store outgoing subscription state
 U16 subscr_outaddr[MaCaco_OUTMAXSUBSCR] = {0x0000};	// Record the address of subscribed nodes	
@@ -52,8 +53,10 @@ bool subscr_status[MaCaco_OUTMAXSUBSCR] = {0};		// Flag if last incoming data wa
 bool subscr_battery[MaCaco_OUTMAXSUBSCR] = {0};		// Flag battery operated devices	
 U8 subscr_count[MaCaco_OUTMAXSUBSCR] = {0x00};
 
+#if(MaCaco_USERMODE || VNET_SUPERNODE)
 // store incoming typical logic request
 U16 reqtyp_addr = 0x0000;	
+U16 lasttyp_addr = 0x0000;
 U8* reqtyp_putin = 0x0000;
 U8 reqtyp_startoffset = 0x00;
 U8 reqtyp_numberof = 0x00;
@@ -65,6 +68,7 @@ U16 proposedaddress = 0;
 
 // buffer for temporary use
 U8 ipaddrs[4], cmd[7] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR, MaCaco_IN_s, MaCaco_TYP_s, MaCaco_OUT_s};
+#endif
 
 #if (MaCaco_DEBUG)
 	#define MaCaco_LOG Serial.print
@@ -148,15 +152,15 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
 	for(U8 i=0;i<MaCaco_HEADER;i++)
 	{
 		if((i!=1) || (i!=2) || (i!=4))
-			{
-				MaCaco_LOG(data_ptr[i],HEX);
-				MaCaco_LOG("|0x");
-			}	
+		{
+			MaCaco_LOG(data_ptr[i],HEX);
+			MaCaco_LOG("|0x");
+		}	
 		else if((i==1))
-			{
-				MaCaco_LOG((U16)data_ptr[i],HEX);
-				MaCaco_LOG("|0x");
-			}	
+		{
+			MaCaco_LOG((U16)data_ptr[i],HEX);
+			MaCaco_LOG("|0x");
+		}	
 		else if((i==5))
 			MaCaco_LOG(data_ptr[i],HEX);
 	}		
@@ -188,7 +192,14 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
 	if ((MaCaco_funcode[i] == func))
 		return func;				// functional code supported
 	else	
+	{
+		#if (MaCaco_DEBUG)
+		// Print the outgoing message header
+		MaCaco_LOG("(MaCaco) Err:UNSFC");
+		#endif
+		
 		return MaCaco_FUNCODE_ERR;	// functional code not supported
+	}	
 
 }
 
@@ -312,6 +323,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// answer to a typical logic read request
 	if ((rx->funcode == MaCaco_TYPREQ))
 	{
+		#if(MaCaco_SUBSCRIBERS)
 			U16 nodeoffest, len;
 			
 			// These points the local data
@@ -326,11 +338,15 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 			// Flag that the request shall be processed for all nodes, this is used at an upper level
 			reqtyp_times = MaCaco_NODES;		
+			lasttyp_addr=0;
 			
 			// In passthrough mode data from other nodes are not stored, at this time we can send out only local
 			// data, then when other nodes will send back data these will be bridged to the User Interface
 			if(rx->putin == 0) 
-				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));					
+				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));
+		#else
+			return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
+		#endif
 	}
 		
 	// answer to a subscription request
@@ -425,7 +441,79 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// answer to a ping request
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
+		
+	#if(MaCaco_USERMODE)	
+	// record a join request
+	if (rx->funcode == MaCaco_JOINNETWORK)
+	{			
+		// look for a non used address register
+		U8 nodes=0;
+		while((((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != addr) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000)) && (nodes < MaCaco_NODES))
+			nodes++;
+
+		// if the node wasn't recorded, assign it
+		if((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
+		{
+			// record the new address
+			(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
 	
+			// sort the node addresses	
+			U8 sort_i = 1, sorting = 0;
+			U16	sort_buffer;
+			U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
+		
+			// out of this for all address are sorted, out of the local address
+			for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
+			{
+				// don't sort zeros
+				if(m_address[sort_i] == 0x0000) break;
+					
+				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
+				{
+					// don't sort zeros
+					if(m_address[sorting] == 0x0000) break; 
+					
+					// sort ascending
+					if(m_address[sort_i] > m_address[sorting])
+					{
+						sort_buffer         = m_address[sort_i];
+						m_address[sort_i]   = m_address[sorting];
+						m_address[sorting]  = sort_buffer;
+					}
+				}
+			}
+				
+			#if(MaCaco_DEBUG)
+			MaCaco_LOG("(MaCaco)<ADDRS><");
+			for(nodes=0; nodes<MaCaco_NODES; nodes++)
+			{
+				MaCaco_LOG("|0x");
+				MaCaco_LOG((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
+				
+			}
+			MaCaco_LOG(">\r\n");
+			#endif
+				
+			// restart the subscriptions
+			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+				subscr_count[i] = 0;	
+		}
+			
+		// if the join request is from a nodes that previously got an address, flag the
+		// request as completed
+		if (randomkeyid == (U16)rx->putin)	// identify the node from the keyval
+			randomkeyid = 0;
+		else
+		{
+			// identify the node from the address
+			for(nodes=0; nodes<MaCaco_NODES; nodes++)
+				if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+					randomkeyid = 0;
+		}		
+	
+		return MaCaco_FUNCODE_OK;	
+	}	
+
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
 	{		
@@ -447,6 +535,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
+	#endif
 	
 	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
@@ -461,7 +550,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	#endif
 	
 	#if(DYNAMICADDRESSING && (MaCaco_USERMODE || VNET_SUPERNODE))	
-	// answer to a dimanyc addressing request
+	// answer to a dynamic addressing request
 	if (rx->funcode == MaCaco_DINADDRESSREQ)
 	{	
 		// Process new and yet issued requests
@@ -567,33 +656,23 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		else
 			return MaCaco_FUNCODE_ERR;		
 	}		
-	#endif
 	
-	/*********** Answer ************/
-	
-	// collect data from answer
-	if (((rx->funcode & 0xF0) == 0x10) || ((rx->funcode & 0xF0) == 0x30) || ((rx->funcode & 0xF0) == 0x50))
-	{
-		#if(MaCaco_USERMODE)	
-		// record a join request
-		if (rx->funcode == MaCaco_JOINNETWORK)
-		{			
-			// look for a non used address register
-			U8 nodes=0;
-			while((((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != addr) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000)) && (nodes < MaCaco_NODES))
-				nodes++;
-
-			// if the node wasn't recorded, assign it
-			if((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
-			{
-				// record the new address
-				(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
-	
-				// sort the node addresses	
-				U8 sort_i = 1, sorting = 0;
-				U16	sort_buffer;
-				U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
+	// answer to a subnet request
+	if (rx->funcode == MaCaco_SUBNETREQ)
+	{	
+			
+		// the startoffset is used as media number
+		// 
+		// startoffset			media
+		//		1				  1
+		//		2				  2
+		//		3				  3
+		//		4				  4
+		//		5				  5
+		U8  vNetMedia   = rx->startoffset;
+		U16 vNetAddr	= vNet_GetAddress(vNetMedia-1);	
 		
+<<<<<<< HEAD
 				// out of this for all address are sorted, out of the local address
 				for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
 				{
@@ -630,23 +709,25 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
 					subscr_count[i] = 0;					
 			}
+=======
+		// if the media is enabled and the relevant subnet is configured
+		if(vnet_media_en[vNetMedia-1] && (vNetAddr != 0x0000))
+		{
+			// Get the subnet from the address
+			vNetAddr &= (~vNet_GetSubnetMask(vNetMedia-1));
+>>>>>>> chiattillo
 			
-			// if the join request is from a nodes that previously got an address, flag the
-			// request as completed
-			if (randomkeyid == (U16)rx->putin)	// identify the node from the keyval
-				randomkeyid = 0;
-			else
-			{
-				// identify the node from the address
-				for(nodes=0; nodes<MaCaco_NODES; nodes++)
-					if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
-						randomkeyid = 0;
-			}		
+			// Send as non-rebroadcastable message
+			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, (U8*)(&vNetAddr));
+		}			
+	}
+	#endif
 	
-			return MaCaco_FUNCODE_OK;	
-		}	
-		#endif
+	/*********** Answer ************/
 	
+	// collect data from answer
+	if (((rx->funcode & 0xF0) == 0x10) || ((rx->funcode & 0xF0) == 0x30) || ((rx->funcode & 0xF0) == 0x50) || ((rx->funcode & 0xF0) == 0x70))
+	{	
 		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE)	
 		// set an IP address at runtime
 		if (rx->funcode == MaCaco_SETIP)
@@ -674,13 +755,13 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 		#if(DYNAMICADDRESSING)	
 		// record the dynamic address provided
-		if (rx->funcode == MaCaco_DINADDRESSANS)
+		if ((rx->funcode == MaCaco_DINADDRESSANS) || (rx->funcode == MaCaco_SUBNETANS))
 		{			
-			if(rx->numberof + 3 < MaCaco_CONFPARAM) // if the number of payload bytes, plus the size of rx->putin and rx->startoffset
+			if(rx->numberof + 3 < MaCaco_QUEUELEN) // if the number of payload bytes, plus the size of rx->putin and rx->startoffset
 			{
 				// load data into the configuration parameters, an upper method will use them
 				// for configuration purpose
-				U8*	confparameters_p = (memory_map + MaCaco_CONFPARAM);
+				U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 				
 				// store the putin value
 				(*(U16 *)confparameters_p) = (U16)rx->putin;
@@ -696,11 +777,58 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			}
 		}
 		#endif
+
+		// record an action message
+		if (rx->funcode == MaCaco_ACTIONMSG)
+		{			
+			// If there is enough space in the queue 
+			if(rx->numberof < (MaCaco_QUEUELEN-5))
+			{
+				// load the action message
+				U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
+					
+				// store the putin value, this is the action message identifier
+				(*(U16 *)confparameters_p) = (U16)rx->putin;
+				confparameters_p += sizeof(U16);
+					
+				// store the startoffset and numberof values
+				*confparameters_p = rx->startoffset;
+				confparameters_p++;	
+				*confparameters_p = rx->numberof;
+				confparameters_p++;	
+				
+				// store the payload
+				memmove(confparameters_p, rx->data, rx->numberof);				
+			}
+		}
 		
 		// Return for not expected functional codes
 		if((rx->funcode == MaCaco_STATEANS))	// This functional codes is used only by user interfaces
 			return MaCaco_FUNCODE_ERR;
-	
+
+		// force by typical logic number
+		if((rx->funcode == MaCaco_TYP) || (rx->funcode == MaCaco_FORCETYP))
+		{
+			// identify if the command is issued for a typical or a typical class
+			if((rx->startoffset & 0x0F) == 0x00)
+				typ_mask = 0xF0;	// we look only to the typical class value
+			else
+				typ_mask = 0xFF;	// we look to whole typical value
+
+			// force typical on the local node
+			for(U8 i=0; i<(MaCaco_TYPLENGHT - rx->numberof + 1); i++)		
+				if((*(memory_map + MaCaco_TYP_s + i) & typ_mask) == rx->startoffset)	// Start offset used as typical logic indication
+					for(U8 j=0; j < rx->numberof; j++)
+						*(memory_map+MaCaco_IN_s + i + j) = *(rx->data + j);
+
+			// force typical on the remote node
+			#if(MaCaco_USERMODE)
+			if(rx->funcode == MaCaco_TYP)	MaCaco_send(0xFFFF, MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);
+			#endif
+									
+			return MaCaco_FUNCODE_OK;
+		}	
+			
 		// check for operation type to separate bit-wise and not bit-wise operation
 		switch(rx->funcode) 
 		{
@@ -757,30 +885,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				
 		break;
 		#endif
-	
-		// force by typical logic number
-		case(MaCaco_TYP) :
-	
-			// identify if the command is issued for a typical or a typical class
-			if((rx->startoffset & 0x0F) == 0x00)
-				typ_mask = 0xF0;	// we look only to the typical class value
-			else
-				typ_mask = 0xFF;	// we look to whole typical value
-
-			// force typical on the local node
-			for(U8 i=0; i<(MaCaco_TYPLENGHT - rx->numberof + 1); i++)		
-				if((*(memory_map + MaCaco_TYP_s + i) & typ_mask) == rx->startoffset)	// Start offset used as typical logic indication
-					for(U8 j=0; j < rx->numberof; j++)
-						*(memory_map+MaCaco_IN_s + i + j) = *(rx->data + j);
-
-			// force typical on the remote node
-			#if(MaCaco_USERMODE)
-			MaCaco_send(0xFFFF, MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);
-			#endif
-									
-			return MaCaco_FUNCODE_OK;
-			
-		break;
 		
 		// Typical logic answer
 		#if(MaCaco_SUBSCRIBERS)
@@ -791,8 +895,14 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// Identify the node index
 			U8 nodeindex;
 			for(nodeindex=MaCaco_LOCNODE+1; nodeindex<MaCaco_NODES ; nodeindex++)
+			{
 				if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
+				{
+					lasttyp_addr = addr;	// Store the address of the nodes that gives this reply
 					break;
+				}	
+			}	
+			
 			
 			// Data persistance is active, store information
 			#if(MaCaco_PERSISTANCE)
@@ -813,7 +923,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 			if(reqtyp_addr)		// If there is a stored address from a User Interface
 				MaCaco_send(reqtyp_addr, MaCaco_TYPANS, reqtyp_putin, nodeindex, rx->numberof, rx->data);								
-
 		break;
 		#endif
 		
@@ -968,8 +1077,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 								
 				// Store the data
 				memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
-			}
-			
+			}	
 		#endif
 	}	
 		
@@ -1008,16 +1116,19 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 			j=0;
 		}	
 
-		// Retry no more that MAXRETRY number
+		// Too many retries
 		if(j>Macaco_MAXRETRY)
-		{			
+		{	
+			// Delete the subscription that has failed
+			memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
+
 			// Next subscription
 			i++;
 			j=0;
 		}
 	}
 	
-	// Return the completition status
+	// Return the competition status
 	return status;
 }
 
@@ -1080,6 +1191,7 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 	return status;
 }
 
+#if(MaCaco_SUBSCRIBERS)
 /**************************************************************************/
 /*!
     Count for how many nodes typicals values was requested, this is set
@@ -1089,10 +1201,36 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 /**************************************************************************/
 U8 MaCaco_reqtyp()
 {	
-	if(reqtyp_times)
-		return reqtyp_times--;
+	return reqtyp_times;
 }
 
+/**************************************************************************/
+/*!
+    Notify that the relevant node has provided typicals or the relevant
+	timeout has expired
+*/
+/**************************************************************************/
+void MaCaco_reqtyp_decrease()
+{
+	if(reqtyp_times)
+		reqtyp_times--;
+}
+
+/**************************************************************************/
+/*!
+    Get the address of the last node that provided its typicals
+*/
+/**************************************************************************/
+U16 MaCaco_reqtyp_lastaddr()
+{
+	return lasttyp_addr;
+}
+
+void MaCaco_reset_lastaddr()
+{
+	lasttyp_addr=0;
+}
+#endif
 
 /**************************************************************************/
 /*!
@@ -1112,7 +1250,10 @@ U8 MaCaco_reqtyp()
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl)
 {
 	U8 *healty, *count = 0;
-
+	
+	// Remove the init flag
+	subscr_init=false;
+	
 	// Verify the subscription index
 	if(subscr_chnl >= MaCaco_OUTMAXSUBSCR)
 		return MaCaco_NOSUBSCRANSWER;
@@ -1188,8 +1329,12 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 /**************************************************************************/
 void MaCaco_subscribe_reset()
 {
-		for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-			subscr_count[i] = 0;
+	// flag as init
+	subscr_init = true;
+
+	// reset counters
+	for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+		subscr_count[i] = 0;
 }
 
 /**************************************************************************/
@@ -1233,6 +1378,16 @@ void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8
 		subscr_startoffset[i] = startoffset;
 		subscr_numberof[i] = numberof;
 	}
+}
+
+/**************************************************************************/
+/*!
+    Return if the subscriptions are in init
+*/
+/**************************************************************************/
+bool MaCaco_subscribe_is_init()
+{
+	return subscr_init;
 }
 
 /**************************************************************************/
@@ -1328,6 +1483,7 @@ U8 MaCaco_IsSubscribed()
 		interface is also used for external protocols.
 */
 /**************************************************************************/
+#if(MaCaco_SUBSCRIBERS)
 void MaCaco_InternalSubcription(U8 *memory_map)
 {
 	U8 i=0;
@@ -1347,7 +1503,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 																	// analog T5n type typical logic, we set it
 																	// at last available value.
 		
-		// Indentify the first and last slot in the typical 5n group (analogue values) 
+		// Identify the first and last slot in the typical 5n group (analogue values) 
 		// this an unconventional check at this layer
 		i=0;
 		while(((*(memory_map+MaCaco_TYP_s+i) & 0xF0) != 0x50) && i < MaCaco_SLOT)	i++;
@@ -1387,6 +1543,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	reqtyp_times = MaCaco_NODES;		
 			
 }
+#endif
 
 /**************************************************************************/
 /*!

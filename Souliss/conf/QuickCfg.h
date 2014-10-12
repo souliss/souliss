@@ -113,6 +113,10 @@
 		0x48		Arduino with W5200 Ethernet Shield
 		0x49		Arduino with W5500 Ethernet Shield
 		0x50		Authometion Iotuino
+		0x60		Moteino or Moteino Mega plus W5100 Ethernet transceiver
+		0x61		Moteino or Moteino Mega plus ENC28J60 Ethernet transceiver		
+		0x62		Moteino or Moteino Mega with RFM69CW/RFM69HCW
+		0x63		Moteino or Moteino Mega with RFM69CW/RFM69HCW as range extender
 */
 /**************************************************************************/
 #if(QC_ENABLE && !defined(BOARDTYPE_INSKETCH))									// Define manually only in Detailed Configuration Mode
@@ -170,28 +174,6 @@
 /**************************************************************************/
 #if(QC_ENABLE && !defined(DYNAMICADDRESSING_INSKETCH))							// Define manually only in Detailed Configuration Mode
 #	define DYNAMICADDRESSING  		0x01
-#endif
-
-/**************************************************************************/
-/*!
-	In case of a network with multiple Ethernet based boards, the use of 
-	MAC RAW communication remove the need of a dedicated IP address for each
-	board.
-	
-	This settings has effect only on Ethernet boards with DYNAMICADDRESSING
-	option set, following scenario are forseen:
-		- Gateway : Is configured with either IP and MACRAW, bridges data from
-					IP to MACRAW and viceversa.
-		- Peer (not Gateway) : Is configured only as MACRAW, doesn't need an IP
-					address.
-	
-        Value       ETHERNETMACRAW
-        0x0         Disable (Default)
-        0x1         Enable	
-*/
-/**************************************************************************/
-#if(QC_ENABLE && !defined(ETHERNETMACRAW_INSKETCH))								// Define manually only in Detailed Configuration Mode
-#	define ETHERNETMACRAW  		0x00
 #endif
 
 /**************************************************************************/

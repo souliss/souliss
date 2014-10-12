@@ -170,7 +170,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define ssnDigOut(pin,value,slot)								Souliss_nDigOut(pin, value, memory_map, slot)
 #define ssLowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
 #define ssnLowDigOut(pin,valueslot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
+#define	ssImportAnalog(slot,analogvalue)						Souliss_ImportAnalog(memory_map, slot, analogvalue)
+#define	ssAnalogIn(pin, slot)									Souliss_AnalogIn(pin, memory_map, slot, 0.05, 0)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)
+
 
 #define	ssGetTemperatureDHT(sensor, slot)	float tmpdhtval = ssDHT_readTemperature(sensor);	\
 											Souliss_ImportAnalog(memory_map, slot, &tmpdhtval)
@@ -178,9 +181,17 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	ssGetHumidityDHT(sensor, slot)		float hmtdhtval = ssDHT_readHumidity(sensor);		\
 											Souliss_ImportAnalog(memory_map, slot, &hmtdhtval)													
 
+<<<<<<< HEAD
 #define ssInput(slot)											memory_map[IN+slot]
 #define ssOutput(slot)											memory_map[OUT+slot]
 #define	Initialize()						MaCaco_init(memory_map)
+=======
+#define ssInput(slot)						memory_map[IN+slot]
+#define ssOutput(slot)						memory_map[OUT+slot]
+
+#define	Initialize()						MaCaco_init(memory_map)
+
+>>>>>>> chiattillo
 /*****************************************/
 
 /************* Let be lazy ***************/	
@@ -189,8 +200,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												FAST_1110ms() 						\
 													ssCommunicationChannels();		\
 												FAST_2110ms() 						\
-													ssGetTypicals()																			
-													
+													ssGetTypicals()
+										
 #define	FAST_BridgeComms()						FAST_30ms()    						\
 													ProcessCommunication();			\
 													
@@ -213,6 +224,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 													ssDynamicAddressing();			\
 													ssJoinNetwork();				\
 												}
+
+						
 /*****************************************/
 
 

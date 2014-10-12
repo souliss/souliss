@@ -15,7 +15,7 @@
 static uint16_t local_port;
 
 /**
- * @brief	This Socket function initialize the channel in perticular mode, and set the port and wait for W5x00 done it.
+ * @brief	This Socket function initialize the channel in particular mode, and set the port and wait for W5x00 done it.
  * @return 	1 for success else 0.
  */
 uint8_t socket(SOCKET s, uint8_t protocol, uint16_t port, uint8_t flag)
@@ -241,7 +241,7 @@ uint16_t sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t *addr, uint1
 	else
 		return 0;
   else
-	W5x00.send_data_processing(s, (uint8_t *)frame, 0);		// Use a zero lenght to indicate a frame insted of a buffer
+	W5x00.send_data_processing(s, (uint8_t *)frame, 0);		// Use a zero length to indicate a frame instead of a buffer
 	
     W5x00.execCmdSn(s, Sock_SEND);
 

@@ -17,6 +17,7 @@
 	
 	Originally developed by Dario Di Maio
 	
+    Kim Mølgaard		11/9/2014	Added support for Moteino boards.
 ***************************************************************************/
 /*!
     \file 
@@ -28,6 +29,8 @@
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
+#include "ActionMessages.h"
+
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
@@ -38,6 +41,8 @@
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #	define MAXINPIN		69		// Max number of input pins
+#elif defined(__AVR_ATmega1284P__)
+#	define MAXINPIN		40		// Max number of input pins
 #elif defined(__AVR_ATmega32U4__)
 #	define MAXINPIN		29		// Max number of input pins
 #else
@@ -72,6 +77,14 @@ void Souliss_SetDynamicAddressing();
 void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size);
 U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command);
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof);
+U8 Souliss_MassiveCommand(U16 addr, U8 typ, U8 command);
+U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command);
+U8 Souliss_BroadcastAction(U8 *memory_map, U16 message, U8 action);
+U8 Souliss_MulticastAction(U16 multicast_addr, U8 *memory_map, U16 message, U8 action);
+U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
+U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
+U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action);
+U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8* len);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);

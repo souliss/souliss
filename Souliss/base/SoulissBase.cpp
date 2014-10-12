@@ -33,8 +33,12 @@
 bool InPin[MAXINPIN] = {false};
 bool FirstInit = {false}, addrsrv = {false};
 static unsigned long time;
-U8 roundrob_1=1,roundrob_2=1;
+U8 roundrob_1=1,roundrob_2=1, timeout=TIMEOUT_SET;
 U16 keyidval=0;
+
+#if (SOULISS_DEBUG)
+	#define SOULISS_LOG Serial.print
+#endif
 
 /**************************************************************************
 /*!
@@ -235,7 +239,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		// parameters of the memory map
 		
 		// The first parameter is the keyidval number used to identify my previous request
-		U8 *confparameters_p = (memory_map + MaCaco_CONFPARAM);
+		U8 *confparameters_p = (memory_map + MaCaco_QUEUE_s);
 		if((*(U16 *)confparameters_p) == keyidval)
 		{
 			// The next parameter is the media
@@ -246,10 +250,9 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 				confparameters_p++;
 				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 					
-				// Clear the actual configuration parameters, the addressing server will load there
-				// the requested address
-				for(U8 i=0; i<MaCaco_CONFPARAM; i++)
-					*(memory_map + MaCaco_CONFPARAM + i) = 0;
+				// Configuration data can be now removed
+				for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+					*(memory_map + MaCaco_QUEUE_s + i) = 0;
 				
 				return;
 			}	
@@ -257,8 +260,8 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		
 		// Clear the actual configuration parameters, the addressing server will load there
 		// the requested address
-		for(i=0; i<MaCaco_CONFPARAM; i++)
-			*(memory_map + MaCaco_CONFPARAM + i) = 0;
+		for(i=0; i<MaCaco_QUEUELEN; i++)
+			*(memory_map + MaCaco_QUEUE_s + i) = 0;
 
 		// Request a new address
 		#if(VNET_SUPERNODE)
@@ -380,6 +383,10 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	if (*(memory_map+MaCaco_HEALTY_s+roundrob_2) == 0)
 		*(memory_map+MaCaco_HEALTY_s+roundrob_2) = MaCaco_SUBINITHEALTY;
 	
+	// Check subscription has been reset
+	if((roundrob_2 > 1) && (MaCaco_subscribe_is_init()))
+		roundrob_2=1;		// Start from first remote node
+		
 	// Handle the subscription in round robin
 	if(roundrob_2 < MaCaco_NODES)
 	{
@@ -426,32 +433,75 @@ void Souliss_BatteryChannels(U8 *memory_map, U16 addr)
 /**************************************************************************/	
 U8 Souliss_GetTypicals(U8 *memory_map)
 { 
-	U8 ret=0, s=MaCaco_reqtyp();
-
+	U8 s=MaCaco_reqtyp();
+	
 	if(s)
 	{
-		// Reset the round robin loop
-		if (s == MaCaco_NODES) 
-			roundrob_1 = 1;		// Reset, node 0 is the node it-self, doesn't need to send data out
+		// Pointer to the node address
+		U16* m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
 		
-		// Retreive once the typical definitions data
-		if ((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1)) != 0x0000)
+		// Update the timeout
+		if(timeout)	timeout--;
+		else if(timeout==TIMEOUT_EXPIRE)
 		{
-			ret = MaCaco_send(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+			// Move to next node
+			roundrob_1++;
+			MaCaco_reset_lastaddr();
+			MaCaco_reqtyp_decrease();
+			timeout=TIMEOUT_SET;
 			
-			// Increase the index
+			return 0;	// At next cycle a request will be send out
+		}	
+	
+		// Start from first node if is a new request from an user interface
+		if (s == MaCaco_NODES)
+		{
+			roundrob_1 = 1;				// Reset, node 0 is the node it-self, doesn't need to send data out
+			MaCaco_reset_lastaddr();
+			MaCaco_reqtyp_decrease();
+			
+			// Pointer to the node address
+			m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+		}
+		
+		// If the node answer has been received
+		if((*m_addr != 0x0000) && (*m_addr == MaCaco_reqtyp_lastaddr()))
+		{
+			// At next cycle move to next node
 			if(roundrob_1 < MaCaco_NODES) 
 				roundrob_1++;
 			else
-				roundrob_1 = 1;		// Reset	
+			{
+				// Reset
+				while(MaCaco_reqtyp()) MaCaco_reqtyp_decrease();
+
+				// Next cycle start again from begin
+				roundrob_1 = 1;		
+				MaCaco_reset_lastaddr();
+			}
 				
+			// Next node
+			MaCaco_reqtyp_decrease();
+			return 1;
 		}
+			
+		// Send a request to the node, if the address is zero there are no more node to process
+		if (*m_addr != 0x0000)	MaCaco_send(*m_addr, MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+		else 
+		{
+			// Reset
+			while(MaCaco_reqtyp()) MaCaco_reqtyp_decrease();
+				
+			// Next cycle start again from begin
+			roundrob_1 = 1;		
+			MaCaco_reset_lastaddr();		
+		}
+			
+		// At next cycle the answer will be received
+		return 0;
 	}
-	else
-		if(roundrob_1 != 1)
-			roundrob_1 = 1;		// Reset
-		
-	return ret;	
+	
+	return 0;	
 } 
 #endif
 
@@ -489,13 +539,157 @@ U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command)
 	Write on network node, act as a remote input
 	
 	It write directly into the inputs map of another node, data are moved
-	directly without a subscription, so no channel healty is provided.
+	directly without a subscription, so no channel healthy is provided.
 */	
 /**************************************************************************/	
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof)
 {
 	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + firstslot, numberof, commands);
 }
+
+/**************************************************************************
+/*!
+	Apply the command on all the logic assigned to that typical in the node
+*/	
+/**************************************************************************/	
+U8 Souliss_MassiveCommand(U16 addr, U8 typ, U8 command)
+{
+	U8 cmd = command;
+	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, typ, 1, &cmd); 
+}
+
+/**************************************************************************
+/*!
+	Apply the command on all the logic assigned to that typical in all the
+	nodes of the network
+*/	
+/**************************************************************************/	
+U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
+{
+	U8 cmd = command;
+	return MaCaco_send(0xFFFF, MaCaco_FORCEREGSTR, 0x00, typ, 1, &cmd); 
+}
+
+/**************************************************************************/
+/*!
+    Broadcast an action message
+*/
+/**************************************************************************/
+U8 Souliss_BroadcastAction(U8 *memory_map, U16 message, U8 action)
+{
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+}
+
+/**************************************************************************/
+/*!
+    Multicast an action message
+*/
+/**************************************************************************/
+U8 Souliss_MulticastAction(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
+{
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+}
+
+/**************************************************************************/
+/*!
+    Broadcast an action message
+*/
+/**************************************************************************/
+U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
+{
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
+}
+
+/**************************************************************************/
+/*!
+    Multicast an action message
+*/
+/**************************************************************************/
+U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
+{
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
+}
+
+/**************************************************************************/
+/*!
+    Return if there is a matching action message
+*/
+/**************************************************************************/
+U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action)
+{
+	// action message are in the queue
+	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
+	
+	if(((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action))
+	{
+		#if (SOULISS_DEBUG)
+		// Print debug messages
+		SOULISS_LOG("(ss)<Action Message>");
+		SOULISS_LOG("<|0x");
+		SOULISS_LOG((*(U16 *)confparameters_p),HEX);
+		SOULISS_LOG("|0x");
+		SOULISS_LOG((*(confparameters_p+sizeof(U16))),HEX);		
+		SOULISS_LOG(">\r\n");
+		#endif
+	
+		// Reset the queue 
+		for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+			*(memory_map + MaCaco_QUEUE_s + i) = 0;
+				
+		return 1;		// Trigger the action
+	}	
+	
+	return 0;			// Nothing to do
+}
+
+/**************************************************************************/
+/*!
+    Return if there is a matching action message
+*/
+/**************************************************************************/
+U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8* len)
+{
+	// action message are in the queue
+	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
+	
+	// Get the message value
+	U16 _message=(*(U16 *)confparameters_p);
+	confparameters_p+=sizeof(U16);
+	
+	// Get the action value
+	U8  _action=*confparameters_p;
+	confparameters_p++;
+	
+	if((_message == message) && (_action == action))
+	{
+		#if (SOULISS_DEBUG)
+		// Print debug messages
+		SOULISS_LOG("(ss)<Action Message>");
+		SOULISS_LOG("<|0x");
+		SOULISS_LOG(_message,HEX);
+		SOULISS_LOG("|0x");
+		SOULISS_LOG(_action,HEX);		
+		SOULISS_LOG(">\r\n");
+		#endif
+	
+		// Get the value length if a payload is available
+		*len=*confparameters_p;
+		confparameters_p++;
+		
+		// Move payload
+		if(*len)
+			memmove(data, confparameters_p, *len);
+	
+		// Reset the queue 
+		for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+			*(memory_map + MaCaco_QUEUE_s + i) = 0;
+				
+		return 1;		// Trigger the action
+	}	
+	
+	return 0;			// Nothing to do
+}
+
 
 /**************************************************************************
 /*!
@@ -507,9 +701,32 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 	// If not yet, init the communication channel
 	if (*(memory_map+MaCaco_HEALTY_s+0) == 0)
 		*(memory_map+MaCaco_HEALTY_s+0) = MaCaco_SUBMAXHEALTY;
-
+		
 	MaCaco_DataIn();
-	return MaCaco_retrieve(memory_map, trigger);
+	U8 ret = MaCaco_retrieve(memory_map, trigger);
+	
+	#if (SOULISS_DEBUG)
+	// Look for input values
+	U8 i=0;
+	for(i=0;i<MaCaco_WRITE_f;i++)
+		if(*(memory_map+i) !=0)
+			break;
+	
+	if((*trigger) || (i<MaCaco_WRITE_f))
+	{
+		// Print debug messages
+		SOULISS_LOG("(ss)<MAP>");
+		SOULISS_LOG("<|0x");
+		for(i=0;i<MaCaco_MEMMAP;i++)
+		{
+			SOULISS_LOG(memory_map[i],HEX);
+			SOULISS_LOG("|0x");
+		}
+		SOULISS_LOG(">\r\n");
+	}	
+	#endif
+
+	return ret;
 }
 
 /**************************************************************************
@@ -941,3 +1158,4 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 		return Souliss_TRIGGED;
 	}	
 }
+

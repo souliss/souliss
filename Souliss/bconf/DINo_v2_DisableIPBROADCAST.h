@@ -22,22 +22,10 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DINOv2_H
-#define bconf_DINOv2_H
+#ifndef bconf_DINOv2NOIPBROADCAST_H
+#define bconf_DINOv2NOIPBROADCAST_H
 
-// List QuickCfg.h parameters that want to be configured as standard
-#define	BOARDTYPE_INSKETCH
-#define GATEWAYTYPE_INSKETCH
-#define	DYNAMICADDRESSING_INSKETCH
-#define	ETHERNETMACRAW_INSKETCH
-#define	USARTDRIVER_INSKETCH
+// Assume that somewhere else has been set and defined
+#define IPBROADCAST  		0x00
 
-#define	QC_BOARDTYPE			0x22
-#define	QC_GATEWAYTYPE			0x00
-#define DYNAMICADDRESSING  		0x01
-#define IPBROADCAST		  		0x00
-#define	USARTDRIVER				Serial1	
-#define USART_LOG 				Serial.print	
-#define	USART_TXENABLE			1
-#define	USART_TXENPIN			RS485ENABLE
 #endif

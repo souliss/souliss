@@ -45,9 +45,13 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 void MaCaco_subscribe_reset();
 void MaCaco_subscribe_battery(U8 subscr_chnl);
 void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof);
+bool MaCaco_subscribe_is_init();
 U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg);
 U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data);
 U8 MaCaco_reqtyp();
+void MaCaco_reqtyp_decrease();
+U16 MaCaco_reqtyp_lastaddr();
+void MaCaco_reset_lastaddr();
 void MaCaco_DataIn();
 U8 MaCaco_retrieve(U8* memory_map, U8* data_chg);
 U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 *data);

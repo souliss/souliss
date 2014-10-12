@@ -35,4 +35,11 @@
 #include "src/nRF24L01.h"
 #include "SPI.h"
 
+void vNet_Init_M2();
+void vNet_SetAddress_M2(uint16_t addr);
+uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len);
+uint8_t vNet_DataAvailable_M2();
+uint8_t vNet_RetrieveData_M2(uint8_t *data);
+uint16_t vNet_GetSourceAddress_M2();
+
 #endif
