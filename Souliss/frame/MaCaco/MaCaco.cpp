@@ -1077,16 +1077,19 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 			j=0;
 		}	
 
-		// Retry no more that MAXRETRY number
+		// Too many retries
 		if(j>Macaco_MAXRETRY)
-		{			
+		{	
+			// Delete the subscription that has failed
+			memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
+
 			// Next subscription
 			i++;
 			j=0;
 		}
 	}
 	
-	// Return the completition status
+	// Return the competition status
 	return status;
 }
 

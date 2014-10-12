@@ -218,6 +218,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 													ssDynamicAddressing();			\
 													ssJoinNetwork();				\
 												}
+
+						
 /*****************************************/
 
 

@@ -118,11 +118,23 @@
 	the same should be supported also by the communication media drivers. 
 	
         Value       Status
+        0x0         Disable 
+        0x1         Enable	(Default)
+*/
+/**************************************************************************/
+#define VNET_BRDCAST  		1								
+
+/**************************************************************************/
+/*!
+	If enabled prevent broadcast messages to loop, this is useful in network
+	where there are loops between SUPERNODE nodes.
+	
+        Value       Status
         0x0         Disable (Default)
         0x1         Enable
 */
 /**************************************************************************/
-#define VNET_BRDCAST  		1								
+#define VNET_LOOPS  		0								
 								
 /**************************************************************************/
 /*!
@@ -202,13 +214,16 @@
 #define VNET_ADDR_H_M4	   	0xCCFF			// vNet High Address for Media 4, size 4 byte
 
 #define VNET_ADDR_L_M5	   	0xCE00			// vNet Low Address for Media 5,  size 4 byte
-#define VNET_ADDR_H_M5	   	0xFDFF			// vNet High Address for Media 5, size 4 byte
+#define VNET_ADDR_H_M5	   	0xDFFF			// vNet High Address for Media 5, size 4 byte
 
-#define	VNET_ADDR_nBRDC		0xFEFF			// This is a BROADCAST address that cannot be re-broadcasted
-#define	VNET_ADDR_NULL		0xFF00			// This is a NULL address, frames to that address are discarded
-											// in between the NULL and the BROADCAST address there are the
-											// MULTICAST ones										
+#define	VNET_ADDR_L_MLC		0xF100			// First MULTICAST address
+#define	VNET_ADDR_H_MLC		0xFCFF			// Last  MULTICAST address
+
+#define	VNET_ADDR_nBRDC		0xFDFF			// This is a BROADCAST address that cannot be re-broadcasted
+#define	VNET_ADDR_wBRDC		0xFEFF			// This is a BROADCAST address that cannot be re-broadcasted over wireless
 #define	VNET_ADDR_BRDC		0xFFFF			// This is a BROADCAST address
+
+#define	VNET_ADDR_NULL		0xFF00			// This is a NULL address, frames to that address are discarded
 
 const U16 vnet_addr_l[VNET_MEDIA_NUMBER] = {VNET_ADDR_L_M1,  // Media 1
 											VNET_ADDR_L_M2,  // Media 2
