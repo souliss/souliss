@@ -145,7 +145,7 @@ uint16_t send(SOCKET s, const uint8_t * buf, uint16_t len)
 	else
 	  return 0;
   else
-	W5x00.send_data_processing(s, (uint8_t *)frame, 0);		// Use a zero lenght to indicate a frame insted of a buffer
+	W5x00.send_data_processing(s, (uint8_t *)frame, 0);		// Use a zero length to indicate a frame instead of a buffer
 	
   W5x00.execCmdSn(s, Sock_SEND);
 
@@ -246,7 +246,8 @@ uint16_t sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t *addr, uint1
     W5x00.execCmdSn(s, Sock_SEND);
 
     /* +2008.01 bj */
-    while ( (W5x00.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK ) 
+	uint8_t arp_timeout=0xFF;
+    while (( (W5x00.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK ) || ( (W5x00.readSnSR(s) == SnSR::ARP )))
     {
       if (W5x00.readSnIR(s) & SnIR::TIMEOUT)
       {
@@ -254,6 +255,17 @@ uint16_t sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t *addr, uint1
         W5x00.writeSnIR(s, (SnIR::SEND_OK | SnIR::TIMEOUT)); /* clear SEND_OK & TIMEOUT */
         return 0;
       }
+	  
+	  // While waiting for an ARP reply
+	  if(arp_timeout && (W5x00.readSnSR(s) == SnSR::ARP ))
+	  {
+		arp_timeout--;
+		delay(1);
+	  }
+	  else	// If no ARP reply is received
+	  {
+		return 0;
+	  }
     }
 
     /* +2008.01 bj */

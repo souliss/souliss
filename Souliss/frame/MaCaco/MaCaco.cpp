@@ -1140,6 +1140,9 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 		// Retry no more that MAXRETRY number
 		if(j>Macaco_MAXRETRY)
 		{			
+			// Delete the subscription that has failed
+			memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
+		
 			// Next subscription
 			i++;
 			j=0;

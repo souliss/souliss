@@ -190,6 +190,10 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	{
 		oFrame_Reset();		// Free the frame
 		
+		// Restart the socket
+		vNet_Stop_M1(UDP_SOCK);
+		vNet_Begin_M1(UDP_SOCK);
+		
 		return ETH_FAIL;	// If data sent fail, return
 	}
 	
