@@ -1,6 +1,8 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+Release note for revision Alpha 6.2, on dd/mm/yyyy
+
 Release note for revision Alpha 6.1.1, on 13/10/2014
 
 	Support for Moteino boards and fix the Alpha 6.0.3 this release include 
