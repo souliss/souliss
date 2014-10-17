@@ -494,9 +494,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			MaCaco_LOG(">\r\n");
 			#endif
 				
-			// restart the subscriptions
-			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-				subscr_count[i] = 0;	
+			// Restart the subscriptions	
+			MaCaco_subscribe_reset();	
 		}
 			
 		// if the join request is from a nodes that previously got an address, flag the
@@ -1083,6 +1082,18 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 			// Delete the subscription that has failed
 			memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
 
+			#if (MaCaco_DEBUG)
+			// Print the outgoing message header
+			MaCaco_LOG("(MaCaco)<INSUB>");
+			MaCaco_LOG("<|0x");
+			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+			{
+				MaCaco_LOG(*(subscr_addr+i),HEX);
+				MaCaco_LOG("|0x");
+			}		
+			MaCaco_LOG(">\r\n");
+			#endif				
+			
 			// Next subscription
 			i++;
 			j=0;
@@ -1142,6 +1153,18 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 		{			
 			// Delete the subscription that has failed
 			memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
+		
+			#if (MaCaco_DEBUG)
+			// Print the outgoing message header
+			MaCaco_LOG("(MaCaco)<INSUB>");
+			MaCaco_LOG("<|0x");
+			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+			{
+				MaCaco_LOG(*(subscr_addr+i),HEX);
+				MaCaco_LOG("|0x");
+			}		
+			MaCaco_LOG(">\r\n");
+			#endif	
 		
 			// Next subscription
 			i++;
