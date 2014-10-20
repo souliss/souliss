@@ -1405,3 +1405,28 @@ void vNet_Reset()
 		}
 	}		
 }
+
+/**************************************************************************/
+/*!
+    Set all radio interface in sleep mode, this doesn't work for WiFi radio
+*/
+/**************************************************************************/
+void vNet_RadioSleep()
+{
+#if (VNET_MEDIA2_ENABLE)
+	vNet_RadioSleep_M2();
+#endif	
+}
+
+/**************************************************************************/
+/*!
+    Wakeup all radio interface
+*/
+/**************************************************************************/
+void vNet_RadioWakeUp()
+{
+#if (VNET_MEDIA2_ENABLE)
+	vNet_RadioWakeUp_M2();
+#endif
+}
+

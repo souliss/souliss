@@ -54,6 +54,9 @@ void sleepNow()         // here we put the arduino to sleep
 {
 	backfromSleep = false;
 
+	// powerdown
+	vNet_RadioSleep();
+	
     /* In the avr/sleep.h file, the call names of these sleep modes are to be found:
      *
      * The 5 different modes are:
@@ -78,6 +81,10 @@ void sleepNow()         // here we put the arduino to sleep
 	// has been fired, so disable sleep and go in normal mode
     sleep_disable();         
     detachInterrupt(wakePinINT);      
+	
+	// powerup the radio
+	vNet_RadioWakeUp();
+
 }
 
 #endif
