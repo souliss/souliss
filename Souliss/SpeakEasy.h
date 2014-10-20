@@ -222,5 +222,17 @@ unsigned long tmr_fast=0, tmr_slow=0;
 						
 /*****************************************/
 
+/*****************************************/
+/*!
+	Macros
+*/
+/*****************************************/
+#define AUX		MaCaco_AUXIN_s
+#define	IN		MaCaco_IN_s
+#define	OUT		MaCaco_OUT_s
+#define Souliss_Auxiliary(slot)	memory_map[AUX+slot]	
+#define Souliss_Input(slot)		memory_map[IN+slot]	
+#define Souliss_Output(slot)	memory_map[OUT+slot]
+#define Souliss_ResetTrigger()	data_changed=0;	
 
 #endif
