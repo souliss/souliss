@@ -262,7 +262,7 @@ uint16_t sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t *addr, uint1
 		arp_timeout--;
 		delay(1);
 	  }
-	  else	// If no ARP reply is received
+	  else if(!arp_timeout)	// If no ARP reply is received
 	  {
 		return 0;
 	  }
