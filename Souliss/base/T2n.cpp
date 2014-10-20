@@ -38,11 +38,9 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 /*!
 	Typical 21 : Motorized devices with limit switches
 	
-		It handle OPEN / CLOSE devices with alternate direction, an unique
-		command is available and toogle the device status to OPEN or CLOSE
-		based on the previous state, moving throught the STOP state.
-		Is used for garage doors or generally devices that need to be fully
-		opened or closed.
+		It handle OPEN / CLOSE devices with alternate direction moving throught
+		the STOP state. Is used for garage doors or generally devices that need 
+		to be fully opened or closed.
 		
 		Once a command, it remain active until the relevant limit switch is
 		recognized or the associated timer is expired. Timer must be used
@@ -57,14 +55,14 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 				#define Souliss_T2n_LimSwitch_Close	0x08
 				#define Souliss_T2n_LimSwitch_Open	0x10
 
-		Hardware and/or Software Command:
+		Hardware Command:
 			
 			Using a monostable wall switch (press and spring return) or a 
 			software command from user interface, each press will toogle 
 			the output status.		
 				#define Souliss_T2n_ToogleCmd		0x04
 				
-			Optionally are available direct OPEN/CLOSE/STOP commands	
+		Software Command:
 				#define Souliss_T2n_CloseCmd		0x01
 				#define Souliss_T2n_OpenCmd			0x02
 				#define Souliss_T2n_StopCmd			0x03
@@ -100,16 +98,12 @@ U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger)
 			else
 				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// If state is undefined, Open Command
 		}
-		else
-		{
-			// Perform the requested action
-			if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open))
-				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;				// Stop Command
-			else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) && (memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Open))
+		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) && (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop))
 				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// Open Command
-			else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) && (memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Close))
+		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) && (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop))
 				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close command
-		}
+		else 
+				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;				// Stop Command
 		
 		// If a command was issued, set the timer
 		if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close))
@@ -215,15 +209,13 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd))
 	{
 		// Change the output value, between OPEN and CLOSE always OFF is performed	
-		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd) || 
-			(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) || 
-			(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open))
+		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd) && 
-				(memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Open))
+				(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// Open Command
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd) && 
-				(memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_LimSwitch_Close))
+				(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close command
 		else	// Catch all
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
