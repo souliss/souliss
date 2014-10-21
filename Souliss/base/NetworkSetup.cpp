@@ -207,7 +207,7 @@ void Souliss_SetDynamicAddressing()
 void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
 	U8 i, usedmedia;			
-			
+	
 	// If no address is set
 	if(vNet_MyMediasWithoutAddress(&usedmedia))
 	{
@@ -229,13 +229,22 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			{
 				// Load the address
 				confparameters_p++;
-				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
-					
-				// Configuration data can be now removed
-				for(U8 i=0; i<MaCaco_QUEUELEN; i++)
-					*(memory_map + MaCaco_QUEUE_s + i) = 0;
+				U8 proposedsubnet = (*(U16 *)confparameters_p)>>2;	// Subnet in case of dynamic address (0xFF00) has only one
+																	// byte for subnet identification
 				
-				return;
+				// If we got a full address
+				if((*(U16 *)confparameters_p) & ~DYNAMICADDR_SUBNETMASK)
+				{	
+					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+			
+					// Configuration data can be now removed
+					for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+						*(memory_map + MaCaco_QUEUE_s + i) = 0;
+					
+					return;
+				}
+				else	// Request an address starting from the actual subnet
+					MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, proposedsubnet, 0, 0);
 			}	
 		}
 		
@@ -244,11 +253,11 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		for(i=0; i<MaCaco_QUEUELEN; i++)
 			*(memory_map + MaCaco_QUEUE_s + i) = 0;
 
-		// Request a new address
+		// Request a new address (if supernode) or a subnet
 		#if(VNET_SUPERNODE)
-			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF0 + usedmedia), 0, 0);
+			MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF0 + usedmedia), 0, 0);
 		#else
-			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (usedmedia), 0, 0);
+			MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETREQ, (U8 *)keyidval, (usedmedia), 0, 0);	// this is a non rebroadcastable frame, so it get till the nearest supernode/bridge
 		#endif
 	}	
 }
