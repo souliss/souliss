@@ -204,7 +204,7 @@ void Souliss_SetDynamicAddressing()
 	in most of the cases.
 */	
 /**************************************************************************/
-void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
+U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
 	U8 i, usedmedia;			
 	
@@ -241,7 +241,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 					for(U8 i=0; i<MaCaco_QUEUELEN; i++)
 						*(memory_map + MaCaco_QUEUE_s + i) = 0;
 					
-					return;
+					return 1;
 				}
 				else	// Request an address starting from the actual subnet
 					MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, proposedsubnet, 0, 0);
@@ -259,7 +259,11 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		#else
 			MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETREQ, (U8 *)keyidval, (usedmedia), 0, 0);	// this is a non rebroadcastable frame, so it get till the nearest supernode/bridge
 		#endif
-	}	
+		
+		return 1;
+	}
+
+	return 0;
 }
 
 /**************************************************************************

@@ -145,6 +145,35 @@
 
 /**************************************************************************/
 /*!
+	These option let customize the sleeping behavior of the microcontroller
+	
+	  SLEEP_BODDISALBE 
+		
+		Disable the Brown-out Detector, this is used to
+		trip the microcontroller in case of low supply voltage. 
+		Enabling this option will reduce power consumption but may force the
+		microcontroller to work at too low voltages, this may result in 
+		unpredictable results.
+
+        Value       
+        0x0         Disable 
+        0x1         Enable  (Default)
+		
+	  SLEEP_WAKEUPDELAY
+		Enable a 10+10 millisecond wakeup delay, this give time to the radio
+		and microcontroller to be ready (voltage get stabilized and peripherals
+		are back active).		
+	
+        Value       
+        0x0         Disable
+        0x1         Enable  (Default)
+*/
+/**************************************************************************/
+#define SLEEP_BODDISALBE		1
+#define	SLEEP_WAKEUPDELAY		1
+
+/**************************************************************************/
+/*!
 	Timeout configuration parameters
 */
 /**************************************************************************/

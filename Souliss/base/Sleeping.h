@@ -49,7 +49,30 @@ bool wasSleeping()
 {
 	return backfromSleep;
 } 
- 
+
+/**************************************************************************
+/*!
+	This put the microcontroller and the vNet radio in sleep mode, use this
+	code as follow:
+	
+	void()
+	{
+		
+		if(wasSleeping())
+		{
+			// Just wakeup, do somenthing before go back in sleep
+			...
+		}
+		
+		// Sleep manually other devices (sensors, radio or whatever)
+		...
+		
+		// Sleep the microcontroller
+		sleepNow();
+	}
+
+*/	
+/**************************************************************************/	
 void sleepNow()         // here we put the arduino to sleep
 {
 	backfromSleep = false;
@@ -68,23 +91,37 @@ void sleepNow()         // here we put the arduino to sleep
      *
      */  
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
- 
-    sleep_enable();          // enables the sleep bit in the mcucr register
-                             // so sleep is possible. just a safety pin
-	
-	// enable the interrupt to wake the device
+ 	
+	// set the interrupt to wake the device
+	cli();
 	attachInterrupt(wakePinINT, wakeUpNow, HIGH); 
  
-    sleep_mode();            // here the device is actually put to sleep!!
-
+    sleep_enable();         // enables the sleep bit in the mcucr register
+                            // so sleep is possible. just a safety pin
+	
+#	if(SLEEP_BODDISALBE)	
+    sleep_bod_disable();	// disabling BOD will reduce power consumption
+#	endif
+    
+	sei();
+    sleep_cpu();			// here the cpu is in sleep
+	
 	// the device will start back from this point once the interrupt on pin 2
 	// has been fired, so disable sleep and go in normal mode
-    sleep_disable();         
-    detachInterrupt(wakePinINT);      
+	sleep_disable();
+	detachInterrupt(wakePinINT);    	
+	sei();
 	
+#	if(SLEEP_WAKEUPDELAY)
+	delay(10);
+#	endif	
+
 	// powerup the radio
 	vNet_RadioWakeUp();
 
+#	if(SLEEP_WAKEUPDELAY)	
+	delay(10);
+#	endif
 }
 
 #endif

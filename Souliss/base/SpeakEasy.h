@@ -42,6 +42,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define UPDATEFAST()	tmr_fast = millis();	\
 						phase_fast = (phase_fast + 1) % num_phases
 
+
+#define	FAST_x10ms(n)	if (!(phase_fast % n))							
 #define	FAST_10ms()		if (!(phase_fast % 1))	
 #define	FAST_30ms()		if (!(phase_fast % 3))						
 #define	FAST_50ms()		if (!(phase_fast % 5))
@@ -65,6 +67,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define UPDATESLOW()	tmr_slow = millis();	\
 						phase_slow = (phase_slow + 1) % num_phases
 
+#define	SLOW_x10s(n)	if (!(phase_slow % n))
 #define	SLOW_10s()		if (!(phase_slow % 1))
 #define	SLOW_50s()		if (!(phase_slow % 5))
 #define	SLOW_70s()		if (!(phase_slow % 7))
@@ -72,9 +75,14 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_110s()		if (!(phase_slow % 11))
 #define	SLOW_510s()		if (!(phase_slow % 51))
 #define	SLOW_710s()		if (!(phase_slow % 71))
-#define	SLOW_910s()		if (!(phase_slow % 91))
-#define	SLOW_1110s()	if (!(phase_slow % 111))
-#define	SLOW_2110s()	if (!(phase_slow % 211))
+#define	SLOW_15m()		if (!(phase_slow % 91))
+#define	SLOW_30m()		if (!(phase_slow % 181))
+#define	SLOW_1h()		if (!(phase_slow % 361))
+#define	SLOW_2h()		if (!(phase_slow % 721))
+#define	SLOW_4h()		if (!(phase_slow % 1441))
+#define	SLOW_halfday()	if (!(phase_slow % 4321))
+#define	SLOW_1day()		if (!(phase_slow % 8641))
+
 /***************************************/
 
 /************** Typicals ******************/
@@ -154,37 +162,29 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
-#define	ssDynamicAddressing()									Souliss_DynamicAddressing (memory_map, __TIME__, 9)
-#define	ssJoinNetwork()											Souliss_JoinNetwork()
+#define	JoinNetwork()											Souliss_JoinNetwork()
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
-#define	ssGetTypicals()											Souliss_GetTypicals(memory_map)
-#define	ssCommunicationChannels()								Souliss_CommunicationChannels(memory_map)
+#define	GetTypicals()											Souliss_GetTypicals(memory_map)
+#define	CommunicationChannels()									Souliss_CommunicationChannels(memory_map)
 #define ProcessCommunication()									Souliss_CommunicationData(memory_map, &data_changed)
-#define	ssDigIn(pin,value,slot)									Souliss_DigIn(pin, value, memory_map, slot)
-#define	ssLowDigIn(pin,value,slot)								Souliss_LowDigIn(pin, value, memory_map, slot)
-#define	ssDigIn2State(pin,value_state_on,value_state_off,slot)	Souliss_DigIn2State(pin, value_state_on, value_state_off, memory_map, slot)
-#define	ssDigInHold(pin, value_state1,value_state2,slot)		Souliss_DigInHold(pin, value_state1, value_state2, memory_map, slot)
-#define	ssLowDigInHold(pin, value_state1,value_state2,slot)		Souliss_LowDigInHold(pin, value_state1, value_state2, memory_map, slot)
-#define ssDigOut(pin,value,slot)								Souliss_DigOut(pin, value, memory_map, slot)
-#define ssnDigOut(pin,value,slot)								Souliss_nDigOut(pin, value, memory_map, slot)
-#define ssLowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
-#define ssnLowDigOut(pin,valueslot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
-#define	ssImportAnalog(slot,analogvalue)						Souliss_ImportAnalog(memory_map, slot, analogvalue)
-#define	ssAnalogIn(pin, slot)									Souliss_AnalogIn(pin, memory_map, slot, 0.05, 0)
-#define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)
+#define	DigIn(pin,value,slot)									Souliss_DigIn(pin, value, memory_map, slot)
+#define	LowDigIn(pin,value,slot)								Souliss_LowDigIn(pin, value, memory_map, slot)
+#define	DigIn2State(pin,value_state_on,value_state_off,slot)	Souliss_DigIn2State(pin, value_state_on, value_state_off, memory_map, slot)
+#define	DigInHold(pin, value_state1,value_state2,slot)			Souliss_DigInHold(pin, value_state1, value_state2, memory_map, slot)
+#define	LowDigInHold(pin, value_state1,value_state2,slot)		Souliss_LowDigInHold(pin, value_state1, value_state2, memory_map, slot)
+#define DigOut(pin,value,slot)									Souliss_DigOut(pin, value, memory_map, slot)
+#define nDigOut(pin,value,slot)									Souliss_nDigOut(pin, value, memory_map, slot)
+#define LowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
+#define nLowDigOut(pin,valueslot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
+#define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
+#define	AnalogIn(pin, slot)										Souliss_AnalogIn(pin, memory_map, slot, 0.05, 0)
+#define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
 
-
-#define	ssGetTemperatureDHT(sensor, slot)	float tmpdhtval = ssDHT_readTemperature(sensor);	\
-											Souliss_ImportAnalog(memory_map, slot, &tmpdhtval)
-											
-#define	ssGetHumidityDHT(sensor, slot)		float hmtdhtval = ssDHT_readHumidity(sensor);		\
-											Souliss_ImportAnalog(memory_map, slot, &hmtdhtval)													
-
-#define ssInput(slot)						memory_map[IN+slot]
-#define ssOutput(slot)						memory_map[OUT+slot]
-
-#define	Initialize()						MaCaco_init(memory_map)
+#define	GetAddress()											while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
+																	Souliss_CommunicationData(memory_map, &data_changed);		\
+																	delay(1000);}												\
+																Souliss_JoinNetwork()	
 
 /*****************************************/
 
@@ -207,7 +207,6 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												{									\
 													if(!MaCaco_IsSubscribed())		\
 													{								\
-														ssDynamicAddressing();		\
 														ssJoinNetwork();			\
 													}								\
 												}
@@ -215,7 +214,6 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	JoinInProgress()						(!MaCaco_IsSubscribed())												
 
 #define	SLOW_PeerJoin()							SLOW_510s() {						\
-													ssDynamicAddressing();			\
 													ssJoinNetwork();				\
 												}
 
@@ -227,12 +225,13 @@ unsigned long tmr_fast=0, tmr_slow=0;
 	Macros
 */
 /*****************************************/
-#define AUX		MaCaco_AUXIN_s
-#define	IN		MaCaco_IN_s
-#define	OUT		MaCaco_OUT_s
-#define Souliss_Auxiliary(slot)	memory_map[AUX+slot]	
-#define Souliss_Input(slot)		memory_map[IN+slot]	
-#define Souliss_Output(slot)	memory_map[OUT+slot]
-#define Souliss_ResetTrigger()	data_changed=0;	
+#define AUX					MaCaco_AUXIN_s
+#define	IN					MaCaco_IN_s
+#define	OUT					MaCaco_OUT_s
+#define mAuxiliary(slot)	memory_map[AUX+slot]	
+#define mInput(slot)		memory_map[IN+slot]	
+#define mOutput(slot)		memory_map[OUT+slot]
+#define ResetTrigger()		data_changed=0;	
+#define	Initialize()		MaCaco_init(memory_map)
 
 #endif
