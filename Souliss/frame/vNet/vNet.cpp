@@ -1029,7 +1029,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	#endif
 	
 	// Bridge to a node within the same subnet
-	if ((vnet_media_en[*media-1]) && (vNet_Media[*media-1].src_addr & vNet_Media[*media-1].subnetmask) == (addr & vNet_Media[*media-1].subnetmask))
+	if ((vnet_media_en[*media-1]) && ((vNet_Media[*media-1].src_addr & vNet_Media[*media-1].subnetmask) == (addr & vNet_Media[*media-1].subnetmask)))
 		*routed_addr = addr;	
 	else
 	{
