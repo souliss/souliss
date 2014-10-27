@@ -1063,7 +1063,7 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
 	{
-		if(subscr_addr[i]!=0x0000)
+		if((subscr_addr[i]!=0x0000) && (subscr_addr[i]!=VNET_ADDR_NULL))
 		{		
 			// Send data to subscribers
 			status = MaCaco_send(subscr_addr[i], MaCaco_STATEANS, subscr_putin[i], startoffset, numberof, data);
@@ -1130,7 +1130,7 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
 	{
-		if(subscr_addr[i]!=0x0000)
+		if((subscr_addr[i]!=0x0000) && (subscr_addr[i]!=VNET_ADDR_NULL))
 		{
 			// answer to subscription
 			if(subscr_funcode[i] == MaCaco_SUBSCRREQ)

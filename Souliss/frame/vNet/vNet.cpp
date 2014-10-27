@@ -183,7 +183,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	if(addr==VNET_ADDR_NULL)
 	{
 		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<FAIL>\r\n");
+		VNET_LOG("(vNet)<ADDR_NULL>\r\n");
 		#endif
 		
 		// Free the frame and return
