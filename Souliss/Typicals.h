@@ -135,8 +135,8 @@
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
 #define Souliss_T2n_Timer_Val			0xAF		// Timer set value
 #define Souliss_T2n_Timer_Off			0xA0		// Timer expired value
-#define Souliss_T2n_TimedStop_Val		0xB3		// Timed stop value
-#define Souliss_T2n_TimedStop_Off		0xB0		// Timed stop exipred value
+#define Souliss_T2n_TimedStop_Val		0xC3		// Timed stop value
+#define Souliss_T2n_TimedStop_Off		0xC0		// Timed stop exipred value
 #define Souliss_T2n_LimSwitch_Close		0x08		// Close Feedback from Limit Switch
 #define Souliss_T2n_LimSwitch_Open		0x10		// Open Feedback from Limit Switch
 #define Souliss_T2n_NoLimSwitch			0x20		// No Limit Switch
