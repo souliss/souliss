@@ -126,11 +126,11 @@
 #define Souliss_T1n_RGBLamp_B5			0xD4
 
 // General defines for T2n
-#define Souliss_T2n_CloseCmd			0x01		// Close Command		
-#define Souliss_T2n_OpenCmd				0x02		// Open Command
+#define Souliss_T2n_CloseCmd_Local			0x01		// Close Command (only from local pushbutton)
+#define Souliss_T2n_OpenCmd_Local				0x02		// Open Command (only from local pushbutton)
 #define Souliss_T2n_StopCmd				0x04		// Stop Command
-#define Souliss_T2n_OpenCmd_Local		0x05		// Open Command (only from local pushbutton)
-#define Souliss_T2n_CloseCmd_Local		0x06		// Stop Command (only from local pushbutton)
+#define Souliss_T2n_OpenCmd_SW		0x05		// Open Command
+#define Souliss_T2n_CloseCmd_SW		0x06		// Stop Command 
 #define Souliss_T2n_ToogleCmd			0x08		// Toogle Command
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
 #define Souliss_T2n_Timer_Val			0xAF		// Timer set value
@@ -143,7 +143,8 @@
 #define Souliss_T2n_Coil_Close			0x01		// Closing
 #define Souliss_T2n_Coil_Open			0x02		// Opening
 #define Souliss_T2n_Coil_Stop			0x03		// Stopped
-#define Souliss_T2n_Coil_Off			0x00		
+#define Souliss_T2n_Coil_TimedStop	0x04		// Temporary stopped due to reverse motion direction requested
+#define Souliss_T2n_Coil_Off	0x00		// Start state that will become Souliss_T2n_Coil_Stop
 
 // General defines for T3n
 #define Souliss_T3n_InSetPoint			0x01		// Increase Setpoint Command
