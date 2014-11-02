@@ -205,7 +205,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 	// change, otherwise just reset the input
 	
 	if(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Off)
-		memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop;	// Off is the start value but never used so we convert it in stop for App compatibility
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;	// Off is the start value but never used so we convert it in stop for App compatibility
 
 		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) || 
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_SW) || 
