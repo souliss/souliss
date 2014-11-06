@@ -181,8 +181,8 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 			Using a monostable wall switch (press and spring return) or a 
 			software command from user interface, each press will toogle 
 			the output status.			
-				#define Souliss_T2n_CloseCmd_Local	0x05
-				#define Souliss_T2n_OpenCmd_Local		0x06
+				#define Souliss_T2n_CloseCmd_Local	0x08
+				#define Souliss_T2n_OpenCmd_Local		0x10
 				#define Souliss_T2n_StopCmd					0x04
 				
 			Following constant are defined for sketch source compatibility with versions < A6.1.1
@@ -198,11 +198,11 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 				#define Souliss_T2n_StopCmd					0x03
 				
 		Command recap, using: 
-		-  1(hex) as command, Software CLOSE request (stop 4 cycles if opening) 
-		-  2(hex) as command, Software OPEN request (stop 4 cycles if closing)
-		-  4(hex) as command, STOP request
-		-  5(hex) as command, CLOSE request (stop if opening) 
-		-  6(hex) as command, OPEN request (stop if closing)
+		-  0x01(hex) as command, Software CLOSE request (stop 4 cycles if opening) 
+		-  0x02(hex) as command, Software OPEN request (stop 4 cycles if closing)
+		-  0x04(hex) as command, STOP request
+		-  0x08(hex) as command, CLOSE request (stop if opening) 
+		-  0x10(hex) as command, OPEN request (stop if closing)
 		
 		Output status:
 		- 1(hex) for CLOSE,
