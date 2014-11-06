@@ -217,37 +217,41 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
 		else if(((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_Local)) && 
-				((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
+				(((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && !Souliss_T2n_IsTemporaryStop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// Open Command
 		else if(((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_Local)) && 
-				((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
+				(((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && !Souliss_T2n_IsTemporaryStop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close command
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_Local) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_Local))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command			
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_SW) && 
-				((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
+				(((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && !Souliss_T2n_IsTemporaryStop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// Open SW Command immediately executable because motor isn't running
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_SW) && (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close))
 		{																																	// Open SW Command that can't be executed because motor is running opposite direction
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_TimedStop_Val;	// Set timer value for the temporary Stop state						
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_TimedStop;		// Temporary stop
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;		// Temporary stop
 		}
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_SW) && (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_TimedStop_Off))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Open;			// Open SW Command executable because temporary stop is over
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) && 
-				((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
+				(((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) && !Souliss_T2n_IsTemporaryStop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_NoLimSwitch)))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close SW command	immediately executable because motor isn't running	
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) && (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open))
 		{																																	// Close SW Command that can't be executed because motor is running opposite direction
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_TimedStop_Val;	// Set timer value for the temporary Stop state						
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_TimedStop;		// Temporary stop
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;		// Temporary stop
 		}
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) && (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_TimedStop_Off))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close SW Command executable because temporary stop is over
 		
 		// If a command was issued, set the timer
-		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T2n_Coil_TimedStop)
+		if(!Souliss_T2n_IsTemporaryStop)
 		{
+			Serial.print("Set timer: 0x");
+			Serial.print(Souliss_T2n_Timer_Val, HEX);
+			Serial.print("\n\r");
+			
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_Timer_Val;		// Set timer value
 			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset command
 			
@@ -293,13 +297,20 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_T22_Timer(U8 *memory_map, U8 slot)
 {
-	// Memory value is used as timer
+			Serial.print("STATO: 0x");
+			Serial.print(memory_map[MaCaco_OUT_s + slot], HEX);
+			Serial.print("\n\r");
+
+			// Memory value is used as timer
 	if(((memory_map[MaCaco_AUXIN_s + slot] > Souliss_T2n_Timer_Off) &&
-		(memory_map[MaCaco_AUXIN_s + slot] < Souliss_T2n_Timer_Val)) ||
+		(memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T2n_Timer_Val)) ||
 		
-		((memory_map[MaCaco_AUXIN_s + slot] > Souliss_T2n_TimedStop_Off) &&
-		(memory_map[MaCaco_AUXIN_s + slot] < Souliss_T2n_TimedStop_Val)))
+		Souliss_T2n_IsTemporaryStop )
 	{	
-		memory_map[MaCaco_AUXIN_s + slot]--;									// Decrease timer
+			Serial.print("Timer: 0x");
+			Serial.print(memory_map[MaCaco_AUXIN_s + slot], HEX);
+			Serial.print("\n\r");
+
+			memory_map[MaCaco_AUXIN_s + slot]--;									// Decrease timer
 	}	
 }
