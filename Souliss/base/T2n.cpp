@@ -152,6 +152,7 @@ void Souliss_T21_Timer(U8 *memory_map, U8 slot)
 void Souliss_SetT22(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T22;
+	memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;
 }
 
 /**************************************************************************
@@ -218,9 +219,6 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Off)
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;	// Off is the start value but never used so we convert it in stop for App compatibility
-
 		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) || 
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_SW) || 
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_Local) ||
