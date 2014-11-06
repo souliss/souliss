@@ -115,8 +115,8 @@ void loop()
 		if (!(phase_fast % 3))
 		{
 			// Use OPEN and CLOSE Commands
-			Souliss_DigIn(2, Souliss_T2n_OpenCmd, memory_map, CURTAIN_NODE2);
-			Souliss_DigIn(3, Souliss_T2n_CloseCmd, memory_map, CURTAIN_NODE2);
+			Souliss_DigIn(2, Souliss_T2n_OpenCmd_Local, memory_map, CURTAIN_NODE2);
+			Souliss_DigIn(3, Souliss_T2n_CloseCmd_Local, memory_map, CURTAIN_NODE2);
 			
 			// Run the logic
 			Souliss_Logic_T22(memory_map, CURTAIN_NODE2, &data_changed);
