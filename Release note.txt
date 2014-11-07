@@ -1,8 +1,15 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+<<<<<<< HEAD
 Release note for revision Alpha 6.2, on dd/mm/yyyy
 
+=======
+Release note for revision Alpha 6.1.2, on 07/11/2014
+	
+	Modified T22 logic and general bugfixes
+	
+>>>>>>> master
 Release note for revision Alpha 6.1.1, on 13/10/2014
 
 	Support for Moteino boards and fix the Alpha 6.0.3 this release include 

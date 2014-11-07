@@ -45,6 +45,7 @@ U8* subscr_putin[MaCaco_INMAXSUBSCR] = {0x0000};
 U8 subscr_startoffset[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_numberof[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_funcode[MaCaco_INMAXSUBSCR] = {0x00};
+U8 subscr_lastindex = 0;
 bool subscr_init = false;
 
 // store outgoing subscription state
@@ -356,7 +357,11 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		i = 0;
 		while((subscr_addr[i] != addr) && (subscr_addr[i] != 0x0000) && (i < MaCaco_INMAXSUBSCR))
 			i++;
-			
+		
+		// if the subscription list is full, start from the first entry and overwrite it
+		if(i == MaCaco_INMAXSUBSCR)
+			i = subscr_lastindex++;				
+		
 		// Store the subscription data
 		if(i < MaCaco_INMAXSUBSCR)
 		{
@@ -378,7 +383,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				subscr_numberof[i] = nodes;	
 			}
 		#endif
-		
 		}
 		else
 			return MaCaco_ERR85;
@@ -494,9 +498,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			MaCaco_LOG(">\r\n");
 			#endif
 				
-			// restart the subscriptions
-			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-				subscr_count[i] = 0;	
+			// Restart the subscriptions	
+			MaCaco_subscribe_reset();	
 		}
 			
 		// if the join request is from a nodes that previously got an address, flag the
@@ -969,7 +972,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 		break;
 		}	
-	}	
+	}
+
+	// Nothing to parse
+	return MaCaco_FUNCODE_ERR;
 }
 
 /**************************************************************************/
@@ -1071,7 +1077,7 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
 	{
-		if(subscr_addr[i]!=0x0000)
+		if((subscr_addr[i]!=0x0000) && (subscr_addr[i]!=VNET_ADDR_NULL))
 		{		
 			// Send data to subscribers
 			status = MaCaco_send(subscr_addr[i], MaCaco_STATEANS, subscr_putin[i], startoffset, numberof, data);
@@ -1094,9 +1100,28 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 		// Too many retries
 		if(j>Macaco_MAXRETRY)
 		{	
+		// Data are sent through vNet that use stateless communication
+		// only in case of IP, the below drivers may hang waiting for ARP
+		// replies.
+		// So to avoid hangs the subscription can be deleted
+		if(vNet_GetMedia(subscr_addr[i]) == (VNET_MEDIA1_ID+1))
+		{
 			// Delete the subscription that has failed
-			memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
+			if(MaCaco_INMAXSUBSCR-i-1) memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
 
+			#if (MaCaco_DEBUG)
+			// Print the outgoing message header
+			MaCaco_LOG("(MaCaco)<INSUB>");
+			MaCaco_LOG("<|0x");
+			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+			{
+				MaCaco_LOG(*(subscr_addr+i),HEX);
+				MaCaco_LOG("|0x");
+			}		
+			MaCaco_LOG(">\r\n");
+			#endif				
+		}
+		
 			// Next subscription
 			i++;
 			j=0;
@@ -1119,7 +1144,7 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
 	{
-		if(subscr_addr[i]!=0x0000)
+		if((subscr_addr[i]!=0x0000) && (subscr_addr[i]!=VNET_ADDR_NULL))
 		{
 			// answer to subscription
 			if(subscr_funcode[i] == MaCaco_SUBSCRREQ)
@@ -1153,7 +1178,29 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 
 		// Retry no more that MAXRETRY number
 		if(j>Macaco_MAXRETRY)
-		{			
+		{	
+		// Data are sent through vNet that use stateless communication
+		// only in case of IP, the below drivers may hang waiting for ARP
+		// replies.
+		// So to avoid hangs the subscription can be deleted
+		if(vNet_GetMedia(subscr_addr[i]) == (VNET_MEDIA1_ID+1))
+		{
+			// Delete the subscription that has failed
+			if(MaCaco_INMAXSUBSCR-i-1) memmove((subscr_addr+i), (subscr_addr+i+1), MaCaco_INMAXSUBSCR-i-1);
+		
+			#if (MaCaco_DEBUG)
+			// Print the outgoing message header
+			MaCaco_LOG("(MaCaco)<INSUB>");
+			MaCaco_LOG("<|0x");
+			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
+			{
+				MaCaco_LOG(*(subscr_addr+i),HEX);
+				MaCaco_LOG("|0x");
+			}		
+			MaCaco_LOG(">\r\n");
+			#endif	
+		}
+		
 			// Next subscription
 			i++;
 			j=0;

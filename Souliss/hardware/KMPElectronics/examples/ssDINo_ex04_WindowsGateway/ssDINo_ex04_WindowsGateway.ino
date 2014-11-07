@@ -85,10 +85,10 @@ void loop()
 		
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
 		
-			ssDigIn(IN1, Souliss_T2n_OpenCmd, RELAY1and2);		// Read inputs from IN1
-			ssDigIn(IN2, Souliss_T2n_CloseCmd, RELAY1and2);		// Read inputs from IN2
-			ReadInput3(RELAY3);									// Read inputs from IN3
-			ReadInput4(RELAY4);									// Read inputs from IN4
+			ssDigIn(IN1, Souliss_T2n_OpenCmd_Local, RELAY1and2);		// Read inputs from IN1
+			ssDigIn(IN2, Souliss_T2n_CloseCmd_Local, RELAY1and2);		// Read inputs from IN2
+			ReadInput3(RELAY3);											// Read inputs from IN3
+			ReadInput4(RELAY4);											// Read inputs from IN4
 		
 			Logic_Windows(RELAY1and2);							// Execute the logic for Relay 1 and 2
 			Logic_SimpleLight(RELAY3);							// Execute the logic for Relay 3

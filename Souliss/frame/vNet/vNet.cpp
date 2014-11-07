@@ -182,6 +182,10 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	// If the destination is the NULL address, discard it
 	if(addr==VNET_ADDR_NULL)
 	{
+		#if(VNET_DEBUG)
+		VNET_LOG("(vNet)<ADDR_NULL>\r\n");
+		#endif
+		
 		// Free the frame and return
 		oFrame_Reset();
 		return VNET_DATA_FAIL;
@@ -284,78 +288,79 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 	U8 *frame_pnt;
 	
 	for(U8 media=0;media<VNET_MEDIA_NUMBER;media++)
-	if(vnet_media_en[media])
 	{
-		// oFrames can be used only once, so we use a copy
-		oFrame_Copy(&message, frame);
-	
-		frame_pnt = &vNet_header[0];							// Get header pointer
-
-		// Prepare header
-		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
-		*frame_pnt++ = port;									// Frame Port
-		*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
-		frame_pnt += sizeof(U16);
-		*(U16 *)frame_pnt = vNet_Media[media].src_addr;			// Original Source Address
-		frame_pnt += sizeof(U16);
-		
-		// Build the complete frame
-		oFrame_Define(&vNet_oFrame);
-		oFrame_Set(vNet_header, 0, VNET_HEADER_SIZE, 0, &message);
-		
-		// Include debug functionalities, if required
-		#if(VNET_DEBUG)
-		// Print address  
-		VNET_LOG("(vNet)<BRD><Media><|0x");
-		VNET_LOG(media+1,HEX);
-		VNET_LOG("><|0x");
-		VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-		VNET_LOG("|0x");
-		VNET_LOG(port,HEX);
-		VNET_LOG("|0x");
-		VNET_LOG(broadcast_addr,HEX);
-		VNET_LOG("|0x");
-		VNET_LOG(vNet_Media[media].src_addr,HEX);
-		
-		VNET_LOG(">\r\n");
-		#endif
-		
-
-		// Send the frame
-		switch(media+1)
+		if(vnet_media_en[media])
 		{
-		#if (VNET_MEDIA1_ENABLE)
-			case(1):	// Send out on Media 1
-				vNet_Send_M1(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);
-			break;
-		#endif
-				
-		#if (VNET_MEDIA2_ENABLE)	
-			case(2):	// Send out on Media 2
-				vNet_Send_M2(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
-			break;
-		#endif
-				
-		#if (VNET_MEDIA3_ENABLE)	
-			case(3):	// Send out on Media 3
-				vNet_Send_M3(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
-			break;
-		#endif
-				
-		#if (VNET_MEDIA4_ENABLE)	
-			case(4):	// Send out on Media 4
-				vNet_Send_M4(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
-			break;
-		#endif
-				
-		#if (VNET_MEDIA5_ENABLE)		
-			case(5):	// Send out on Media 5
-				vNet_Send_M5(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
-			break;
-		#endif
-		}
+			// oFrames can be used only once, so we use a copy
+			oFrame_Copy(&message, frame);
 		
-	}	
+			frame_pnt = &vNet_header[0];							// Get header pointer
+
+			// Prepare header
+			*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
+			*frame_pnt++ = port;									// Frame Port
+			*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
+			frame_pnt += sizeof(U16);
+			*(U16 *)frame_pnt = vNet_Media[media].src_addr;			// Original Source Address
+			frame_pnt += sizeof(U16);
+			
+			// Build the complete frame
+			oFrame_Define(&vNet_oFrame);
+			oFrame_Set(vNet_header, 0, VNET_HEADER_SIZE, 0, &message);
+			
+			// Include debug functionalities, if required
+			#if(VNET_DEBUG)
+			// Print address  
+			VNET_LOG("(vNet)<BRD><Media><|0x");
+			VNET_LOG(media+1,HEX);
+			VNET_LOG("><|0x");
+			VNET_LOG(len+VNET_HEADER_SIZE,HEX);
+			VNET_LOG("|0x");
+			VNET_LOG(port,HEX);
+			VNET_LOG("|0x");
+			VNET_LOG(broadcast_addr,HEX);
+			VNET_LOG("|0x");
+			VNET_LOG(vNet_Media[media].src_addr,HEX);
+			
+			VNET_LOG(">\r\n");
+			#endif
+			
+
+			// Send the frame
+			switch(media+1)
+			{
+			#if (VNET_MEDIA1_ENABLE)
+				case(1):	// Send out on Media 1
+					vNet_Send_M1(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);
+				break;
+			#endif
+					
+			#if (VNET_MEDIA2_ENABLE)	
+				case(2):	// Send out on Media 2
+					vNet_Send_M2(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
+				break;
+			#endif
+					
+			#if (VNET_MEDIA3_ENABLE)	
+				case(3):	// Send out on Media 3
+					vNet_Send_M3(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
+				break;
+			#endif
+					
+			#if (VNET_MEDIA4_ENABLE)	
+				case(4):	// Send out on Media 4
+					vNet_Send_M4(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
+				break;
+			#endif
+					
+			#if (VNET_MEDIA5_ENABLE)		
+				case(5):	// Send out on Media 5
+					vNet_Send_M5(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);		
+				break;
+			#endif
+			}	
+		}
+	}		
 	
 	// The frame is no longer needed, we clear it
 	oFrame_Define(frame);
@@ -377,6 +382,10 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 	// A valid multicast group is between 0xFF01 and 0xFFFE
 	if((multicastgroup <= VNET_ADDR_L_MLC) || (multicastgroup == VNET_ADDR_BRDC)) 
 	{
+		#if(VNET_DEBUG)
+		VNET_LOG("(vNet)<MLT><FAIL>\r\n");
+		#endif	
+		
 		// Free the frame and return
 		oFrame_Reset();
 		return VNET_DATA_FAIL;
@@ -1029,7 +1038,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	#endif
 	
 	// Bridge to a node within the same subnet
-	if ((vnet_media_en[*media-1]) && (vNet_Media[*media-1].src_addr & vNet_Media[*media-1].subnetmask) == (addr & vNet_Media[*media-1].subnetmask))
+	if ((vnet_media_en[*media-1]) && ((vNet_Media[*media-1].src_addr & vNet_Media[*media-1].subnetmask) == (addr & vNet_Media[*media-1].subnetmask)))
 		*routed_addr = addr;	
 	else
 	{

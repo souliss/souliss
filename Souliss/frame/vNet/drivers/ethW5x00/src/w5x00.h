@@ -61,6 +61,7 @@ public:
 class SnSR {
 public:
   static const uint8_t CLOSED      = 0x00;
+  static const uint8_t ARP         = 0x01;  
   static const uint8_t INIT        = 0x13;
   static const uint8_t LISTEN      = 0x14;
   static const uint8_t SYNSENT     = 0x15;
