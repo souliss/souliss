@@ -923,7 +923,7 @@ U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *mem
 	Identify two states, press and hold.
 */	
 /**************************************************************************/
-U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot)
+U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U8 holdtime=1500)
 {
 	// If pin is on, set the "value"
 	if(digitalRead(pin) && !InPin[pin])
@@ -933,7 +933,7 @@ U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot)
 		
 		return MaCaco_NODATACHANGED;
 	}
-	else if(digitalRead(pin) && (abs(millis()-time) > 1500))
+	else if(digitalRead(pin) && (abs(millis()-time) > holdtime))
 	{
 		InPin[pin] = false;								// Stay there till pushbutton is released
 		
