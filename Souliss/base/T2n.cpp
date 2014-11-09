@@ -74,10 +74,11 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 	
 */	
 /**************************************************************************/
-U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2n_Timer_Val)
 {
 	U8 i_trigger=0;														// Internal trigger
-
+	if(timeout<=Souliss_T2n_Timer_Off)	timeout=Souliss_T2n_Timer_Val;
+	
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -103,11 +104,11 @@ U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger)
 		else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_Local) && ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Stop) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Open)))
 				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close command
 		else 
-				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;				// Stop Command
+				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
 		
 		// If a command was issued, set the timer
 		if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close))
-			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_Timer_Val;			// Set timer value
+			memory_map[MaCaco_AUXIN_s + slot] = timeout;						// Set timer value
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
   		i_trigger = Souliss_TRIGGED;
@@ -212,10 +213,11 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 	
 */	
 /**************************************************************************/
-U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2n_Timer_Val)
 {
 	U8 i_trigger=0;														// Internal trigger
-
+	if(timeout<=Souliss_T2n_Timer_Off)	timeout=Souliss_T2n_Timer_Val;
+	
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
@@ -260,7 +262,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger)
 		// If a command was issued, set the timer
 		if(!Souliss_T2n_IsTemporaryStop)
 		{
-			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T2n_Timer_Val;		// Set timer value
+			memory_map[MaCaco_AUXIN_s + slot] = timeout;							// Set timer value
 			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset command
 			
 			// Set the trigger

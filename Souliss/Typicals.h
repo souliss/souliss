@@ -251,11 +251,11 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T19_Timer(U8 *memory_map, U8 input_slot);
 
 void Souliss_SetT21(U8 *memory_map, U8 slot);
-U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 timeout);
 void Souliss_T21_Timer(U8 *memory_map, U8 slot);
 
 void Souliss_SetT22(U8 *memory_map, U8 slot);
-U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger);
+U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout);
 void Souliss_T22_Timer(U8 *memory_map, U8 slot);
 
 void Souliss_SetT31(U8 *memory_map, U8 slot);
