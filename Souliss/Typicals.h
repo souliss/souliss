@@ -42,6 +42,7 @@
 #define Souliss_T16						0x16			// RGB Light
 #define Souliss_T18						0x18			// ON/OFF Digital Output with pulse output with Timer Option
 #define Souliss_T19						0x19			// LED Light
+#define Souliss_T1A						0X1A			// Digital pass through
 #define Souliss_T21						0x21			// Motorized devices with limit switches
 #define Souliss_T22						0x22			// Motorized devices with limit switches and middle position
 #define Souliss_T31						0x31			// Temperature control 
@@ -137,7 +138,7 @@
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
 #define Souliss_T2n_Timer_Val			0xAF		// Timer set value
 #define Souliss_T2n_Timer_Off			0xA0		// Timer expired value
-#define Souliss_T2n_TimedStop_Val		0xC3		// Timed stop value
+#define Souliss_T2n_TimedStop_Val		0xC2		// Timed stop value
 #define Souliss_T2n_TimedStop_Off		0xC0		// Timed stop exipred value
 #define Souliss_T2n_LimSwitch_Close		0x08		// Close Feedback from Limit Switch
 #define Souliss_T2n_LimSwitch_Open		0x10		// Open Feedback from Limit Switch
@@ -249,6 +250,9 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_SetT19(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_T19_Timer(U8 *memory_map, U8 input_slot);
+
+void Souliss_SetT1A(U8 *memory_map, U8 slot);
+U8 Souliss_Logic_T1A(U8 *memory_map, U8 slot, U8 *trigger);
 
 void Souliss_SetT21(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 timeout);
