@@ -790,7 +790,7 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	// be ON the requested action will be performed
 	if(digitalRead(pin) && (InPin[pin]==PINRESET))
 		InPin[pin] = PINSET;
-	else if(digitalRead(pin) && InPin[pin]==PINSET))(
+	else if(digitalRead(pin) && InPin[pin]==PINSET)
 	{
 		// Flag that action is executed
 		InPin[pin] = PINACTIVE;
@@ -822,7 +822,7 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	// be ON the requested action will be performed
 	if(!digitalRead(pin) && (InPin[pin]==PINRESET))
 		InPin[pin] = PINSET;
-	else if(!digitalRead(pin) && InPin[pin]==PINSET))(
+	else if(!digitalRead(pin) && InPin[pin]==PINSET)
 	{
 		// Flag that action is executed
 		InPin[pin] = PINACTIVE;
