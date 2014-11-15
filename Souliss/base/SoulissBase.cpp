@@ -33,6 +33,7 @@
 #define	PINRESET	0x0
 #define	PINSET		0x1
 #define	PINACTIVE	0x2
+#define	PINRELEASED	0x3
 
 U8 InPin[MAXINPIN];
 bool FirstInit = {false}, addrsrv = {false};
@@ -802,7 +803,9 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 			return value;
 		}
 	}
-	else if(!digitalRead(pin))
+	else if(!digitalRead(pin) && InPin[pin]==PINSET)
+		InPin[pin] = PINRELEASED;
+	else if(!digitalRead(pin) && InPin[pin]==PINRELEASED)
 		InPin[pin] = PINRESET;
 	
 	return MaCaco_NODATACHANGED;
@@ -834,7 +837,9 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 			return value;
 		}
 	}
-	else if(digitalRead(pin))
+	else if(digitalRead(pin) && InPin[pin]==PINSET)
+		InPin[pin] = PINRELEASED;
+	else if(digitalRead(pin) && InPin[pin]==PINRELEASED)
 		InPin[pin] = PINRESET;
 	
 	return MaCaco_NODATACHANGED;
