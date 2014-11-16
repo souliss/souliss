@@ -803,7 +803,7 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 			return value;
 		}
 	}
-	else if(!digitalRead(pin) && InPin[pin]==PINSET)
+	else if(!digitalRead(pin) && InPin[pin]==PINACTIVE)
 		InPin[pin] = PINRELEASED;
 	else if(!digitalRead(pin) && InPin[pin]==PINRELEASED)
 		InPin[pin] = PINRESET;
@@ -837,7 +837,7 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 			return value;
 		}
 	}
-	else if(digitalRead(pin) && InPin[pin]==PINSET)
+	else if(digitalRead(pin) && InPin[pin]==PINACTIVE)
 		InPin[pin] = PINRELEASED;
 	else if(digitalRead(pin) && InPin[pin]==PINRELEASED)
 		InPin[pin] = PINRESET;
