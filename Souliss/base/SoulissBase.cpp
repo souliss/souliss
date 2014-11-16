@@ -785,13 +785,23 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 	used for logic applications.
 */	
 /**************************************************************************/
-U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
+U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
 {
 	// If pin is ON, set the flag. If at next cycle the pin will still
 	// be ON the requested action will be performed
 	if(digitalRead(pin) && (InPin[pin]==PINRESET))
+	{
 		InPin[pin] = PINSET;
-	else if(digitalRead(pin) && InPin[pin]==PINSET)
+
+		// Copy the value in the memory map
+		if(!filteractive && memory_map)
+		{
+			memory_map[MaCaco_IN_s + slot] = value;	
+			return value;		
+		}
+		
+	}	
+	else if(filteractive && digitalRead(pin) && InPin[pin]==PINSET)
 	{
 		// Flag that action is executed
 		InPin[pin] = PINACTIVE;
@@ -803,9 +813,11 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 			return value;
 		}
 	}
-	else if(!digitalRead(pin) && InPin[pin]==PINACTIVE)
+	else if(filteractive && !digitalRead(pin) && InPin[pin]==PINACTIVE)
 		InPin[pin] = PINRELEASED;
-	else if(!digitalRead(pin) && InPin[pin]==PINRELEASED)
+	else if(filteractive && !digitalRead(pin) && InPin[pin]==PINRELEASED)
+		InPin[pin] = PINRESET;
+	else if(!filteractive && !digitalRead(pin))
 		InPin[pin] = PINRESET;
 	
 	return MaCaco_NODATACHANGED;
@@ -819,13 +831,22 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	used for logic applications.
 */	
 /**************************************************************************/
-U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
+U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
 {
 	// If pin is ON, set the flag. If at next cycle the pin will still
 	// be ON the requested action will be performed
 	if(!digitalRead(pin) && (InPin[pin]==PINRESET))
+	{
 		InPin[pin] = PINSET;
-	else if(!digitalRead(pin) && InPin[pin]==PINSET)
+
+		// Copy the value in the memory map
+		if(!filteractive && memory_map)
+		{
+			memory_map[MaCaco_IN_s + slot] = value;	
+			return value;		
+		}		
+	}	
+	else if(filteractive && !digitalRead(pin) && InPin[pin]==PINSET)
 	{
 		// Flag that action is executed
 		InPin[pin] = PINACTIVE;
@@ -837,9 +858,11 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 			return value;
 		}
 	}
-	else if(digitalRead(pin) && InPin[pin]==PINACTIVE)
+	else if(filteractive && digitalRead(pin) && InPin[pin]==PINACTIVE)
 		InPin[pin] = PINRELEASED;
-	else if(digitalRead(pin) && InPin[pin]==PINRELEASED)
+	else if(filteractive && digitalRead(pin) && InPin[pin]==PINRELEASED)
+		InPin[pin] = PINRESET;
+	else if(!filteractive && digitalRead(pin))
 		InPin[pin] = PINRESET;
 	
 	return MaCaco_NODATACHANGED;

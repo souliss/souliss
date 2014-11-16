@@ -1,6 +1,10 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+Release note for revision Alpha 6.x.x, on dd/mm/yyy
+
+	Added software filtering for digital inputs
+
 Release note for revision Alpha 6.1.2, on 07/11/2014
 	
 	Modified T22 logic and general bugfixes
