@@ -1104,3 +1104,54 @@ void Souliss_T19_Timer(U8 *memory_map, U8 slot)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;		// Reset	
 	}	
 }
+
+/**************************************************************************
+/*!
+	Define the use of Typical 1A : Digital pass through
+*/	
+/**************************************************************************/
+void Souliss_SetT1A(U8 *memory_map, U8 slot)
+{
+	memory_map[MaCaco_TYP_s + slot] = Souliss_T1A;
+}
+
+/**************************************************************************
+/*!
+	Typical 13 : Digital pass through
+	
+		It read read data from input and pass them through to the output
+		
+		Hardware Command:
+				
+	There aren't command, but every value is copied in output
+	
+		Command recap, using: 
+		-  Any value
+		
+		Output status,
+		-  Any value
+*/	
+/**************************************************************************/
+U8 Souliss_Logic_T1A(U8 *memory_map, U8 slot, U8 *trigger)
+{
+	U8 i_trigger=0;														// Internal trigger
+
+	// Look for input value, update output. If the output is not set, trig a data
+	// change, otherwise just reset the input
+	
+	if(memory_map[MaCaco_IN_s + slot] != memory_map[MaCaco_OUT_s + slot])
+	{	
+			memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];
+			i_trigger = Souliss_TRIGGED;								// Trig change
+	}
+	else
+	{	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+	}
+
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;
+}
