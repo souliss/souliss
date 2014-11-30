@@ -30,7 +30,12 @@
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
-bool InPin[MAXINPIN] = {false};
+#define	PINRESET	0x0
+#define	PINSET		0x1
+#define	PINACTIVE	0x2
+#define	PINRELEASED	0x3
+
+U8 InPin[MAXINPIN];
 bool FirstInit = {false}, addrsrv = {false};
 static unsigned long time;
 U8 roundrob_1=1,roundrob_2=1, timeout=TIMEOUT_SET;
@@ -39,6 +44,17 @@ U16 keyidval=0;
 #if (SOULISS_DEBUG)
 	#define SOULISS_LOG Serial.print
 #endif
+
+/**************************************************************************
+/*!
+	Init
+*/	
+/**************************************************************************/
+void Souliss_Init()
+{
+	for(U8 i=0; i<MAXINPIN; i++)
+		InPin[i]=PINRESET;
+}
 
 /**************************************************************************
 /*!
@@ -769,18 +785,40 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 	used for logic applications.
 */	
 /**************************************************************************/
-U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
+U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
 {
-	// If pin is on, set the "value"
-	if(digitalRead(pin) && !InPin[pin])
-	{	
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
+	// If pin is ON, set the flag. If at next cycle the pin will still
+	// be ON the requested action will be performed
+	if(digitalRead(pin) && (InPin[pin]==PINRESET))
+	{
+		InPin[pin] = PINSET;
+
+		// Copy the value in the memory map
+		if(!filteractive && memory_map)
+		{
+			memory_map[MaCaco_IN_s + slot] = value;	
+			return value;		
+		}
 		
-		InPin[pin] = true;
-		return value;
+	}	
+	else if(filteractive && digitalRead(pin) && InPin[pin]==PINSET)
+	{
+		// Flag that action is executed
+		InPin[pin] = PINACTIVE;
+
+		// Copy the value in the memory map
+		if(memory_map)	
+		{
+			memory_map[MaCaco_IN_s + slot] = value;	
+			return value;
+		}
 	}
-	else if(!digitalRead(pin))
-		InPin[pin] = false;
+	else if(filteractive && !digitalRead(pin) && InPin[pin]==PINACTIVE)
+		InPin[pin] = PINRELEASED;
+	else if(filteractive && !digitalRead(pin) && InPin[pin]==PINRELEASED)
+		InPin[pin] = PINRESET;
+	else if(!filteractive && !digitalRead(pin))
+		InPin[pin] = PINRESET;
 	
 	return MaCaco_NODATACHANGED;
 }
@@ -793,18 +831,39 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	used for logic applications.
 */	
 /**************************************************************************/
-U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot)
+U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
 {
-	// If pin is on, set the "value"
-	if(digitalRead(pin)==0 && !InPin[pin])
-	{	
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
-		
-		InPin[pin] = true;
-		return value;
+	// If pin is ON, set the flag. If at next cycle the pin will still
+	// be ON the requested action will be performed
+	if(!digitalRead(pin) && (InPin[pin]==PINRESET))
+	{
+		InPin[pin] = PINSET;
+
+		// Copy the value in the memory map
+		if(!filteractive && memory_map)
+		{
+			memory_map[MaCaco_IN_s + slot] = value;	
+			return value;		
+		}		
+	}	
+	else if(filteractive && !digitalRead(pin) && InPin[pin]==PINSET)
+	{
+		// Flag that action is executed
+		InPin[pin] = PINACTIVE;
+
+		// Copy the value in the memory map
+		if(memory_map)	
+		{
+			memory_map[MaCaco_IN_s + slot] = value;	
+			return value;
+		}
 	}
-	else if(digitalRead(pin))
-		InPin[pin] = false;
+	else if(filteractive && digitalRead(pin) && InPin[pin]==PINACTIVE)
+		InPin[pin] = PINRELEASED;
+	else if(filteractive && digitalRead(pin) && InPin[pin]==PINRELEASED)
+		InPin[pin] = PINRESET;
+	else if(!filteractive && digitalRead(pin))
+		InPin[pin] = PINRESET;
 	
 	return MaCaco_NODATACHANGED;
 }
@@ -822,14 +881,14 @@ U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory
 	{	
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_on;
 		
-		InPin[pin] = true;
+		InPin[pin] = PINSET;
 		return value_state_on;
 	}
 	else if(!digitalRead(pin) && InPin[pin])
 	{
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_off;
 		
-		InPin[pin] = false;
+		InPin[pin] = PINRESET;
 		return value_state_off;
 	}
 	
@@ -874,18 +933,18 @@ U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memo
     {    
         if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_button1;
         
-		InPin[pin] = true;
+		InPin[pin] = PINSET;
         return value_button1;
     }
     else if(!bState && !InPin[pin] && !bMiddle)
     {
         if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_button2;
         
-		InPin[pin] = true;
+		InPin[pin] = PINSET;
         return value_button2;
     }
 	else if(bMiddle) 
-		InPin[pin] = false;
+		InPin[pin] = PINRESET;
 
 	return MaCaco_NODATACHANGED;
 }
@@ -903,14 +962,14 @@ U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *mem
 	{
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_on;
 	 
-		InPin[pin] = true;
+		InPin[pin] = PINSET;
 		return value_state_on;
 	}
 	else if(digitalRead(pin) && InPin[pin])
 	{
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_off;
 	 
-		InPin[pin] = false;
+		InPin[pin] = PINRESET;
 		return value_state_off;
 	}
 	 
@@ -929,13 +988,13 @@ U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U
 	if(digitalRead(pin) && !InPin[pin])
 	{
 		time = millis();								// Record time
-		InPin[pin] = true;
+		InPin[pin] = PINSET;
 		
 		return MaCaco_NODATACHANGED;
 	}
 	else if(digitalRead(pin) && (abs(millis()-time) > holdtime))
 	{
-		InPin[pin] = false;								// Stay there till pushbutton is released
+		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
 		
 		// Write timer value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
@@ -947,7 +1006,7 @@ U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U
 		// Write input value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
 	
-		InPin[pin] = false;
+		InPin[pin] = PINRESET;
 		return value;
 	}
 	
@@ -960,19 +1019,19 @@ U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U
 	Identify two states, press and hold.
 */	
 /**************************************************************************/
-U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot)
+U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U8 holdtime=1500)
 {
 	// If pin is on, set the "value"
 	if(!digitalRead(pin) && !InPin[pin])
 	{
 		time = millis();								// Record time
 		
-		InPin[pin] = true;
+		InPin[pin] = PINSET;
 		return MaCaco_NODATACHANGED;
 	}
-	else if(!digitalRead(pin) && abs(millis()-time) > 1500)
+	else if(!digitalRead(pin) && abs(millis()-time) > holdtime)
 	{
-		InPin[pin] = false;								// Stay there till pushbutton is released
+		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
 		
 		// Write timer value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
@@ -984,7 +1043,7 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 		// Write input value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
 	
-		InPin[pin] = false;
+		InPin[pin] = PINRESET;
 		return value;
 	}
 	
