@@ -714,10 +714,12 @@ U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8
 /**************************************************************************/
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 {
+	#if(MaCaco_SUBSCRIBERS)
 	// If not yet, init the communication channel
 	if (*(memory_map+MaCaco_HEALTY_s+0) == 0)
 		*(memory_map+MaCaco_HEALTY_s+0) = MaCaco_SUBMAXHEALTY;
-		
+	#endif
+	
 	MaCaco_DataIn();
 	U8 ret = MaCaco_retrieve(memory_map, trigger);
 	

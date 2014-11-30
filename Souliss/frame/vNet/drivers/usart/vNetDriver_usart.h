@@ -38,6 +38,8 @@
 #	define USART_BAUD			115200			
 #elif(USART_BAUD19k2)
 #	define USART_BAUD			19200
+#elif(USART_BAUD57k6)
+#	define USART_BAUD			57600
 #else
 #	define USART_BAUD			9600
 #endif

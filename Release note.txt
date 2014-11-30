@@ -1,9 +1,15 @@
 Souliss
 Copyright (C) 2014  Veseo
 
-Release note for revision Alpha 6.x.x, on dd/mm/yyy
+Release note for revision Alpha 6.1.3, on dd/mm/yyy
 
-	Added software filtering for digital inputs
+	General improvement and bugfix
+		- Added software filtering for digital inputs
+		- Added support for T1A Digital Input
+		- Bugfix  
+		
+		Thanks to: Juan Luis, Juan Pinto, Fulvio Spelta,
+					Marco Pozzuolo
 
 Release note for revision Alpha 6.1.2, on 07/11/2014
 	
