@@ -113,6 +113,7 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 			i_trigger = Souliss_TRIGGED;
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the output
+		memory_map[MaCaco_AUXIN_s + slot] = 0; 		//Reset the timer
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
