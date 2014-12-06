@@ -86,7 +86,9 @@
 #ifndef HTONS
 // Host to Network Word
 #	define HTONS(n) ((((U16)((n) & 0xff)) << 8) | (((n) & 0xff00) >> 8))
+#endif
 
+#ifndef HTONF
 // Host to Network for Floating point 
 #define HTONF(o, i)		*(U8*)(o+0) = *(((U8 *)(i))+1); \
 						*(U8*)(o+1) = *(((U8 *)(i))+0); \
