@@ -177,4 +177,6 @@ void Souliss_ResetOutput(U8 *memory_map, U8 slot);
 void Souliss_ResetInput(U8 *memory_map, U8 slot);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 
+#include "base/SpeakEasy.h"
+
 #endif

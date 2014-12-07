@@ -123,7 +123,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 	
 	// Set the address
-	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, ((vNet_address & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
 }
 
 /**************************************************************************
