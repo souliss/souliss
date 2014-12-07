@@ -115,7 +115,12 @@
 #include "hardware/IOdef.h"
 #include "src/IEEE754/float16.h"	
 
-bool InPin[MAXINPIN] = {false};
+#define	PINRESET	0x0
+#define	PINSET		0x1
+#define	PINACTIVE	0x2
+#define	PINRELEASED	0x3
+
+U8 InPin[MAXINPIN];
 bool FirstInit = {false}, addrsrv = {false};
 static unsigned long time;
 U8 roundrob_1=1,roundrob_2=1, timeout=TIMEOUT_SET;
@@ -150,12 +155,13 @@ U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action);
 U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8* len);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
-U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
-U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
+U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false);
+U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false);
 U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot);
 U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memory_map, U8 slot);
-U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U8 holdtime);
-U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot);
+U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot);
+U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U8 holdtime=1500);
+U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U8 holdtime=1500);
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue);
 void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias);
 void Souliss_DigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);

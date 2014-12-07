@@ -1,6 +1,19 @@
 Souliss
 Copyright (C) 2014  Veseo
 
+Relese note for revision ... (Friariello)
+	
+	Revised configuration structure and dynamic addressing features, extended support
+	for battery operated devices.
+		- Configuration is only available through inSketch or changing the configuration files
+		- Quick Configuration is deprecated.
+		- Support for battery operated devices (TODO)
+		- Dynamic Addressing works also in case of complex network (TODO)
+		- EEPROM is used to retain network configuration for either Gateway and Peers (TODO)
+		- Review of all examples (TODO)
+		- Zeroconfig examples (TODO)
+		- 
+
 Release note for revision Alpha 6.1.3, on dd/mm/yyy
 
 	General improvement and bugfix
