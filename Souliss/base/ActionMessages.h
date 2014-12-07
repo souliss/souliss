@@ -41,23 +41,33 @@
 */	
 /**************************************************************************/	
 
+/*** General Event ***/
+
+// General Event
+#define	broadcast_GeneralEvent()						Souliss_BroadcastAction(memory_map, 0xF001, 0x01)
+#define	multicast_GeneralEvent(maddress)				Souliss_BroadcastAction(maddress, memory_map, 0xF001, 0x01)
+#define	broadcastd_GeneralEvent(data, len)				Souliss_BroadcastActionMessage(memory_map, 0xF001, 0x01, data, len)
+#define	multicastd_GeneralEvent(maddress, data, len)	Souliss_BroadcastActionMessage(maddress, memory_map, 0xF001, 0x01, data, len)
+#define	is_GeneralEvent()								Souliss_GetAction(memory_map, 0xF001, 0x01)
+#define	isd_GeneralEvent(data, len)						Souliss_GetActionMessage(memory_map, 0xF001, 0x01, data, len)
+
 /*** Alarms ***/
 
 // Standard Alarm
-#define	broadcast_Alarm()							Souliss_BroadcastAction(memory_map, 0x0001, 0x01)
-#define	multicast_Alarm(maddress)					Souliss_BroadcastAction(maddress, memory_map, 0x0001, 0x01)
-#define	broadcastd_Alarm(data, len)					Souliss_BroadcastActionMessage(memory_map, 0x0001, 0x01, data, len)
-#define	multicastd_Alarm(maddress, data, len)		Souliss_BroadcastActionMessage(maddress, memory_map, 0x0001, 0x01, data, len)
-#define	is_Alarm()									Souliss_GetAction(memory_map, 0x0001, 0x01)
-#define	isd_Alarm(data, len)						Souliss_GetActionMessage(memory_map, 0x0001, 0x01, data, len)
+#define	broadcast_Alarm()								Souliss_BroadcastAction(memory_map, 0x0001, 0x01)
+#define	multicast_Alarm(maddress)						Souliss_BroadcastAction(maddress, memory_map, 0x0001, 0x01)
+#define	broadcastd_Alarm(data, len)						Souliss_BroadcastActionMessage(memory_map, 0x0001, 0x01, data, len)
+#define	multicastd_Alarm(maddress, data, len)			Souliss_BroadcastActionMessage(maddress, memory_map, 0x0001, 0x01, data, len)
+#define	is_Alarm()										Souliss_GetAction(memory_map, 0x0001, 0x01)
+#define	isd_Alarm(data, len)							Souliss_GetActionMessage(memory_map, 0x0001, 0x01, data, len)
 
 // Fire Alarm
-#define	broadcast_AlarmFire()						Souliss_BroadcastAction(memory_map, 0x0001, 0x02)
-#define	multicast_AlarmFire(maddress)				Souliss_BroadcastAction(maddress, memory_map, 0x0001, 0x02)
-#define	broadcastd_AlarmFire(data, len)				Souliss_BroadcastActionMessage(memory_map, 0x0001, 0x02, data, len)
-#define	multicastd_AlarmFire(maddress, data, len)	Souliss_BroadcastActionMessage(maddress, memory_map, 0x0001, 0x02, data, len)
-#define	is_AlarmFire()								Souliss_GetAction(memory_map, 0x0001, 0x02)
-#define	isd_AlarmFire(data, len)					Souliss_GetActionMessage(memory_map, 0x0001, 0x02, data, len)
+#define	broadcast_AlarmFire()							Souliss_BroadcastAction(memory_map, 0x0001, 0x02)
+#define	multicast_AlarmFire(maddress)					Souliss_BroadcastAction(maddress, memory_map, 0x0001, 0x02)
+#define	broadcastd_AlarmFire(data, len)					Souliss_BroadcastActionMessage(memory_map, 0x0001, 0x02, data, len)
+#define	multicastd_AlarmFire(maddress, data, len)		Souliss_BroadcastActionMessage(maddress, memory_map, 0x0001, 0x02, data, len)
+#define	is_AlarmFire()									Souliss_GetAction(memory_map, 0x0001, 0x02)
+#define	isd_AlarmFire(data, len)						Souliss_GetActionMessage(memory_map, 0x0001, 0x02, data, len)
 
 /*** Events ***/
 
