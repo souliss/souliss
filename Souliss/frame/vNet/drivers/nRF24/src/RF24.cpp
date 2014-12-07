@@ -418,8 +418,13 @@ bool RF24::write( const void* buf, uint8_t len )
 
   // Yay, we are done.
 
+ /*** 
+	Comment out, we don't really need to power down the radio after sending data
+	
   // Power down
   powerDown();
+  
+***/
 
   // Flush buffers (Is this a relic of past experimentation, and not needed anymore??)
   flush_tx();

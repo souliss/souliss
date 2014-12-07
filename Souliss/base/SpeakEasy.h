@@ -107,6 +107,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define Logic_LED_Strip(slot)		Souliss_Logic_T16(memory_map, slot, &data_changed)
 #define Timer_LED_Strip(slot)		Souliss_T16_Timer(memory_map, slot)
 
+#define Set_DimmableLight(slot)		Souliss_SetT19(memory_map, slot)
+#define Logic_DimmableLight(slot)	Souliss_Logic_T19(memory_map, slot, &data_changed)
+#define Timer_DimmableLight(slot)	Souliss_T19_Timer(memory_map, slot)
+
 #define Set_GarageDoor(slot)		Souliss_SetT21(memory_map, slot)
 #define Logic_GarageDoor(slot)		Souliss_Logic_T21(memory_map, slot, &data_changed)
 #define Timer_GarageDoor(slot)		Souliss_T21_Timer(memory_map, slot)
