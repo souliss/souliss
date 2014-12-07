@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,25 +22,20 @@
     \file 
     \ingroup
 */
-#ifndef bconf_IOTUINO_H
-#define bconf_IOTUINO_H
+#ifndef bconf_ssSMALLNTW_H
+#define bconf_ssSMALLNTW_h
 
-#define	ETH_INSKETCH
-#define VNET_MEDIA_INSKETCH
-#define	BOARD_MODEL_INSKETCH
-#define	COMMS_MODEL_INSKETCH
-#define	IOBOARD_MODEL_INSKETCH
+// If we are planning to use a small network, we can redefine the number of nodes
+// and slots for nodes using the INSKETCH parameters and using values that are smaller
+// than standard.
 
-// Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
-#define ETH_W5100  					0
-#define ETH_W5200  					0
-#define ETH_W5500					0
-#define ETH_ENC28J60  				0
-#define WIFI_MRF24					0
-#define WIFI_LPT200					1	
-#define	COMMS_MODEL					0x09
-#define	BOARD_MODEL					0x07
-#define	IOBOARD_MODEL				0x04
-#define VNET_MEDIA1_ENABLE  		1
+// Reduce the number of nodes in the network reduce the RAM usage in case of PERSISTANCE
+// mode active, as when using the HTTP/XML polling interface (or similar).
+// All nodes in the same network must share the same number of NODES and SLOT in their
+// configuration.
+
+#define	MaCaco_NODESIZE_INSKETCH
+#define MaCaco_NODES			8				// Number of remote nodes
+#define MaCaco_SLOT				0xF				// Number of slot
 
 #endif

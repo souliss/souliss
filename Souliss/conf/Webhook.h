@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,25 +22,12 @@
     \file 
     \ingroup
 */
-#ifndef bconf_IOTUINO_H
-#define bconf_IOTUINO_H
+#ifndef bconf_ssWEBHOOK_H
+#define bconf_ssWEBHOOK_H
 
-#define	ETH_INSKETCH
-#define VNET_MEDIA_INSKETCH
-#define	BOARD_MODEL_INSKETCH
-#define	COMMS_MODEL_INSKETCH
-#define	IOBOARD_MODEL_INSKETCH
-
-// Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
-#define ETH_W5100  					0
-#define ETH_W5200  					0
-#define ETH_W5500					0
-#define ETH_ENC28J60  				0
-#define WIFI_MRF24					0
-#define WIFI_LPT200					1	
-#define	COMMS_MODEL					0x09
-#define	BOARD_MODEL					0x07
-#define	IOBOARD_MODEL				0x04
-#define VNET_MEDIA1_ENABLE  		1
+#define ARDUINOCOMPATIBILITY_INSKETCH
+#define ARDUINO_ETHLIB			1
+#define	ARDUINO_DHCP			1
+#define	ARDUINO_DNS				1
 
 #endif

@@ -22,25 +22,23 @@
     \file 
     \ingroup
 */
-#ifndef bconf_IOTUINO_H
-#define bconf_IOTUINO_H
+#ifndef bconf_XBOARD_H
+#define bconf_XBOARD_H
 
 #define	ETH_INSKETCH
 #define VNET_MEDIA_INSKETCH
 #define	BOARD_MODEL_INSKETCH
 #define	COMMS_MODEL_INSKETCH
-#define	IOBOARD_MODEL_INSKETCH
 
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
-#define ETH_W5100  					0
+#define ETH_W5100  					1
 #define ETH_W5200  					0
 #define ETH_W5500					0
 #define ETH_ENC28J60  				0
 #define WIFI_MRF24					0
-#define WIFI_LPT200					1	
-#define	COMMS_MODEL					0x09
-#define	BOARD_MODEL					0x07
-#define	IOBOARD_MODEL				0x04
+#define WIFI_LPT200					0	
+#define	COMMS_MODEL					0x01
+#define	BOARD_MODEL					0x02
 #define VNET_MEDIA1_ENABLE  		1
 
 #endif

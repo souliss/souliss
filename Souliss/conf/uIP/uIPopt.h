@@ -280,11 +280,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#if(QC_GATEWAYTYPE == 0x02) 
-#	define UIP_RECEIVE_WINDOW   360
-#else
-#	define UIP_RECEIVE_WINDOW   120	
-#endif
+#define UIP_RECEIVE_WINDOW   120	
 /**
  * Determines if support for TCP urgent data notification should be
  * compiled in.
@@ -377,14 +373,8 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-
-#if(QC_GATEWAYTYPE == 0x02)  
-#	define UIP_BUFSIZE 	    	400
-#	define UIP_PAYLOADSIZE    	360
-#else
-#	define UIP_BUFSIZE	     	160
-#	define UIP_PAYLOADSIZE     	120
-#endif
+#define UIP_BUFSIZE	     	160
+#define UIP_PAYLOADSIZE     	120
 
 /**
  * Determines if statistics support should be compiled in.

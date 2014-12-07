@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss Home Automation
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,25 +22,28 @@
     \file 
     \ingroup
 */
-#ifndef bconf_IOTUINO_H
-#define bconf_IOTUINO_H
+#ifndef bconf_DYNADDRESSING_H
+#define bconf_DYNADDRESSING_H
 
-#define	ETH_INSKETCH
-#define VNET_MEDIA_INSKETCH
-#define	BOARD_MODEL_INSKETCH
-#define	COMMS_MODEL_INSKETCH
-#define	IOBOARD_MODEL_INSKETCH
+#define	DYNAMICADDRESSING_INSKETCH
+#define	IPBROADCAST_INSKETCH
 
-// Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
-#define ETH_W5100  					0
-#define ETH_W5200  					0
-#define ETH_W5500					0
-#define ETH_ENC28J60  				0
-#define WIFI_MRF24					0
-#define WIFI_LPT200					1	
-#define	COMMS_MODEL					0x09
-#define	BOARD_MODEL					0x07
-#define	IOBOARD_MODEL				0x04
-#define VNET_MEDIA1_ENABLE  		1
+// In case of DYNAMICADDRESSING and Ethernet, the IPBROADCAST is enabled. This use over Media3 broadcast IP
+// frames instead of unicast ones, so that no bind between IP address and vNet address is requested.
+//
+//	Only the Gateway node will use either unicast (to communicate with user interface) and broadcast.
+
+#define	DYNAMICADDRESSING					1
+#define	IPBROADCAST							1
+
+#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway
+#		define VNET_MEDIA3_ENABLE  		1
+#	elif(VNET_MEDIA1_ENABLE)
+#		define	VNET_MEDIA1_ENABLE  		0
+#		define	VNET_MEDIA3_ENABLE  		1
+#	else
+#		define	VNET_MEDIA3_ENABLE  		0
+#		define	IPBROADCAST					0
+#	endif
 
 #endif

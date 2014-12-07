@@ -42,7 +42,7 @@
 		HOPERF_RFM69	-  HopeRF RFM69CW/RFM69HCW radio
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef RFM69_INSKETCH
 #	define HOPERF_RFM69  	0x0
 #endif
 /**************************************************************************/
@@ -62,11 +62,12 @@
 			
 */
 /**************************************************************************/
-#define	RFM69_315MHZ		0
-#define	RFM69_433MHZ		0
-#define	RFM69_868MHZ		1
-#define	RFM69_915MHZ		0
-
+#ifndef RFM69_FREQUENCY_INSKETCH
+#	define	RFM69_315MHZ		0
+#	define	RFM69_433MHZ		0
+#	define	RFM69_868MHZ		1
+#	define	RFM69_915MHZ		0
+#endif
 /**************************************************************************/
 /*!
 	Enable the High Power transmission mode (only RFM69HCW)

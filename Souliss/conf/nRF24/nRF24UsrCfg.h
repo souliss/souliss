@@ -42,7 +42,7 @@
 		NRF24		-  Nordic nRF24L01 and nRF24L01+ 2.4 GHz radio
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef NRF24_INSKETCH
 #	define NRF24  			0x0
 #endif
 /**************************************************************************/

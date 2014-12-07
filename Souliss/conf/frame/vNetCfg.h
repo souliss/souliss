@@ -148,7 +148,7 @@
         0x1         Enable
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef VNET_SUPERNODE_INSKETCH
 #	define VNET_SUPERNODE  	0
 #endif
 
@@ -177,12 +177,12 @@
 #define VNET_MEDIA4_ID  3
 #define VNET_MEDIA5_ID  4
 
-#if(!(QC_ENABLE))						// Define manually only in Detailed Configuration Mode
-#	define VNET_MEDIA1_ENABLE  1
+#ifndef VNET_MEDIA_INSKETCH
+#	define VNET_MEDIA1_ENABLE  0
 #	define VNET_MEDIA2_ENABLE  0
 #	define VNET_MEDIA3_ENABLE  0
 #	define VNET_MEDIA4_ENABLE  0
-#	define VNET_MEDIA5_ENABLE  1
+#	define VNET_MEDIA5_ENABLE  0
 
 
 	const U16 vnet_media_en[VNET_MEDIA_NUMBER] = {VNET_MEDIA1_ENABLE,  // Media 1

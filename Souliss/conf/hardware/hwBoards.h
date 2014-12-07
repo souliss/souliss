@@ -46,7 +46,7 @@
  
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef BOARD_MODEL_INSKETCH
 #	define	BOARD_MODEL			0x00
 #endif
 
@@ -68,7 +68,7 @@
 		0x08		HopeRF RFM69CW/RFM69HCW
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef COMMS_MODEL_INSKETCH
 #	define	COMMS_MODEL			0x00
 #endif
 
@@ -87,7 +87,7 @@
 		
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef IOBOARD_MODEL_INSKETCH
 #	define	IOBOARD_MODEL		0x00
 #endif
 

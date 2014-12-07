@@ -47,7 +47,7 @@
 		WIFI_LPT200		-  Authometion HF-LPT200	(WiFi  Ethernet)
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef(ETH_INSKETCH)					
 #	define ETH_W5100  		0
 #	define ETH_W5200  		0
 #	define ETH_W5500		0
@@ -168,7 +168,7 @@
         0x1         Enable			
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef(ARDUINOCOMPATIBILITY_INSKETCH)
 #	define 	ARDUINO_ETHLIB		0x0
 #	define	ARDUINO_DHCP		0x0
 #	define	ARDUINO_DNS			0x0
@@ -194,7 +194,7 @@
 
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef(IPCONFIG_INSKETCH)
 	const uint8_t DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0};
 	const uint8_t DEFAULT_SUBMASK[] 	  = {255, 255, 255, 0};
 	const uint8_t DEFAULT_GATEWAY[] 	  = {192, 168, 1, 1};
@@ -212,12 +212,12 @@
 	could not use DHCP due to short RAM available.
 	
 	
-		Value       ARDUINO_DHCP
+		Value       IPBROADCAST
         0x0         Disable (Default)
         0x1         Enable
 */
 /**************************************************************************/
-#if(!defined(IPBROADCAST_INSKETCH))
+#ifndef(IPBROADCAST_INSKETCH)
 #	define IPBROADCAST 		0x00
 #endif	
 	
@@ -258,7 +258,7 @@
 	
 */
 /**************************************************************************/
-#if (!defined(MAC_INSKETCH))
+#ifndef(MAC_INSKETCH)
 	const uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
 #	define AUTO_MAC  		1
 #	define MAC_DEBUG	  	0
@@ -294,7 +294,7 @@
 */
 /**************************************************************************/
 // Connection mode
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef(WIFICONF_INSKETCH)
 #	define WiFi_Infrastracture		1
 #	define WiFi_AdHoc				0
 

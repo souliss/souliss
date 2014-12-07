@@ -61,7 +61,7 @@
 		CHIBI_AT86RF230	-  Atmel AT86RF230 Wireless - 2.4 GHz IEEE 802.15.4
 */
 /**************************************************************************/
-#if(!(QC_ENABLE))					// Define manually only in Detailed Configuration Mode
+#ifndef(CHIBI_INSKETCH)				
 #	define CHIBI_AT86RF230  	0
 #endif
 /**************************************************************************/

@@ -245,20 +245,20 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 				
 */
 /**************************************************************************/							 
-#if(!(QC_ENABLE))																// Define manually only in Detailed Configuration Mode
+#ifndef MaCacoCONF_INSKETCH
 #	define MaCaco_USERMODE		1												// User Mode
 #	define MaCaco_SUBSCRIBERS	1												// Enable subscribing to other nodes
 #	define MaCaco_PERSISTANCE	0												// Data Persistence (increase RAM usage)
 #	define MaCaco_LASTIN		0												// Data Persistence for last incoming values
 #endif
 
+#ifndef	MaCaco_NODESIZE_INSKETCH
+#	define MaCaco_NODES			45												// Number of remote nodes
+#	define MaCaco_SLOT			24												// Number of slot
+#endif
+
 #define MaCaco_LOCNODE			0												// Node number for local data (cannot be changed)
 #define	MaCaco_QUEUELEN			15												// Define the number of configuration parameters
-
-#if(!defined(NODESIZE_INSKETCH))
-#define MaCaco_NODES			45												// Number of remote nodes
-#define MaCaco_SLOT				24												// Number of slot
-#endif
 
 #define MaCaco_SUBSCRLEN		MaCaco_SLOT										// Length  byte for subscription data
 #define MaCaco_TYPLENGHT		MaCaco_SLOT										// Number of slot

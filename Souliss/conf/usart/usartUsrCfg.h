@@ -116,7 +116,9 @@
 	goes on pin 5 (RX from SoftwareSerial) and RX to 6.
 */
 /**************************************************************************/
-#define USART_DEBUG  			0
+#ifndef USART_DEBUG_INSKETCH
+#	define USART_DEBUG  			0
+#endif
 
 #endif
 							  
