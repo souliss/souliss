@@ -40,34 +40,32 @@
 #define IN3				A4
 #define IN4				A5
 
-#define OUT1			4
-#define OUT2			12
-#define OUT3			11
-#define OUT4			7		
+#define RELAY1			4
+#define RELAY2			12
+#define RELAY3			11
+#define RELAY4			7		
 #define	STATLED			13
-
-#define	RS485ENABLE		3
 
 #define	SetInput1()			pinMode(IN1, INPUT)
 #define	SetInput2()			pinMode(IN2, INPUT)
 #define	SetInput3()			pinMode(IN3, INPUT)
 #define	SetInput4()			pinMode(IN4, INPUT)
 
-#define	SetRelay1()			pinMode(OUT1, OUTPUT)
-#define	SetRelay2()			pinMode(OUT2, OUTPUT)
-#define	SetRelay3()			pinMode(OUT3, OUTPUT)
-#define	SetRelay4()			pinMode(OUT4, OUTPUT)
+#define	SetRelay1()			pinMode(RELAY1, OUTPUT)
+#define	SetRelay2()			pinMode(RELAY2, OUTPUT)
+#define	SetRelay3()			pinMode(RELAY3, OUTPUT)
+#define	SetRelay4()			pinMode(RELAY4, OUTPUT)
 #define	SetLED()			pinMode(STATLED, OUTPUT)
 
-#define	ReadInput1(slot)	ssDigIn(IN1, Souliss_T1n_ToogleCmd, slot)	
-#define	ReadInput2(slot)	ssDigIn(IN2, Souliss_T1n_ToogleCmd, slot)	
-#define	ReadInput3(slot)	ssDigIn(IN3, Souliss_T1n_ToogleCmd, slot)	
-#define	ReadInput4(slot)	ssDigIn(IN4, Souliss_T1n_ToogleCmd, slot)	
+#define	ReadInput1(slot)	DigIn(IN1, Souliss_T1n_ToogleCmd, slot)	
+#define	ReadInput2(slot)	DigIn(IN2, Souliss_T1n_ToogleCmd, slot)	
+#define	ReadInput3(slot)	DigIn(IN3, Souliss_T1n_ToogleCmd, slot)	
+#define	ReadInput4(slot)	DigIn(IN4, Souliss_T1n_ToogleCmd, slot)	
 
-#define	CntRelay1(slot)		ssDigOut(OUT1, Souliss_T1n_Coil, slot)
-#define	CntRelay2(slot)		ssDigOut(OUT2, Souliss_T1n_Coil, slot)
-#define	CntRelay3(slot)		ssDigOut(OUT3, Souliss_T1n_Coil, slot)
-#define	CntRelay4(slot)		ssDigOut(OUT4, Souliss_T1n_Coil, slot)
+#define	CntRelay1(slot)		DigOut(RELAY1, Souliss_T1n_Coil, slot)
+#define	CntRelay2(slot)		DigOut(RELAY2, Souliss_T1n_Coil, slot)
+#define	CntRelay3(slot)		DigOut(RELAY3, Souliss_T1n_Coil, slot)
+#define	CntRelay4(slot)		DigOut(RELAY4, Souliss_T1n_Coil, slot)
 
 #define ToogleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
 #define	TurnOnLED()			digitalWrite(STATLED, HIGH)

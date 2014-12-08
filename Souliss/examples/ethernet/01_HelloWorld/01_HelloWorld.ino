@@ -30,7 +30,8 @@
 #define MYLEDLOGIC			0				
 
 // This sketch will use DHCP, but a generic IP address is defined in case
-// the DHCP will fail
+// the DHCP will fail. Generally this IP address will not be used and doesn't
+// need to be used in SoulissApp
 IPAddress ip(192, 168, 1, 77);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);

@@ -83,6 +83,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_halfday()	if (!(phase_slow % 4321))
 #define	SLOW_1day()		if (!(phase_slow % 8641))
 
+#define UPDATESPEEDY()	phase_speedy = (phase_speedy + 1) % num_phases
+#define	SPEEDY_x(n)		if (!(phase_speedy % n))
+
+
 /***************************************/
 
 /************** Typicals ******************/
@@ -182,8 +186,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define LowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
 #define nLowDigOut(pin,valueslot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
 #define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
-#define	AnalogIn(pin, slot)										Souliss_AnalogIn(pin, memory_map, slot, 0.05, 0)
+#define	AnalogIn(pin, slot, conv, bias)							Souliss_AnalogIn(pin, memory_map, slot, conv, bias)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
+#define	RemoteInput												Souliss_RemoteInput
 
 #define	GetAddress()											while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
 																	Souliss_CommunicationData(memory_map, &data_changed);		\

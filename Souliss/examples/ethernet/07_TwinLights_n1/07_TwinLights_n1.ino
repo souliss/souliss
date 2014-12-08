@@ -4,59 +4,49 @@
 	It handle two lights located on two different boards and act them together
 	if receive a command from the push button. Control from Android is also 
 	available.
-	It use Souliss Speak Easy to make write the sketch even easier.
-	
-	CONFIGURATION IS MANDATORY BEFORE COMPILING
-
+		
 	Run this code on one of the following boards:
-	
-		Board Conf Code			Board Model
-        0x03        			Arduino Ethernet (W5100) 
-		0x04					Arduino with Ethernet Shield (W5100)
-		0x05					Arduino with ENC28J60 Ethernet Shield	
-	
-	******************** Configuration Parameters *********************
-	
-		Configuration file		Parameter
-		QuickCfg.h				#define	QC_ENABLE			0x01
-		QuickCfg.h				#define	QC_BOARDTYPE		0x03, 0x04, 0x05
-
-		QuickCfg.h				#define	QC_GATEWAYTYPE		0x01		
-		
-	Is required an additional IP configuration using the following parameters
-		QuickCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
-		QuickCfg.h				const uint8_t DEFAULT_SUBMASK[]       = {...}
-		QuickCfg.h				const uint8_t DEFAULT_GATEWAY[]       = {...}
-		
+	  - Arduino Ethernet (W5100) 
+	  -	Arduino with Ethernet Shield (W5100)
+	  
+	As option you can run the same code on the following, just changing the
+	relevant configuration file at begin of the sketch
+	  -	Arduino with ENC28J60 Ethernet Shield
+	  - Arduino with W5200 Ethernet Shield
+	  - Arduino with W5500 Ethernet Shield
+	  
 ***************************************************************************/
-#include "Souliss.h"
-#include "SpeakEasy.h"						// Is a library to code easy Souliss examples
-#include <SPI.h>
 
-// Define the network configuration
-//
-// In the QuickCfg.h file set DEFAULT_BASEIPADDRESS[] = {192,168,1,0}
-#define myvNet_address		0x0011 			// 0x0011 is equal to 17 in decimal
-#define peervNet_address	0x0012 			// 0x0012 is equal to 18 in decimal
-#define myvNet_subnet		0xFF00
-#define myvNet_supern		0x0000
-// defining myvNet_address as 0x0011 (is hexadecimal, in decimal is uqual to 17) gives
-// as IP address 192.168.1.17, use this address in SoulissApp 
+// Configure the framework
+#include "bconf/StandardArduino.h"			// Use a standard Arduino
+#include "conf/ethW5100.h"					// Ethernet through Wiznet W5100
+#include "conf/Gateway.h"					// The main node is the Gateway, we have just one node
+
+// Include framework code and libraries
+#include <SPI.h>
+#include "Souliss.h"
+
+// Define the network configuration according to your router settings
+uint8_t ip_address[4]  = {192, 168, 1, 77};
+uint8_t subnet_mask[4] = {255, 255, 255, 0};
+uint8_t ip_gateway[4]  = {192, 168, 1, 1};
+#define	Gateway_address	77
+#define	Peer_address	78
+#define myvNet_address	ip_address[3]		// The last byte of the IP address (77) is also the vNet address
+#define	myvNet_subnet	0xFF00
+#define	myvNet_supern	Gateway_address
 
 #define MYLIGHT				0				// This identify the number of the logic on this node
 #define PEERLIGHT			0				// This identify the number of the logic on peer node
 
 void setup()
 {	
-	// Setup the network configuration
-	//
-	// The vNet address is 11(hex) that is 17(dec), so the IP address is
-	// the DEFAULT_BASEIPADDRESS[] defined in ethUsrCfg.h plus 17 on last 
-	// octect. If DEFAULT_BASEIPADDRESS[] = {192, 168, 1, 0} the IP address
-	// for the board will be 192.168.1.17
-	Souliss_SetAddress(myvNet_address, myvNet_subnet, myvNet_supern);		
+	Initialize();
 	
-	SetAsGateway(myvNet_address);			// Set this node as gateway for SoulissApp	
+	// Set network parameters
+	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
+	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
+
 	SetAsPeerNode(peervNet_address, 1);		// Set the peer node 
 	
 	Set_SimpleLight(MYLIGHT);			// Define a simple LED light logic
@@ -75,26 +65,15 @@ void loop()
 		UPDATEFAST();	
 		
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
-			if(ssDigIn(2, Souliss_T1n_ToogleCmd, MYLIGHT))												// Use the pin2 as ON/OFF toogle command
-				Souliss_RemoteInput(peervNet_address, PEERLIGHT, Souliss_T1n_ToogleCmd);				// and replicate the command on the peer node
+			if(DigIn(2, Souliss_T1n_ToogleCmd, MYLIGHT))												// Use the pin2 as ON/OFF toogle command
+				RemoteInput(Peer_address, PEERLIGHT, Souliss_T1n_ToogleCmd);				// and replicate the command on the peer node
 			
 			Logic_SimpleLight(MYLIGHT);							// Drive the relay coil as per command
-			ssDigOut(9, Souliss_T1n_Coil, MYLIGHT);				// Use the pin9 to give power to the coil according to the logic		
+			DigOut(9, Souliss_T1n_Coil, MYLIGHT);				// Use the pin9 to give power to the coil according to the logic		
 		}
 		
-		FAST_70ms() {   // We check incoming communication data every 70 milliseconds
-			// Here we handle here the communication with Android, commands and notification
-			// are automatically assigned to MYLIGHT
-			ProcessCommunication();										
-		}
-		
-		FAST_510ms() {	// We retrieve data from the node with index 1 (peervNet_address)
-			ssCommunicationChannels();
-		}
-		
-		FAST_710ms() {	// We retrieve typical (device type connected to the board) for node with index 1
-			ssGetTypicals();
-		}
+		// Process data communication
+		FAST_GatewayComms();
 	}
 	
 	EXECUTESLOW() {

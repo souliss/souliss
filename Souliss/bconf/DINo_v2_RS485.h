@@ -29,6 +29,7 @@
 #define VNET_MEDIA_INSKETCH
 #define	BOARD_MODEL_INSKETCH
 #define	COMMS_MODEL_INSKETCH
+#define	USARTDRIVER_INSKETCH
 
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
 #define ETH_W5100  					0
@@ -40,6 +41,8 @@
 #define	COMMS_MODEL					0x01
 #define	BOARD_MODEL					0x08
 #define VNET_MEDIA5_ENABLE  		1
+#define USART_TXENABLE				1
+#define USART_TXENPIN				3
 
 #endif
 
