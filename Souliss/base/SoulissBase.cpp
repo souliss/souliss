@@ -241,10 +241,10 @@ void Souliss_SetDynamicAddressing()
 /**************************************************************************/
 void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
-	U8 i, usedmedia;			
+	U8 i, usedmedia = vNet_MyMedia();			
 			
 	// If no address is set
-	if(vNet_MyMediasWithoutAddress(&usedmedia))
+	if(!vNet_GetAddress(usedmedia))
 	{
 		// Generate a a key identifier
 		if(!keyidval)
@@ -254,7 +254,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		// Verify if the addressing information are available in the configuration
 		// parameters of the memory map
 		
-		// The first parameter is the keyidval number used to identify my previous request
+		// The first parameter is the keyidval number used to indetify my previous request
 		U8 *confparameters_p = (memory_map + MaCaco_QUEUE_s);
 		if((*(U16 *)confparameters_p) == keyidval)
 		{
@@ -264,9 +264,10 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			{
 				// Load the address
 				confparameters_p++;
-				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+				Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, DYNAMICADDR_GATEWAY);
 					
-				// Configuration data can be now removed
+				// Clear the actual configuration parameters, the addressing server will load there
+				// the requested address
 				for(U8 i=0; i<MaCaco_QUEUELEN; i++)
 					*(memory_map + MaCaco_QUEUE_s + i) = 0;
 				
@@ -280,11 +281,7 @@ void Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			*(memory_map + MaCaco_QUEUE_s + i) = 0;
 
 		// Request a new address
-		#if(VNET_SUPERNODE)
-			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF0 + usedmedia), 0, 0);
-		#else
-			MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (usedmedia), 0, 0);
-		#endif
+		MaCaco_send(0xFFFF, MaCaco_DINADDRESSREQ, (U8 *)keyidval, usedmedia, 0, 0);
 	}	
 }
 

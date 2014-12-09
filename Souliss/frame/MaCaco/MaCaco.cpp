@@ -504,15 +504,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 		// if the join request is from a nodes that previously got an address, flag the
 		// request as completed
-		if (randomkeyid == (U16)rx->putin)	// identify the node from the keyval
-			randomkeyid = 0;
-		else
-		{
-			// identify the node from the address
-			for(nodes=0; nodes<MaCaco_NODES; nodes++)
-				if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
-					randomkeyid = 0;
-		}		
+		for(nodes=0; nodes<MaCaco_NODES; nodes++)
+			if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+				randomkeyid = 0;
 	
 		return MaCaco_FUNCODE_OK;	
 	}	
@@ -562,103 +556,49 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// If there are no pending request or a yet open pending request
 			// proceed and provide an address
 			
-			// the putin is used as random key identifier
+			// the putin is used ad random key identifier
 			randomkeyid = (U16)rx->putin;
 			
 			// the startoffset is used as media number
-			// 
-			// startoffset			media
-			//		1				  1
-			//		2				  2
-			//		3				  3
-			//		4				  4
-			//		5				  5
-			//	   F1				  1 as Supernode
-			//	   F2				  2 as Supernode
-			//	   F3				  3 as Supernode
-			//	   F4				  4 as Supernode
-			//	   F5				  5 as Supernode
-			//
-			U8 isSupernode = (rx->startoffset & 0xF0);
-			U8 vNetMedia   = (rx->startoffset & 0x0F);
+			U8 vNetMedia = rx->startoffset;
 			
+			// identify if there are yet devices on the same media
 			U8 nodes=0;
 			U16 nodeaddress=0x0002;
+			for(nodes=0;nodes<MaCaco_NODES;nodes++)
+				if(vNetMedia == vNet_GetMedia(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+					nodeaddress++;
 			
-			// a supernode needs an address into another subnet
-			if((isSupernode) && ((vNetMedia-1) != VNET_MEDIA1_ID))
+			// define the node address
+			nodeaddress = nodeaddress + (vNet_GetAddress(vNetMedia) & vNet_GetSubnetMask(vNetMedia));
+			
+			// verify that the address isn't yet in use (as fixed address)
+			U8 tryagain=0, trying=0;
+			do
 			{
-				// assign an address
-				nodeaddress = vnet_addr_l[vNetMedia-1] + 1;
-				
-				// verify if there are other nodes in that subnet
-				U8 tryagain=0, trying=0;
-				do
-				{
-					// verify the address against all nodes
-					for(nodes=0;nodes<MaCaco_NODES;nodes++)
-					{
-						// if there is yet another node in the subnet, move to the next one
-						if((nodeaddress & DYNAMICADDR_SUBNETMASK) == ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) && DYNAMICADDR_SUBNETMASK))
-						{
-							nodeaddress+=((~DYNAMICADDR_SUBNETMASK)+1);	//move to the next subnet					
-							tryagain=1;
-							trying++;
-						}
-					}	
-				} 
-				while(tryagain && (trying < MaCaco_NODES));		
-						
-				// validate address		
-				if(!(vNetMedia == vNet_GetMedia(nodeaddress)))		
-					return MaCaco_FUNCODE_ERR;
-					
-				// store the proposed address, will be used to identify later if the request
-				// is completed
-				proposedaddress = nodeaddress;
-				
-				// send the assigned address
-				U8*	nodeaddress_p = (U8 *)(&nodeaddress);
-				return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
-			}
-			else	// is a standard node, gives an address in our subnet
-			{
-				// verify if there are yet devices on the same media
 				for(nodes=0;nodes<MaCaco_NODES;nodes++)
-					if(vNetMedia == vNet_GetMedia(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
-						nodeaddress++;
-				
-				// define the node address
-				nodeaddress = nodeaddress + (vNet_GetAddress(vNetMedia) & vNet_GetSubnetMask(vNetMedia));
-				
-				// verify that the address isn't yet in use (as fixed address)
-				U8 tryagain=0, trying=0;
-				do
 				{
-					for(nodes=0;nodes<MaCaco_NODES;nodes++)
+					if(nodeaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
 					{
-						if(nodeaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
-						{
-							nodeaddress++;						
-							tryagain=1;
-							trying++;
-						}
-					}	
-				} 
-				while(tryagain && (trying < MaCaco_NODES));
-				
-				// store the proposed address, will be used to identify later if the request
-				// is completed
-				proposedaddress = nodeaddress;
-				
-				// send the assigned address
-				U8*	nodeaddress_p = (U8 *)(&nodeaddress);
-				return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
-			}	
+						nodeaddress++;						
+						tryagain=1;
+						trying++;
+					}
+				}	
+			} 
+			while(tryagain && (trying < MaCaco_NODES));
+			
+			// store the proposed address, will be used to identify later if the request
+			// is completed
+			proposedaddress = nodeaddress;
+			
+			// send the assigned address
+			U8*	nodeaddress_p = (U8 *)(&nodeaddress);
+			return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
 		}
 		else
 			return MaCaco_FUNCODE_ERR;		
-	}		
+	}
 	
 	// answer to a subnet request
 	if (rx->funcode == MaCaco_SUBNETREQ)
