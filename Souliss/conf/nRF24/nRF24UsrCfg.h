@@ -57,4 +57,21 @@
 #define NRF24_SUCC			1
 #define NRF24_FAIL			0
 
+/**************************************************************************/
+/*!
+	Define an alias for SPI, redefine this alias if you are willing to use
+	a SoftwareSPI or any other alternative.
+	
+	At begin of the sketch (before the includes) add
+		
+		#define	nRF24SPI_INSKETCH
+		
+	and after declare an alternative SPI named as nRF24SPI.
+*/
+/**************************************************************************/
+
+#ifndef	nRF24SPI_INSKETCH
+#	define	nRF24SPI				SPI
+#endif
+
 #endif
