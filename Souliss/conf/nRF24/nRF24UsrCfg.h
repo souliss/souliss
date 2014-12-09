@@ -47,8 +47,10 @@
 #endif
 /**************************************************************************/
 
-#define	NRF24_RADIOEN		7					// Chip Enable Pin
-#define	NRF24_SPICS			8					// SPI Chip Select Pin
+#ifndef	NRF24PINS_INSKETCH
+#	define	NRF24_RADIOEN		7				// Chip Enable Pin
+#	define	NRF24_SPICS			8				// SPI Chip Select Pin
+#endif
 
 #define NRF24_MAX_PAYLOAD   32					// Max payload allowed for this radio
 #define NRF24_CHANNEL     	76					// Default channel to be used
