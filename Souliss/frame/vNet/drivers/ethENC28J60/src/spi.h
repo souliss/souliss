@@ -101,6 +101,7 @@
 #		define ENC28J60_CS_BIT            BIT7        // ATmega32U4 PC7 - UEXT Chip Select   
 #		define ENC28J60_CS_DDR            DDRC
 #		define ENC28J60_CS_PORT           PORTC
+#	else
 #		define ENC28J60_CS_BIT            BIT6        // ATmega32U4  PB6 - Arduino pin 10   
 #		define ENC28J60_CS_DDR            DDRB
 #		define ENC28J60_CS_PORT           PORTB
