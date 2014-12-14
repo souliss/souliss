@@ -216,14 +216,14 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												{									\
 													if(!MaCaco_IsSubscribed())		\
 													{								\
-														ssJoinNetwork();			\
+														JoinNetwork();			\
 													}								\
 												}
 												
 #define	JoinInProgress()						(!MaCaco_IsSubscribed())												
 
 #define	SLOW_PeerJoin()							SLOW_510s() {						\
-													ssJoinNetwork();				\
+													JoinNetwork();				\
 												}
 
 						
