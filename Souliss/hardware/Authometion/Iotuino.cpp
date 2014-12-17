@@ -72,6 +72,45 @@ void IOTUINO::initialize (void)
     
 }
 
+void IOTUINO::initialize (byte chipselect)
+{
+    csPin = chipselect;
+    rstPin = 4;
+    ADDR_A=1;
+    ADDR_B=1;
+    PAR=1;
+    COMMAND=0;
+    MODE=0;
+    PACK=0;
+    
+    //Default radio transmission number for LYT
+    radioTransmission=100;
+    
+    SPI.setDataMode(SPI_MODE1);
+    //SPI.setClockDivider(SPI_CLOCK_DIV64);
+    SPI.setClockDivider(SPI_CLOCK_DIV128);
+    SPI.setBitOrder(MSBFIRST);
+    //initialize SPI:
+    SPI.begin();
+    
+    pinMode(csPin, OUTPUT);
+    pinMode(rstPin, OUTPUT);
+    
+    //Reset 2.4Ghz Transceiver
+    digitalWrite(rstPin,HIGH);
+    delay(10);
+    digitalWrite(rstPin,LOW);
+    delay(5);
+    digitalWrite(rstPin,HIGH);
+    delay(10);
+    
+    initRadioModule();
+    
+    delay(50);
+    writeHead();
+    delayMicroseconds(5);
+    
+}
 
 /*
  *      LYT COMMANDS

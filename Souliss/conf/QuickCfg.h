@@ -112,7 +112,8 @@
 		0x47		Arduino with Nordic nRF24L01 or nRF24L01+ as range extender
 		0x48		Arduino with W5200 Ethernet Shield
 		0x49		Arduino with W5500 Ethernet Shield
-		0x50		Authometion Iotuino
+		0x50		Authometion IoTuino
+		0x51		Authometion IoTuino Radio Only plus W5100 Ethernet transceiver
 		0x60		Moteino or Moteino Mega plus W5100 Ethernet transceiver
 		0x61		Moteino or Moteino Mega plus ENC28J60 Ethernet transceiver		
 		0x62		Moteino or Moteino Mega with RFM69CW/RFM69HCW
