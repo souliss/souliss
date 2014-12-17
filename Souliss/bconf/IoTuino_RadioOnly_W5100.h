@@ -1,11 +1,5 @@
 /**************************************************************************
-	Souliss Support for Authometion IoTuino
-    Copyright (C) 2014  Veseo
-	
-***************************************************************************/
-
-/**************************************************************************
-	Souliss Home Automation
+	Souliss
     Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
@@ -28,22 +22,25 @@
     \file 
     \ingroup
 */
-#ifndef IOTUINOUSB_H
-#define IOTUINOUSB_H
+#ifndef bconf_IOTUINO_H
+#define bconf_IOTUINO_H
 
-// Init the Radio and the WiFi module, get the IP address from the module
-// and setup Souliss and vNet					
-#define	InitIoTuino()		Iotuino.initialize();							\
-							Iotuino.setRadioTransmission(18);				\
-							lpt200_init();									\
-							uint8_t t_ipaddr[4];							\
-							getip(t_ipaddr);								\
-							Souliss_SetIPAddress(t_ipaddr, 0, 0);			\
-							Souliss_SetLocalAddress(memory_map, t_ipaddr[3])
-							
-					
-// Init the Radio			
-#define	InitIoTuino_RadioOnly(chipselect)		Iotuino.initialize(chipselect);							\
-												Iotuino.setRadioTransmission(18);					
-					
+#define	ETH_INSKETCH
+#define VNET_MEDIA_INSKETCH
+#define	BOARD_MODEL_INSKETCH
+#define	COMMS_MODEL_INSKETCH
+#define	IOBOARD_MODEL_INSKETCH
+
+// Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
+#define ETH_W5100  					1
+#define ETH_W5200  					0
+#define ETH_W5500					0
+#define ETH_ENC28J60  				0
+#define WIFI_MRF24					0
+#define WIFI_LPT200					0	
+#define	COMMS_MODEL					0x02
+#define	BOARD_MODEL					0x07
+#define	IOBOARD_MODEL				0x04
+#define VNET_MEDIA1_ENABLE  		1
+
 #endif

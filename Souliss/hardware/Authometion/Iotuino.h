@@ -47,6 +47,9 @@ public:
     
     //Init Iotuino board
     void initialize(void);
+
+    //Init Iotuino board
+    void initialize(byte chipselect);
     
     //Set radio transmission
     void setRadioTransmission(byte Val);
