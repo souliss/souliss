@@ -218,7 +218,7 @@ void LYTSetBright(U8 bright, U8 slot)
 void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 {
 	U16 s1, s2, s3;
-	float color, r, g, b, lum;
+	float r, g, b, lum;
 	s1 = R+B;												// Sector 1
 	s2 = R+G;												// Sector 2
 	s3 = B+G;												// Sector 3
@@ -228,21 +228,14 @@ void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 
 	// Identify the prevalent sector
 	if((s1 >= s2) && (s1 >= s3))
-	{
-		color = (285.0 - (95.0*(b-r+255.0)/510.0));
 		lum=s1*0.034;
-	}	
 	else if((s2 >= s1) && (s2 >= s3))
-	{
-		color = (30.0 + (90.0*(g-r+255.0)/510.0));
 		lum=s2*0.034;		
-	}	
 	else if((s3 >= s1) && (s3 >= s2))
-	{
-		color = (180.0 - (70.0*(b-g+255.0)/510.0));
 		lum=s3*0.034;		
-	}	
 
+	int color = ConverColorRgbToColorVal((int)R, (int)G, (int)B);
+	
 	// Reset transmission parameters
 	Iotuino.setRadioTransmission(5);
 

@@ -597,3 +597,119 @@ void IOTUINO::initRadioModule(void)
     
     
 }
+
+/* 
+ Use to calcolate % to color 
+*/
+
+int CalculareValueColor (int val1 ,int  val2 , int value )
+{
+  
+  float CalculatePercent ;
+  int  ValColor;
+  
+  if (val1>=val2) 
+  {
+    CalculatePercent= (( 100.0/  val1 ) *val2);
+  }     
+  else
+  {
+    CalculatePercent= 100.0- ((  100.0/val2 ) *val1);
+  }
+  
+  ValColor=((value/2)*CalculatePercent)/100.0;
+  return ValColor;
+}
+
+/* 
+Convert Value RGB to value data
+*/
+int ConverColorRgbToColorVal(int R, int G, int B)
+{
+  float color, r, g, b, lum;
+  
+  int offsetZeroRB  =36;
+  int offsetZeroGB  =60;
+  int BaseR,BaseG,BaseB ;
+  //int r,g,b ;
+  int ValueColor ;
+  int ColorRGB ;
+  int offsetZero =6;
+  BaseR=30;
+  BaseG=110;
+  BaseB=190;
+  
+  
+  if ((R>=G) && (R>=B)) 
+  {  
+    lum=R*0.034;
+    if (G>B)
+    { 
+      ValueColor=BaseG-BaseR;
+      ValueColor=CalculareValueColor(R,G,ValueColor);
+      ColorRGB=BaseR+ValueColor;
+    }
+    else
+    {
+      ValueColor=offsetZeroRB+255-BaseB+BaseR; 
+      ValueColor=CalculareValueColor(R,B,ValueColor);
+      if (ValueColor>offsetZero)
+        ColorRGB=BaseR-ValueColor+offsetZeroRB;
+      else
+        ColorRGB=BaseR-ValueColor;
+      
+      
+      if (ColorRGB<0) 
+        ColorRGB=255+ColorRGB;
+     
+    }
+  }
+  else if ( (G>=R)  && (G>=B) )
+  {  
+    
+    lum=G*0.034;
+    if (R>B) 
+    {
+      ValueColor=BaseG-BaseR;
+      ValueColor=CalculareValueColor(G,R,ValueColor);
+      ColorRGB=BaseG-ValueColor;
+      if (ColorRGB<0) 
+        ColorRGB=255+ColorRGB;
+     
+    }
+    else
+    {
+      ValueColor=BaseB-BaseG-offsetZeroGB;
+      ValueColor=CalculareValueColor(G,B,ValueColor);
+      if (ValueColor>offsetZero)
+        ColorRGB=BaseG+ValueColor;
+      else
+        ColorRGB=BaseG+ValueColor-10;
+      
+     }
+   
+  } 
+  else if ((B>=G) && (B>=R))
+  {
+    lum=B*0.034;
+    if (G>R) 
+    {
+      ValueColor=BaseB-BaseG+offsetZeroGB;
+      ValueColor=CalculareValueColor(B,G,ValueColor);
+      ColorRGB=BaseB-ValueColor;
+      if (ColorRGB<0) 
+        ColorRGB=255+ColorRGB;
+      
+    }
+    else
+    {
+      ValueColor=offsetZeroRB+255-BaseB+BaseR;
+      ValueColor=CalculareValueColor(B,R,ValueColor);
+      ColorRGB=BaseB+ValueColor;
+    }
+    
+  }
+  
+ return ColorRGB;
+  
+}
