@@ -202,10 +202,10 @@ uint16_t DNSClient::BuildRequest(const char* aName)
     // FIXME than assume there's enough space (as the code does at present)
     iUdp.write((uint8_t*)&iRequestId, sizeof(iRequestId));
 
-    twoByteBuffer = htons(QUERY_FLAG | OPCODE_STANDARD_QUERY | RECURSION_DESIRED_FLAG);
+    twoByteBuffer = HTONS(QUERY_FLAG | OPCODE_STANDARD_QUERY | RECURSION_DESIRED_FLAG);
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
-    twoByteBuffer = htons(1);  // One question record
+    twoByteBuffer = HTONS(1);  // One question record
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
     twoByteBuffer = 0;  // Zero answer records
@@ -245,10 +245,10 @@ uint16_t DNSClient::BuildRequest(const char* aName)
     len = 0;
     iUdp.write(&len, sizeof(len));
     // Finally the type and class of question
-    twoByteBuffer = htons(TYPE_A);
+    twoByteBuffer = HTONS(TYPE_A);
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
-    twoByteBuffer = htons(CLASS_IN);  // Internet class of question
+    twoByteBuffer = HTONS(CLASS_IN);  // Internet class of question
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
     // Success!  Everything buffered okay
     return 1;
@@ -285,7 +285,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     }
     iUdp.read(header, DNS_HEADER_SIZE);
 
-    uint16_t header_flags = htons(*((uint16_t*)&header[2]));
+    uint16_t header_flags = HTONS(*((uint16_t*)&header[2]));
     // Check that it's a response to this request
     if ( ( iRequestId != (*((uint16_t*)&header[0])) ) ||
         ((header_flags & QUERY_RESPONSE_MASK) != (uint16_t)RESPONSE_FLAG) )
@@ -304,7 +304,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     }
 
     // And make sure we've got (at least) one answer
-    uint16_t answerCount = htons(*((uint16_t*)&header[6]));
+    uint16_t answerCount = HTONS(*((uint16_t*)&header[6]));
     if (answerCount == 0 )
     {
         // Mark the entire packet as read
@@ -313,7 +313,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     }
 
     // Skip over any questions
-    for (uint16_t i =0; i < htons(*((uint16_t*)&header[4])); i++)
+    for (uint16_t i =0; i < HTONS(*((uint16_t*)&header[4])); i++)
     {
         // Skip over the name
         uint8_t len;
@@ -395,9 +395,9 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
         // Don't need header_flags anymore, so we can reuse it here
         iUdp.read((uint8_t*)&header_flags, sizeof(header_flags));
 
-        if ( (htons(answerType) == TYPE_A) && (htons(answerClass) == CLASS_IN) )
+        if ( (HTONS(answerType) == TYPE_A) && (HTONS(answerClass) == CLASS_IN) )
         {
-            if (htons(header_flags) != 4)
+            if (HTONS(header_flags) != 4)
             {
                 // It's a weird size
                 // Mark the entire packet as read
@@ -410,7 +410,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
         else
         {
             // This isn't an answer type we're after, move onto the next one
-            for (uint16_t i =0; i < htons(header_flags); i++)
+            for (uint16_t i =0; i < HTONS(header_flags); i++)
             {
                 iUdp.read(); // we don't care about the returned byte
             }
