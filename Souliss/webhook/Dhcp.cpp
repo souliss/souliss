@@ -147,7 +147,7 @@ void DhcpClass::send_DHCP_MESSAGE(uint8_t messageType, uint16_t secondsElapsed)
     buffer[3] = DHCP_HOPS;          // hops
 
     // xid
-    unsigned long xid = htonl(_dhcpTransactionId);
+    unsigned long xid = HTONL(_dhcpTransactionId);
     memcpy(buffer + 4, &(xid), 4);
 
     // 8, 9 - seconds elapsed
@@ -155,7 +155,7 @@ void DhcpClass::send_DHCP_MESSAGE(uint8_t messageType, uint16_t secondsElapsed)
     buffer[9] = (secondsElapsed & 0x00ff);
 
     // flags
-    unsigned short flags = htons(DHCP_FLAGSBROADCAST);
+    unsigned short flags = HTONS(DHCP_FLAGSBROADCAST);
     memcpy(buffer + 10, &(flags), 2);
 
     // ciaddr: already zeroed
@@ -268,7 +268,7 @@ uint8_t DhcpClass::parseDHCPResponse(unsigned long responseTimeout, uint32_t& tr
   
     if(fixedMsg.op == DHCP_BOOTREPLY && _dhcpUdpSocket.remotePort() == DHCP_SERVER_PORT)
     {
-        transactionId = ntohl(fixedMsg.xid);
+        transactionId = NTOHL(fixedMsg.xid);
         if(memcmp(fixedMsg.chaddr, _dhcpMacAddr, 6) != 0 || (transactionId < _dhcpInitialTransactionId) || (transactionId > _dhcpTransactionId))
         {
             // Need to read the rest of the packet here regardless
@@ -344,19 +344,19 @@ uint8_t DhcpClass::parseDHCPResponse(unsigned long responseTimeout, uint32_t& tr
                 case dhcpT1value : 
                     opt_len = _dhcpUdpSocket.read();
                     _dhcpUdpSocket.read((uint8_t*)&_dhcpT1, sizeof(_dhcpT1));
-                    _dhcpT1 = ntohl(_dhcpT1);
+                    _dhcpT1 = NTOHL(_dhcpT1);
                     break;
 
                 case dhcpT2value : 
                     opt_len = _dhcpUdpSocket.read();
                     _dhcpUdpSocket.read((uint8_t*)&_dhcpT2, sizeof(_dhcpT2));
-                    _dhcpT2 = ntohl(_dhcpT2);
+                    _dhcpT2 = NTOHL(_dhcpT2);
                     break;
 
                 case dhcpIPaddrLeaseTime :
                     opt_len = _dhcpUdpSocket.read();
                     _dhcpUdpSocket.read((uint8_t*)&_dhcpLeaseTime, sizeof(_dhcpLeaseTime));
-                    _dhcpLeaseTime = ntohl(_dhcpLeaseTime);
+                    _dhcpLeaseTime = NTOHL(_dhcpLeaseTime);
                     _renewInSec = _dhcpLeaseTime;
                     break;
 
