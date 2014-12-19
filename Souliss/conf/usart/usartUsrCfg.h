@@ -44,10 +44,12 @@
 		USART_BAUD115k2		-  USART at 115200 bps	(Default)
 */
 /**************************************************************************/
-#define USART_BAUD9k6			0
-#define USART_BAUD19k2			0
-#define	USART_BAUD57k6			0
-#define USART_BAUD115k2			1
+#ifndef USARTBAUDRATE_INSKETCH
+# define USART_BAUD9k6			  0
+# define USART_BAUD19k2			 0
+# define	USART_BAUD57k6			0
+# define USART_BAUD115k2			1
+#endif
 
 /**************************************************************************/
 /*!
