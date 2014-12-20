@@ -42,7 +42,7 @@
 #include "Souliss.h"
 
 // Define the network configuration
-uint8_t ip_address[4]  = {192, 168, 1, 17};
+uint8_t ip_address[4]  = {192, 168, 1, 77};
 uint8_t subnet_mask[4] = {255, 255, 255, 0};
 uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 
@@ -56,9 +56,6 @@ void setup()
 
 	// Setup the network configuration
 	//
-	// The vNet address will be equal to the last byte of the IP address
-	// with the most significant one at zero, so in this case 0x0011.
-	// Board reply to ping at 192.168.1.17
 	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
 	SetAsGateway((U16)ip_address[3]);										// Last byte of the IP address is the vNet address
 	

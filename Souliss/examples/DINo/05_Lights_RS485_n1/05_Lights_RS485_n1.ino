@@ -4,34 +4,80 @@
 	It handle the four relays either via IN1 to IN4 inputs or using the
 	Android interface. Connecting the relays to lights or similar electrical 
 	appliance, you can get remote control of them.
-		
+	
+	The Gateway node is connected via Ethernet to the Android (or any other)
+	interface and via RS485 to all the peer nodes. 
+	Use a twisted pair wire to connect the RS485 port of the Gateway to the
+	nearest peer and from that peer to the next up to the end of the chain.
+	
+	Connection scheme:
+	
+	HOME-ROUTER						GATEWAY		
+	ETHERNET		(connect)		ETHERNET	
+
+	GATEWAY							PEER1
+	RS-485 A		(connect)		RS-485 A
+	RS-485 B    	(connect)   	RS-485 B
+	RS-485 GND		(optional)     	RS-485 GND
+	
+	PEER1							PEER2
+	RS-485 A		(connect)		RS-485 A
+	RS-485 B    	(connect)   	RS-485 B
+	RS-485 GND		(optional)     	RS-485 GND	
+	
+	PEER2							PEER3
+	RS-485 A		(connect)		RS-485 A
+	RS-485 B    	(connect)   	RS-485 B
+	RS-485 GND		(optional)     	RS-485 GND	
+	
  	Applicable for:
 		- Light
 		- Other ON/OFF electrical appliance
 	
 ***************************************************************************/
 
-#include "bconf/DINo_v2.h"					// Define the board type
-#include "conf/Gateway.h"					// The main node is the Gateway, we have just one node
-#include "conf/Webhook.h"					// Enable DHCP and DNS
-#include "conf/DymanicAddressing.h"			// Use dynamic address
+#include "bconf/DINo_v2_EthernetBridge_RS485.h"					// Define the board type
+#include "conf/Gateway.h"										// The main node is the Gateway, we have just one node
 
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
 
-// By default the board will get an IP address with .77 as last byte, you can change it
-// in runtime using the Android application SoulissApp
+// Define the network configuration
+uint8_t ip_address[4]  = {192, 168, 1, 77};
+uint8_t subnet_mask[4] = {255, 255, 255, 0};
+uint8_t ip_gateway[4]  = {192, 168, 1, 1};
+#define	Gateway_address			77
+#define myvNet_address			ip_address[3]		// The last byte of the IP address (77) is also the vNet address
+#define	Gateway_RS485_address	0xCE01
+#define	Peer1_address			0xCE11
+#define	Peer2_address			0xCE12
+#define	Peer3_address			0xCE13
+#define	myvNet_subnet			0xFF00
+#define	myvNet_supern			Gateway_RS485_address
 
 #define LIGHT1					0			// This is the memory slot used for the execution of the logic
-#define LIGHT2					1			
-#define LIGHT3					2			
-#define LIGHT4					3			
+#define LIGHT2					1			// This is the memory slot used for the execution of the logic
+#define LIGHT3					2			// This is the memory slot used for the execution of the logic
+#define LIGHT4					3			// This is the memory slot used for the execution of the logic
+#define LIGHT_NO				4			
+#define ONTIME					15			// Light is on for ONTIME number of cycles
+
 
 void setup()
 {	
-	// Init the board
 	InitDINo();
+
+	// Setup the network configuration
+	//
+	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
+	SetAsGateway((U16)ip_address[3]);										// Last byte of the IP address is the vNet address
+
+	// Define the address for the RS485 interface
+	Souliss_SetAddress(Gateway_RS485_address, myvNet_subnet, 0x0000);         
+
+	// This node as gateway will get data from the Peer
+	SetAsPeerNode(Peer1_address, 1);	
 	
 	// Set the inputs
 	SetInput1();
@@ -45,22 +91,13 @@ void setup()
 	SetRelay3();
 	SetRelay4();
 	
-	// Set and turn ON the status LED
-	SetLED();
-	TurnOnLED();
-	
 	// Define Simple Light logics for the relays
 	Set_SimpleLight(LIGHT1);
 	Set_SimpleLight(LIGHT2);
 	Set_SimpleLight(LIGHT3);
 	Set_SimpleLight(LIGHT4);	
 	
-	// We don't assign a fixed IP address to the board, the board will get the base IP
-	// information from the first broadcast frame sent out with the Android application.
-	// By default the board will get an IP address with .77 as last byte, you can change
-	// it in runtime using the Android application SoulissApp.
-	SetAddressingServer();
-}
+} 
 
 void loop()
 { 
@@ -84,11 +121,11 @@ void loop()
 			DigOut(RELAY2, Souliss_T1n_Coil, LIGHT2);			// Drive the Relay 2
 			DigOut(RELAY3, Souliss_T1n_Coil, LIGHT3);			// Drive the Relay 3
 			DigOut(RELAY4, Souliss_T1n_Coil, LIGHT4);			// Drive the Relay 4
-		
 		} 
 		
 		// Here we process all communication with other nodes
-		FAST_GatewayComms();	
+		FAST_PeerComms();	
+		
 	}
 	
 	EXECUTESLOW() {	

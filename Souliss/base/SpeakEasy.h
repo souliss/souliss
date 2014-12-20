@@ -189,6 +189,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	AnalogIn(pin, slot, conv, bias)							Souliss_AnalogIn(pin, memory_map, slot, conv, bias)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
 #define	RemoteInput												Souliss_RemoteInput
+#define	RemoteInputs											Souliss_RemoteInputs
 
 #define	GetAddress()											while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
 																	Souliss_CommunicationData(memory_map, &data_changed);		\
