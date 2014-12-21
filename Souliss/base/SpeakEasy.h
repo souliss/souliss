@@ -93,73 +93,121 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Set_SimpleLight(slot)		Souliss_SetT11(memory_map, slot)
 #define	Logic_SimpleLight(slot)		Souliss_Logic_T11(memory_map, slot, &data_changed)
 #define Timer_SimpleLight(slot)		Souliss_T11_Timer(memory_map, slot)
+#define	Set_T11(slot)				Souliss_SetT11(memory_map, slot)
+#define	Logic_T11(slot)				Souliss_Logic_T11(memory_map, slot, &data_changed)
+#define Timer_T11(slot)				Souliss_T11_Timer(memory_map, slot)
 
 #define	Set_AutoLight(slot)			Souliss_SetT12(memory_map, slot)
 #define	Logic_AutoLight(slot) 		Souliss_Logic_T12(memory_map, slot, &data_changed)
 #define Timer_AutoLight(slot)		Souliss_T12_Timer(memory_map, slot)
+#define	Set_T12(slot)				Souliss_SetT12(memory_map, slot)
+#define	Logic_T12(slot)			 	Souliss_Logic_T12(memory_map, slot, &data_changed)
+#define Timer_T12(slot)				Souliss_T12_Timer(memory_map, slot)
 
 #define	Set_DigitalInput(slot)		Souliss_SetT13(memory_map, slot)
 #define	Logic_DigitalInput(slot)	Souliss_Logic_T13(memory_map, slot, &data_changed)
+#define	Set_T13(slot)				Souliss_SetT13(memory_map, slot)
+#define	Logic_T13(slot)				Souliss_Logic_T13(memory_map, slot, &data_changed)
 
 #define Set_PulseOutput(slot)		Souliss_SetT14(memory_map, slot)
 #define Logic_PulseOutput(slot)		Souliss_Logic_T14(memory_map, slot, &data_changed)
+#define Set_T14(slot)				Souliss_SetT14(memory_map, slot)
+#define Logic_T14(slot)				Souliss_Logic_T14(memory_map, slot, &data_changed)
 
 #define	Set_IrDA_Lamp(slot)			Souliss_SetT15(memory_map, slot)
 #define	Logic_IrDA_Lamp(slot)		Souliss_Logic_T15(memory_map, slot, &data_changed)
+#define	Set_T15(slot)				Souliss_SetT15(memory_map, slot)
+#define	Logic_T15(slot)				Souliss_Logic_T15(memory_map, slot, &data_changed)
 
 #define Set_LED_Strip(slot)			Souliss_SetT16(memory_map, slot)
 #define Logic_LED_Strip(slot)		Souliss_Logic_T16(memory_map, slot, &data_changed)
 #define Timer_LED_Strip(slot)		Souliss_T16_Timer(memory_map, slot)
+#define Set_T16(slot)				Souliss_SetT16(memory_map, slot)
+#define Logic_T16(slot)				Souliss_Logic_T16(memory_map, slot, &data_changed)
+#define Timer_T16(slot)				Souliss_T16_Timer(memory_map, slot)
 
 #define Set_DimmableLight(slot)		Souliss_SetT19(memory_map, slot)
 #define Logic_DimmableLight(slot)	Souliss_Logic_T19(memory_map, slot, &data_changed)
 #define Timer_DimmableLight(slot)	Souliss_T19_Timer(memory_map, slot)
+#define Set_T19(slot)				Souliss_SetT19(memory_map, slot)
+#define Logic_T19(slot)				Souliss_Logic_T19(memory_map, slot, &data_changed)
+#define Timer_T19(slot)				Souliss_T19_Timer(memory_map, slot)
 
 #define Set_GarageDoor(slot)		Souliss_SetT21(memory_map, slot)
 #define Logic_GarageDoor(slot)		Souliss_Logic_T21(memory_map, slot, &data_changed)
 #define Timer_GarageDoor(slot)		Souliss_T21_Timer(memory_map, slot)
+#define Set_T21(slot)				Souliss_SetT21(memory_map, slot)
+#define Logic_T21(slot)				Souliss_Logic_T21(memory_map, slot, &data_changed)
+#define Timer_T21(slot)				Souliss_T21_Timer(memory_map, slot)
 
 #define	Set_Windows(slot)			Souliss_SetT22(memory_map, slot)
 #define	Logic_Windows(slot)			Souliss_Logic_T22(memory_map, slot, &data_changed)
 #define	Timer_Windows(slot)			Souliss_T22_Timer(memory_map, slot)
+#define	Set_T22(slot)				Souliss_SetT22(memory_map, slot)
+#define	Logic_T22(slot)				Souliss_Logic_T22(memory_map, slot, &data_changed)
+#define	Timer_T22(slot)				Souliss_T22_Timer(memory_map, slot)
 
 #define Set_Thermostat(slot)		Souliss_SetT31(memory_map, slot)
 #define Logic_Thermostat(slot)		Souliss_Logic_T31(memory_map, slot, &data_changed)
+#define Set_T31(slot)				Souliss_SetT31(memory_map, slot)
+#define Logic_T31(slot)				Souliss_Logic_T31(memory_map, slot, &data_changed)
 
 #define	Set_IrDA_Aircon(slot)		Souliss_SetT32(memory_map, slot)
 #define	Logic_IrDA_Aircon(slot)		Souliss_Logic_T32(memory_map, slot, &data_changed)
+#define	Set_T32(slot)				Souliss_SetT32(memory_map, slot)
+#define	Logic_T32(slot)				Souliss_Logic_T32(memory_map, slot, &data_changed)
 
 #define	Set_Antitheft_Main(slot)	Souliss_SetT41(memory_map, slot)
 #define	Logic_Antitheft_Main(slot)	Souliss_Logic_T41(memory_map, slot, &data_changed)
 #define	Timer_Antitheft_Main(slot)	Souliss_T41_Timer(memory_map, slot)
+#define	Set_T41(slot)				Souliss_SetT41(memory_map, slot)
+#define	Logic_T41(slot)				Souliss_Logic_T41(memory_map, slot, &data_changed)
+#define	Timer_T41(slot)				Souliss_T41_Timer(memory_map, slot)
 
-#define	Set_Antitheft_Peer(slot)	Souliss_SetT42(memory_map, slot)
+#define	Set_Antitheft_Peer(slot)							Souliss_SetT42(memory_map, slot)
 #define	Logic_Antitheft_Peer(slot, main_antitheft_address)	Souliss_Logic_T42(memory_map, slot, &data_changed, main_antitheft_address)
+#define	Set_T42(slot)										Souliss_SetT42(memory_map, slot)
+#define	Logic_T42(slot, main_antitheft_address)				Souliss_Logic_T42(memory_map, slot, &data_changed, main_antitheft_address)
 
 #define	Set_AnalogIn(slot)			Souliss_SetT51(memory_map, slot)
 #define	Read_AnalogIn(slot)			Souliss_Logic_T51(memory_map, slot, 0.05, &data_changed)
+#define	Set_T51(slot)				Souliss_SetT51(memory_map, slot)
+#define	Read_T51(slot)				Souliss_Logic_T51(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Temperature(slot)		Souliss_SetT52(memory_map, slot)
 #define	Logic_Temperature(slot)		Souliss_Logic_T52(memory_map, slot, 0.05, &data_changed)
+#define	Set_T52(slot)				Souliss_SetT52(memory_map, slot)
+#define	Logic_T52(slot)				Souliss_Logic_T52(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Humidity(slot)			Souliss_SetT53(memory_map, slot)
 #define	Logic_Humidity(slot)		Souliss_Logic_T53(memory_map, slot, 0.05, &data_changed)
+#define	Set_T53(slot)				Souliss_SetT53(memory_map, slot)
+#define	Logic_T53(slot)				Souliss_Logic_T53(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Light(slot)				Souliss_SetT54(memory_map, slot)
 #define	Logic_Light(slot)			Souliss_Logic_T54(memory_map, slot, 0.05, &data_changed)
+#define	Set_T54(slot)				Souliss_SetT54(memory_map, slot)
+#define	Logic_T54(slot)				Souliss_Logic_T54(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Voltage(slot)			Souliss_SetT55(memory_map, slot)
 #define	Logic_Voltage(slot)			Souliss_Logic_T55(memory_map, slot, 0.05, &data_changed)
+#define	Set_T55(slot)				Souliss_SetT55(memory_map, slot)
+#define	Logic_T55(slot)				Souliss_Logic_T55(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Current(slot)			Souliss_SetT56(memory_map, slot)
 #define	Logic_Current(slot)			Souliss_Logic_T56(memory_map, slot, 0.05, &data_changed)
+#define	Set_T56(slot)				Souliss_SetT56(memory_map, slot)
+#define	Logic_T56(slot)				Souliss_Logic_T56(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Power(slot)				Souliss_SetT57(memory_map, slot)
 #define	Logic_Power(slot)			Souliss_Logic_T57(memory_map, slot, 0.05, &data_changed)
+#define	Set_T57(slot)				Souliss_SetT57(memory_map, slot)
+#define	Logic_T57(slot)				Souliss_Logic_T57(memory_map, slot, 0.05, &data_changed)
 
 #define	Set_Pressure(slot)			Souliss_SetT58(memory_map, slot)
 #define	Logic_Pressure(slot)		Souliss_Logic_T58(memory_map, slot, 0.05, &data_changed)
-
+#define	Set_T58(slot)				Souliss_SetT58(memory_map, slot)
+#define	Logic_T58(slot)				Souliss_Logic_T58(memory_map, slot, 0.05, &data_changed)
 /******************************************/
 
 /************** Souliss ******************/

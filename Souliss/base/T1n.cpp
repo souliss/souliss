@@ -1118,7 +1118,7 @@ void Souliss_SetT1A(U8 *memory_map, U8 slot)
 
 /**************************************************************************
 /*!
-	Typical 13 : Digital pass through
+	Typical 1A : Digital Input Pass Through
 	
 		It read read data from input and pass them through to the output
 		
