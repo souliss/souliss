@@ -136,7 +136,7 @@
 #define Souliss_T2n_OpenCmd_Local		0x10		// Open Command (only from local pushbutton)
 #define Souliss_T2n_ToogleCmd			0x08		// Toogle Command
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
-#define Souliss_T2n_Timer_Val			0xBF		// Timer set value
+#define Souliss_T2n_Timer_Val			0xC0		// Timer set value
 #define Souliss_T2n_Timer_Off			0xA0		// Timer expired value
 #define Souliss_T2n_TimedStop_Val		0xC2		// Timed stop value
 #define Souliss_T2n_TimedStop_Off		0xC0		// Timed stop exipred value
