@@ -164,6 +164,9 @@
 #define Souliss_T3n_DeadBand			0.05		// Percentage Deadband
 #define Souliss_T3n_ThMed				0.10		// Threshold for medium speed
 #define Souliss_T3n_ThHigh				0.15		// Threshold for high speed
+#define Souliss_T3n_SetTemp				0x0C		// Set the setpoint
+#define Souliss_T3n_ShutDown			0x0D		// Shut down heating and cooling
+
 
 #define Souliss_T3n_RstCmd				0x0000
 #define Souliss_T3n_HeatingOn			0x02		// Heating Active
