@@ -52,12 +52,12 @@
 		eth_SetIPAddress(&ip_addr[0]);
 		
 		// Set the MAC Address	
-		#if(AUTO_MAC)
-			eth_vNettoMAC(addr, mac_addr);
-			W5x00.setMACAddress(mac_addr);
-		#else
-			W5x00.setMACAddress((uint8_t*)MAC_ADDRESS);
-		#endif
+#       if(AUTO_MAC)
+                eth_vNettoMAC(addr, mac_addr);
+                enc28j60Init(mac_addr);
+#       else
+                enc28j60Init((U8 *)&MAC_ADDRESS[0]);
+#       endif 
 		
 		// Set the IP
 		W5x00.setIPAddress(stack.ip);
