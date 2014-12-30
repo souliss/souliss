@@ -43,6 +43,7 @@
 #define Souliss_T18						0x18			// ON/OFF Digital Output with pulse output with Timer Option
 #define Souliss_T19						0x19			// LED Light
 #define Souliss_T1A						0X1A			// Digital pass through
+#define Souliss_T1B						0X1B			// Position Constrained ON/OFF Digital Output
 #define Souliss_T21						0x21			// Motorized devices with limit switches
 #define Souliss_T22						0x22			// Motorized devices with limit switches and middle position
 #define Souliss_T31						0x31			// Temperature control 
@@ -66,7 +67,9 @@
 #define Souliss_T1n_Set					0x22		// Set a state
 #define Souliss_T1n_OnFeedback			0x23		// Report the actual state as ON
 #define Souliss_T1n_OffFeedback			0x24		// Report the actual state as OFF
+#define Souliss_T1n_Timed_StdVal		0x40		// Timed ON Standard Value
 #define Souliss_T1n_Timed				0x30		// Timed ON
+#define Souliss_T1n_PositionOnCmd		0x31		// Position constrained ON Command
 #define Souliss_T1n_RstCmd				0x00		// Reset
 #define Souliss_T1n_AutoState			0xF0		// AUTO Mode Feedback
 #define Souliss_T1n_Coil				0x01		// Output Feedback ON

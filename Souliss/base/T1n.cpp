@@ -1118,7 +1118,7 @@ void Souliss_SetT1A(U8 *memory_map, U8 slot)
 
 /**************************************************************************
 /*!
-	Typical 13 : Digital pass through
+	Typical 1A : Digital pass through
 	
 		It read read data from input and pass them through to the output
 		
@@ -1150,6 +1150,107 @@ U8 Souliss_Logic_T1A(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+	
+	return i_trigger;
+}
+
+/**************************************************************************
+/*!
+	Define the use of Typical 1B : Position Constrained ON/OFF Digital Output
+*/	
+/**************************************************************************/
+void Souliss_SetT1A(U8 *memory_map, U8 slot)
+{
+	memory_map[MaCaco_TYP_s + slot] = Souliss_T1B;
+}
+
+/**************************************************************************
+/*!
+	Typical 1B : Position Constrained ON/OFF Digital Output
+	
+		Handle one digital output based on position of the mobile user 
+		interface, that is requested to push continuously data in order
+		to keep the output in the ON condition.
+		The output goes to OFF once the user interface stop to push data.
+		
+		Is expected that the user interface push data only via WiFi, this
+		give a position constrained behaviour.
+					
+		Software Commands:		
+			
+			From any available software interface, these commands will turn
+			the light ON and OFF.
+				#define Souliss_T1n_OnCmd				0x02
+				#define Souliss_T1n_OffCmd				0x04
+				#define Souliss_T1n_PositionOnCmd		0x31		
+		
+			The Souliss_T1n_PositionOnCmd force the output to Souliss_T1n_OnCoil 
+			and start a count-down timer. The timer got a reset every time that 
+			the user interface send a the command Souliss_T1n_PositionOnCmd.
+			
+			If the user interface send periodically the Souliss_T1n_PositionOnCmd the
+			output stays in Souliss_T1n_OnCoil, and goes back to Souliss_T1n_OffCoil
+			only when the user interface is out of WiFi range and is no longer able
+			to send data.
+				
+		Output status,
+		-  0(hex) for output OFF,
+		-  1(hex) for output ON.
+			
+
+*/	
+/**************************************************************************/
+U8 Souliss_Logic_T1B(U8 *memory_map, U8 slot, U8 *trigger)
+{
+	U8 i_trigger=0;														// Internal trigger
+
+	// Look for input value, update output. If the output is not set, trig a data
+	// change, otherwise just reset the input
+
+	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		
+	{
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
+			i_trigger = Souliss_TRIGGED;
+	
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the output
+		memory_map[MaCaco_AUXIN_s + slot] = 0; 							// Reset the timer
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
+	{
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
+			i_trigger = Souliss_TRIGGED;	
+	
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
+		memory_map[MaCaco_AUXIN_s + slot] = 0; 							// Reset the timer
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_PositionOnCmd)
+	{
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)  
+			i_trigger = Souliss_TRIGGED;	
+	
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_Timed_StdVal; 	// Set the timer
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+	 }
+
+	// Count-down and switch OFF the output if the timer is expired 
+	if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Timed)
+		memory_map[MaCaco_AUXIN_s + slot]--;
+	else if(memory_map[MaCaco_AUXIN_s + slot] != 0)
+	{
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)  
+			i_trigger = Souliss_TRIGGED;
+	
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the output
+		memory_map[MaCaco_AUXIN_s + slot] = 0; 							// Reset the timer
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+	}	
+		
 	// Update the trigger
 	if(i_trigger)
 		*trigger = i_trigger;
