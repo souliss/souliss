@@ -1162,7 +1162,7 @@ U8 Souliss_Logic_T1A(U8 *memory_map, U8 slot, U8 *trigger)
 	Define the use of Typical 1B : Position Constrained ON/OFF Digital Output
 */	
 /**************************************************************************/
-void Souliss_SetT1A(U8 *memory_map, U8 slot)
+void Souliss_SetT1B(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T1B;
 }
