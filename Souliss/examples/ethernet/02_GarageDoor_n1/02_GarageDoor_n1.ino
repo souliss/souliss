@@ -24,7 +24,7 @@
 // Configure the framework
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/ethW5100.h"					// Ethernet through Wiznet W5100
-#include "conf/Gateway.h"					// The main node is the Gateway, we have just one node
+#include "conf/Gateway.h"					// The main node is the Gateway
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -68,7 +68,6 @@ void loop()
 
 		// Read every 510ms the input state and send it to the other board	
 		FAST_510ms() {
-		
 			// Use Pin2 as ON/OFF command
 			if(DigIn(2, Souliss_T2n_ToogleCmd, GARAGEDOOR_NODE1))
 			{
