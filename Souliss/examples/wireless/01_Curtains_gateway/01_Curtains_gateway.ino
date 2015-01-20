@@ -58,6 +58,11 @@ void setup()
 
 void loop()
 { 
+	// Here we start to play
+	EXECUTEFAST() {						
+		UPDATEFAST();	
+
 		// This node does just networking, bridging the Peer node to the Ethernet network
 		FAST_GatewayComms();			
+	}	
 }

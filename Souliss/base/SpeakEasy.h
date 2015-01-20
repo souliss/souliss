@@ -208,6 +208,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Logic_Pressure(slot)		Souliss_Logic_T58(memory_map, slot, 0.05, &data_changed)
 #define	Set_T58(slot)				Souliss_SetT58(memory_map, slot)
 #define	Logic_T58(slot)				Souliss_Logic_T58(memory_map, slot, 0.05, &data_changed)
+
+#define	Watchdog(chain_address, chain_slot, alarm_command)	Souliss_Watchdog(memory_map, chain_address, chain_slot, alarm_command)
 /******************************************/
 
 /************** Souliss ******************/

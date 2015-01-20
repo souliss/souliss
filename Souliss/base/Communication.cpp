@@ -448,5 +448,8 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 	
 	// Write in the next node of the chain to avoid that watchdog timer expire
 	U8 cmd = WTD_SET;
-	return MaCaco_send(chain_address, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + chain_slot, 1, &cmd);
+	MaCaco_send(chain_address, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + chain_slot, 1, &cmd);
+	
+	// Return the alarm state
+	return memory_map[MaCaco_OUT_s + chain_slot];	
 }
