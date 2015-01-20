@@ -86,7 +86,9 @@
 	without having data for the upper layers. 
 */
 /**************************************************************************/
+#ifndef	VNET_RESETTIME_INSKETCH
 #define VNET_RESETTIME		   0x000AFC80
+#endif
 
 /**************************************************************************/
 /*!

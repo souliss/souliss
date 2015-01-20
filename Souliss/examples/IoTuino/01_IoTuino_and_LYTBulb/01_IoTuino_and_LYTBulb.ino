@@ -1,19 +1,23 @@
 /**************************************************************************
 	Souliss - IoTuino LYT Light Bulb
 	
-	This sketch control the Authometion LYT bubls through Souliss, the WiFi
+	This sketch control the Authometion LYT bulbs through Souliss, the WiFi
 	module LPT200 on board of IoTuino shall be configured to access your
 	local WiFi network before run this sketch.
 	
+	Please consider that you need a customized firmware on the LPT200 WiFi
+	module, refer to Authometion for more details.
+	
 ***************************************************************************/
-#include "bconf/IoTuino.h"						// Define the board type
-#include "bconf/Gateway.h"						// Define a gateway
-#include "bconf/SmallNetwork.h"					// Use small network parameters (workaround on LPT200 max frame)
 
-#include "Souliss.h"
-#include "Typicals.h"
-#include "SpeakEasy.h"
+// Configure the framework
+#include "bconf/IoTuino.h"			// Use an IoTuino board
+#include "conf/Gateway.h"			// The main node is the Gateway
+#include "conf/SmallNetwork.h"		// Use small network parameters (workaround on LPT200 max frame)
+
+// Include framework code and libraries
 #include <SPI.h>
+#include "Souliss.h"
 
 // Define logic slots, multicolor lights use four slots
 #define LYTLIGHT1			0					
@@ -52,6 +56,7 @@ void loop()
 		// Here we process all communication with other nodes
 		FAST_GatewayComms();	
 	}	
+	
 	EXECUTESLOW() {
 		UPDATESLOW();
 		
@@ -59,6 +64,5 @@ void loop()
 		SLOW_10s() {
 			LYTSleepTimer(LYTLIGHT1);
 		}
-
 	}
 } 

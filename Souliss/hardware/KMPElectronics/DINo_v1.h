@@ -55,16 +55,6 @@
 #define	SetRelay3()			pinMode(RELAY3, OUTPUT)
 #define	SetRelay4()			pinMode(RELAY4, OUTPUT)
 
-#define	ReadInput1(slot)	DigIn(IN1, Souliss_T1n_ToogleCmd, slot)	
-#define	ReadInput2(slot)	DigIn(IN2, Souliss_T1n_ToogleCmd, slot)	
-#define	ReadInput3(slot)	DigIn(IN3, Souliss_T1n_ToogleCmd, slot)	
-#define	ReadInput4(slot)	DigIn(IN4, Souliss_T1n_ToogleCmd, slot)	
-
-#define	CntRelay1(slot)		DigOut(RELAY1, Souliss_T1n_Coil, slot)
-#define	CntRelay2(slot)		DigOut(RELAY2, Souliss_T1n_Coil, slot)
-#define	CntRelay3(slot)		DigOut(RELAY3, Souliss_T1n_Coil, slot)
-#define	CntRelay4(slot)		DigOut(RELAY4, Souliss_T1n_Coil, slot)
-
 //	Not used in DINo version 1, here for compatibility with DINo version 2 
 #define	InitDINo()
 

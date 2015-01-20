@@ -28,10 +28,15 @@
 #define NRF24_INSKETCH
 #define VNET_MEDIA_INSKETCH
 #define	COMMS_MODEL_INSKETCH
+#define	VNET_RESETTIME_INSKETCH
 
 // Refer to chibiUsrCfg.h and vNetCfg.h
 #define NRF24						1
 #define VNET_MEDIA2_ENABLE  		1
 #define	COMMS_MODEL					6
+
+// Some nRF24L01 doesn't work reliably over time, so we lower the maximum time that a 
+// node can be inactive before force a reset of the radio
+#define	VNET_RESETTIME				0x42F6
 
 #endif

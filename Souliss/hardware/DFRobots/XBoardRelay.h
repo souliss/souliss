@@ -32,13 +32,10 @@
 #define XBR_H
 
 // XBoard Relay Pinouts
-#define REL1			8
-#define REL2			7	
+#define RELAY1			8
+#define RELAY2			7	
 
-#define	SetRelay1()			pinMode(8, OUTPUT);
-#define	SetRelay2()			pinMode(7, OUTPUT);
-
-#define	CntRelay1(slot)		ssDigOut(8,Souliss_T1n_Coil,slot)
-#define	CntRelay2(slot)		ssDigOut(7,Souliss_T1n_Coil,slot)
+#define	SetRelay1()			pinMode(RELAY1, OUTPUT);
+#define	SetRelay2()			pinMode(RELAY2, OUTPUT);
 
 #endif

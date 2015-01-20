@@ -60,4 +60,4 @@ void loop()
 { 
 		// This node does just networking, bridging the Peer node to the Ethernet network
 		FAST_GatewayComms();			
-} 
+}
