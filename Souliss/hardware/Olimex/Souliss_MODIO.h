@@ -42,4 +42,18 @@ void Souliss_MODIO_SetOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_m
 void Souliss_MODIO_DigOut();
 void Souliss_MODIO_RelayOut();
 
+#define	m_In() 														Souliss_MODIO_In()
+#define	m_DigIn(pin, value, slot)									Souliss_MODIO_DigIn(pin, value, memory_map, slot)
+#define	m_LowDigIn(pin, value, slot) 								Souliss_MODIO_LowDigIn(pin, value, memory_map, slot)
+#define	m_DigIn2State(pin, value_state_on, value_state_off, slot) 	Souliss_MODIO_DigIn2State(pin, value_state_on, value_state_off, memory_map, slot)
+#define	m_DigInHold(pin, value_state1, value_state2, slot) 			Souliss_MODIO_DigInHold(pin, value_state1, value_state2, memory_map, slot)
+#define	m_LowDigInHold(pin, value_state1, value_state2, slot) 		Souliss_MODIO_LowDigInHold(pin, value_state1, value_state2, memory_map, slot)
+#define	m_SetOut(pin, value, slot)									Souliss_MODIO_SetOut(pin, value, memory_map, slot)
+#define	m_nSetOut(pin, value, slot) 								Souliss_MODIO_nSetOut(pin, value, memory_map, slot)
+#define	m_SetOutToggle(pin, value, slot) 							Souliss_MODIO_SetOutToggle(pin, value, memory_map, slot)
+#define	m_SetOutLessThan(pin, value, deadband, slot) 				Souliss_MODIO_SetOutLessThan(pin, value, deadband, memory_map, slot)
+#define	m_SetOutGreaterThan(pin, value, deadband, slot) 			Souliss_MODIO_SetOutGreaterThan(pin, value, deadband, memory_map, slot)
+#define	m_DigOut()													Souliss_MODIO_DigOut()
+#define	m_RelayOut()												Souliss_MODIO_RelayOut()
+
 #endif

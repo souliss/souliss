@@ -1,7 +1,7 @@
 Souliss
 Copyright (C) 2014  Veseo
 
-Relese note for revision ... (Friariello)
+Release note for revision ... (Friariello)
 	
 	Revised configuration structure and dynamic addressing features, extended support
 	for battery operated devices.
