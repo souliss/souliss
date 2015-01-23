@@ -1,29 +1,32 @@
 /**************************************************************************
-	Souliss - LEDs
+	Souliss - Android RGB Lamp
 	
-	It control via Android the two embedded LEDs of the OLIMEXINO-328 board,
-	this is the simplest example and can be used as starting point with Souliss 
-	over Olimex hardware.
+	Control an RGB Led Lamp using the Android user interface, communication
+	between the board and Android is via Ethernet and MaCaco/vNet protocol.
 	
-	The communication goes over Ethernet using MOD-ENC28J60 or MOD-WIFI.
+	The lamp is controlled via IR led that emulate the original remote, is
+	required a dedicated map for the lamp that shall be controlled, in this
+	example there is a mapping for NEC codes that shall work for most of the
+	devices.
+	
+	You need an IR led as additional hardware on pin 3
  
 	Run this code on one of the following boards:
-	  - Olimexino328 and MOD-ENC28J60 
-
+	  - Arduino Ethernet (W5100) 
+	  -	Arduino with Ethernet Shield (W5100)
+	  
 	As option you can run the same code on the following, just changing the
 	relevant configuration file at begin of the sketch
-	  -	Olimexino328 and MOD-WIFI
-	  -	Olimexino32U4 and MOD-ENC28J60
-	  -	Olimexino32U4 and MOD-WIFI
-	  -	AVR T-32U4 and MOD-ENC28J60
-	  -	AVR T-32U4 and MOD-WIFI	  
-	
+	  -	Arduino with ENC28J60 Ethernet Shield
+	  - Arduino with W5200 Ethernet Shield
+	  - Arduino with W5500 Ethernet Shield
+				
 ***************************************************************************/
 
 // Configure the framework
-#include "bconf/Olimexino328.h"				// Use a Olimex Olimexino328
-#include "bconf/OlimexMOD-ENC28J60.h"		// Ethernet through Microchip ENC28J60
-#include "conf/Gateway.h"					// The main node is the Gateway, we have just one node
+#include "bconf/StandardArduino.h"			// Use a standard Arduino
+#include "conf/ethW5100.h"					// Ethernet through Wiznet W5100
+#include "conf/Gateway.h"					// The main node is the Gateway
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -39,8 +42,7 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 #define	myvNet_subnet	0xFF00
 #define	myvNet_supern	Gateway_address
 
-#define SLOT_LED1			0			// This is the memory slot used for the execution of the logic
-#define SLOT_LED2			1			// This is the memory slot used for the execution of the logic
+#define RGBLAMP_SLOT			0			// This is the memory slot used for the execution of the logic in network_address1
 
 void setup()
 {	
@@ -50,14 +52,11 @@ void setup()
 	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 	
-	// Set the typical logic to use, T11 is a ON/OFF Digital Output with Timer Option
-	SetT11(SLOT_LED1);
-	SetT11(SLOT_LED2);
+	// Set the RGB led lamp typical
+	SetT15(RGBLAMP_SLOT);
 	
-	// Define LEDs pins as output
-	pinMode(9, OUTPUT);
-	pinMode(13,OUTPUT);
-	
+	// Define outputs pins for IR led
+	pinMode(3, OUTPUT);
 }
 
 void loop()
@@ -68,17 +67,20 @@ void loop()
 
 		// Read every 510ms the input state and send it to the other board	
 		FAST_510ms() {
+			
+			// Execute the logic for RGB control
+			Logic_T15(RGBLAMP_SLOT);
+			
+			// Send the command to the lamp via IR
+			if(isTrigged(RGBLAMP_SLOT))
+			{
+				sendRGBRemote(mOutput(RGBLAMP_SLOT));
+				ResetTrigger();
+			}	
+		} 
 
-			// Execute the logic
-			Logic_T11(SLOT_LED1);
-			Logic_T11(SLOT_LED2);
-									
-			// Set outputs
-			DigOut(9, Souliss_T1n_Coil, SLOT_LED1);
-			DigOut(13, Souliss_T1n_Coil, SLOT_LED1);
-		} 		
-		
 		// Here we handle here the communication with Android, commands and notification
-		FAST_GatewayComms();					
+		FAST_GatewayComms();		
+					
 	}
 } 

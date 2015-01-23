@@ -94,7 +94,7 @@ void sleepNow()         // here we put the arduino to sleep
  	
 	// set the interrupt to wake the device
 	cli();
-	attachInterrupt(wakePinINT, wakeUpNow, HIGH); 
+	attachInterrupt(wakePinINT, wakeUpNow, RISING); 
  
     sleep_enable();         // enables the sleep bit in the mcucr register
                             // so sleep is possible. just a safety pin

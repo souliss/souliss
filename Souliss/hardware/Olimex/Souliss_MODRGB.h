@@ -27,9 +27,9 @@
 
 #include "MODRGB.h"
 
-#define Souliss_MODRGB_Init()			mRGB_Init();	\
+#define mrgb_Init()						mRGB_Init();	\
 										mRGB_Reset()
 								
-#define Souliss_MODRGB_SetColor(rgb)	mRGB_SetColor(rgb)
+#define mrgb_SetColor(rgb)				mRGB_SetColor(rgb)
 
 #endif

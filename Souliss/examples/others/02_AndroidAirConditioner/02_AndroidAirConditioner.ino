@@ -1,14 +1,15 @@
 /**************************************************************************
-	Souliss - Garage Door
+	Souliss - Android Control for Air Conditioner
 	
-	Control a garage door using two Ethernet boards: one device act on the 
-	relays that drive the motor and get the limit switches, the other has one 
-	push-button for opening and closing the door. The door can be controlled
-	also via Android (download SoulissApp from Play Store).
+	Control an air conditioner using the Android user interface, communication
+	between the board and Android is via Ethernet and MaCaco/vNet protocol.
 	
-	Ensure to use limit switches to protect the motor once the door is completely
-	closed or open, if limit switches are not used the motor should be self-protected.
-		
+	The conditioner is controlled via IR led that emulate the original remote, is
+	required a dedicated map for the device that shall be controlled, in this
+	example there is a mapping for a Samsung MH026FB.
+	
+	You need an IR led as additional hardware on pin 3
+ 
 	Run this code on one of the following boards:
 	  - Arduino Ethernet (W5100) 
 	  -	Arduino with Ethernet Shield (W5100)
@@ -17,8 +18,8 @@
 	relevant configuration file at begin of the sketch
 	  -	Arduino with ENC28J60 Ethernet Shield
 	  - Arduino with W5200 Ethernet Shield
-	  - Arduino with W5500 Ethernet Shield
-			
+	  - Arduino with W5500 Ethernet Shield	
+
 ***************************************************************************/
 
 // Configure the framework
@@ -40,9 +41,7 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 #define	myvNet_subnet	0xFF00
 #define	myvNet_supern	Gateway_address
 
-#define GARAGEDOOR_NODE1			0						
-#define GARAGEDOOR_NODE2			0	
-#define GARAGELIGHT_NODE2			1
+#define AIRCON_SLOT			0				// This is the memory slot used for the execution of the logic in network_address1
 
 void setup()
 {	
@@ -51,17 +50,16 @@ void setup()
 	// Set network parameters
 	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
+		
+	// Set the air conditioner typical
+	Souliss_SetT32(memory_map, AIRCON_SLOT);
 	
-	// This node as gateway will get data from the Peer
-	SetAsPeerNode(Peer_address, 1);	
-	
-	// Define inputs, outputs pins and pulldown
-	pinMode(2, INPUT);	// Hardware pulldown required
-	
+	// Define outputs pins for IR led
+	pinMode(3, OUTPUT);
 }
 
 void loop()
-{   
+{ 
 	// Here we start to play
 	EXECUTEFAST() {						
 		UPDATEFAST();	
@@ -69,18 +67,19 @@ void loop()
 		// Read every 510ms the input state and send it to the other board	
 		FAST_510ms() {
 			
-			// Use Pin2 as ON/OFF command
-			if(DigIn(2, Souliss_T2n_ToogleCmd, GARAGEDOOR_NODE1))
+			// Execute the logic for RGB control
+			Logic_T32(AIRCON_SLOT);
+			
+			// Send the command to the lamp via IR
+			if(isTrigged(AIRCON_SLOT))
 			{
-				// Send data
-				Souliss_RemoteInput(Peer_address, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));
-				Souliss_ResetInput(memory_map, GARAGEDOOR_NODE1);
+				sendMH026FB(myMap, AIRCON_SLOT);
+				ResetTrigger();
 			}
 		} 
-		
+
 		// Here we handle here the communication with Android, commands and notification
-		// are automatically assigned to MYLEDLOGIC
 		FAST_GatewayComms();		
-						
+							
 	}
 } 

@@ -213,10 +213,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 /******************************************/
 
 /************** Souliss ******************/
-#define myMap	memory_map
-#define myData	&data_changed
-#define myNode	memory_map, &data_changed
-
+#define myMap				memory_map
+#define myData				&data_changed
+#define myNode				memory_map, &data_changed
+#define	ResetTrigger()		(data_changed=0)
 
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
