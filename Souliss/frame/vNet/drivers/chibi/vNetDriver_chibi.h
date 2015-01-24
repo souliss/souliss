@@ -59,8 +59,7 @@ uint8_t vNet_DataAvailable_M2();
 uint8_t vNet_RetriveData_M2(uint8_t *data);
 uint16_t vNet_GetSourceAddress_M2();
 uint8_t vNet_GetRSSI_M2();
-void vNet_Sleep_M2(uint8_t enb);
-
-
+void vNet_RadioSleep_M2();
+void vNet_RadioWakeUp_M2();
 
 #endif

@@ -18,7 +18,7 @@
 // Configure the framework
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/ethW5100.h"					// Ethernet through Wiznet W5100
-#include "conf/nRF24L01"
+#include "conf/nRF24L01.h"
 #include "conf/Gateway.h"					// The main node is the Gateway
 
 // Include framework code and libraries
@@ -54,8 +54,8 @@ void setup()
 	SetAsPeerNode(Peer_address, 1);	
 
 	// Set the typical logic to handle the lights
-	SetT11(LIGHT1_NODE1);
-	SetT11(LIGHT2_NODE1);
+	Set_T11(LIGHT1_NODE1);
+	Set_T11(LIGHT2_NODE1);
 	
 	// Define inputs (hardware pulldown required) and outputs pins
 	pinMode(2, INPUT);					// Toggle command for light 1

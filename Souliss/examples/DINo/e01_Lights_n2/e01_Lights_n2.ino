@@ -12,7 +12,7 @@
 ***************************************************************************/
 
 #include "bconf/DINo_v2.h"					// Define the board type
-#include "conf/DymanicAddressing.h"			// Use dynamic address
+#include "conf/DynamicAddressing.h"			// Use dynamic address
 
 // Include framework code and libraries
 #include <SPI.h>

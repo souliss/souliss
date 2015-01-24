@@ -9,7 +9,7 @@
 #include "Ethernet.h"
 #include "Dhcp.h"
 #include "conf/eth/ethUsrCfg.h"
-#include "base/SoulissBase.h"
+#include "Souliss.h"
 
 // XXX: don't make assumptions about the value of MAX_SOCK_NUM.
 uint8_t EthernetClass::_state[MAX_SOCK_NUM] = { 

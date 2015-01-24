@@ -252,9 +252,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	FAST_GatewayComms()						FAST_30ms()    						\
 													ProcessCommunication();			\
 												FAST_1110ms() 						\
-													ssCommunicationChannels();		\
+													CommunicationChannels();		\
 												FAST_2110ms() 						\
-													ssGetTypicals()
+													GetTypicals()
 										
 #define	FAST_BridgeComms()						FAST_30ms()    						\
 													ProcessCommunication();			\

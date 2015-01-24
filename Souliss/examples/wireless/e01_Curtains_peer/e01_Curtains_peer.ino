@@ -44,7 +44,7 @@ void setup()
 	Souliss_SetAddress(Peer_address, myvNet_subnet, myvNet_supern);					// Address on the wireless interface	
 	
 	// The logic that handles windows and curtains is T22, you can as alternative use Set_Windows()
-	SetT22(CURTAIN_NODE2);
+	Set_T22(CURTAIN_NODE2);
 	
 	// Define inputs (hardware pulldown required) and outputs pins
 	pinMode(2, INPUT);								// Open Command from pushbutton
@@ -82,7 +82,7 @@ void loop()
 		// Define the hold time of the outputs, by default the timer hold the relays for 16 times, so:
 		// 221x10x16ms that is about 35 seconds. Change the parameter inside FAST_x10ms() to change this time.
 		FAST_x10ms(211)	{                 
-			T22_Timer(CURTAIN_NODE2);
+			Timer_T22(CURTAIN_NODE2);
 		}
 	}
 } 

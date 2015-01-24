@@ -14,7 +14,7 @@
 #include "bconf/DINo_v2.h"					// Define the board type
 #include "conf/Gateway.h"					// The main node is the Gateway, we have just one node
 #include "conf/Webhook.h"					// Enable DHCP and DNS
-#include "conf/DymanicAddressing.h"			// Use dynamic address
+#include "conf/DynamicAddressing.h"			// Use dynamic address
 
 // Include framework code and libraries
 #include <SPI.h>

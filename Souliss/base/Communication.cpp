@@ -29,6 +29,9 @@
 
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
+#include "Souliss.h"
+
+U8 roundrob_1=1,roundrob_2=1, timeout=TIMEOUT_SET;
 
 /**************************************************************************
 /*!

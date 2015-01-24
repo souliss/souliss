@@ -29,6 +29,15 @@
 
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
+#include "Souliss.h"
+
+#define	PINRESET	0x0
+#define	PINSET		0x1
+#define	PINACTIVE	0x2
+#define	PINRELEASED	0x3
+
+U8 InPin[MAXINPIN];
+static unsigned long time;
 
 /**************************************************************************
 /*!

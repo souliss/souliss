@@ -668,6 +668,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					// send the assigned address
 					U8*	nodeaddress_p = (U8 *)(&nodeaddress);
 					return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
+				}	
 			}	
 		}
 		else

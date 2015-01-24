@@ -59,7 +59,7 @@ void setup()
 	SetAsPeerNode(Peer_address_n2, 2);		
 
 	// Setup the anti-theft
-	SetT41(ANTITHEFT);
+	Set_T41(ANTITHEFT);
 
 	// Define inputs (hardware pulldown required) and outputs pins
 	pinMode(2, INPUT);	

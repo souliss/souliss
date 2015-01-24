@@ -167,7 +167,12 @@ uint8_t vNet_GetRSSI_M2()
     current from the system.
 */
 /**************************************************************************/
-void vNet_Sleep_M2(uint8_t enb)
+void vNet_RadioSleep_M2()
 {
-    chb_sleep(enb);
+    chb_sleep(1);
+}
+
+void vNet_RadioWakeUp_M2()
+{
+    chb_sleep(0);
 }

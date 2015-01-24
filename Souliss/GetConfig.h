@@ -27,16 +27,16 @@
 #define GENCONF_H
 
 // Include configuration files
-#	include "conf/frame/MaCacoCfg.h"
-#	include "conf/uIP/uIPopt.h"
-#	include "conf/chibi/chibiUsrCfg.h"
-#	include "conf/nRF24/nRF24UsrCfg.h"
-#	include "conf/RFM69/RFM69UsrCfg.h"
-#	include "conf/usart/usartUsrCfg.h"												
-#	include "conf/eth/ethUsrCfg.h"
-#	include "conf/hardware/hwBoards.h"
-#	include "conf/frame/SoulissCfg.h"
-#	include "conf/frame/vNetCfg.h"
+#include "conf/frame/MaCacoCfg.h"
+#include "conf/uIP/uIPopt.h"
+#include "conf/chibi/chibiUsrCfg.h"
+#include "conf/nRF24/nRF24UsrCfg.h"
+#include "conf/RFM69/RFM69UsrCfg.h"
+#include "conf/usart/usartUsrCfg.h"												
+#include "conf/eth/ethUsrCfg.h"
+#include "conf/hardware/hwBoards.h"
+#include "conf/frame/SoulissCfg.h"
+#include "conf/frame/vNetCfg.h"
 
 // Define to zero if not used
 #ifndef	VNET_MEDIA1_ENABLE

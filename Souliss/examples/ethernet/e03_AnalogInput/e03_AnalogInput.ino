@@ -78,7 +78,7 @@ else
 		UPDATESPEEDY();
 	  
 		// Execute the code every 3 times of free MCU		
-		SPEEDY_x(n)	{
+		SPEEDY_x(3)	{
 		
 			// Acquire data from the microcontroller ADC
 			AnalogIn(A0, ANALOGDAQ, 0.09, 0);	// The raw data is 0-1024, scaled as 0-100% without bias (100 / 1024 = 0.09)

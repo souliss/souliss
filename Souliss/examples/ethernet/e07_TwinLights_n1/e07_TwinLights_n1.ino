@@ -47,7 +47,7 @@ void setup()
 	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 
-	SetAsPeerNode(peervNet_address, 1);		// Set the peer node 
+	SetAsPeerNode(Peer_address, 1);		// Set the peer node 
 	
 	Set_SimpleLight(MYLIGHT);			// Define a simple LED light logic
 	

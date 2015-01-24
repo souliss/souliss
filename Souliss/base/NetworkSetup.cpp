@@ -29,6 +29,10 @@
 
 #include "src/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
+#include "Souliss.h"
+
+bool FirstInit = {false}, addrsrv = {false};
+U16 keyidval=0;
 
 /**************************************************************************
 /*!

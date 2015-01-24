@@ -38,7 +38,7 @@
         0x1         Enable
 */
 /**************************************************************************/
-#ifndef(HTTPSERVER_INSKETCH)
+#ifndef HTTPSERVER_INSKETCH
 #	define HTTPSERVER  	0
 #endif
 							
@@ -63,7 +63,7 @@
 		0x2			Enable in UDP (Event-driven)
 */
 /**************************************************************************/
-#ifndef(XMLSERVER_INSKETCH)
+#ifndef XMLSERVER_INSKETCH
 #	define XMLSERVER  	0
 #endif
 
@@ -80,7 +80,7 @@
         0x1         Enable
 */
 /**************************************************************************/
-#ifndef(HTTPSERVER_INSKETCH)
+#ifndef HTTPSERVER_INSKETCH
 #	define HTTPSERVER  	0
 #endif
 
@@ -101,7 +101,7 @@
 	multidrop configuration and/or bridging in RTU mode.
 */
 /**************************************************************************/
-#ifndef(MODBUS_INSKETCH)
+#ifndef MODBUS_INSKETCH
 #	define	MODBUS					0
 #	define 	MODBUS_TCP  			1
 #	define 	MODBUS_RTU  			0
@@ -124,7 +124,7 @@
         0x1         Enable
 */
 /**************************************************************************/
-#ifndef(DYNAMICADDRESSING_INSKETCH)
+#ifndef DYNAMICADDRESSING_INSKETCH
 #	define DYNAMICADDRESSING  	0
 #endif
 
@@ -169,7 +169,7 @@
         0x1         Enable  (Default)
 */
 /**************************************************************************/
-#define SLEEP_BODDISALBE		1
+#define SLEEP_BODDISALBE		0
 #define	SLEEP_WAKEUPDELAY		1
 
 /**************************************************************************/

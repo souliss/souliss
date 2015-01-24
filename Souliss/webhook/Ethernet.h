@@ -7,7 +7,6 @@
 #include "EthernetServer.h"
 #include "Dhcp.h"
 #include "conf/eth/ethUsrCfg.h"
-#include "base/SoulissBase.h"
 
 #define MAX_SOCK_NUM 4
 
