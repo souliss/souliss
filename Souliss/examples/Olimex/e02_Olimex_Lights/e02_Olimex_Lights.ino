@@ -54,8 +54,8 @@ void setup()
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 	
 	// Set the typical logic to use, T11 is a ON/OFF Digital Output with Timer Option
-	SetT11(SLOT_RELAY1);
-	SetT11(SLOT_RELAY2);
+	Set_T11(SLOT_RELAY1);
+	Set_T11(SLOT_RELAY2);
 	
 	// Define inputs : GPIO1, GPIO0 - Outputs : GPIO6, GPIO5, the MODIO relays doesn't need an init
 	MODIO_Init();

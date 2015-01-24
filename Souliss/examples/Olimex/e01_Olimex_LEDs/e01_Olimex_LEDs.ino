@@ -51,8 +51,8 @@ void setup()
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 	
 	// Set the typical logic to use, T11 is a ON/OFF Digital Output with Timer Option
-	SetT11(SLOT_LED1);
-	SetT11(SLOT_LED2);
+	Set_T11(SLOT_LED1);
+	Set_T11(SLOT_LED2);
 	
 	// Define LEDs pins as output
 	pinMode(9, OUTPUT);

@@ -15,7 +15,7 @@
 	SendSamsung
  
  */
-
+#include <Arduino.h>
 #include "IRremote_light.h"
 #include "IRremoteInt_light.h"
 

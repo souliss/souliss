@@ -52,7 +52,7 @@ void setup()
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 			
 	// Set the typical logic to use, T16 is a ON/OFF Digital Output with Timer Option
-	SetT16(LEDCONTROL);
+	Set_T16(LEDCONTROL);
 	
 	// Define inputs, outputs pins
 	pinMode(2, INPUT);					// Hardware pulldown required
@@ -119,7 +119,7 @@ void loop()
 
 		SLOW_10s() {                
 			// Timer associated to the LED logic control
-			T16_Timer(LEDCONTROL);						
+			Timer_T16(LEDCONTROL);						
 		} 	  
 		
 	}	

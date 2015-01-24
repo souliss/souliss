@@ -58,7 +58,7 @@ void setup()
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 	
 	// Set the typical logic to use, T16 is a color picker and music analyzer
-	SetT16(SLOT_RGB_STATE);
+	Set_T16(SLOT_RGB_STATE);
 	
 	// Init the MOD-RGB module
 	mrgb_Init();
@@ -87,7 +87,7 @@ void loop()
 		// Execute the timer to handle the timed-on states
 		SLOW_10s() { 	
 
-			T16_Timer(SLOT_RGB_STATE);						
+			Timer_T16(SLOT_RGB_STATE);						
 		} 	  
 	}	
 } 

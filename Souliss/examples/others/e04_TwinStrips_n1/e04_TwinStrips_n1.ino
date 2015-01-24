@@ -61,7 +61,7 @@ void setup()
 	SetAsPeerNode(peervNet_address, 1);		// Set the peer node 
 	
 	// Set the typical logic to use
-	SetT16(LEDCONTROL);
+	Set_T16(LEDCONTROL);
 	
 	// Define inputs, outputs pins
 	pinMode(2, INPUT);					// Hardware pulldown required
@@ -128,7 +128,7 @@ void loop()
 
 		SLOW_10s() {                
 			// Timer associated to the LED logic control
-			T16_Timer(LEDCONTROL);						
+			Timer_T16(LEDCONTROL);						
 		} 	  
 		
 	}	

@@ -31,6 +31,7 @@
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
+#include "extras/extras.h"
 
 // Define the network configuration according to your router settings
 uint8_t ip_address[4]  = {192, 168, 1, 77};
@@ -53,7 +54,7 @@ void setup()
 	SetAsGateway(myvNet_address);									// Set this node as gateway for SoulissApp	
 	
 	// Set the RGB led lamp typical
-	SetT15(RGBLAMP_SLOT);
+	Set_T15(RGBLAMP_SLOT);
 	
 	// Define outputs pins for IR led
 	pinMode(3, OUTPUT);

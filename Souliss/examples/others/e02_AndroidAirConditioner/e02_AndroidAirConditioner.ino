@@ -30,6 +30,7 @@
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
+#include "extras/extras.h"
 
 // Define the network configuration according to your router settings
 uint8_t ip_address[4]  = {192, 168, 1, 77};
