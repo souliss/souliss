@@ -594,7 +594,7 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		// Toogle the actual status of the light
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
-		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
+		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight )
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
@@ -980,7 +980,7 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		// Toogle the actual status of the light
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
-		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
+		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight ) 
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
