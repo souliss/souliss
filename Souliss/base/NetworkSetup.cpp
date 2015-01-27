@@ -143,7 +143,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 {
 	// Assign a node for each media
 	U8 i=0;	
-	if(vnet_media_en[i] && vNet_GetAddress(i+1))
+	if(vnet_media_en[i] && !vNet_GetAddress(i+1))
 	{
 		// If the IP address hasn't been assigned manually or via DHCP, flag the addressing server and get the
 		// IP configuration from broadcast frames
@@ -151,22 +151,13 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	
 		// The last byte of the IP address is set, this will match the vNet address of the node
 		Souliss_SetAddress(DYNAMICADDR_IPVNETNODE, DYNAMICADDR_SUBNETMASK, DYNAMICADDR_IPGATEWAY);		
+		Souliss_SetLocalAddress(memory_map, DYNAMICADDR_IPVNETNODE);
 	}
 
 	// Only if an address hasn't been assigned	
 	for(i=1; i<VNET_MEDIA_NUMBER; i++)
 		if(vnet_media_en[i] && vNet_GetAddress(i+1))
-			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, ((vnet_addr_l[i] & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
-	
-	for(i=0; i<VNET_MEDIA_NUMBER; i++)
-	{
-		if(vnet_media_en[i])
-		{
-			// Only one media, by default the first, is used as reference
-			Souliss_SetLocalAddress(memory_map, (vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE));
-			return;
-		}
-	}	
+			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, ((vnet_addr_l[i] & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));	
 }
 
 /**************************************************************************

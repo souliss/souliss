@@ -32,13 +32,51 @@
 #include <avr/power.h>
 
 // Define the input pin and the relevant interrupt vector
-#define wakePin 	2
-#define	wakePinINT	0
 
-// Set the interrupt pin as input
-#define sleepInit()	pinMode(wakePin, INPUT)
+
+/**********************************************************************
+
+Match between interrupts and associated pins
+
+	Board			int.0	int.1	int.2	int.3	int.4	int.5
+ 
+	ATmega328P		2		3	 	 	 	 
+	ATmega2560		2		3		21		20		19		18
+	ATmega32U4		3		2		0		1		7	
+
+***********************************************************************/
+
+#ifndef	SLEEPING_INSKETCH
+#	define 	wakePin 		2
+#	define	wakePinINT		0
+#endif
+
+#define	SLEEPMODE_INPUT		1
+#define	SLEEPMODE_TIMER		2
+#define	SLEEPMODE_COMBO		3
+
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+
+// Clear the reset flag, set the prescaler
+#define	set_sleep_timer()				(MCUSR &= ~(1<<WDRF));					\
+										(WDTCSR |= (1<<WDCE) | (1<<WDE));		\
+										(WDTCSR = (1<<WDP0 | 1<<WDP3))
+  
+// Enable and disable the WD interrupt (note no reset)
+#define	sleep_timer_enable()			(WDTCSR |= _BV(WDIE))
+#define	sleep_timer_disable()			(WDTCSR &= ~(_BV(WDIE))
+
+#else
+	#error "The selected microcontrollers isn't actually supported for sleep"
+#endif
 
 bool backfromSleep = false;
+uint8_t sleepmode = 0;
+
+ISR(WDT_vect)
+{
+	backfromSleep = true;
+}
 
 void wakeUpNow()        // here the interrupt is handled after wakeup
 {
@@ -50,17 +88,48 @@ bool wasSleeping()
 	return backfromSleep;
 } 
 
+void sleepInit(uint8_t mode=SLEEPMODE_INPUT)
+{
+	if(mode & SLEEPMODE_INPUT)				// Wakeup on input change
+	{
+		// Record the sleep mode that has been selected
+		sleepmode = SLEEPMODE_INPUT;
+		
+		pinMode(wakePin, INPUT);
+	}
+	
+	if(mode & SLEEPMODE_TIMER)		// Wakeup every 8 seconds
+	{
+		// Record the sleep mode that has been selected
+		sleepmode = SLEEPMODE_TIMER;
+		
+		// Setup the watchdog timer at 8 seconds
+		set_sleep_timer();
+	}
+}
+
 /**************************************************************************
 /*!
 	This put the microcontroller and the vNet radio in sleep mode, use this
 	code as follow:
+
+	setup()
+	{
+		// Set the wakeup action, could be
+		//
+		//	SLEEPMODE_INPUT	- This wakeup with a change on the input state
+		//	SLEEPMODE_TIMER	- This wakeup at period time interval
+		//	SLEEPMODE_COMBO	- This combine both the previous modes
+		
+		sleepInit(SLEEPMODE_INPUT);
+	}
 	
-	void()
+	loop()
 	{
 		
 		if(wasSleeping())
 		{
-			// Just wakeup, do somenthing before go back in sleep
+			// Just wakeup, do something before go back in sleep
 			...
 		}
 		
@@ -93,10 +162,11 @@ void sleepNow()         // here we put the arduino to sleep
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
  	
 	// set the interrupt to wake the device
-	cli();
-	attachInterrupt(wakePinINT, wakeUpNow, RISING); 
- 
-    sleep_enable();         // enables the sleep bit in the mcucr register
+	if(sleepmode & SLEEPMODE_INPUT)	attachInterrupt(wakePinINT, wakeUpNow, RISING); 
+	if(sleepmode & SLEEPMODE_TIMER)	sleep_timer_enable();
+
+	cli();					// we wont yet sleep
+    sleep_enable();         // enables the sleep bit in the mcu register
                             // so sleep is possible. just a safety pin
 	
 #	if(SLEEP_BODDISALBE)	
@@ -109,7 +179,9 @@ void sleepNow()         // here we put the arduino to sleep
 	// the device will start back from this point once the interrupt on pin 2
 	// has been fired, so disable sleep and go in normal mode
 	sleep_disable();
-	detachInterrupt(wakePinINT);    	
+
+	if(sleepmode & SLEEPMODE_INPUT)	detachInterrupt(wakePinINT);    	
+	if(sleepmode & SLEEPMODE_TIMER)	sleep_timer_disable();
 	sei();
 	
 #	if(SLEEP_WAKEUPDELAY)
