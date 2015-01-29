@@ -156,7 +156,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 
 	// Only if an address hasn't been assigned	
 	for(i=1; i<VNET_MEDIA_NUMBER; i++)
-		if(vnet_media_en[i] && vNet_GetAddress(i+1))
+		if(vnet_media_en[i] && !vNet_GetAddress(i+1))
 			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, ((vnet_addr_l[i] & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));	
 }
 

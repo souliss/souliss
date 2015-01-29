@@ -64,7 +64,7 @@ Match between interrupts and associated pins
   
 // Enable and disable the WD interrupt (note no reset)
 #define	sleep_timer_enable()			(WDTCSR |= _BV(WDIE))
-#define	sleep_timer_disable()			(WDTCSR &= ~(_BV(WDIE))
+#define	sleep_timer_disable()			(WDTCSR &= ~(_BV(WDIE)))
 
 #else
 	#error "The selected microcontrollers isn't actually supported for sleep"

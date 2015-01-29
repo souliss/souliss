@@ -38,6 +38,7 @@
 #include "conf/frame/SoulissCfg.h"
 #include "conf/frame/vNetCfg.h"
 
+
 // Define to zero if not used
 #ifndef	VNET_MEDIA1_ENABLE
 #define	VNET_MEDIA1_ENABLE	0
@@ -65,4 +66,5 @@ const U16 vnet_media_en[VNET_MEDIA_NUMBER] = {VNET_MEDIA1_ENABLE,  // Media 1
 												VNET_MEDIA4_ENABLE,  // Media 4
 												VNET_MEDIA5_ENABLE   // Media 5	
 												};
+												
 #endif
