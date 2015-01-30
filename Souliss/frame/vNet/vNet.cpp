@@ -682,7 +682,7 @@ U8 vNet_RetrieveData(U8 *data)
 				vNet_Media_Data[2].data_available = 0;
 				
 				// Verify if data are for Media3
-				if(vNet_GetAddress(3) && (vNet_GetfDestinationAddress(1) == vNet_GetAddress(1)))
+				if(vNet_GetAddress(3) && (vNet_GetfDestinationAddress(3) == vNet_GetAddress(3)))
 				{
 					vNet_Media_Data[2].data = data;		// Assign Data Buffer
 					vNet_ParseFrame(3);					// Parse Data Buffer
