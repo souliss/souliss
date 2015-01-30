@@ -667,8 +667,45 @@ U8 vNet_GetPort()
 */
 /**************************************************************************/
 U8 vNet_RetrieveData(U8 *data)
-{	
-	#if (VNET_MEDIA1_ENABLE)
+{
+	#if ((VNET_MEDIA1_ENABLE) && (VNET_MEDIA3_ENABLE))
+		if((vNet_Media_Data[0].data_available == 1) || (vNet_Media_Data[2].data_available == 1))
+		{
+			// Retrieve data from buffer
+			if(vNet_RetrieveData_M1(data))			// This is equivalent to vNet_RetrieveData_M3
+			{		
+				vNet_Media_Data[0].data = data;		// Assign Data Buffer
+				vNet_ParseFrame(1);					// Parse Data Buffer
+
+				// Reset the flags
+				vNet_Media_Data[0].data_available = 0;
+				vNet_Media_Data[2].data_available = 0;
+				
+				// Verify if data are for Media3
+				if(vNet_GetAddress(3) && (vNet_GetfDestinationAddress(1) == vNet_GetAddress(1)))
+				{
+					vNet_Media_Data[2].data = data;		// Assign Data Buffer
+					vNet_ParseFrame(3);					// Parse Data Buffer
+
+					last_media = 3;
+								
+					// Route data and remove header, if necessary
+					return vNet_RoutingBridging(3);										
+				}
+			
+				// Otherwise proceed with Media1
+				last_media = 1;
+								
+				// Route data and remove header, if necessary
+				return vNet_RoutingBridging(1);								
+			}
+			
+			// If retreive failed, return error
+			vNet_Media_Data[0].data_available = 0;
+			vNet_Media_Data[2].data_available = 0;
+			return VNET_DATA_FAIL;
+		}	
+	#elif (VNET_MEDIA1_ENABLE)
 		if(vNet_Media_Data[0].data_available == 1)
 		{
 			// Retrieve data from buffer
@@ -687,6 +724,25 @@ U8 vNet_RetrieveData(U8 *data)
 			vNet_Media_Data[0].data_available = 0;
 			return VNET_DATA_FAIL;
 		}	
+	#elif (VNET_MEDIA3_ENABLE)
+		if(vNet_Media_Data[2].data_available == 1)
+		{
+			// Retrieve data from buffer
+			if(vNet_RetrieveData_M3(data))
+			{
+				vNet_Media_Data[2].data = data;		// Assign Data Buffer
+				vNet_ParseFrame(3);					// Parse Data Buffer
+			
+				last_media = 3;
+				vNet_Media_Data[2].data_available = 0;
+				
+				// Route data and remove header, if necessary
+				return vNet_RoutingBridging(3);
+			}
+			// If retreive failed, return error
+			vNet_Media_Data[2].data_available = 0;
+			return VNET_DATA_FAIL;			
+		}			
 	#endif
 	
 	#if (VNET_MEDIA2_ENABLE)
@@ -712,28 +768,6 @@ U8 vNet_RetrieveData(U8 *data)
 
 	#endif
 	
-	#if (VNET_MEDIA3_ENABLE)
-		if(vNet_Media_Data[2].data_available == 1)
-		{
-			// Retrieve data from buffer
-			if(vNet_RetrieveData_M3(data))
-			{
-				vNet_Media_Data[2].data = data;		// Assign Data Buffer
-				vNet_ParseFrame(3);					// Parse Data Buffer
-			
-				last_media = 3;
-				vNet_Media_Data[2].data_available = 0;
-				
-				// Route data and remove header, if necessary
-				return vNet_RoutingBridging(3);
-			}
-			// If retreive failed, return error
-			vNet_Media_Data[2].data_available = 0;
-			return VNET_DATA_FAIL;			
-		}	
-
-	#endif
-
 	#if (VNET_MEDIA4_ENABLE)
 		if(vNet_Media_Data[3].data_available == 1)
 		{

@@ -37,7 +37,7 @@
 #define	IPBROADCAST							1
 
 #	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway
-#		define VNET_MEDIA3_ENABLE  		1
+#		define VNET_MEDIA3_ENABLE  			1
 #	elif(VNET_MEDIA1_ENABLE)
 #		define	VNET_MEDIA1_ENABLE  		0
 #		define	VNET_MEDIA3_ENABLE  		1
