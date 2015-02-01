@@ -57,6 +57,12 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 	}
 	else if(vNet_GetMedia(addr) == 3)
 	{
+		#if((VNET_MEDIA3_ENABLE) && !(VNET_MEDIA1_ENABLE))
+			// Media 1 - Ethernet
+			eth_SetBaseIP((uint8_t *)DEFAULT_BASEIPADDRESS);
+			eth_SetSubnetMask((uint8_t *)DEFAULT_SUBMASK);
+			eth_SetGateway((uint8_t *)DEFAULT_GATEWAY);
+		#endif		
 	}
 	else if(vNet_GetMedia(addr) == 4)
 	{
@@ -182,9 +188,9 @@ void Souliss_SetDynamicAddressing()
 				FirstInit = true;
 			}
 			
-			vNet_SetAddress(0x00, media);								// Set vNet Address
-			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, media);			// Set vNet Subnetmask
-			vNet_SetMySuperNode(0x00, media);							// Set vNet Supernode
+			vNet_SetAddress(vnet_addr_l[i], media);	// Set vNet Address
+			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, media);				// Set vNet Subnetmask
+			vNet_SetMySuperNode(0x00, media);								// Set vNet Supernode
 		}
 	}
 }
@@ -224,22 +230,21 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			{
 				// Load the address
 				confparameters_p++;
-				U8 proposedsubnet = (*(U16 *)confparameters_p)>>2;	// Subnet in case of dynamic address (0xFF00) has only one
+				U8 proposedsubnet = (*(U16 *)confparameters_p)>>8;	// Subnet in case of dynamic address (0xFF00) has only one
 																	// byte for subnet identification
 				
 				// If we got a full address
-				if((*(U16 *)confparameters_p) & ~DYNAMICADDR_SUBNETMASK)
-				{	
-					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
-			
-					// Configuration data can be now removed
-					for(U8 i=0; i<MaCaco_QUEUELEN; i++)
-						*(memory_map + MaCaco_QUEUE_s + i) = 0;
-					
-					return 1;
-				}
+				if((*(U16 *)confparameters_p) & ~DYNAMICADDR_SUBNETMASK)	
+					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));			
 				else	// Request an address starting from the actual subnet
 					MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, proposedsubnet, 0, 0);
+				
+				// Configuration data can be now removed
+				for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+					*(memory_map + MaCaco_QUEUE_s + i) = 0;
+					
+				return 1;				
+				
 			}	
 		}
 		

@@ -582,15 +582,15 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// If is a request from a SuperNode
 			if(rx->startoffset >= 0xF0)
 			{
-				U8 isSupernode = (rx->startoffset & 0xF0);
-				U8 vNetMedia   = (rx->startoffset & 0x0F);
+				isSupernode = (rx->startoffset & 0xF0);
+				vNetMedia   = (rx->startoffset & 0x0F);
 			}	
 			else
 			{
 				// The subnet in case of dynamic addressing use only one byte for subnet identification
 				// get the whole subnet as two bytes (filling with zeros) and get the requested media.
-				subnet = (rx->startoffset) << 2;
-				vNetMedia = vNet_GetMedia(subnet);
+				subnet = (rx->startoffset) << 8;
+				vNetMedia = vNet_GetMedia(subnet+1);
 			}
 			
 			U8 nodes=0;
@@ -629,8 +629,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				proposedaddress = nodeaddress;
 				
 				// send the assigned address
-				U8*	nodeaddress_p = (U8 *)(&nodeaddress);
-				return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
+				return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, (U8*)(&proposedaddress));
 			}
 			else	// is a standard node
 			{
@@ -666,8 +665,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					proposedaddress = nodeaddress;
 					
 					// send the assigned address
-					U8*	nodeaddress_p = (U8 *)(&nodeaddress);
-					return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, nodeaddress_p);
+					return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, (U8*)(&proposedaddress));
 				}	
 			}	
 		}
@@ -688,13 +686,13 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		//		4				  4
 		//		5				  5
 		U8  vNetMedia   = rx->startoffset;
-		U16 vNetAddr	= vNet_GetAddress(vNetMedia-1);	
+		U16 vNetAddr	= vNet_GetAddress(vNetMedia);	
 		
 		// if the media is enabled and the relevant subnet is configured
 		if(vnet_media_en[vNetMedia-1] && (vNetAddr != 0x0000))
 		{
 			// Get the subnet from the address
-			vNetAddr &= (~vNet_GetSubnetMask(vNetMedia-1));
+			vNetAddr &= (vNet_GetSubnetMask(vNetMedia));
 			
 			// Send as non-rebroadcastable message
 			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, (U8*)(&vNetAddr));

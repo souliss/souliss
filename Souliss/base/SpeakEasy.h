@@ -242,9 +242,11 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	RemoteInputs											Souliss_RemoteInputs
 
 #define	GetAddress()											while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
-																	Souliss_CommunicationData(memory_map, &data_changed);		\
-																	delay(1000);}												\
-																Souliss_JoinNetwork()	
+																	for(U8 i=0; i<(2*VNET_MEDIA_NUMBER); i++) {					\
+																		Souliss_CommunicationData(memory_map, &data_changed);	\
+																		delay(100);	}											\
+																	delay(10000);}												\
+																Souliss_JoinNetwork()
 
 /*****************************************/
 

@@ -149,7 +149,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	vNet_port = ETH_PORT;
 
 	// Define the IP address to be used
-	if(addr == 0xFFFF)
+	if((addr == VNET_ADDR_BRDC) ||  (addr == VNET_ADDR_wBRDC) ||  (addr == VNET_ADDR_nBRDC) || ((addr > VNET_ADDR_L_M3) && (addr < VNET_ADDR_H_M3)))
 	{
 		// Set the IP broadcast address
 		for(U8 i=0;i<4;i++)

@@ -669,6 +669,14 @@ U8 vNet_GetPort()
 U8 vNet_RetrieveData(U8 *data)
 {
 	#if ((VNET_MEDIA1_ENABLE) && (VNET_MEDIA3_ENABLE))
+		
+		// This is a trick, Media1 and Media3 use the same phisical Ethernet interface and both
+		// communicated over UDP/IP, in the comparison the only difference is that Media1 use
+		// unicast on either IP and vNet side, rather Media3 use unicast only on vNet and broadcast
+		// over the IP.
+		//
+		// So communication is basically handled through Media1 if both are active, and while parsing
+		// is decided which is the final media that should process the frame.
 		if((vNet_Media_Data[0].data_available == 1) || (vNet_Media_Data[2].data_available == 1))
 		{
 			// Retrieve data from buffer
@@ -681,8 +689,8 @@ U8 vNet_RetrieveData(U8 *data)
 				vNet_Media_Data[0].data_available = 0;
 				vNet_Media_Data[2].data_available = 0;
 				
-				// Verify if data are for Media3
-				if(vNet_GetAddress(3) && (vNet_GetfDestinationAddress(3) == vNet_GetAddress(3)))
+				// Data has been parsed on Media1, but can also be for Media3
+				if(vNet_GetAddress(3) && (vNet_GetfDestinationAddress(1) == vNet_GetAddress(3)))
 				{
 					vNet_Media_Data[2].data = data;		// Assign Data Buffer
 					vNet_ParseFrame(3);					// Parse Data Buffer
@@ -1040,7 +1048,7 @@ U8 vNet_MyMediasWithoutAddress(U8* media)
 	for(i=0; i<VNET_MEDIA_NUMBER; i++)
 	{
 		// Return if an active media without an address set if found
-		if(vnet_media_en[i] && !(vNet_Media[i].src_addr))
+		if(vnet_media_en[i] && (!(vNet_Media[i].src_addr) || (vNet_Media[i].src_addr == vnet_addr_l[i])))
 		{
 			*media = i+1;
 			return VNET_SUCCESS;
@@ -1318,9 +1326,18 @@ void vNet_ParseFrame(U8 media)
 	}
 	VNET_LOG(">\r\n");
 	#endif
-		
+
+	// Sometimes broadcast data can be used to build routing and bridging paths	
 	#if(VNET_SUPERNODE && VNET_BRDCAST)
-	// Sometimes broadcast data can be used to build routing and bridging paths
+
+	#if((VNET_MEDIA1_ENABLE) && (VNET_MEDIA3_ENABLE))
+	// Data coming from Media3 are parsed through Media1 if both are enabled, check 
+	// if the incoming frame is in our Media3 subnet
+	if(((vNet_Media_Data[media-1].o_src_addr) & vNet_Media[VNET_MEDIA3_ID].subnetmask) == (vNet_Media[VNET_MEDIA3_ID].src_addr & vNet_Media[VNET_MEDIA3_ID].subnetmask))
+			return;	// Nothing to do
+	#endif	
+
+	// Identify the source path
 	if((vNet_Media_Data[media-1].src_addr) && (vNet_Media_Data[media-1].src_addr != vNet_Media_Data[media-1].o_src_addr))
 	{
 		// Get the media from the original source address

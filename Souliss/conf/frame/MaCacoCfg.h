@@ -246,8 +246,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 */
 /**************************************************************************/							 
 #ifndef MaCacoCONF_INSKETCH
-#	define MaCaco_USERMODE		1												// User Mode
-#	define MaCaco_SUBSCRIBERS	1												// Enable subscribing to other nodes
+#	define MaCaco_USERMODE		0												// User Mode
+#	define MaCaco_SUBSCRIBERS	0												// Enable subscribing to other nodes
 #	define MaCaco_PERSISTANCE	0												// Data Persistence (increase RAM usage)
 #	define MaCaco_LASTIN		0												// Data Persistence for last incoming values
 #endif
