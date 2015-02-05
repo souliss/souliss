@@ -49,6 +49,7 @@ Match between interrupts and associated pins
 #ifndef	SLEEPING_INSKETCH
 #	define 	wakePin 		2
 #	define	wakePinINT		0
+#	define	wakeupTime		0x00FF			// The total sleep time is wakeupTime*8 seconds
 #endif
 
 #define	SLEEPMODE_INPUT		1
@@ -57,7 +58,7 @@ Match between interrupts and associated pins
 
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
 
-// Clear the reset flag, set the prescaler
+// Clear the reset flag, set the prescaler at 8 seconds
 #define	set_sleep_timer()				(MCUSR &= ~(1<<WDRF));					\
 										(WDTCSR |= (1<<WDCE) | (1<<WDE));		\
 										(WDTCSR = (1<<WDP0 | 1<<WDP3))
@@ -72,10 +73,17 @@ Match between interrupts and associated pins
 
 bool backfromSleep = false;
 uint8_t sleepmode = 0;
+uint16_t sleepcounter = 0;
 
 ISR(WDT_vect)
 {
-	backfromSleep = true;
+	// if the timer is expired wakeup
+	if(!sleepcounter)	
+	{
+		backfromSleep = true;
+		sleepcounter  = wakeupTime;
+	}
+	else sleepcounter--;
 }
 
 void wakeUpNow()        // here the interrupt is handled after wakeup
