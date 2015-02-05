@@ -37,7 +37,7 @@
 String incomingURL = String(HTTP_REQBYTES);			// The GET request is stored in incomingURL
 char buf[HTTP_BUFBYTES];							// Used for temporary operations
 uint8_t *buff = (uint8_t *)buf;
-uint8_t indata=0, bufferlen, data_len;				// End of HTML request
+uint16_t indata=0, bufferlen, data_len;				// End of HTML request
 
 // Send JSON string
 const char* xml[] = {"<s", ">", "</s", "<id", "</id"};
