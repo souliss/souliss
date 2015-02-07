@@ -786,7 +786,7 @@ void Souliss_T16_Timer(U8 *memory_map, U8 slot)
 
 /**************************************************************************
 /*!
-	Define the use of Typical 18 : N/OFF Digital Output with pulse output 
+	Define the use of Typical 18 : ON/OFF Digital Output with pulse output 
 	with Timer Option
 */	
 /**************************************************************************/
