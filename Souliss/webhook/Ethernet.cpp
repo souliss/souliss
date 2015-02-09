@@ -73,8 +73,7 @@ void EthernetClass::begin(IPAddress local_ip, IPAddress dns_server, IPAddress ga
 
 void EthernetClass::begin(IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet)
 {
-  Souliss_SetIPAddress(local_ip._address, subnet._address, gateway._address);
-
+  Souliss_SetIPAddress(local_ip.raw_address(), subnet.raw_address(), gateway.raw_address());
   /*
   W5x00.init();
   W5x00.setMACAddress(mac);
