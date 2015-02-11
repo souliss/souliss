@@ -298,8 +298,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 #define	pTYP				MaCaco_P_TYP_s
 #define	pOUT				MaCaco_P_OUT_s
-#define	pTypical(node,slot)	memory_map[pTYP+slot+(node*MaCaco_NODES*MaCaco_SLOT)]
-#define	pOutput(node,slot)	memory_map[pOUT+slot+(node*MaCaco_NODES*MaCaco_SLOT)]
+#define	pTypical(node,slot)	memory_map[pTYP+slot+(node*MaCaco_SLOT)]
+#define	pOutput(node,slot)	memory_map[pOUT+slot+(node*MaCaco_SLOT)]
 
 #define ResetTrigger()		data_changed=0;	
 #define	Initialize()		MaCaco_init(memory_map)
