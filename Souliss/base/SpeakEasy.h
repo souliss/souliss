@@ -223,6 +223,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	JoinNetwork()											Souliss_JoinNetwork()
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
+#define	SetAsBatteryNode(address, index)						Souliss_SetRemoteAddress(memory_map, address, index)	\
+																Souliss_BatteryChannels(memory_map, address);
+#define	HardcodedChannel										Souliss_HardcodedCommunicationChannel
 #define	GetTypicals()											Souliss_GetTypicals(memory_map)
 #define	CommunicationChannels()									Souliss_CommunicationChannels(memory_map)
 #define ProcessCommunication()									Souliss_CommunicationData(memory_map, &data_changed)

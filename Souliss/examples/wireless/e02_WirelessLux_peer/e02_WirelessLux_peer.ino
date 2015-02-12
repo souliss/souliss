@@ -18,7 +18,6 @@
 // Configure the framework
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/nRF24L01.h"
-#include "conf/Gateway.h"					// The main node is the Gateway
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -40,7 +39,7 @@ void setup()
 	Initialize();
 	
 	// Set network parameters
-	Souliss_SetAddress(Gateway_address, myvNet_subnet, myvNet_supern);					// Address on the wireless interface	
+	Souliss_SetAddress(Peer_address, myvNet_subnet, myvNet_supern);					// Address on the wireless interface	
 
 	// Set the typical logic to handle the lights
 	Set_T11(LIGHT1_NODE1);

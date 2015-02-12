@@ -50,6 +50,7 @@ Match between interrupts and associated pins
 #	define 	wakePin 		2
 #	define	wakePinINT		0
 #	define	wakeupTime		0x00FF			// The total sleep time is wakeupTime*8 seconds
+#	define	wakeupCycles	5				// Number of cycle asleep
 #endif
 
 #define	SLEEPMODE_INPUT		1
@@ -72,7 +73,7 @@ Match between interrupts and associated pins
 #endif
 
 bool backfromSleep = false;
-uint8_t sleepmode = 0;
+uint8_t sleepmode = 0, wakeupscycles = 0;
 uint16_t sleepcounter = 0;
 
 ISR(WDT_vect)
@@ -89,12 +90,24 @@ ISR(WDT_vect)
 void wakeUpNow()        // here the interrupt is handled after wakeup
 {
 	backfromSleep = true;
+	wakeupscycles = wakeupCycles;
 }
  
 bool wasSleeping()
 {
 	return backfromSleep;
 } 
+
+bool isTimeToSleep()
+{
+	if(wakeupscycles)
+	{
+		wakeupscycles--;
+		return 0;
+	}	
+	else
+		return 1;
+}
 
 void sleepInit(uint8_t mode=SLEEPMODE_INPUT)
 {
