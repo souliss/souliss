@@ -146,7 +146,7 @@
 
 /**************************************************************************/
 /*!
-	These option let customize the sleeping behavior of the microcontroller
+	These option let customize the sleeping behaviour of the microcontroller
 	
 	  SLEEP_BODDISALBE 
 		
@@ -170,6 +170,10 @@
         0x1         Enable  (Default)
 */
 /**************************************************************************/
+#ifndef	SLEEP_ENABLE_INSKETCH
+#	define SLEEP_ENABLE  		0
+#endif
+
 #define SLEEP_BODDISALBE		0
 #define	SLEEP_WAKEUPDELAY		1
 

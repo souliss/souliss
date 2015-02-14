@@ -28,6 +28,8 @@
 #ifndef SLEEPING_H
 #define SLEEPING_H
 
+#if(SLEEP_ENABLE)
+
 #include <avr/sleep.h>
 #include <avr/power.h>
 
@@ -216,5 +218,7 @@ void sleepNow()         // here we put the arduino to sleep
 	delay(10);
 #	endif
 }
+
+#endif
 
 #endif

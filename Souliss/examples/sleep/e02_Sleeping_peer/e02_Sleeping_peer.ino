@@ -18,6 +18,7 @@
 // Configure the framework
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/nRF24L01.h"
+#include "conf/Sleep.h"
 
 // Include framework code and libraries
 #include <SPI.h>
