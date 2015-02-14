@@ -8,6 +8,9 @@
 	Run this code on one of the following boards:
 	  - Arduino with Nordic nRF24L01 or nRF24L01+
 	  
+	Battery Voltage Detection is made on DevDuino 2.0 Board
+	http://www.seeedstudio.com/wiki/DevDuino_Sensor_Node_V2.0_(ATmega_328)
+	  
 	As option you can run the same code on the following, just changing the
 	relevant configuration file at begin of the sketch
 	  -	Chibiduino v1
