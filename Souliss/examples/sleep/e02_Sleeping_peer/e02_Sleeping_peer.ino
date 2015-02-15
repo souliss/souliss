@@ -5,11 +5,11 @@
 	time base, each time the node wake-ups it sends data to the gateway (that is always
 	powered on).
 	
+	To have low battery consumption you need a device without voltage regulator and other
+	hardware that continuously get power even when the microcontroller is sleeping.  
+	
 	Run this code on one of the following boards:
 	  - Arduino with Nordic nRF24L01 or nRF24L01+
-	  
-	Battery Voltage Detection is made on DevDuino 2.0 Board
-	http://www.seeedstudio.com/wiki/DevDuino_Sensor_Node_V2.0_(ATmega_328)
 	  
 	As option you can run the same code on the following, just changing the
 	relevant configuration file at begin of the sketch
@@ -91,7 +91,17 @@ void loop()
 			
 				// Back to sleep
 				if(isTimeToSleep())	
+				{
+					/**************
+					Add below the code required to sleep custom devices connected, like:
+						- Sensor,
+						- Voltage regulator,
+						- ...
+					**************/
+					
+					// Sleep microcontroller and radio
 					sleepNow();
+				}	
 			} 
 			
 		}
