@@ -203,3 +203,17 @@ void float32(uint16_t *input, float *output)
 		}
 	}
 }
+
+float returnfloat32(uint16_t *input)
+{
+	float output;
+	float32(input,  &output);
+	return output;
+}
+
+uint16_t returnfloat16(float *input)
+{
+	uint16_t output;
+	float16(&output, input);
+	return output;
+}
