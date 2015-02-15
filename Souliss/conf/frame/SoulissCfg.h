@@ -64,25 +64,10 @@
 */
 /**************************************************************************/
 #ifndef XMLSERVER_INSKETCH
-#	define XMLSERVER  	0
+#	define	XMLSERVER  			0
 #endif
 
-#define	XMLSERVER_DEBUG	0
-			
-/**************************************************************************/
-/*!
-	The HTTP server is listening on the port number 80 and parse remote 
-	commands via HTTP GET request. It doesn't provide any data retrieve 
-	mechanism, allows only to send commands over the network.
-	
-        Value       
-        0x0         Disable (Default)
-        0x1         Enable
-*/
-/**************************************************************************/
-#ifndef HTTPSERVER_INSKETCH
-#	define HTTPSERVER  	0
-#endif
+#define	XMLSERVER_DEBUG			0
 
 /**************************************************************************/
 /*!
