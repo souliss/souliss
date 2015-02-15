@@ -1,5 +1,5 @@
 Souliss
-Copyright (C) 2014  Veseo
+Copyright (C) 2011-2015  Veseo
 
 Release note for revision ... (Friariello)
 	
