@@ -26,6 +26,6 @@
 #define conf_ssSLEEP_H
 
 #define	SLEEP_ENABLE_INSKETCH
-#define SLEEP_ENABLE  		0
+#define SLEEP_ENABLE  			1
 
 #endif

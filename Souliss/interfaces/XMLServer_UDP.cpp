@@ -32,8 +32,8 @@
 
 #if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500))
 
-#include "ASCIItools.c"
-#include "BUFFERtools.c"
+#include "src/ASCII/ASCIItools.c"
+#include "src/buffer/BUFFERtools.c"
 
 String incomingURL = String(XML_REQBYTES);			// The GET request is stored in incomingURL
 char buf[XML_BUFBYTES];								// Used for temporary operations
@@ -207,7 +207,7 @@ void XMLSERVERInterface(U8 *memory_map)
 
 			// Print id number
 			*(unsigned long*)(buf+bufferlen) = (unsigned long)id_for;
-			ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, &bufferlen);						
+			ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, (uint8_t*)(&bufferlen));						
 			
 			// Print ">"
 			memmove(&buf[bufferlen],xml[1],strlen(xml[1]));
@@ -221,7 +221,7 @@ void XMLSERVERInterface(U8 *memory_map)
 					
 					// Print slot number
 					*(unsigned long*)(buf+bufferlen) = (unsigned long)slot;
-					ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, &bufferlen);						
+					ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, (uint8_t*)(&bufferlen));						
 					
 					// Print ">"
 					memmove(&buf[bufferlen],xml[1],strlen(xml[1]));
@@ -246,7 +246,7 @@ void XMLSERVERInterface(U8 *memory_map)
 					{
 						// Print "val" value
 						*(unsigned long*)(buf+bufferlen) = (unsigned long)memory_map[MaCaco_G_OUT_s+(idx*MaCaco_OUTLENGHT)+slot];
-						ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, &bufferlen);						
+						ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, (uint8_t*)(&bufferlen));						
 					}
 							
 					// Print "</slot"
@@ -255,7 +255,7 @@ void XMLSERVERInterface(U8 *memory_map)
 					
 					// Print slot number
 					*(unsigned long*)(buf+bufferlen) = (unsigned long)slot;
-					ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, &bufferlen);						
+					ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, (uint8_t*)(&bufferlen));						
 					
 					// Print ">"
 					memmove(&buf[bufferlen],xml[1],strlen(xml[1]));
@@ -268,7 +268,7 @@ void XMLSERVERInterface(U8 *memory_map)
 
 			// Print id number
 			*(unsigned long*)(buf+bufferlen) = (unsigned long)id_for;
-			ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, &bufferlen);						
+			ASCII_num2str((uint8_t*)(buf+bufferlen), DEC, (uint8_t*)(&bufferlen));						
 			
 			// Print ">"
 			memmove(&buf[bufferlen],xml[1],strlen(xml[1]));

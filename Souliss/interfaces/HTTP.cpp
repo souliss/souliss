@@ -32,7 +32,8 @@
 
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 
-#include "ASCIItools.c"
+#include "src/ASCII/ASCIItools.c"
+#include "src/buffer/BUFFERtools.c"
 
 String incomingURL = String(HTTP_MAXBYTES);			// The GET request is stored in incomingURL
 char buf[HTTP_MAXBYTES];							// Used for temporary operations

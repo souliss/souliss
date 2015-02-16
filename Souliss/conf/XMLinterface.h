@@ -29,6 +29,3 @@
 #define	XMLSERVER  			1
 
 #endif
-
-
-#endif
