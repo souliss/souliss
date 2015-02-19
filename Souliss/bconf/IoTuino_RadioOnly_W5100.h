@@ -30,7 +30,7 @@
 
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
 
-#define	BOARD_MODEL					0x07
+#define	BOARD_MODEL					0x02
 #define	IOBOARD_MODEL				0x04
 
 #endif
