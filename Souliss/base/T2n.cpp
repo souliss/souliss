@@ -217,6 +217,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 {
 	U8 i_trigger=0;														// Internal trigger
 	if(timeout<=Souliss_T2n_Timer_Off)	timeout=Souliss_T2n_Timer_Val;
+	else if (timeout>Souliss_T2n_Timer_Val) timeout=Souliss_T2n_Timer_Val;
 	
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input

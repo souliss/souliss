@@ -56,7 +56,7 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 			Temperature Measured Value (IN / OUT) SLOT +1, SLOT +2
 			Temperature Setpoint Value (IN / OUT) SLOT +3, SLOT +4
 		
-		all values shall be in half-precision floating point, automatic
+		All values shall be in half-precision floating point, automatic
 		conversion is done if using Souliss_AnalogIn
 		
 		Hardware and/or Software Command:
@@ -75,6 +75,8 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 				#define Souliss_T3n_FanHigh				0x09
 				#define Souliss_T3n_FanAuto				0x0A
 				#define Souliss_T3n_FanManual			0x0B
+				#define Souliss_T3n_SetTemp				0x0C
+				#define Souliss_T3n_ShutDown			0x0D
 				
 		Setpoint and measured values can be provided via analog input acquisition
 		using Souliss_AnalogIn method, the setpoint can be modified using the In(+)
@@ -87,9 +89,9 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 			BIT 0	Not used 
 			BIT 1	(0 Heating OFF , 1 Heating ON)
 			BIT 2	(0 Cooling OFF , 1 Cooling ON)
-			BIT 3	(0 Fan 1 OFF   , Fan 1 ON)
-			BIT 4	(0 Fan 2 OFF   , Fan 2 ON)
-			BIT 5	(0 Fan 3 OFF   , Fan 3 ON)
+			BIT 3	(0 Fan 1 OFF   , 1 Fan 1 ON)
+			BIT 4	(0 Fan 2 OFF   , 1 Fan 2 ON)
+			BIT 5	(0 Fan 3 OFF   , 1 Fan 3 ON)
 			BIT 6	(0 Manual Mode , 1 Automatic Mode for Fan) 
 			BIT 7	(0 Heating Mode, 1 Cooling Mode)		
 			
@@ -203,7 +205,18 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		}
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanHigh)		
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Active Fan1 + Fan2 + Fan3
-
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_SetTemp)
+		{
+			// Get the value from the input
+			memory_map[MaCaco_OUT_s + slot + 3] = memory_map[MaCaco_IN_s + slot + 3];
+			memory_map[MaCaco_OUT_s + slot + 4] = memory_map[MaCaco_IN_s + slot + 4];
+			
+			memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
+			return Souliss_TRIGGED;				
+		}
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_ShutDown)
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T3n_RstCmd;
+		
 			
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
 		i_trigger = Souliss_TRIGGED;		

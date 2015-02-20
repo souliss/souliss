@@ -50,6 +50,7 @@ void IOTUINO::initialize (void)
     //SPI.setClockDivider(SPI_CLOCK_DIV64);
     SPI.setClockDivider(SPI_CLOCK_DIV128);
     SPI.setBitOrder(MSBFIRST);
+	
     //initialize SPI:
     SPI.begin();
     
@@ -85,11 +86,19 @@ void IOTUINO::initialize (byte chipselect)
     
     //Default radio transmission number for LYT
     radioTransmission=100;
+<<<<<<< .merge_file_a05096
     
+=======
+/*    
+>>>>>>> .merge_file_a05072
     SPI.setDataMode(SPI_MODE1);
     //SPI.setClockDivider(SPI_CLOCK_DIV64);
     SPI.setClockDivider(SPI_CLOCK_DIV128);
     SPI.setBitOrder(MSBFIRST);
+<<<<<<< .merge_file_a05096
+=======
+*/	
+>>>>>>> .merge_file_a05072
     //initialize SPI:
     SPI.begin();
     
@@ -300,6 +309,8 @@ void IOTUINO::regWrite16(byte ADDR, byte V1, byte V2, byte WAIT)
 
 void IOTUINO::sendcmd(byte ADDRA, byte ADDRB, byte CMD, byte P1)
 {
+    SPI.setDataMode(SPI_MODE1);
+
 	ADDR_A=ADDRA;
 	ADDRB=ADDRB;
   	COMMAND=CMD;
@@ -318,6 +329,9 @@ void IOTUINO::sendcmd(byte ADDRA, byte ADDRB, byte CMD, byte P1)
 	PACK++;
 	if(PACK>254)
 		PACK=0;
+
+	SPI.setDataMode(SPI_MODE0);
+	
 }
 
 void IOTUINO::writeHead(void)
@@ -347,6 +361,8 @@ void IOTUINO::writeHead(void)
 
 void IOTUINO::writeFirstPacket(void)
 {
+    SPI.setDataMode(SPI_MODE1);
+
     regWrite16(7,0,0,1);
     regWrite16(52,128,128,1);
     
@@ -364,11 +380,14 @@ void IOTUINO::writeFirstPacket(void)
     delayMicroseconds(10);
     
     regWrite16(7,1,3,1);
+    SPI.setDataMode(SPI_MODE0);
     
 }
 
 void IOTUINO::sendcmdnew(byte Mode, byte ADDRA, byte ADDRB, byte CMD, byte P1, byte P2, byte P3)
 {
+    SPI.setDataMode(SPI_MODE1);
+
     int cbit=0;
     
 	MODE=Mode;
@@ -395,11 +414,12 @@ void IOTUINO::sendcmdnew(byte Mode, byte ADDRA, byte ADDRB, byte CMD, byte P1, b
 	PACK++;
 	if(PACK>254)
 		PACK=0;
+    SPI.setDataMode(SPI_MODE0);
+		
 }
 
 void IOTUINO::writeHeadnew(void)
 {
-    
     regWrite16(7,0,0,1);
     
     digitalWrite(csPin,LOW);
@@ -480,7 +500,8 @@ void IOTUINO::writeHeadnew(void)
 
 void IOTUINO::writeFirstPacketnew(int cbit)
 {
-    regWrite16(7,0,0,1);
+    
+	regWrite16(7,0,0,1);
     regWrite16(52,128,128,1);
     
     digitalWrite(csPin,LOW);
@@ -532,7 +553,7 @@ void IOTUINO::writeFirstPacketnew(int cbit)
 
     
     digitalWrite(csPin,HIGH);
-    
+
 }
 
 void IOTUINO::initRadioModule(void)

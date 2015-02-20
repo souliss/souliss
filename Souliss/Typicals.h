@@ -43,6 +43,7 @@
 #define Souliss_T18						0x18			// ON/OFF Digital Output with pulse output with Timer Option
 #define Souliss_T19						0x19			// LED Light
 #define Souliss_T1A						0X1A			// Digital pass through
+#define Souliss_T1B						0X1B			// Position Constrained ON/OFF Digital Output
 #define Souliss_T21						0x21			// Motorized devices with limit switches
 #define Souliss_T22						0x22			// Motorized devices with limit switches and middle position
 #define Souliss_T31						0x31			// Temperature control 
@@ -66,7 +67,9 @@
 #define Souliss_T1n_Set					0x22		// Set a state
 #define Souliss_T1n_OnFeedback			0x23		// Report the actual state as ON
 #define Souliss_T1n_OffFeedback			0x24		// Report the actual state as OFF
+#define Souliss_T1n_Timed_StdVal		0x40		// Timed ON Standard Value
 #define Souliss_T1n_Timed				0x30		// Timed ON
+#define Souliss_T1n_PositionOnCmd		0x31		// Position constrained ON Command
 #define Souliss_T1n_RstCmd				0x00		// Reset
 #define Souliss_T1n_AutoState			0xF0		// AUTO Mode Feedback
 #define Souliss_T1n_Coil				0x01		// Output Feedback ON
@@ -136,7 +139,7 @@
 #define Souliss_T2n_OpenCmd_Local		0x10		// Open Command (only from local pushbutton)
 #define Souliss_T2n_ToogleCmd			0x08		// Toogle Command
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
-#define Souliss_T2n_Timer_Val			0xAF		// Timer set value
+#define Souliss_T2n_Timer_Val			0xC0		// Timer set value
 #define Souliss_T2n_Timer_Off			0xA0		// Timer expired value
 #define Souliss_T2n_TimedStop_Val		0xC2		// Timed stop value
 #define Souliss_T2n_TimedStop_Off		0xC0		// Timed stop exipred value
@@ -164,6 +167,9 @@
 #define Souliss_T3n_DeadBand			0.05		// Percentage Deadband
 #define Souliss_T3n_ThMed				0.10		// Threshold for medium speed
 #define Souliss_T3n_ThHigh				0.15		// Threshold for high speed
+#define Souliss_T3n_SetTemp				0x0C		// Set the setpoint
+#define Souliss_T3n_ShutDown			0x0D		// Shut down heating and cooling
+
 
 #define Souliss_T3n_RstCmd				0x0000
 #define Souliss_T3n_HeatingOn			0x02		// Heating Active
