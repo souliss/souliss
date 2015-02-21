@@ -85,6 +85,7 @@ ISR(WDT_vect)
 	{
 		backfromSleep = true;
 		sleepcounter  = wakeupTime;
+		wakeupscycles = wakeupCycles;
 	}
 	else sleepcounter--;
 }
