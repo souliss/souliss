@@ -86,19 +86,14 @@ void IOTUINO::initialize (byte chipselect)
     
     //Default radio transmission number for LYT
     radioTransmission=100;
-<<<<<<< .merge_file_a05096
-    
-=======
+
 /*    
->>>>>>> .merge_file_a05072
     SPI.setDataMode(SPI_MODE1);
     //SPI.setClockDivider(SPI_CLOCK_DIV64);
     SPI.setClockDivider(SPI_CLOCK_DIV128);
     SPI.setBitOrder(MSBFIRST);
-<<<<<<< .merge_file_a05096
-=======
 */	
->>>>>>> .merge_file_a05072
+
     //initialize SPI:
     SPI.begin();
     
