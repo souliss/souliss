@@ -69,6 +69,8 @@ U16 proposedaddress = 0;
 
 // buffer for temporary use
 U8 ipaddrs[4], cmd[7] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR, MaCaco_IN_s, MaCaco_TYP_s, MaCaco_OUT_s};
+
+extern bool addrsrv;
 #endif
 
 #if (MaCaco_DEBUG)
@@ -707,7 +709,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	{	
 		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE)	
 		// set an IP address at runtime
-		if (rx->funcode == MaCaco_SETIP)
+		if (addrsrv && (rx->funcode == MaCaco_SETIP))
 		{	
 			// the payload contains the IPv4 address in the first four bytes
 			// then the subnetmask and gateway IP
@@ -727,6 +729,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			vNet_SetAddress(vnetaddress, vNet_GetMedia(vnetaddress));																// Set vNet Address
 			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, vNet_GetMedia(vnetaddress));													// Set vNet Subnetmask
 			vNet_SetMySuperNode(((vnetaddress & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY), vNet_GetMedia(vnetaddress));		// Set vNet Supernode
+			
+			// set the address only once
+			addrsrv = false;
 		}
 		#endif
 		

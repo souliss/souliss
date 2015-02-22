@@ -130,6 +130,10 @@ void sleepInit(uint8_t mode=SLEEPMODE_INPUT)
 		// Setup the watchdog timer at 8 seconds
 		set_sleep_timer();
 	}
+	
+	// This is the first run, trigger this flag to execute a first run
+	// at first boot
+	backfromSleep = true;
 }
 
 /**************************************************************************

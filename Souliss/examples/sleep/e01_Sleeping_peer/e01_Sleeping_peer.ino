@@ -44,7 +44,7 @@ void setup()
 	Souliss_SetAddress(Peer_address, myvNet_subnet, myvNet_supern);					// Address on the wireless interface	
 
 	// Set an analog value to measure the battery voltage
-	SetT55(memory_map, BATT_LEVEL);
+	Set_AnalogIn(BATT_LEVEL);
 
 	// Define the Gateway to be associated with, this is an unusual procedure
 	// and is applicable on for sleeping nodes
@@ -55,14 +55,16 @@ void setup()
 		base/Sleeping.h file, or using the following defines on top of the sketch
 		
 		#define	SLEEPING_INSKETCH
-		#define 	wakePin 	2
+		#define wakePin 		2
 		#define	wakePinINT		0
 		#define	wakeupTime		0x00FF
 		#define	wakeupCycles	5		
 
 		The time between two wake-ups is equal to wakeupTime*8seconds, using 0x00FF
-		the node wakes every 34 minutes.
+		the node wakes every 34 minutes. The wakeupCycles is the number of times that the
+		node should execute isTimeToSleep() before put itself back in sleep.
 	*****/
+	
 	sleepInit(SLEEPMODE_TIMER);
 }
 
@@ -83,11 +85,24 @@ void loop()
 			// every 34 minutes
 			FAST_510ms() {
 
+				// Read the input voltage at microcontroller
 				long vcc = readVcc();
 				float vcc_f = (float) vcc;
-				float vcc_to_send = vcc_f/1000;
-				Souliss_ImportAnalog(memory_map, BATT_LEVEL, &vcc_to_send);
-				Souliss_Logic_T55(memory_map, BATT_LEVEL, NODEADBAND, &data_changed);
+				
+				// Estimate the battery charge, assuming that you are powering with 2 AA
+				// alkaline
+				float mbatt = 3*(vcc_f/1000) - 7.5;
+				float batterycharge = 0.66 + 0.022*mbatt + 0.0074*mbatt^3 + 0.0088*mbatt^9;
+				
+				// Cut if out of range
+				if(batterycharge > 1) batterycharge = 1;
+				if(batterycharge < 0) batterycharge = 0;
+				
+				// Get it in percentage
+				batterycharge*=100;
+				
+				ImportAnalog(BATT_LEVEL, &vcc_to_send);
+				Read_AnalogIn(BATT_LEVEL);
 			
 				// Back to sleep
 				if(isTimeToSleep())	
@@ -101,6 +116,13 @@ void loop()
 					
 					// Sleep microcontroller and radio
 					sleepNow();
+					
+					/**************
+					Add below the code required to wakeup custom devices connected, like:
+						- Sensor,
+						- Voltage regulator,
+						- ...
+					**************/
 				}	
 			} 
 			
