@@ -244,13 +244,6 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	RemoteInput												Souliss_RemoteInput
 #define	RemoteInputs											Souliss_RemoteInputs
 
-#define	GetAddress()											while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
-																	for(U8 i=0; i<(2*VNET_MEDIA_NUMBER); i++) {					\
-																		Souliss_CommunicationData(memory_map, &data_changed);	\
-																		delay(100);	}											\
-																	delay(10000);}												\
-																Souliss_JoinNetwork()
-
 /*****************************************/
 
 /************* Let be lazy ***************/	
@@ -272,17 +265,31 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												{									\
 													if(!MaCaco_IsSubscribed())		\
 													{								\
-														JoinNetwork();			\
+														JoinNetwork();				\
 													}								\
 												}
 												
 #define	JoinInProgress()						(!MaCaco_IsSubscribed())												
 
 #define	SLOW_PeerJoin()							SLOW_510s() {						\
-													JoinNetwork();				\
+													JoinNetwork();					\
 												}
 
-						
+#define	GetAddress()							while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
+													for(U8 i=0; i<(2*VNET_MEDIA_NUMBER); i++) {					\
+														Souliss_CommunicationData(memory_map, &data_changed);	\
+														delay(100);	}											\
+													delay(10000);}												\
+												Souliss_JoinNetwork()
+
+#define WaitSubscription()						while(!MaCaco_IsSubscribed())	{	\
+													ProcessCommunication();			\
+													delay(100);}
+
+#define	aMinuteToSleep()						for(uint8_t s=0; s<255; s++)	{	\
+													ProcessCommunication();			\
+													delay(200);}
+	
 /*****************************************/
 
 /*****************************************/

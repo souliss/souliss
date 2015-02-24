@@ -49,6 +49,11 @@ void setup()
 	// Define the Gateway to be associated with, this is an unusual procedure
 	// and is applicable on for sleeping nodes
 	HardcodedChannel(Gateway_address);
+	WaitSubscription();
+	
+	// Stay asleep for a minute and process the communication, in this type the Gateway
+	// can retrieve typicals or other informations
+	aMinuteToSleep();
 	
 	/*****
 		The default sleep time is about 30 minutes, you can change this from the
@@ -66,6 +71,7 @@ void setup()
 	*****/
 	
 	sleepInit(SLEEPMODE_TIMER);
+
 }
 
 void loop()
@@ -92,7 +98,7 @@ void loop()
 				// Estimate the battery charge, assuming that you are powering with 2 AA
 				// alkaline
 				float mbatt = 3*(vcc_f/1000) - 7.5;
-				float batterycharge = 0.66 + 0.022*mbatt + 0.0074*mbatt^3 + 0.0088*mbatt^9;
+				float batterycharge = 0.66 + 0.022*mbatt + (float)(0.0074*pow(mbatt,3)) + (float)(0.0088*pow(mbatt,9));
 				
 				// Cut if out of range
 				if(batterycharge > 1) batterycharge = 1;
