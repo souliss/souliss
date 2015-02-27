@@ -599,7 +599,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			U16 nodeaddress=0x0002;
 			
 			// a supernode needs an address into another subnet
-			if((isSupernode) && ((vNetMedia-1) != VNET_MEDIA1_ID))
+			if((isSupernode) && ((vNetMedia-1) != VNET_MEDIA1_ID) && ((vNetMedia-1) != VNET_MEDIA3_ID))
 			{
 				// assign an address
 				nodeaddress = vnet_addr_l[vNetMedia-1] + 1;
@@ -633,8 +633,12 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				// send the assigned address
 				return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, (U8*)(&proposedaddress));
 			}
-			else	// is a standard node
+			else if((!isSupernode) || ((vNetMedia-1) == VNET_MEDIA3_ID))	// is a standard node
 			{
+				// This media can have only one SuperNode that is the Addressing Server / Gateway
+				if((vNetMedia-1) == VNET_MEDIA3_ID))
+					subnet = vnet_addr_l[VNET_MEDIA3_ID-1];	
+				
 				// If a subnet has been assigned
 				if(subnet)
 				{
