@@ -124,7 +124,7 @@ void loop()
 		} 
 		
 		// Here we process all communication with other nodes
-		FAST_PeerComms();	
+		FAST_GatewayComms();	
 		
 	}
 	
