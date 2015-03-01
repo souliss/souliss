@@ -60,6 +60,10 @@
 #define ToogleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
 #define	TurnOnLED()			digitalWrite(STATLED, HIGH)
 #define	TurnOffLED()		digitalWrite(STATLED, LOW)
+#define	StartupLED()		for(uint8_t l=0;l<10;l++){							\
+								digitalWrite(STATLED, !digitalRead(STATLED));	\
+								delay(500);}									\
+								digitalWrite(STATLED, LOW)
 
 // Set the Reset and PWDN pins in DINo version 2
 #define	InitDINo()			pinMode(10, OUTPUT);					\

@@ -554,7 +554,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	}	
 	#endif
 	
-	#if(DYNAMICADDRESSING && (MaCaco_USERMODE || VNET_SUPERNODE))	
+	#if(DYNAMICADDRESSING && (MaCaco_USERMODE))	
 	// answer to a dynamic addressing request
 	if (rx->funcode == MaCaco_DINADDRESSREQ)
 	{	
@@ -636,8 +636,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			else if((!isSupernode) || ((vNetMedia-1) == VNET_MEDIA3_ID))	// is a standard node
 			{
 				// This media can have only one SuperNode that is the Addressing Server / Gateway
-				if((vNetMedia-1) == VNET_MEDIA3_ID))
-					subnet = vnet_addr_l[VNET_MEDIA3_ID-1];	
+				if((vNetMedia-1) == VNET_MEDIA3_ID)
+					subnet = vnet_addr_l[VNET_MEDIA3_ID];	
 				
 				// If a subnet has been assigned
 				if(subnet)
@@ -678,11 +678,13 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		else
 			return MaCaco_FUNCODE_ERR;		
 	}		
+	#endif
 	
+	#if(DYNAMICADDRESSING && (MaCaco_USERMODE || VNET_SUPERNODE))	
 	// answer to a subnet request
 	if (rx->funcode == MaCaco_SUBNETREQ)
 	{	
-			
+		
 		// the startoffset is used as media number
 		// 
 		// startoffset			media

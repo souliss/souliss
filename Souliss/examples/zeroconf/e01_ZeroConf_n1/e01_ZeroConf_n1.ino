@@ -1,33 +1,48 @@
 /**************************************************************************
-	Souliss - Hello World
+	Souliss - Zero Configuration
 	
-	This is the basic example, control one LED via a push-button or Android
-	using SoulissApp (get it from Play Store).	
+	This example demonstrate a zero configuration setup, with the following
+	network architecture:
 	
-	Run this code on one of the following boards:
-	  - Arduino Ethernet (W5100) 
-	  -	Arduino with Ethernet Shield (W5100)
-	  
-	As option you can run the same code on the following, just changing the
-	relevant configuration file at begin of the sketch
-	  -	Arduino with ENC28J60 Ethernet Shield
-	  - Arduino with W5200 Ethernet Shield
-	  - Arduino with W5500 Ethernet Shield
-		
+	HOME-ROUTER						GATEWAY	(n1)	
+	ETHERNET		(connect)		ETHERNET	
+	
+	HOME-ROUTER						BRIDGE	(n2)	
+	ETHERNET		(connect)		ETHERNET	
+	
+	BRIDGE (n2)						PEER (n3)
+	RS-485 A		(connect)		RS-485 A
+	RS-485 B    	(connect)   	RS-485 B
+	RS-485 GND		(optional)     	RS-485 GND
+
+	The Gateway gets an IP address via DHCP, the Bridge works in IPBROADCAST
+	and doesn't request an IP address but only a vNet address (through the Gateway)
+	as last the Peer get the subnet from the Bridge and the vNet address from the
+	Gateway.
+	
+	As startup procedure, 
+	1) Turn on the Gateway and waits until SoulissApp detect it
+	2) Turn on the Bridge and waits until the LED get solid on
+	3) Turn on the Peer and waits until the LED get solid on
+	
+	At this time the network is up and you can run it.	
+	
 ***************************************************************************/
 
-// Configure the framework
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/ethW5100.h"					// Ethernet through Wiznet W5100
 #include "conf/Gateway.h"					// The main node is the Gateway, we have just one node
 #include "conf/Webhook.h"					// Enable DHCP and DNS
+#include "conf/DynamicAddressing.h"			// Use dynamic address
 
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
 
-// This identify the number of the LED logic
-#define MYLEDLOGIC			0				
+#define LIGHT1					0			// This is the memory slot used for the execution of the logic
+#define LIGHT2					1			
+#define LIGHT3					2			
+#define LIGHT4					3			
 
 // This sketch will use DHCP, but a generic IP address is defined in case
 // the DHCP will fail. Generally this IP address will not be used and doesn't
@@ -48,13 +63,16 @@ void setup()
         ip = Ethernet.localIP();				         	
 	SetAsGateway(myvNet_address);		// Set this node as gateway for SoulissApp	
 	
-	Set_SimpleLight(MYLEDLOGIC);		// Define a simple LED light logic
+	Set_SimpleLight(LIGHT1);		// Define a simple LED light logic
 	
 	// We connect a pushbutton between 5V and pin2 with a pulldown resistor 
 	// between pin2 and GND, the LED is connected to pin9 with a resistor to
 	// limit the current amount
 	pinMode(2, INPUT);					// Hardware pulldown required
 	pinMode(9, OUTPUT);					// Power the LED
+	
+	// This node will serve all the others in the network providing an address
+	SetAddressingServer();
 }
 
 void loop()
@@ -64,13 +82,13 @@ void loop()
 		UPDATEFAST();	
 		
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
-			DigIn(2, Souliss_T1n_ToogleCmd, MYLEDLOGIC);			// Use the pin2 as ON/OFF toogle command
-			Logic_SimpleLight(MYLEDLOGIC);							// Drive the LED as per command
-			DigOut(9, Souliss_T1n_Coil, MYLEDLOGIC);				// Use the pin9 to give power to the LED according to the logic
+			DigIn(2, Souliss_T1n_ToogleCmd, LIGHT1);			// Use the pin2 as ON/OFF toogle command
+			Logic_SimpleLight(LIGHT1);							// Drive the LED as per command
+			DigOut(9, Souliss_T1n_Coil, LIGHT1);				// Use the pin9 to give power to the LED according to the logic
 		} 
 			  
 		// Here we handle here the communication with Android, commands and notification
-		// are automatically assigned to MYLEDLOGIC
+		// are automatically assigned to LIGHT1
 		FAST_GatewayComms();										
 		
 	}
