@@ -353,11 +353,12 @@ uip_arp_out(void)
      If not ARP table entry is found, we overwrite the original IP
      packet with an ARP request for the IP address. */
 
-  /* Check if the destination address is on the local network. */
+  /* Check if the destination address is on the local network. */	  
   if((IPBUF->destipaddr[0] & uip_arp_netmask[0]) !=
      (uip_hostaddr[0] & uip_arp_netmask[0]) ||
      (IPBUF->destipaddr[1] & uip_arp_netmask[1]) !=
-     (uip_hostaddr[1] & uip_arp_netmask[1])) {
+     (uip_hostaddr[1] & uip_arp_netmask[1]) && 
+	 !((IPBUF->destipaddr[0] == 0xFFFF) &&  (IPBUF->destipaddr[1] == 0xFFFF))) {
     /* Destination address was not on the local network, so we need to
        use the default router's IP address instead of the destination
        address when determining the MAC address. */
@@ -372,7 +373,7 @@ uip_arp_out(void)
   // Look for an address in the ARP table
   for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
     tabptr = &arp_table[i];
-    if((ipaddr[0] == 0xFF && ipaddr[1] == 0xFF) || 
+    if((ipaddr[0] == 0xFFFF && ipaddr[1] == 0xFFFF) || 
 	(ipaddr[0] == tabptr->ipaddr[0] &&
        ipaddr[1] == tabptr->ipaddr[1]))
       break;
@@ -406,7 +407,7 @@ uip_arp_out(void)
   }
   
   /* Build an ethernet header. */
-  if(ipaddr[0] == 0xFF && ipaddr[1] == 0xFF)					// If is an IP broadcast
+  if(ipaddr[0] == 0xFFFF && ipaddr[1] == 0xFFFF)				// If is an IP broadcast
 	memset(IPBUF->ethhdr.dest.addr, 0xFF, 6);					// broadcast over MAC
   else															// else
 	memcpy(IPBUF->ethhdr.dest.addr, tabptr->ethaddr.addr, 6);	// use the address in the ARP table
