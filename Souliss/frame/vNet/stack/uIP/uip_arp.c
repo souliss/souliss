@@ -354,10 +354,10 @@ uip_arp_out(void)
      packet with an ARP request for the IP address. */
 
   /* Check if the destination address is on the local network. */	  
-  if((IPBUF->destipaddr[0] & uip_arp_netmask[0]) !=
+  if(((IPBUF->destipaddr[0] & uip_arp_netmask[0]) !=
      (uip_hostaddr[0] & uip_arp_netmask[0]) ||
      (IPBUF->destipaddr[1] & uip_arp_netmask[1]) !=
-     (uip_hostaddr[1] & uip_arp_netmask[1]) && 
+     (uip_hostaddr[1] & uip_arp_netmask[1])) && 
 	 !((IPBUF->destipaddr[0] == 0xFFFF) &&  (IPBUF->destipaddr[1] == 0xFFFF))) {
     /* Destination address was not on the local network, so we need to
        use the default router's IP address instead of the destination
