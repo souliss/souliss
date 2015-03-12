@@ -33,9 +33,14 @@
 #include "vNetDriver_eth.h"
 
 #define	vNet_Init_M3()						vNet_Init_M1()
-#define	vNet_Send_M3(addr, frame, len)		vNet_Send_M1(addr, frame, len)
 #define	vNet_DataAvailable_M3()				vNet_DataAvailable_M1()
 #define	vNet_RetrieveData_M3(data)			vNet_RetrieveData_M1(data)
+
+#define	VNET_M3_HEADER		1
+#define	VNET_M3_APPEND		2
+
+uint16_t vNetM3_address=0;
+oFrame vNetM3_oFrame;								// Data structure for output frame
 
 /**************************************************************************/
 /*!
@@ -46,6 +51,11 @@
 	void vNet_SetAddress_M3(uint16_t addr)
 	{
 		uint8_t ip_addr[4], mac_addr[6];
+		
+		// Locally store the address
+		vNetM3_address=addr;
+		oFrame_Define(&vNetM3_oFrame);
+		oFrame_Set(&vNetM3_address, 0, 1, 0, 0);
 		
 		// Translate and set the address
 		eth_vNettoIP(0x00FF, &ip_addr[0]);
@@ -94,11 +104,65 @@
 		
 	}
 #else
-	void vNet_SetAddress_M3(uint16_t addr){return;}
+	void vNet_SetAddress_M3(uint16_t addr)
+	{
+		// Locally store the address
+		vNetM3_address=addr;	
+		oFrame_Define(&vNetM3_oFrame);
+		oFrame_Set(&vNetM3_address, 0, 1, 0, 0);
+	}
 #endif
 
-// These is not applicable in a broadcast only scenario, so is there only for compatibility
-// with upper layers.
-uint16_t vNet_GetSourceAddress_M3(){return 0;}
+
+uint16_t vNet_GetSourceAddress_M3(){return vNetM3_address;}
+
+/**************************************************************************/
+/*!
+	Send a message via UDP/IP
+*/
+/**************************************************************************/
+uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
+{
+	uint8_t ip_addr[4];
+	uint16_t vNet_port;
+	
+	// Define the standard vNet port
+	vNet_port = ETH_PORT;
+	
+	// Set the IP broadcast address
+	for(U8 i=0;i<4;i++)
+		ip_addr[i]=0xFF;
+		
+	/***
+		Add the whole length as first byte and the node address
+		at the end of the frame
+	***/
+	
+	// Add the length as first byte
+	vNetM1_header = len+VNET_M3_HEADER+VNET_M3_APPEND;
+	oFrame_Define(&vNetM1_oFrame);
+	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
+
+	// Append the address as last
+	oFrame_AppendLast(&vNetM3_oFrame)
+	
+	// Send data	
+	if(!sendto(UDP_SOCK, (uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
+	{
+		oFrame_Reset();		// Free the frame
+		
+		// Restart the socket
+		vNet_Stop_M1(UDP_SOCK);
+		vNet_Begin_M1(UDP_SOCK);
+		
+		return ETH_FAIL;	// If data sent fail, return
+	}
+	
+	// At this stage data are processed or socket is failed, so we can
+	// securely reset the oFrame
+	oFrame_Reset();		
+		
+	return ETH_SUCCESS;
+}
 
 #endif

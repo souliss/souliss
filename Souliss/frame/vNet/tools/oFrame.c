@@ -142,6 +142,30 @@ U8 oFrame_GetLenght()
 	}	
 	return len;
 }
+
+/**************************************************************************/
+/*!
+    Append in the last frame
+*/
+/**************************************************************************/
+void oFrame_AppendLast(*oFrame appendframe)
+{
+	oFrame* frame = actualframe;
+	
+	// Reach the last nested frame
+	while(frame)
+	{	
+		if(frame->next)
+			frame = (oFrame*)frame->next;					// Move to next frame
+		else
+			break;
+	}		
+	
+	// Appen a new frame at the end
+	frame->next = (*U8)appendframe;
+}
+
+
 /**************************************************************************/
 /*!
     Get the next byte from the output frame

@@ -54,6 +54,7 @@ inframe dataframe;									// Data structure for incoming UDP frame
 TCPIP stack;
 
 extern bool addrsrv;
+extern uint16_t vNetM3_address=0;
 
 /**************************************************************************/
 /*!
@@ -299,9 +300,23 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	}
 	#endif	
 	
-	// Remove the header
-	data_pnt++;
-	dataframe.len--;
+	// Frames from Media 3 has additional bytes at the end
+	if((*data_pnt-*(data_pnt+1)) > 1)
+	{
+		vNetM3_address = (uint16_t)(data_pnt[dataframe.len-VNET_M3_APPEND]);
+		
+		// Remove the header and skip the last two bytes
+		data_pnt++;
+		dataframe.len = dataframe.me-(VNET_M3_APPEND+VNET_M3_HEADER);		
+	}
+	else
+	{
+		// Remove the header
+		data_pnt++;
+		dataframe.len--;		
+	}
+
+	// Prepare data from the top level
 	memmove(data, data_pnt, dataframe.len);
 
 	return dataframe.len;
