@@ -22,7 +22,7 @@ You can interact with external user interface by means of Interfaces, piece of c
 
 Sensors Graphs | Auto-configuration of the client | use Scene to group custom commands
 --- | --- | ---
-![](https://lh4.googleusercontent.com/-PSEZxGoDcgg/UVDGh5vA05I/AAAAAAAAAN0/MqxCSGceIJc/w283-h471-no/Screenshot_2013-03-25-22-45-15.png) | ![](https://lh4.googleusercontent.com/-nQo-SRuYFOw/Ue3IhgWw33I/AAAAAAAAAVs/kyFEE0RjT48/w283-h471-no/Screenshot_2013-07-08-01-52-41.png) | ![](https://lh4.googleusercontent.com/-vrlbcY4uiCU/Ue3IiPGGvyI/AAAAAAAAAV4/YDXT9b_bC5c/w283-h471-no/Screenshot_2013-07-23-01-53-19.png)
+![](https://lh4.googleusercontent.com/-PSEZxGoDcgg/UVDGh5vA05I/AAAAAAAAAN0/MqxCSGceIJc/w220-h367-no/Screenshot_2013-03-25-22-45-15.png) | ![](https://lh4.googleusercontent.com/-nQo-SRuYFOw/Ue3IhgWw33I/AAAAAAAAAVs/kyFEE0RjT48/w220-h367-no/Screenshot_2013-07-08-01-52-41.png) | ![](https://lh4.googleusercontent.com/-vrlbcY4uiCU/Ue3IiPGGvyI/AAAAAAAAAV4/YDXT9b_bC5c/w220-h367-no/Screenshot_2013-07-23-01-53-19.png)
 
 
 Have a look to the [Wiki](https://github.com/souliss/souliss/wiki) and relative examples. Please notify us of any bug you may encounter on [Community]() or on [Issues](https://github.com/souliss/souliss/issues) section.
