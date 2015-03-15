@@ -26,4 +26,4 @@ You can interact with external user interface by means of Interfaces, piece of c
 ![](https://lh4.googleusercontent.com/-vrlbcY4uiCU/Ue3IiPGGvyI/AAAAAAAAAV4/YDXT9b_bC5c/w220-h367-no/Screenshot_2013-07-23-01-53-19.png)
 
 
-Have a look to the [Wiki](https://github.com/souliss/souliss/wiki) and relative examples. Please notify us of any bug you may encounter on [Community]() or on [Issues](https://github.com/souliss/souliss/issues) section.
+Have a look to the [Wiki](https://github.com/souliss/souliss/wiki) and relative examples. Please notify us of any bug you may encounter on [Community](https://github.com/souliss/souliss/wiki/Community) or on [Issues](https://github.com/souliss/souliss/issues) section.
