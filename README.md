@@ -18,7 +18,7 @@ Network and data communication is hidden at the user level, where is just requir
 
 User interaction is based on a single (or multiple) collector node, that gets data from all the nodes and provides a full state of your controlled objects. This approach brings easy interaction over internet, having a single node to be accessed. There is no restriction in direct access of other nodes, even if this is not the standard way in case of user interaction.
 The main user interface is *!SoulissApp for Android*, in this way the smartphone or tablet can become a Souliss node and it is able to communicate with nodes directly, using the same event-based protocol used by the AVR boards. 
-You can interact with external user interface by means of Interfaces, piece of code that runs on your board as source of data, as example you can integrate Souliss with openHAB using the [HTTP/XML Interface](openHABInterface)
+You can interact with external user interface by means of Interfaces, piece of code that runs on your board as source of data, as example you can integrate Souliss with openHAB using the [HTTP/XML Interface](openHAB Binding)
 
 
 ![](https://lh4.googleusercontent.com/-PSEZxGoDcgg/UVDGh5vA05I/AAAAAAAAAN0/MqxCSGceIJc/w220-h367-no/Screenshot_2013-03-25-22-45-15.png) 
