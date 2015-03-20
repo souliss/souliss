@@ -148,7 +148,7 @@ U8 oFrame_GetLenght()
     Append in the last frame
 */
 /**************************************************************************/
-void oFrame_AppendLast(*oFrame appendframe)
+void oFrame_AppendLast(oFrame *appendframe)
 {
 	oFrame* frame = actualframe;
 	
@@ -162,7 +162,7 @@ void oFrame_AppendLast(*oFrame appendframe)
 	}		
 	
 	// Appen a new frame at the end
-	frame->next = (*U8)appendframe;
+	frame->next = (U8*)appendframe;
 }
 
 

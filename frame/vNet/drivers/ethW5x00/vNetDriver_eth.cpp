@@ -29,6 +29,7 @@
 
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
+#include "vNetDriver_brd.h"
 
 #if(ETH_W5100 || ETH_W5200)
 #	include "src/w5x00.cpp"
@@ -47,14 +48,14 @@
 
 unsigned long start_time;
 
-U8 vNetM1_header;									// Header for output frame
+uint8_t vNetM1_header;									// Header for output frame
 oFrame vNetM1_oFrame;								// Data structure for output frame
 inframe dataframe;									// Data structure for incoming UDP frame
 
 TCPIP stack;
 
 extern bool addrsrv;
-extern uint16_t vNetM3_address=0;
+extern uint16_t vNetM3_address;
 
 /**************************************************************************/
 /*!
@@ -300,6 +301,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	}
 	#endif	
 	
+	#if(VNET_MEDIA3_ENABLE)
 	// Frames from Media 3 has additional bytes at the end
 	if((*data_pnt-*(data_pnt+1)) > 1)
 	{
@@ -307,7 +309,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		
 		// Remove the header and skip the last two bytes
 		data_pnt++;
-		dataframe.len = dataframe.me-(VNET_M3_APPEND+VNET_M3_HEADER);		
+		dataframe.len = dataframe.len-(VNET_M3_APPEND+VNET_M3_HEADER);		
 	}
 	else
 	{
@@ -315,7 +317,12 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		data_pnt++;
 		dataframe.len--;		
 	}
-
+	#else
+		// Remove the header
+		data_pnt++;
+		dataframe.len--;			
+	#endif
+	
 	// Prepare data from the top level
 	memmove(data, data_pnt, dataframe.len);
 

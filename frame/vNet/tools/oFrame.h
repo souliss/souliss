@@ -49,7 +49,7 @@ void oFrame_Set(U8* header, U8* payload, U8 header_len, U8  payload_len, oFrame 
 void oFrame_Reset();
 U8 oFrame_isBusy();
 U8 oFrame_Available();
-void oFrame_AppendLast(*oFrame appendframe);
+void oFrame_AppendLast(oFrame *appendframe);
 U8 oFrame_GetLenght();
 U8 oFrame_GetByte();
 void oFrame_Copy(oFrame *destination, oFrame *source);

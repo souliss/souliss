@@ -42,6 +42,9 @@
 uint16_t vNetM3_address=0;
 oFrame vNetM3_oFrame;								// Data structure for output frame
 
+extern oFrame vNetM1_oFrame;	
+extern uint8_t vNetM1_header;
+extern TCPIP stack;
 /**************************************************************************/
 /*!
 	Set the vNet address and all the network parameters
@@ -55,7 +58,7 @@ oFrame vNetM3_oFrame;								// Data structure for output frame
 		// Locally store the address
 		vNetM3_address=addr;
 		oFrame_Define(&vNetM3_oFrame);
-		oFrame_Set(&vNetM3_address, 0, 1, 0, 0);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
 		
 		// Translate and set the address
 		eth_vNettoIP(0x00FF, &ip_addr[0]);
@@ -109,7 +112,7 @@ oFrame vNetM3_oFrame;								// Data structure for output frame
 		// Locally store the address
 		vNetM3_address=addr;	
 		oFrame_Define(&vNetM3_oFrame);
-		oFrame_Set(&vNetM3_address, 0, 1, 0, 0);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
 	}
 #endif
 
@@ -144,7 +147,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
 
 	// Append the address as last
-	oFrame_AppendLast(&vNetM3_oFrame)
+	oFrame_AppendLast(&vNetM3_oFrame);
 	
 	// Send data	
 	if(!sendto(UDP_SOCK, (uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
