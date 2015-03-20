@@ -116,7 +116,6 @@ extern TCPIP stack;
 	}
 #endif
 
-
 uint16_t vNet_GetSourceAddress_M3(){return vNetM3_address;}
 
 /**************************************************************************/
@@ -146,7 +145,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	oFrame_Define(&vNetM1_oFrame);
 	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
 
-	// Append the address as last
+	// Append the address as last, this is contained into a dedicated oFrame
 	oFrame_AppendLast(&vNetM3_oFrame);
 	
 	// Send data	

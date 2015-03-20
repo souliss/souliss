@@ -33,9 +33,18 @@
 #include "vNetDriver_eth.h"
 
 #define	vNet_Init_M3()						vNet_Init_M1()
-#define	vNet_Send_M3(addr, frame, len)		vNet_Send_M1(addr, frame, len)
 #define	vNet_DataAvailable_M3()				vNet_DataAvailable_M1()
 #define	vNet_RetrieveData_M3(data)			vNet_RetrieveData_M1(data)
+
+#define	VNET_M3_HEADER		1
+#define	VNET_M3_APPEND		2
+
+uint16_t vNetM3_address=0;
+oFrame vNetM3_oFrame;								// Data structure for output frame
+
+extern oFrame vNetM1_oFrame;	
+extern uint8_t vNetM1_header;
+extern TCPIP stack;
 
 /**************************************************************************/
 /*!
@@ -46,6 +55,11 @@
 	void vNet_SetAddress_M3(uint16_t addr)
 	{
 		uint8_t ip_addr[4], mac_addr[6];
+
+		// Locally store the address
+		vNetM3_address=addr;
+		oFrame_Define(&vNetM3_oFrame);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
 		
 		// Translate and set the address
 		eth_vNettoIP(0x00FF, &ip_addr[0]);
@@ -53,16 +67,11 @@
 		
 		// Set the MAC Address	
 #       if(AUTO_MAC)
-                eth_vNettoMAC(addr, mac_addr);
-                enc28j60Init(mac_addr);
+			eth_vNettoMAC(addr, mac_addr);
+			enc28j60Init(mac_addr);
 #       else
-                enc28j60Init((U8 *)&MAC_ADDRESS[0]);
+			enc28j60Init((U8 *)&MAC_ADDRESS[0]);
 #       endif 
-		
-		// Set the IP
-		W5x00.setIPAddress(stack.ip);
-		W5x00.setGatewayIp(stack.gateway);
-		W5x00.setSubnetMask(stack.subnetmask);
 		
 		vNet_Begin_M1(UDP_SOCK);								// Start listen on socket
 
@@ -94,11 +103,78 @@
 		
 	}
 #else
-	void vNet_SetAddress_M3(uint16_t addr){return;}
+	void vNet_SetAddress_M3(uint16_t addr)
+	{
+		// Locally store the address
+		vNetM3_address=addr;	
+		oFrame_Define(&vNetM3_oFrame);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
+	}
 #endif
 
-// These is not applicable in a broadcast only scenario, so is there only for compatibility
-// with upper layers.
-uint16_t vNet_GetSourceAddress_M3(){return 0;}
+uint16_t vNet_GetSourceAddress_M3(){return vNetM3_address;}
+
+/**************************************************************************/
+/*!
+	Send a messagge via TCP/IP
+*/
+/**************************************************************************/
+uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
+{
+	uint8_t s, ip_addr[4];
+	uint16_t count = 0, vNet_port;
+
+	// Check message lenght
+	if ((len == 0) || (len >= UIP_PAYLOADSIZE))
+		return ETH_FAIL;
+	
+	// If the frame is not empty, there are waiting data 	
+	oFrame_Define(&vNetM1_oFrame);
+	if(oFrame_isBusy())
+		return ETH_FAIL;		
+
+	// Build a frame with len of payload as first byte
+	vNetM1_header = len+1;
+	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
+	
+	// Define the standard vNet port
+	vNet_port = ETH_PORT;
+
+	// Set the IP broadcast address
+	for(U8 i=0;i<4;i++)
+		ip_addr[i]=0xFF;
+		
+	/***
+		Add the whole length as first byte and the node address
+		at the end of the frame
+	***/
+	
+	// Add the length as first byte
+	vNetM1_header = len+VNET_M3_HEADER+VNET_M3_APPEND;
+	oFrame_Define(&vNetM1_oFrame);
+	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
+
+	// Append the address as last, this is contained into a dedicated oFrame
+	oFrame_AppendLast(&vNetM3_oFrame);
+	
+	// Setup the connection, data will be sent using a callback function
+	if(!uip_udp_sock((u16_t*)ip_addr, vNet_port, (u16_t)ETH_PORT))
+	{		
+		// Flag the error
+		oFrame_Reset();
+		
+		return ETH_FAIL;
+	}
+				
+	// Data are processed with the IP stack		
+	vNet_uIP();	
+	
+	// At this stage data are processed or socket is failed, so we can
+	// securely reset the oFrame
+	oFrame_Reset();	
+	
+	return ETH_SUCCESS;
+}
+
 
 #endif

@@ -305,7 +305,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	// Frames from Media 3 has additional bytes at the end
 	if((*data_pnt-*(data_pnt+1)) > 1)
 	{
-		vNetM3_address = (uint16_t)(data_pnt[dataframe.len-VNET_M3_APPEND]);
+		vNetM3_address = *(uint16_t*)(data_pnt+(dataframe.len-VNET_M3_APPEND));
 		
 		// Remove the header and skip the last two bytes
 		data_pnt++;

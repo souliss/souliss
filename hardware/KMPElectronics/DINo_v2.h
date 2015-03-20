@@ -55,8 +55,8 @@
 #define	SetRelay2()			pinMode(RELAY2, OUTPUT)
 #define	SetRelay3()			pinMode(RELAY3, OUTPUT)
 #define	SetRelay4()			pinMode(RELAY4, OUTPUT)
-#define	SetLED()			pinMode(STATLED, OUTPUT)
 
+#define	SetLED()			pinMode(STATLED, OUTPUT)
 #define ToogleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
 #define	TurnOnLED()			digitalWrite(STATLED, HIGH)
 #define	TurnOffLED()		digitalWrite(STATLED, LOW)
