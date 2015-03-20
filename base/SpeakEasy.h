@@ -276,10 +276,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 												}
 
 #define	GetAddress()							while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
-													for(U8 i=0; i<(2*VNET_MEDIA_NUMBER); i++) {					\
+													for(U8 i=0; i<100; i++) {									\
 														Souliss_CommunicationData(memory_map, &data_changed);	\
 														delay(100);	}											\
-													delay(10000);}												\
+													delay(1000);}												\
 												Souliss_JoinNetwork()
 
 #define WaitSubscription()						while(!MaCaco_IsSubscribed())	{	\

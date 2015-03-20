@@ -39,12 +39,17 @@
 #define	VNET_M3_HEADER		1
 #define	VNET_M3_APPEND		2
 
-uint16_t vNetM3_address=0;
+uint16_t vNetM3_address=0;							// Node address for the media
+uint16_t vNetM3_srcaddr=0;							// Node address from incoming frame
 oFrame vNetM3_oFrame;								// Data structure for output frame
 
 extern oFrame vNetM1_oFrame;	
 extern uint8_t vNetM1_header;
 extern TCPIP stack;
+
+#if (VNET_DEBUG)
+	#define VNET_LOG Serial.print
+#endif
 /**************************************************************************/
 /*!
 	Set the vNet address and all the network parameters
@@ -58,7 +63,7 @@ extern TCPIP stack;
 		// Locally store the address
 		vNetM3_address=addr;
 		oFrame_Define(&vNetM3_oFrame);
-		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);
 		
 		// Translate and set the address
 		eth_vNettoIP(0x00FF, &ip_addr[0]);
@@ -116,7 +121,7 @@ extern TCPIP stack;
 	}
 #endif
 
-uint16_t vNet_GetSourceAddress_M3(){return vNetM3_address;}
+uint16_t vNet_GetSourceAddress_M3(){return vNetM3_srcaddr;}
 
 /**************************************************************************/
 /*!
@@ -139,6 +144,10 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 		Add the whole length as first byte and the node address
 		at the end of the frame
 	***/
+
+	// Add the node address
+	oFrame_Define(&vNetM3_oFrame);
+	oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);
 	
 	// Add the length as first byte
 	vNetM1_header = len+VNET_M3_HEADER+VNET_M3_APPEND;

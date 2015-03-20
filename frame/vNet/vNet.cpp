@@ -288,7 +288,10 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 	U8 *frame_pnt;
 	
 	for(U8 media=0;media<VNET_MEDIA_NUMBER;media++)
-	{
+	{		
+		// Avoid to flood the network
+		delay(VNET_BROADCAST_DELAY);
+		
 		if(vnet_media_en[media])
 		{
 			// oFrames can be used only once, so we use a copy
@@ -329,7 +332,7 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 			// Send the frame
 			switch(media+1)
 			{
-			#if (VNET_MEDIA1_ENABLE)
+			#if (VNET_MEDIA1_ENABLE && !VNET_MEDIA3_ENABLE)
 				case(1):	// Send out on Media 1
 					vNet_Send_M1(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);
 				break;
@@ -432,7 +435,7 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		// Send the frame
 		switch(media+1)
 		{
-		#if (VNET_MEDIA1_ENABLE)
+		#if (VNET_MEDIA1_ENABLE && !VNET_MEDIA3_ENABLE)
 			case(1):	// Send out on Media 1
 				vNet_Send_M1(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);
 			break;
