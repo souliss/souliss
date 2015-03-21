@@ -27,33 +27,19 @@
 #include <SPI.h>
 #include "Souliss.h"
 
-// Define the network configuration according to your router settings
-#define	Gateway_address	0x6501				// The Gateway node has two address, one on the Ethernet side
-											// and the other on the wireless one
-#define	Peer_address	0x6502
-#define	myvNet_subnet	0xFF00
-#define	myvNet_supern	Gateway_address
-
-#define BATT_LEVEL	0			 
+#define BATT_LEVEL		0			 
 
 void setup()
 {	
 	Initialize();
 	
-	// Set network parameters
-	Souliss_SetAddress(Peer_address, myvNet_subnet, myvNet_supern);					// Address on the wireless interface	
-
 	// Set an analog value to measure the battery voltage
 	Set_AnalogIn(BATT_LEVEL);
 
-	// Define the Gateway to be associated with, this is an unusual procedure
-	// and is applicable on for sleeping nodes
-	HardcodedChannel(Gateway_address);
-	WaitSubscription();
-	
-	// Stay asleep for a minute and process the communication, in this type the Gateway
-	// can retrieve typicals or other informations
-	aMinuteToSleep();
+	// This board request an address to the gateway at runtime, no need
+	// to configure any parameter here.
+	SetDynamicAddressing();
+	GetAddress();	
 	
 	/*****
 		The default sleep time is about 30 minutes, you can change this from the
@@ -107,7 +93,7 @@ void loop()
 				// Get it in percentage
 				batterycharge*=100;
 				
-				ImportAnalog(BATT_LEVEL, &vcc_to_send);
+				ImportAnalog(BATT_LEVEL, &batterycharge);
 				Read_AnalogIn(BATT_LEVEL);
 			
 				// Back to sleep
