@@ -234,15 +234,19 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 																	// byte for subnet identification
 				
 				// If we got a full address
-				if((*(U16 *)confparameters_p) & ~DYNAMICADDR_SUBNETMASK)	
-					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));			
+				if((*(U16 *)confparameters_p) & ~DYNAMICADDR_SUBNETMASK)
+				{
+					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+
+					// Configuration data can be now removed
+					for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+						*(memory_map + MaCaco_QUEUE_s + i) = 0;
+
+					return 0;	// Addressing is complete, we can quit
+				}					
 				else	// Request an address starting from the actual subnet
 					MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, proposedsubnet, 0, 0);
-				
-				// Configuration data can be now removed
-				for(U8 i=0; i<MaCaco_QUEUELEN; i++)
-					*(memory_map + MaCaco_QUEUE_s + i) = 0;
-					
+								
 				return 1;				
 				
 			}	

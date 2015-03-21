@@ -71,10 +71,10 @@
 	
 #if (VNET_MEDIA3_ENABLE)
 	// Driver for Wiznet W5100 / W5200 / W5500 (broadcast only)
-	#if ((ETH_W5100 || ETH_W5200 || ETH_W5500) && !VNET_MEDIA1_ENABLE)
+	#if ((ETH_W5100 || ETH_W5200 || ETH_W5500) && (!VNET_MEDIA1_ENABLE))
 		#include "drivers/ethW5x00/vNetDriver_eth.cpp"	
 		#include "drivers/ethW5x00/vNetDriver_brd.h"
-	#else
+	#elif((ETH_W5100 || ETH_W5200 || ETH_W5500))
 		#include "drivers/ethW5x00/vNetDriver_brd.h"
 	#endif
 	
@@ -82,7 +82,7 @@
 	#if ((ETH_ENC28J60) && (!VNET_MEDIA1_ENABLE))
 		#include "drivers/ethENC28J60/vNetDriver_eth.cpp"
 		#include "drivers/ethENC28J60/vNetDriver_brd.h"	
-	#else
+	#elif(ETH_ENC28J60)
 		#include "drivers/ethENC28J60/vNetDriver_brd.h"		
 	#endif	
 	
@@ -288,7 +288,10 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 	U8 *frame_pnt;
 	
 	for(U8 media=0;media<VNET_MEDIA_NUMBER;media++)
-	{
+	{		
+		// Avoid to flood the network
+		delay(VNET_BROADCAST_DELAY);
+		
 		if(vnet_media_en[media])
 		{
 			// oFrames can be used only once, so we use a copy
@@ -329,7 +332,7 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 			// Send the frame
 			switch(media+1)
 			{
-			#if (VNET_MEDIA1_ENABLE)
+			#if (VNET_MEDIA1_ENABLE && !VNET_MEDIA3_ENABLE)
 				case(1):	// Send out on Media 1
 					vNet_Send_M1(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);
 				break;
@@ -432,7 +435,7 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		// Send the frame
 		switch(media+1)
 		{
-		#if (VNET_MEDIA1_ENABLE)
+		#if (VNET_MEDIA1_ENABLE && !VNET_MEDIA3_ENABLE)
 			case(1):	// Send out on Media 1
 				vNet_Send_M1(broadcast_addr, &vNet_oFrame, len + VNET_HEADER_SIZE);
 			break;
@@ -670,7 +673,7 @@ U8 vNet_RetrieveData(U8 *data)
 {
 	#if ((VNET_MEDIA1_ENABLE) && (VNET_MEDIA3_ENABLE))
 		
-		// This is a trick, Media1 and Media3 use the same phisical Ethernet interface and both
+		// This is a trick, Media1 and Media3 use the same physical Ethernet interface and both
 		// communicated over UDP/IP, in the comparison the only difference is that Media1 use
 		// unicast on either IP and vNet side, rather Media3 use unicast only on vNet and broadcast
 		// over the IP.
@@ -682,15 +685,12 @@ U8 vNet_RetrieveData(U8 *data)
 			// Retrieve data from buffer
 			if(vNet_RetrieveData_M1(data))			// This is equivalent to vNet_RetrieveData_M3
 			{		
-				vNet_Media_Data[0].data = data;		// Assign Data Buffer
-				vNet_ParseFrame(1);					// Parse Data Buffer
-
 				// Reset the flags
 				vNet_Media_Data[0].data_available = 0;
 				vNet_Media_Data[2].data_available = 0;
 				
 				// Data has been parsed on Media1, but can also be for Media3
-				if(vNet_GetAddress(3) && (vNet_GetfDestinationAddress(1) == vNet_GetAddress(3)))
+				if(vNet_hasIncomingData_M3())
 				{
 					vNet_Media_Data[2].data = data;		// Assign Data Buffer
 					vNet_ParseFrame(3);					// Parse Data Buffer
@@ -700,15 +700,18 @@ U8 vNet_RetrieveData(U8 *data)
 					// Route data and remove header, if necessary
 					return vNet_RoutingBridging(3);										
 				}
-			
+				
 				// Otherwise proceed with Media1
+				vNet_Media_Data[0].data = data;		// Assign Data Buffer
+				vNet_ParseFrame(1);					// Parse Data Buffer
+				
 				last_media = 1;
 								
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(1);								
 			}
 			
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[0].data_available = 0;
 			vNet_Media_Data[2].data_available = 0;
 			return VNET_DATA_FAIL;
@@ -1253,6 +1256,8 @@ U8 vNet_RoutingBridging(U8 media)
 	}
 }
 
+
+
 /**************************************************************************/
 /*!
     Parse the frame to get out length, addresses, port 
@@ -1310,7 +1315,9 @@ void vNet_ParseFrame(U8 media)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<IN><|0x");
+    VNET_LOG("(vNet)<IN>(0x");
+	VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
+	VNET_LOG(")<|0x");
 	VNET_LOG(vNet_Media_Data[media-1].len,HEX);
 	VNET_LOG("|0x");
 	VNET_LOG(vNet_Media_Data[media-1].port,HEX);
@@ -1344,7 +1351,7 @@ void vNet_ParseFrame(U8 media)
 		U8 src_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);	
 		U16 submask = vNet_Media[src_media-1].subnetmask;
 	
-		// Data from IP sources doesn't need a vNet route
+		// Data from Media 1 sources doesn't need a vNet route
 		if((src_media-1)==VNET_MEDIA1_ID)
 			return;
 	

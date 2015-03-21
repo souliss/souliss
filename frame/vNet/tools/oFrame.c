@@ -136,10 +136,10 @@ U8 oFrame_GetLenght()
 	// While the frame pointer is not null
 	while(frame)
 	{
-
 		len+=frame->header_len+frame->payload_len;		// Get the frame lenght
 		frame = (oFrame*)frame->next;					// Move to next frame
-	}	
+	}
+	
 	return len;
 }
 
@@ -148,7 +148,7 @@ U8 oFrame_GetLenght()
     Append in the last frame
 */
 /**************************************************************************/
-void oFrame_AppendLast(*oFrame appendframe)
+void oFrame_AppendLast(oFrame *appendframe)
 {
 	oFrame* frame = actualframe;
 	
@@ -161,8 +161,8 @@ void oFrame_AppendLast(*oFrame appendframe)
 			break;
 	}		
 	
-	// Appen a new frame at the end
-	frame->next = (*U8)appendframe;
+	// Append a new frame at the end
+	frame->next = (U8*)appendframe;
 }
 
 

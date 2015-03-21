@@ -68,6 +68,7 @@ typedef struct
 } OutBuffer;
 
 void vNet_Init_M1();
+void vNet_Begin_M1(uint8_t sock);
 void vNet_SetAddress_M1(uint16_t addr);
 uint8_t vNet_Send_M1(uint16_t addr, uint8_t *data, uint8_t len);
 uint8_t vNet_DataSize_M1();

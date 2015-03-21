@@ -57,5 +57,10 @@
 
 //	Not used in DINo version 1, here for compatibility with DINo version 2 
 #define	InitDINo()
+#define	SetLED()
+#define ToogleLED()
+#define	TurnOnLED()
+#define	TurnOffLED()
+#define	StartupLED()
 
 #endif

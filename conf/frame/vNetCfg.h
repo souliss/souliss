@@ -100,6 +100,7 @@
 #define VNET_DATA_SUCCESS		   	1
 #define VNET_SUCCESS				1
 #define VNET_DATA_ROUTED		   	255
+#define	VNET_BROADCAST_DELAY		300		// Delay in milliseconds
 
 /**************************************************************************/
 /*!

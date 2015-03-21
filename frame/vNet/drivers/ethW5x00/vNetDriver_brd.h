@@ -39,9 +39,18 @@
 #define	VNET_M3_HEADER		1
 #define	VNET_M3_APPEND		2
 
-uint16_t vNetM3_address=0;
+uint16_t vNetM3_address=0;							// Node address for the media
+uint16_t vNetM3_srcaddr=0;							// Node address from incoming frame
+uint8_t  vNetM3_isdata =0;							// Flag if Media3 has incoming data
 oFrame vNetM3_oFrame;								// Data structure for output frame
 
+extern oFrame vNetM1_oFrame;	
+extern uint8_t vNetM1_header;
+extern TCPIP stack;
+
+#if (VNET_DEBUG)
+	#define VNET_LOG Serial.print
+#endif
 /**************************************************************************/
 /*!
 	Set the vNet address and all the network parameters
@@ -55,7 +64,7 @@ oFrame vNetM3_oFrame;								// Data structure for output frame
 		// Locally store the address
 		vNetM3_address=addr;
 		oFrame_Define(&vNetM3_oFrame);
-		oFrame_Set(&vNetM3_address, 0, 1, 0, 0);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);
 		
 		// Translate and set the address
 		eth_vNettoIP(0x00FF, &ip_addr[0]);
@@ -109,13 +118,33 @@ oFrame vNetM3_oFrame;								// Data structure for output frame
 		// Locally store the address
 		vNetM3_address=addr;	
 		oFrame_Define(&vNetM3_oFrame);
-		oFrame_Set(&vNetM3_address, 0, 1, 0, 0);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);
 	}
 #endif
 
+/**************************************************************************/
+/*!
+    Get the source address of the most recently received frame
+*/
+/**************************************************************************/
+uint16_t vNet_GetSourceAddress_M3(){return vNetM3_srcaddr;}
 
-uint16_t vNet_GetSourceAddress_M3(){return vNetM3_address;}
-
+/**************************************************************************/
+/*!
+    The upper layer needs to idenitfy if data are on M1 or M3, and this
+	flags are used for that scope
+*/
+/**************************************************************************/
+uint8_t  vNet_setIncomingData_M3() {vNetM3_isdata = 1;}
+uint8_t  vNet_hasIncomingData_M3() 
+{
+	if(vNetM3_isdata)
+	{
+		vNetM3_isdata = 0; 
+		return 1;
+	}
+	return 0;
+}	
 /**************************************************************************/
 /*!
 	Send a message via UDP/IP
@@ -137,14 +166,18 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 		Add the whole length as first byte and the node address
 		at the end of the frame
 	***/
+
+	// Add the node address
+	oFrame_Define(&vNetM3_oFrame);
+	oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);
 	
 	// Add the length as first byte
 	vNetM1_header = len+VNET_M3_HEADER+VNET_M3_APPEND;
 	oFrame_Define(&vNetM1_oFrame);
 	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
 
-	// Append the address as last
-	oFrame_AppendLast(&vNetM3_oFrame)
+	// Append the address as last, this is contained into a dedicated oFrame
+	oFrame_AppendLast(&vNetM3_oFrame);
 	
 	// Send data	
 	if(!sendto(UDP_SOCK, (uint8_t*)&vNetM1_oFrame, 0, &ip_addr[0], vNet_port))
