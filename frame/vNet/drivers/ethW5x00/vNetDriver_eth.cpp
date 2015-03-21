@@ -48,11 +48,12 @@
 
 unsigned long start_time;
 
-uint8_t vNetM1_header;									// Header for output frame
+uint8_t vNetM1_header;								// Header for output frame
 oFrame vNetM1_oFrame;								// Data structure for output frame
 inframe dataframe;									// Data structure for incoming UDP frame
-
 TCPIP stack;
+
+uint8_t dlen=0;										// Number of processed data
 
 extern bool addrsrv;
 extern uint16_t vNetM3_address;
@@ -302,32 +303,36 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	}
 	#endif	
 	
+	// The first byte is the length
+	dlen = *data_pnt;
+	
 	#if(VNET_MEDIA3_ENABLE)
 	// Frames from Media 3 has additional bytes at the end
-	if((*data_pnt-*(data_pnt+1)) > 1)
+	if((dlen-*(data_pnt+1)) > 1)
 	{
-		vNetM3_srcaddr = *(uint16_t*)(data_pnt+(dataframe.len-VNET_M3_APPEND));
+		vNetM3_srcaddr = *(uint16_t*)(data_pnt+(dlen-VNET_M3_APPEND));
 		
 		// Remove the header and skip the last two bytes
 		data_pnt++;
-		dataframe.len = dataframe.len-(VNET_M3_APPEND+VNET_M3_HEADER);		
+		dlen = dlen-(VNET_M3_APPEND+VNET_M3_HEADER);		
 	}
 	else
 	{
 		// Remove the header
 		data_pnt++;
-		dataframe.len--;		
+		dlen--;		
 	}
 	#else
 		// Remove the header
 		data_pnt++;
-		dataframe.len--;			
+		dlen--;			
 	#endif
 	
 	// Prepare data from the top level
-	memmove(data, data_pnt, dataframe.len);
-
-	return dataframe.len;
+	memmove(data, data_pnt, dlen);
+	
+	// Return the number of processed bytes
+	return dlen;
 }
 
 /**************************************************************************/

@@ -117,7 +117,7 @@ extern TCPIP stack;
 		// Locally store the address
 		vNetM3_address=addr;	
 		oFrame_Define(&vNetM3_oFrame);
-		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
+		oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);
 	}
 #endif
 
