@@ -15,9 +15,9 @@ Release note for revision ... (Friariello)
 		- Zeroconfig examples (TODO)
 		- Official introduction of new logic typicals T31, T1B (TODO)
 		- Introduction of Action Messages
-		- Massive commands can be used between nodes (TODO)
+		- Massive commands can be used between nodes
 		- Media 3 has been moved from MAC broadcast to IP broadcast
-		- 
+		- General bugfix 
 
 Release note for revision Alpha 6.1.4, on 25/01/2015
 	

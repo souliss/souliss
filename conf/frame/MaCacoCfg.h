@@ -64,8 +64,8 @@
 			0x17	Force a register value (bit-wise OR),
 			0x08	Ping request,
 			0x18	Ping answer,
-			0x09	Trace root request,
-			0x19	Trace root answer,
+			0x09	Trace root request (Functional code not supported),
+			0x19	Trace root answer (Functional code not supported),
 			0x83	Functional code not supported,
 			0x84	Data out of range,
 			0x85	Subscription refused.
