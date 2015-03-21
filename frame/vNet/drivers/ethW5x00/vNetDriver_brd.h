@@ -41,6 +41,7 @@
 
 uint16_t vNetM3_address=0;							// Node address for the media
 uint16_t vNetM3_srcaddr=0;							// Node address from incoming frame
+uint8_t  vNetM3_isdata =0;							// Flag if Media3 has incoming data
 oFrame vNetM3_oFrame;								// Data structure for output frame
 
 extern oFrame vNetM1_oFrame;	
@@ -121,8 +122,29 @@ extern TCPIP stack;
 	}
 #endif
 
+/**************************************************************************/
+/*!
+    Get the source address of the most recently received frame
+*/
+/**************************************************************************/
 uint16_t vNet_GetSourceAddress_M3(){return vNetM3_srcaddr;}
 
+/**************************************************************************/
+/*!
+    The upper layer needs to idenitfy if data are on M1 or M3, and this
+	flags are used for that scope
+*/
+/**************************************************************************/
+uint8_t  vNet_setIncomingData_M3() {vNetM3_isdata = 1;}
+uint8_t  vNet_hasIncomingData_M3() 
+{
+	if(vNetM3_isdata)
+	{
+		vNetM3_isdata = 0; 
+		return 1;
+	}
+	return 0;
+}	
 /**************************************************************************/
 /*!
 	Send a message via UDP/IP

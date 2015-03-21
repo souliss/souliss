@@ -314,7 +314,11 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 		
 		// Remove the header and skip the last two bytes
 		data_pnt++;
-		dlen = dlen-(VNET_M3_APPEND+VNET_M3_HEADER);		
+		dlen = dlen-(VNET_M3_APPEND+VNET_M3_HEADER);	
+
+		// At the upper layer there is no way to identify if data are on M1
+		// or on M3, so this flag is used
+		vNet_setIncomingData_M3();		
 	}
 	else
 	{
