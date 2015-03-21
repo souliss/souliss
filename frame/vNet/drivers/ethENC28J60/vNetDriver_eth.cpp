@@ -29,7 +29,6 @@
 
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
-#include "vNetDriver_brd.h"
 
 #include "frame/vNet/stack/uIP/uip.c"
 #include "frame/vNet/stack/uIP/uip_arch.c"
@@ -54,7 +53,7 @@ uint16_t sportnumber=0;									// Source port number of the incoming packet
 uint8_t arptimer=0;										// ARP table timeout						
 uint8_t usedsock=MAX_SOCK_NUM;							// Socket used at last shift
 uint8_t mac_addr[6];									// MAC Address
-uint8_t rawdata;										// Flag if there are raw data (not UDP/IP, TCP/IP, ICMP, ARP)
+uint8_t rawdata=0;										// Flag if there are raw data (not UDP/IP, TCP/IP, ICMP, ARP)
 
 U8 vNetM1_header;										// Header for output frame
 oFrame vNetM1_oFrame;									// Data structure for output frame
@@ -62,7 +61,6 @@ oFrame vNetM1_oFrame;									// Data structure for output frame
 TCPIP stack;											// Structure for IP definitions
 
 extern bool addrsrv;
-extern uint16_t vNetM3_address;
 
 /**************************************************************************/
 /*!
@@ -221,6 +219,13 @@ uint8_t vNet_DataAvailable_M1()
 		// HTTP frame are not handled at this stage, but requires a dedicated
 		// call to HTTP method in the main program
 	}
+	#if(VNET_MEDIA3_ENABLE)
+	else if(rawdata)
+	{
+		// RAW data are not handled at this stage, but requires a dedicated
+		// call to vNet Media3 method
+	}	
+	#endif
 	else		
 		vNet_uIP();		// Retrieve and process the incoming data
 	
@@ -241,16 +246,19 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	// Retrieve the complete message
 	if((len>0 && len <= vnetlenght) && len <= VNET_MAX_FRAME)
 	{	
-
 		#if(VNET_MEDIA3_ENABLE)
 		// Frames from Media 3 has additional bytes at the end
-		if((*appdata-*(appdata+1)) > 1)
+		if((len-*(appdata+1)) > 1)
 		{
-			vNetM3_address = *(uint16_t*)(appdata+(len-VNET_M3_APPEND));
+			vNetM3_srcaddr = *(uint16_t*)(appdata+(len-VNET_M3_APPEND));
 			
 			// Remove the header and skip the last two bytes
 			appdata++;
-			len = len-(VNET_M3_APPEND+VNET_M3_HEADER);		
+			len = len-(VNET_M3_APPEND+VNET_M3_HEADER);	
+
+			// At the upper layer there is no way to identify if data are on M1
+			// or on M3, so this flag is used
+			vNet_setIncomingData_M3();		
 		}
 		else
 		{
@@ -264,6 +272,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 			len--;			
 		#endif
 
+		// Move data in the buffer
 		memmove(data, appdata, len);
 		vnetlenght = 0;							// Reset the length
 		

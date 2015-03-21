@@ -39,7 +39,9 @@
 #define	VNET_M3_HEADER		1
 #define	VNET_M3_APPEND		2
 
-uint16_t vNetM3_address=0;
+uint16_t vNetM3_address=0;							// Node address for the media
+uint16_t vNetM3_srcaddr=0;							// Node address from incoming frame
+uint8_t  vNetM3_isdata =0;							// Flag if Media3 has incoming data
 oFrame vNetM3_oFrame;								// Data structure for output frame
 
 extern oFrame vNetM1_oFrame;	
@@ -112,7 +114,29 @@ extern TCPIP stack;
 	}
 #endif
 
-uint16_t vNet_GetSourceAddress_M3(){return vNetM3_address;}
+/**************************************************************************/
+/*!
+    Get the source address of the most recently received frame
+*/
+/**************************************************************************/
+uint16_t vNet_GetSourceAddress_M3(){return vNetM3_srcaddr;}
+
+/**************************************************************************/
+/*!
+    The upper layer needs to identify if data are on M1 or M3, and this
+	flags are used for that scope
+*/
+/**************************************************************************/
+uint8_t  vNet_setIncomingData_M3() {vNetM3_isdata = 1;}
+uint8_t  vNet_hasIncomingData_M3() 
+{
+	if(vNetM3_isdata)
+	{
+		vNetM3_isdata = 0; 
+		return 1;
+	}
+	return 0;
+}	
 
 /**************************************************************************/
 /*!
@@ -127,28 +151,28 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	// Check message lenght
 	if ((len == 0) || (len >= UIP_PAYLOADSIZE))
 		return ETH_FAIL;
-	
-	// If the frame is not empty, there are waiting data 	
-	oFrame_Define(&vNetM1_oFrame);
-	if(oFrame_isBusy())
-		return ETH_FAIL;		
 
-	// Build a frame with len of payload as first byte
-	vNetM1_header = len+1;
-	oFrame_Set(&vNetM1_header, 0, 1, 0, frame);
-	
 	// Define the standard vNet port
 	vNet_port = ETH_PORT;
 
 	// Set the IP broadcast address
 	for(U8 i=0;i<4;i++)
 		ip_addr[i]=0xFF;
-		
+	
 	/***
 		Add the whole length as first byte and the node address
 		at the end of the frame
 	***/
 	
+	// Add the node address
+	oFrame_Define(&vNetM3_oFrame);
+	oFrame_Set((uint8_t*)(&vNetM3_address), 0, VNET_M3_APPEND, 0, 0);	
+	
+	// If the frame is not empty, there are waiting data 	
+	oFrame_Define(&vNetM1_oFrame);
+	if(oFrame_isBusy())
+		return ETH_FAIL;		
+
 	// Add the length as first byte
 	vNetM1_header = len+VNET_M3_HEADER+VNET_M3_APPEND;
 	oFrame_Define(&vNetM1_oFrame);

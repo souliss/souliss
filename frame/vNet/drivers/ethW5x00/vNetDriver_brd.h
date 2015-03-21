@@ -131,7 +131,7 @@ uint16_t vNet_GetSourceAddress_M3(){return vNetM3_srcaddr;}
 
 /**************************************************************************/
 /*!
-    The upper layer needs to idenitfy if data are on M1 or M3, and this
+    The upper layer needs to identify if data are on M1 or M3, and this
 	flags are used for that scope
 */
 /**************************************************************************/
@@ -145,6 +145,7 @@ uint8_t  vNet_hasIncomingData_M3()
 	}
 	return 0;
 }	
+
 /**************************************************************************/
 /*!
 	Send a message via UDP/IP
