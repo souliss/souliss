@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss
-    Copyright (C) 2014  Veseo
+    Copyright (C) 2015  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,84 +31,62 @@
 	once received the notification, example of use:
 	
 	// Sender
-	if(...)	broadcast_Alarm();
+	if(...)	broadcast_Event(event_number);
 	
 	// Receiver
-	if(is_Alarm())
+	if(is_Event(event_number))
 	{
 		// Do something
 	}
+	
+	The followings methods are available:
+		broadcast_##name()
+		broadcastd_##name(data, len)
+		multicast_##name(maddress)
+		multicastd_##name(maddress, data, len)
+		is_##name()
+		isd_##name(data, len)
+		
+	where ##name can be:
+		Alarm
+		AlarmFire
+		DoorOpen
+		...
 */	
 /**************************************************************************/	
 
-/*** General Event ***/
+#define	broadcast_Event(event)						Souliss_BroadcastAction(memory_map, 0xF001, event)
+#define	is_Event(event)								Souliss_GetAction(memory_map, 0xF001, event)
+#define	broadcastd_Event(event,data,len)			Souliss_BroadcastActionMessage(memory_map, 0xF001, event, data, len)
+#define	isd_Event(event,data,len)					Souliss_GetActionMessage(memory_map, 0xF001, event, data, len)
 
-// General Event
-#define	broadcast_GeneralEvent()						Souliss_BroadcastAction(memory_map, 0xF001, 0x01)
-#define	multicast_GeneralEvent(maddress)				Souliss_BroadcastAction(maddress, memory_map, 0xF001, 0x01)
-#define	broadcastd_GeneralEvent(data, len)				Souliss_BroadcastActionMessage(memory_map, 0xF001, 0x01, data, len)
-#define	multicastd_GeneralEvent(maddress, data, len)	Souliss_BroadcastActionMessage(maddress, memory_map, 0xF001, 0x01, data, len)
-#define	is_GeneralEvent()								Souliss_GetAction(memory_map, 0xF001, 0x01)
-#define	isd_GeneralEvent(data, len)						Souliss_GetActionMessage(memory_map, 0xF001, 0x01, data, len)
+#define __ACTION_MESSAGE(name, address1, address2)            									\
+	static inline void broadcast_##name() { 													\
+		Souliss_BroadcastAction(memory_map, address1, address2);								\
+	}																							\
+	static inline void broadcastd_##name(data, len) { 											\
+		Souliss_BroadcastActionMessage(memory_map, address1, address2, data, len);				\
+	}																							\
+	static inline void multicast_##name(maddress) { 											\
+		Souliss_BroadcastAction(maddress, memory_map, address1, address2);						\
+	}																							\
+	static inline void multicastd_##name(maddress, data, len) { 								\
+		Souliss_BroadcastActionMessage(maddress, memory_map, address1, address2, data, len);	\
+	}																							\
+	static inline void is_##name() { 															\
+		Souliss_GetAction(memory_map, address1, address2);										\
+	}																							\
+	static inline void isd_##name(data, len) { 													\
+		Souliss_GetActionMessage(memory_map, address1, address2, data, len));					\
+	}																							\		
 
-/*** Alarms ***/
-
-// Standard Alarm
-#define	broadcast_Alarm()								Souliss_BroadcastAction(memory_map, 0x0001, 0x01)
-#define	multicast_Alarm(maddress)						Souliss_BroadcastAction(maddress, memory_map, 0x0001, 0x01)
-#define	broadcastd_Alarm(data, len)						Souliss_BroadcastActionMessage(memory_map, 0x0001, 0x01, data, len)
-#define	multicastd_Alarm(maddress, data, len)			Souliss_BroadcastActionMessage(maddress, memory_map, 0x0001, 0x01, data, len)
-#define	is_Alarm()										Souliss_GetAction(memory_map, 0x0001, 0x01)
-#define	isd_Alarm(data, len)							Souliss_GetActionMessage(memory_map, 0x0001, 0x01, data, len)
-
-// Fire Alarm
-#define	broadcast_AlarmFire()							Souliss_BroadcastAction(memory_map, 0x0001, 0x02)
-#define	multicast_AlarmFire(maddress)					Souliss_BroadcastAction(maddress, memory_map, 0x0001, 0x02)
-#define	broadcastd_AlarmFire(data, len)					Souliss_BroadcastActionMessage(memory_map, 0x0001, 0x02, data, len)
-#define	multicastd_AlarmFire(maddress, data, len)		Souliss_BroadcastActionMessage(maddress, memory_map, 0x0001, 0x02, data, len)
-#define	is_AlarmFire()									Souliss_GetAction(memory_map, 0x0001, 0x02)
-#define	isd_AlarmFire(data, len)						Souliss_GetActionMessage(memory_map, 0x0001, 0x02, data, len)
-
-/*** Events ***/
-
-// Door open 
-#define	broadcast_DoorOpen()							Souliss_BroadcastAction(memory_map, 0x0002, 0x01)
-#define	multicast_DoorOpen(maddress)					Souliss_BroadcastAction(maddress, memory_map, 0x0002, 0x01)
-#define	broadcastd_DoorOpen(data, len)					Souliss_BroadcastActionMessage(memory_map, 0x0002, 0x01, data, len)
-#define	multicastd_DoorOpen(maddress, data, len)		Souliss_BroadcastActionMessage(maddress, memory_map, 0x0002, 0x01, data, len)
-#define	is_DoorOpen()									Souliss_GetAction(memory_map, 0x0002, 0x01)
-#define	isd_DoorOpen(data, len)							Souliss_GetActionMessage(memory_map, 0x0002, 0x01, data, len)
-
-// Door closed 
-#define	broadcast_DoorClosed()							Souliss_BroadcastAction(memory_map, 0x0002, 0x02)
-#define	multicast_DoorClosed(address)					Souliss_BroadcastAction(maddress, memory_map, 0x0002, 0x02)
-#define	broadcastd_DoorClosed(data, len)				Souliss_BroadcastActionMessage(memory_map, 0x0002, 0x02, data, len)
-#define	multicastd_DoorClosed(maddress, data, len)		Souliss_BroadcastActionMessage(maddress, memory_map, 0x0002, 0x02, data, len)
-#define	is_DoorClosed()									Souliss_GetAction(memory_map, 0x0002, 0x02)
-#define	isd_DoorClosed(data, len)						Souliss_GetActionMessage(memory_map, 0x0002, 0x02, data, len)
-
-// Is raining 
-#define	broadcast_Raining()								Souliss_BroadcastAction(memory_map, 0x0002, 0x10)
-#define	multicast_Raining(maddress)						Souliss_BroadcastAction(maddress, memory_map, 0x0002, 0x10)
-#define	broadcastd_Raining(data, len)					Souliss_BroadcastActionMessage(memory_map, 0x0002, 0x10, data, len)
-#define	multicastd_Raining(maddress, data, len)			Souliss_BroadcastActionMessage(maddress, memory_map, 0x0002, 0x10, data, len)
-#define	is_Raining()									Souliss_GetAction(memory_map, 0x0002, 0x10)
-#define	isd_Raining(data, len)							Souliss_GetActionMessage(memory_map, 0x0002, 0x10, data, len)
-
-// Rain stops 
-#define	broadcast_RainStops()							Souliss_BroadcastAction(memory_map, 0x0002, 0x11)
-#define	multicast_RainStops(maddress)					Souliss_BroadcastAction(maddress, memory_map, 0x0002, 0x11)
-#define	broadcastd_RainStops(data, len)					Souliss_BroadcastActionMessage(memory_map, 0x0002, 0x11, data, len)
-#define	multicastd_RainStops(maddress, data, len)		Souliss_BroadcastActionMessage(maddress, memory_map, 0x0002, 0x11, data, len)
-#define	is_RainStops()									Souliss_GetAction(memory_map, 0x0002, 0x11)
-#define	isd_RainStops(data, len)						Souliss_GetActionMessage(memory_map, 0x0002, 0x11, data, len)
-
-// Sunny day
-#define	broadcast_Sunny()								Souliss_BroadcastAction(memory_map, 0x0002, 0x12)
-#define	multicast_Sunny(maddress)						Souliss_BroadcastAction(maddress, memory_map, 0x0002, 0x12)
-#define	broadcastd_Sunny(data, len)						Souliss_BroadcastActionMessage(memory_map, 0x0002, 0x12, data, len)
-#define	multicastd_Sunny(maddress, data, len)			Souliss_BroadcastActionMessage(maddress, memory_map, 0x0002, 0x12, data, len)
-#define	is_Sunny()										Souliss_GetAction(memory_map, 0x0002, 0x12)
-#define	isd_Sunny(data, len)							Souliss_GetActionMessage(memory_map, 0x0002, 0x12, data, len)
+/*** Event List ***/	
+__ACTION_MESSAGE(Alarm,  		0x0001, 0x01);
+__ACTION_MESSAGE(AlarmFire, 	0x0001, 0x02);
+__ACTION_MESSAGE(DoorOpen, 		0x0002, 0x01);
+__ACTION_MESSAGE(DoorClosed, 	0x0002, 0x02);
+__ACTION_MESSAGE(Raining, 		0x0002, 0x10);
+__ACTION_MESSAGE(RainStops, 	0x0002, 0x11);
+__ACTION_MESSAGE(Sunny, 		0x0002, 0x12);
 
 #endif

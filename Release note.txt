@@ -8,15 +8,15 @@ Release note for revision ... (Friariello)
 		- Configuration is only available through inSketch or changing the configuration files
 		- Quick Configuration is deprecated.
 		- Support for battery operated devices (TODO)
-		- Dynamic Addressing works also in case of complex network (TODO)
+		- Dynamic Addressing works also in case of complex network
 		- Gateway IP address can be configured at runtime from SoulissApp (TODO)
 		- EEPROM is used to retain network configuration for either Gateway and Peers (TODO)
-		- Review of all examples (TODO)
+		- Review of all examples
 		- Zeroconfig examples (TODO)
 		- Official introduction of new logic typicals T31, T1B (TODO)
-		- Introduction of Action Messages (TODO)
+		- Introduction of Action Messages
 		- Massive commands can be used between nodes (TODO)
-		- Media 3 has been moved from MAC broadcast to IP broadcast (TODO)
+		- Media 3 has been moved from MAC broadcast to IP broadcast
 		- 
 
 Release note for revision Alpha 6.1.4, on 25/01/2015
