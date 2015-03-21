@@ -1313,7 +1313,9 @@ void vNet_ParseFrame(U8 media)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<IN><|0x");
+    VNET_LOG("(vNet)<IN>()|0x");
+	VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
+	VNET_LOG(")<|0x");
 	VNET_LOG(vNet_Media_Data[media-1].len,HEX);
 	VNET_LOG("|0x");
 	VNET_LOG(vNet_Media_Data[media-1].port,HEX);
@@ -1347,7 +1349,7 @@ void vNet_ParseFrame(U8 media)
 		U8 src_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);	
 		U16 submask = vNet_Media[src_media-1].subnetmask;
 	
-		// Data from IP sources doesn't need a vNet route
+		// Data from Media 1 sources doesn't need a vNet route
 		if((src_media-1)==VNET_MEDIA1_ID)
 			return;
 	
