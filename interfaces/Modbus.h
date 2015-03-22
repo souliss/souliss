@@ -82,7 +82,7 @@
 #define MODBUS_RTU_REPLY_HEADER					3
 
 // Used to swap from little-endian to big-endian and viceversa, the AVRs use little
-// endian rapresentation, rather Modbus and IP are big-endian
+// endian representation, rather Modbus and IP are big-endian
 #ifndef HTONS
 // Host to Network Word
 #	define HTONS(n) ((((U16)((n) & 0xff)) << 8) | (((n) & 0xff00) >> 8))
@@ -100,7 +100,7 @@ typedef struct
 {
 	U16	transactionid;			// Transaction ID
 	U16	protocolid;				// Protocol ID
-	U16 lenght;					// Frame lenght to end
+	U16 length;					// Frame length to end
 	U8  unitid;					// Unit ID
 	U8  functionalcode;			// Functional Code
 	U16	startingaddress;		// Starting address
@@ -119,7 +119,7 @@ typedef struct
 {
 	U16	transactionid;			// Transaction ID
 	U16	protocolid;				// Protocol ID
-	U16 lenght;					// Frame lenght to end
+	U16 length;					// Frame length to end
 	U8  unitid;					// Unit ID
 	U8  functionalcode;			// Functional Code
 	U8	bytecount;				// Byte count

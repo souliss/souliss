@@ -1,7 +1,7 @@
 /* vNet Example 3, Data Transmission
 
-  A communication between and ethernet and a wireless node is estabilished,
-  data are send and received trough a ethernet-wireless bridge.
+  A communication between and Ethernet and a wireless node is estabilished,
+  data are send and received trough a Ethernet-wireless bridge.
   
   This sketch should run on a wireless chibiduino node.
   

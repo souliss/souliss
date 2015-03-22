@@ -57,7 +57,7 @@
 #define Souliss_TRL						0xFF			// Related association, indentify a slot related to a previous one
 
 // General defines for T1n
-#define Souliss_T1n_ToogleCmd			0x01		// Toogle Command
+#define Souliss_T1n_ToggleCmd			0x01		// Toggle Command
 #define Souliss_T1n_OnCmd				0x02		// ON Command
 #define Souliss_T1n_OffCmd				0x04		// OFF Command
 #define Souliss_T1n_AutoCmd				0x08		// AUTO Mode Command
@@ -137,7 +137,7 @@
 #define Souliss_T2n_StopCmd				0x04		// Stop Command
 #define Souliss_T2n_CloseCmd_Local		0x08		// Close Command (only from local pushbutton)
 #define Souliss_T2n_OpenCmd_Local		0x10		// Open Command (only from local pushbutton)
-#define Souliss_T2n_ToogleCmd			0x08		// Toogle Command
+#define Souliss_T2n_ToggleCmd			0x08		// Toggle Command
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
 #define Souliss_T2n_Timer_Val			0xC0		// Timer set value
 #define Souliss_T2n_Timer_Off			0xA0		// Timer expired value

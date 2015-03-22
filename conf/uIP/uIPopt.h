@@ -99,7 +99,7 @@ typedef unsigned short uip_stats_t;
  * settings statically, but only if UIP_FIXEDADDR is set to 1. The
  * configuration options for a specific node includes IP address,
  * netmask and default router as well as the Ethernet address. The
- * netmask, default router and Ethernet address are appliciable only
+ * netmask, default router and Ethernet address are applicable only
  * if uIP should be run over Ethernet.
  *
  * All of these should be changed to suit your project.
@@ -133,7 +133,7 @@ typedef unsigned short uip_stats_t;
 #define UIP_FIXEDADDR    1
 
 /**
- * Ping IP address asignment.
+ * Ping IP address assignment.
  *
  * uIP uses a "ping" packets for setting its own IP address if this
  * option is set. If so, uIP will start with an empty IP address and
@@ -175,7 +175,7 @@ typedef unsigned short uip_stats_t;
  * Turn on support for IP packet reassembly.
  *
  * uIP supports reassembly of fragmented IP packets. This features
- * requires an additonal amount of RAM to hold the reassembly buffer
+ * requires an additional amount of RAM to hold the reassembly buffer
  * and the reassembly code size is approximately 700 bytes.  The
  * reassembly buffer is of the same size as the uip_buf buffer
  * (configured by UIP_BUFSIZE).
@@ -207,7 +207,7 @@ typedef unsigned short uip_stats_t;
  */
 
 /**
- * Toggles wether UDP support should be compiled in or not.
+ * Toggles whether UDP support should be compiled in or not.
  *
  * \hideinitializer
  */
@@ -256,7 +256,7 @@ typedef unsigned short uip_stats_t;
  *
  * Since the TCP connections are statically allocated, turning this
  * configuration knob down results in less RAM used. Each TCP
- * connection requires approximatly 30 bytes of memory.
+ * connection requires approximately 30 bytes of memory.
  *
  * \hideinitializer
  */
@@ -326,7 +326,7 @@ typedef unsigned short uip_stats_t;
 /**
  * How long a connection should stay in the TIME_WAIT state.
  *
- * This configiration option has no real implication, and it should be
+ * This configuration option has no real implication, and it should be
  * left untouched.
  */ 
 #define UIP_TIME_WAIT_TIMEOUT 120
@@ -451,7 +451,7 @@ void uip_log(char *msg);
 /*------------------------------------------------------------------------------*/
 
 /**
- * \defgroup uipoptapp Appication specific configurations
+ * \defgroup uipoptapp Application specific configurations
  * @{
  *
  * An uIP application is implemented using a single application

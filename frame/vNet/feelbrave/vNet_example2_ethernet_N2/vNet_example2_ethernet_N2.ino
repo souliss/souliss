@@ -1,6 +1,6 @@
 /* vNet Example 2, Data Transmission
 
-	Two nodes sends data via ethernet connection, they can be connected
+	Two nodes sends data via Ethernet connection, they can be connected
 	to a switch or cross-wired togheter.
 
 	*************************Definitions*************************
@@ -12,7 +12,7 @@
 	vNet_Config.h			#define VNET_MEDIA4_ENABLE  0
 	vNet_Config.h			#define VNET_MEDIA5_ENABLE  0
 	
-	Define the ethernet controller based on the used hardware,
+	Define the Ethernet controller based on the used hardware,
 	ethUsrCfg.h				#define ETH_W5100/ENC28J60	1	
 	
 	ethUsrCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}

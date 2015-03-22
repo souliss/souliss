@@ -27,11 +27,11 @@
 
 /**************************************************************************/
 /*!
-    User Mode is an embeed functionality in vNet over IP that allow 
+    User Mode is an embed functionality in vNet over IP that allow 
 	communication with devices that are out of the LAN and/or use
 	two different port while writing and receiving vNet frames.
 		
-	Using the User Mode, the entiere IP address is stored to allow
+	Using the User Mode, the entire IP address is stored to allow
 	communication over NAT.
 */
 /**************************************************************************/

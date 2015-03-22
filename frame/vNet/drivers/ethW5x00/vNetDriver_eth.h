@@ -53,7 +53,7 @@ typedef struct
 typedef struct
 {
 	U8  ip[4];				// Source IP address
-	U8  len;				// Data lenght
+	U8  len;				// Data length
 	U16 port;				// IP Port
 } inframe;
 

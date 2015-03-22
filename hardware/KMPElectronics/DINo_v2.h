@@ -57,7 +57,7 @@
 #define	SetRelay4()			pinMode(RELAY4, OUTPUT)
 
 #define	SetLED()			pinMode(STATLED, OUTPUT)
-#define ToogleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
+#define ToggleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
 #define	TurnOnLED()			digitalWrite(STATLED, HIGH)
 #define	TurnOffLED()		digitalWrite(STATLED, LOW)
 #define	StartupLED()		for(uint8_t l=0;l<10;l++){							\

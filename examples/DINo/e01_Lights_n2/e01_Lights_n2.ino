@@ -67,10 +67,10 @@ void loop()
 		
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
 		
-			DigIn(IN1, Souliss_T1n_ToogleCmd, LIGHT1);			// Read inputs from IN1
-			DigIn(IN2, Souliss_T1n_ToogleCmd, LIGHT2);			// Read inputs from IN2
-			DigIn(IN3, Souliss_T1n_ToogleCmd, LIGHT3);			// Read inputs from IN3
-			DigIn(IN4, Souliss_T1n_ToogleCmd, LIGHT4);			// Read inputs from IN4
+			DigIn(IN1, Souliss_T1n_ToggleCmd, LIGHT1);			// Read inputs from IN1
+			DigIn(IN2, Souliss_T1n_ToggleCmd, LIGHT2);			// Read inputs from IN2
+			DigIn(IN3, Souliss_T1n_ToggleCmd, LIGHT3);			// Read inputs from IN3
+			DigIn(IN4, Souliss_T1n_ToggleCmd, LIGHT4);			// Read inputs from IN4
 		
 			Logic_SimpleLight(LIGHT1);							// Execute the logic for Relay 1
 			Logic_SimpleLight(LIGHT2);							// Execute the logic for Relay 2
@@ -93,7 +93,7 @@ void loop()
 		// Periodically check if the peer node has joined the gateway
 		FAST_1110ms() {
 			if(JoinInProgress())	// If join is in progress, toggle the LED at every turn
-				ToogleLED();
+				ToggleLED();
 			else
 				TurnOnLED();		// Once completed, turn ON
 		}		

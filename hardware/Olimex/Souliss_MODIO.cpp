@@ -226,7 +226,7 @@ void Souliss_MODIO_nSetOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 
 /**************************************************************************
 /*!
-	Toogle an output on a MODIO device based on the value into the relevant
+	Toggle an output on a MODIO device based on the value into the relevant
 	memory_map and slot, it need a link to an hardware output or relay.	
 */	
 /**************************************************************************/

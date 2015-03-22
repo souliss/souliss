@@ -42,13 +42,13 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 		output can be timed out.
 		
 		This logic can be used for lights, wall socket and all the devices
-		that has an ON/OFF behavior.
+		that has an ON/OFF behaviour.
 		
 		Hardware Command:
 			
 			If using a monostable wall switch (press and spring return), 
-			each press will toogle the output status.		
-				#define Souliss_T1n_ToogleCmd		0x01
+			each press will toggle the output status.		
+				#define Souliss_T1n_ToggleCmd		0x01
 			
 			If using a bistable wall switch (press without return), the two
 			switch position can be associated with the ON and OFF commands
@@ -65,7 +65,7 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 		Timed Output Command:
 		
 			This logic can be used with a timer to active the output state for
-			a predifined amount of time, timer is activated if the input command
+			a predefined amount of time, timer is activated if the input command
 			is greater than
 				#define Souliss_T1n_Timed			0x30
 			
@@ -78,7 +78,7 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 				nCYCLES = INPUTVAL - Souliss_T1n_Timed
 			
 		Command recap, using: 
-		-  1(hex) as command, toogle the output 
+		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON
 		-  4(hex) as command, the output move to OFF
 		- >30(hex) as command, time the output to ON
@@ -124,7 +124,7 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)
 	{
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch OFF the output
@@ -171,14 +171,14 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 		output can be set in AUTO mode. 
 		
 		This logic can be used for lights, wall socket and all the devices
-		that has an ON/OFF behavior, output can be driven by external event
+		that has an ON/OFF behaviour, output can be driven by external event
 		like a PIR sensor.
 		
 		Hardware Command:
 			
 			If using a monostable wall switch (press and spring return), 
-			each press will toogle the output status.		
-				#define Souliss_T1n_ToogleCmd		0x01
+			each press will toggle the output status.		
+				#define Souliss_T1n_ToggleCmd		0x01
 			
 			If using a bistable wall switch (press without return), the two
 			switch position can be associated with the ON and OFF commands
@@ -204,9 +204,9 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 			no effect if the AUTO mode is not active.
 			
 			This logic MUST be used with a timer to active the output state for
-			a predifined amount of time, once the external event is recognized.
+			a predefined amount of time, once the external event is recognized.
 			Once the external event occur, the input of the logic shall be 
-			greather than
+			greater than
 				#define Souliss_T1n_AutoCmd			0x08
 				
 			If INPUTVAL is the input value associated to the external event the 
@@ -214,7 +214,7 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 				nCYCLES = INPUTVAL - Souliss_T1n_Timed
 			
 		Command recap, using: 
-		-  1(hex) as command, toogle the output 
+		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON the mode is reset
 		-  4(hex) as command, the output move to OFF the mode is reset
 		-  8(hex) as command, the mode is set to AUTO
@@ -261,7 +261,7 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)
 	{
 		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch OFF the output and reset the AUTO mode
@@ -523,8 +523,8 @@ void Souliss_SetT16(U8 *memory_map, U8 slot)
 		Hardware Command:
 			
 			If using a monostable wall switch (press and spring return), 
-			each press will toogle the output status.		
-				#define Souliss_T1n_ToogleCmd		0x01
+			each press will toggle the output status.		
+				#define Souliss_T1n_ToggleCmd		0x01
 				#define Souliss_T1n_BrightUp		0x10
 				#define Souliss_T1n_BrightDown		0x20
 			
@@ -563,7 +563,7 @@ void Souliss_SetT16(U8 *memory_map, U8 slot)
 				nCYCLES = INPUTVAL - Souliss_T1n_Timed
 			
 		Command recap, using: 
-		-  1(hex) as command, toogle the output 
+		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON
 		-  4(hex) as command, the output move to OFF
 		-  10(hex) as command, the light bright is increased
@@ -589,9 +589,9 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)		// Toogle Command
+	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
 	{
-		// Toogle the actual status of the light
+		// Toggle the actual status of the light
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight )
@@ -803,7 +803,7 @@ void Souliss_SetT18(U8 *memory_map, U8 slot)
 		output can be timed out.
 		
 		This logic can be used for lights, wall socket and all the devices
-		that has an ON/OFF behavior. It has a pulsed output, and can be 
+		that has an ON/OFF behaviour. It has a pulsed output, and can be 
 		used with bistable relay or similar devices.
 		
 		The actual state shall be reported with an external digital input
@@ -812,8 +812,8 @@ void Souliss_SetT18(U8 *memory_map, U8 slot)
 		Hardware Command:
 			
 			If using a monostable wall switch (press and spring return), 
-			each press will toogle the output status.		
-				#define Souliss_T1n_ToogleCmd		0x01
+			each press will toggle the output status.		
+				#define Souliss_T1n_ToggleCmd		0x01
 			
 			If using a bistable wall switch (press without return), the two
 			switch position can be associated with the ON and OFF commands
@@ -833,7 +833,7 @@ void Souliss_SetT18(U8 *memory_map, U8 slot)
 				#define Souliss_T1n_OffCmd			0x04
 			
 		Command recap, using: 
-		-  1(hex) as command, toogle the output 
+		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON
 		-  4(hex) as command, the output move to OFF
 		-  0(hex) as command, no action
@@ -868,7 +868,7 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OnFeedback;		// Store the actual State Feedback	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd))			
+	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd))			
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_PulseCoil;		// Change output state
 	}
@@ -909,8 +909,8 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 		Hardware Command:
 			
 			If using a monostable wall switch (press and spring return), 
-			each press will toogle the output status.		
-				#define Souliss_T1n_ToogleCmd		0x01
+			each press will toggle the output status.		
+				#define Souliss_T1n_ToggleCmd		0x01
 				#define Souliss_T1n_BrightUp		0x10
 				#define Souliss_T1n_BrightDown		0x20
 			
@@ -949,7 +949,7 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 				nCYCLES = INPUTVAL - Souliss_T1n_Timed
 			
 		Command recap, using: 
-		-  1(hex) as command, toogle the output 
+		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON
 		-  4(hex) as command, the output move to OFF
 		-  10(hex) as command, the light bright is increased
@@ -975,9 +975,9 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)		// Toogle Command
+	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
 	{
-		// Toogle the actual status of the light
+		// Toggle the actual status of the light
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight ) 

@@ -96,7 +96,7 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 /*!
 	Typical 5n : Pre-defined Analog Input	
 	
-		Souliss support for analog values use a single rapresentation as
+		Souliss support for analog values use a single representation as
 		half-duplex floating point, at same time some pre-defined analog
 		input typical (pressure, temperature, humidity, ...) are defined
 		in order to standardize the ranges and the user interface management.

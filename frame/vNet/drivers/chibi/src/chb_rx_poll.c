@@ -173,7 +173,7 @@ ISR(CHB_RADIO_IRQ)
 		intp_src = 0;
 	
         // we can only access the SPI if we're transmitting. That's because
-        // we're in full control of the SPI bus. Otherwise, the ethernet shield
+        // we're in full control of the SPI bus. Otherwise, the Ethernet shield
         // has a bug that blocks other SPI devices when its using it. 
         if (pcb->tx_busy)
         {

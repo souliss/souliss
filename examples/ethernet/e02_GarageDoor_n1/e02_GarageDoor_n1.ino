@@ -70,7 +70,7 @@ void loop()
 		FAST_510ms() {
 			
 			// Use Pin2 as ON/OFF command
-			if(DigIn(2, Souliss_T2n_ToogleCmd, GARAGEDOOR_NODE1))
+			if(DigIn(2, Souliss_T2n_ToggleCmd, GARAGEDOOR_NODE1))
 			{
 				// Send data
 				Souliss_RemoteInput(Peer_address, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));

@@ -1,9 +1,9 @@
 /* vNet Example 4, Data Transmission
 
-  A communication between and ethernet and a wireless node is estabilished,
-  data are send and received trough a ethernet-wireless bridge.
+  A communication between and Ethernet and a wireless node is estabilished,
+  data are send and received trough a Ethernet-wireless bridge.
   
-  This sketch should run on a ethernet node node.
+  This sketch should run on a Ethernet node node.
   
 	*************************Definitions*************************
 	Configuration file		Parameter
@@ -14,7 +14,7 @@
 	vNet_Config.h			#define VNET_MEDIA4_ENABLE  0
 	vNet_Config.h			#define VNET_MEDIA5_ENABLE  0
 	
-	Define the ethernet controller based on the used hardware,
+	Define the Ethernet controller based on the used hardware,
 	ethUsrCfg.h				#define ETH_W5100/ENC28J60	1		
 
 	ethUsrCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}

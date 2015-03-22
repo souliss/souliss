@@ -74,7 +74,7 @@ void loop()
 			// Pin2 and GND. Pressing for more than 1,5 seconds will set the GoodNight mode
 			// and the light will be progressly be turned off.
 			// It get the digital input state and store it in the LEDCONTROL logic
-			DigInHold(2, Souliss_T1n_ToogleCmd, 0x255, LEDCONTROL);		
+			DigInHold(2, Souliss_T1n_ToggleCmd, 0x255, LEDCONTROL);		
 			
 			// Use in inputs stored in the LEDCONTROL to control the RGB LED or Strip,
 			// it provide automatically fade in and out effect and color change.

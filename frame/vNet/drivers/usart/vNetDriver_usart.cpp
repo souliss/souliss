@@ -113,7 +113,7 @@ void vNet_SetCollisionAvoidanceIndex_M5(uint16_t addr, uint16_t submask)
 
 /**************************************************************************/
 /*!
-	Send a messagge via USART
+	Send a message via USART
 */
 /**************************************************************************/
 uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
@@ -225,7 +225,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	else
 		plen=oFrame_GetLenght();	
 	
-	// Write frame lenght
+	// Write frame length
 	USARTDRIVER.write(plen+USART_HEADERLEN+USART_CRCLEN);
 																			
 	while(oFrame_Available() && plen)					// Send the frame	
@@ -371,7 +371,7 @@ uint8_t vNet_DataAvailable_M5()
 			USART_LOG("\r\n");
 			#endif	
 							
-			// If is a valid vNet message, after the preamble there is the frame lenght
+			// If is a valid vNet message, after the preamble there is the frame length
 			uint8_t vNetLen = usartframe[i+USART_PREAMBLE_LEN];		
 			
 			// Check the complete frame			
@@ -395,7 +395,7 @@ uint8_t vNet_DataAvailable_M5()
 				memmove(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
 				l=l-i;
 				
-				return vNetLen;			// Return message lenght
+				return vNetLen;			// Return message length
 			}
 			else if((l-i)<(vNetLen+USART_PREAMBLE_LEN+USART_POSTAMBLE_LEN+USART_HEADERLEN+USART_CRCLEN))
 			{
@@ -547,7 +547,7 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 		USART_LOG("(USART)<Read> Retrieve length failed\r\n");
 		#endif	
 			
-		l = 0;										// Reset the lenght
+		l = 0;										// Reset the length
 		return ETH_FAIL;							// Data corrupted
 	}
 		

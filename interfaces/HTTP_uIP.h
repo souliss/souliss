@@ -28,7 +28,7 @@
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h
 
 #define HTTPPORT		80			// Listening for WebServer
-#define HTTP_MAXBYTES	50			// Max lenght for URL request
+#define HTTP_MAXBYTES	50			// Max length for URL request
 #define NULLID			0xFF		// This ID value is assumed as Null
 
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)

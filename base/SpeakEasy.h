@@ -322,7 +322,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	pOutput(node,slot)			memory_map[pOUT+slot+(node*MaCaco_SLOT)]
 #define	pOutputAsFloat(node,slot)	returnfloat32(&(memory_map[pOUT+slot+(node*MaCaco_SLOT)]))
 
-#define ResetTrigger()		data_changed=0;	
-#define	Initialize()		MaCaco_init(memory_map)
+#define ResetTrigger()				data_changed=0;	
+#define	Initialize()				MaCaco_init(memory_map)
 
 #endif

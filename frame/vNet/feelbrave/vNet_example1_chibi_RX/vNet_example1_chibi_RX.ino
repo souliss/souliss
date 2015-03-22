@@ -4,7 +4,7 @@
 	data are sent via the SuperNode (SN).
 	
 	The received message is printed-out by RX node, you can see the
-	messagge IN/OUT activating the VNET_DEBUG functionality.
+	message IN/OUT activating the VNET_DEBUG functionality.
 
 	*************************Definitions*************************
 	Configuration file		Parameter

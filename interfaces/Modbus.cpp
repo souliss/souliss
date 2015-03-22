@@ -26,7 +26,7 @@
 
 /** 
 
-	This interface runs either with MaCaco PERSISTANCE mode enabled or disabled
+	This interface runs either with MaCaco PERSISTENCE mode enabled or disabled
 	isn't designed to run with MaCaco LASTIN mode
 
 **/
@@ -90,7 +90,7 @@ uint16_t crc16(oFrame *frame)
 	// Use the temporary output frame	
 	oFrame_Define(&tmpframe);
 	len = oFrame_GetLenght();
-	//len=-2;						// We want only the lenght of data, not the CRC
+	//len=-2;						// We want only the length of data, not the CRC
 	
     crc = 0xFFFF;
     while (len--) 
@@ -229,7 +229,7 @@ U8 ModbusRetrieve()
 			// Swap from big-endian to little-endian
 			modbusframe->transactionid = HTONS(modbusframe->transactionid);
 			modbusframe->protocolid = HTONS(modbusframe->protocolid);
-			modbusframe->lenght = HTONS(modbusframe->lenght);
+			modbusframe->length = HTONS(modbusframe->length);
 			modbusframe->startingaddress = HTONS(modbusframe->startingaddress);
 			modbusframe->registers = HTONS(modbusframe->registers);
 	
@@ -265,7 +265,7 @@ U8 ModbusRetrieve()
 		// Swap from big-endian to little-endian
 		modbusframe->transactionid = HTONS(modbusframe->transactionid);
 		modbusframe->protocolid = HTONS(modbusframe->protocolid);
-		modbusframe->lenght = HTONS(modbusframe->lenght);
+		modbusframe->length = HTONS(modbusframe->length);
 		modbusframe->startingaddress = HTONS(modbusframe->startingaddress);
 		modbusframe->registers = HTONS(modbusframe->registers);
 	
@@ -289,7 +289,7 @@ U8 ModbusVerify()
 	// Verify the Unit ID
 	if((modbusframe->unitid != MODBUS_ID) && (modbusframe->unitid != MODBUS_BROADCAST_ADDRESS))
 	{
-		// Prepare an execption answer
+		// Prepare an exception answer
 		modbusreply->unitid = MODBUS_ID;
 		modbusreply->functionalcode += 0x80;
 		modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_VALUE;
@@ -306,7 +306,7 @@ U8 ModbusVerify()
 	// Verify the functional code
 	if((modbusframe->functionalcode < MODBUS_FIRST_FC) || (modbusframe->functionalcode > MODBUS_LAST_FC))
 	{
-		// Prepare an execption answer
+		// Prepare an exception answer
 		modbusreply->functionalcode += 0x80;
 		modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_FUNCTION;
 
@@ -325,7 +325,7 @@ U8 ModbusVerify()
 		// Verify the starting address
 		if(!(modbusframe->startingaddress >= COILS_MODBUS_START_ADDRESS) && !(modbusframe->startingaddress <= COILS_MODBUS_END_ADDRESS))
 		{
-			// Prepare an execption answer
+			// Prepare an exception answer
 			modbusreply->functionalcode += 0x80;
 			modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -341,7 +341,7 @@ U8 ModbusVerify()
 		// Verify the number of bytes requested against the memory area
 		if((modbusframe->functionalcode == MODBUS_READ_COIL) && (modbusframe->registers > 8*(MaCaco_NODES*MaCaco_SLOT)))
 		{
-			// Prepare an execption answer
+			// Prepare an exception answer
 			modbusreply->functionalcode += 0x80;
 			modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -369,7 +369,7 @@ U8 ModbusVerify()
 			// Verify the maximum number of byte that can be requested
 			if(byteqty > (MaCaco_NODES*MaCaco_SLOT))
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -387,7 +387,7 @@ U8 ModbusVerify()
 			{
 				if((bytenumber + byteqty) > (MaCaco_NODES*MaCaco_SLOT))
 				{
-					// Prepare an execption answer
+					// Prepare an exception answer
 					modbusreply->functionalcode += 0x80;
 					modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -404,7 +404,7 @@ U8 ModbusVerify()
 			{
 				if((bytenumber + byteqty + MaCaco_G_TYP_s) > MaCaco_G_TYP_f)
 				{
-					// Prepare an execption answer
+					// Prepare an exception answer
 					modbusreply->functionalcode += 0x80;
 					modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -421,7 +421,7 @@ U8 ModbusVerify()
 			{
 				if((bytenumber + byteqty + MaCaco_G_OUT_s) > MaCaco_G_OUT_f)
 				{
-					// Prepare an execption answer
+					// Prepare an exception answer
 					modbusreply->functionalcode += 0x80;
 					modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -451,7 +451,7 @@ U8 ModbusVerify()
 			// Verify that the requested address is writeble
 			if(!(modbusframe->startingaddress >= COILS_MODBUS_START_ADDRESS) && !(modbusframe->startingaddress <= COILS_MODBUS_END_ADDRESS))
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -468,7 +468,7 @@ U8 ModbusVerify()
 			// Verify that the requested address is writeble
 			if(!(modbusframe->startingaddress >= COILS_INPUT_START_ADDRESS) || !(modbusframe->startingaddress <= COILS_INPUT_END_ADDRESS))
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -485,7 +485,7 @@ U8 ModbusVerify()
 			// Verify that requested register allow writing operations
 			if((bytenumber + MaCaco_IN_s) > MaCaco_WRITE_f)
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -506,7 +506,7 @@ U8 ModbusVerify()
 		// Verify the starting address
 		if(!(modbusframe->startingaddress >= REGISTER_MODBUS_START_ADDRESS) && !(modbusframe->startingaddress <= REGISTER_MODBUS_END_ADDRESS))
 		{
-			// Prepare an execption answer
+			// Prepare an exception answer
 			modbusreply->functionalcode += 0x80;
 			modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -522,7 +522,7 @@ U8 ModbusVerify()
 		// Verify the number of bytes requested
 		if((modbusframe->functionalcode == MODBUS_READ_HOLDING_REGISTERS) && (modbusframe->registers > (MODBUS_REGISTERS)))
 		{
-			// Prepare an execption answer
+			// Prepare an exception answer
 			modbusreply->functionalcode += 0x80;
 			modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -545,7 +545,7 @@ U8 ModbusVerify()
 			// Verify the maximum number of byte that can be requested
 			if(byteqty > MODBUS_REGISTERS)
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -563,7 +563,7 @@ U8 ModbusVerify()
 			{
 				if((bytenumber + byteqty) > (MaCaco_NODES*MaCaco_SLOT))
 				{
-					// Prepare an execption answer
+					// Prepare an exception answer
 					modbusreply->functionalcode += 0x80;
 					modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -580,7 +580,7 @@ U8 ModbusVerify()
 			{
 				if((bytenumber + byteqty + MaCaco_G_TYP_s) > MaCaco_G_TYP_f)
 				{
-					// Prepare an execption answer
+					// Prepare an exception answer
 					modbusreply->functionalcode += 0x80;
 					modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -597,7 +597,7 @@ U8 ModbusVerify()
 			{
 				if((bytenumber + byteqty + MaCaco_G_OUT_s) > MaCaco_G_OUT_f)
 				{
-					// Prepare an execption answer
+					// Prepare an exception answer
 					modbusreply->functionalcode += 0x80;
 					modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 	
@@ -622,7 +622,7 @@ U8 ModbusVerify()
 			// Verify that requested register are inputs
 			if(!(modbusframe->startingaddress >= REGISTER_MODBUS_START_ADDRESS) && !(modbusframe->startingaddress <= REGISTER_MODBUS_END_ADDRESS))
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -638,7 +638,7 @@ U8 ModbusVerify()
 			// Verify that requested register are inputs
 			if(!(modbusframe->startingaddress >= REGISTER_INPUT_START_ADDRESS) || !(modbusframe->startingaddress <= REGISTER_INPUT_END_ADDRESS))
 			{
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -655,7 +655,7 @@ U8 ModbusVerify()
 			// Verify that requested register allow writing operations
 			if((bytenumber + MaCaco_IN_s) > MaCaco_WRITE_f)
 			{	
-				// Prepare an execption answer
+				// Prepare an exception answer
 				modbusreply->functionalcode += 0x80;
 				modbusreply->bytecount = MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
@@ -686,7 +686,7 @@ U8 ModbusReply(U8 *memory_map)
 	// Map the Modbus request to the MaCaco data area
 	U8 memory_map_address;	
 			
-	// Parse the functinal code
+	// Parse the functional code
 	if((modbusframe->functionalcode == MODBUS_READ_COIL) || (modbusframe->functionalcode == MODBUS_READ_DISCRETE_INPUTS))
 	{	
 		// Map the the Modbus registers with the internal memory
@@ -751,7 +751,7 @@ U8 ModbusReply(U8 *memory_map)
 			// Prepare the CRC
 			*(U16*)modbuscrc = HTONS(crc16(&Modbus_oFrame));	
 		#elif(MODBUS_TCP)
-			modbusreply->lenght = 3+modbusreply->bytecount;			// In lenght is not reported the whole header lenght
+			modbusreply->length = 3+modbusreply->bytecount;			// In length is not reported the whole header length
 		#endif
 
 		// Print a log message
@@ -793,7 +793,7 @@ U8 ModbusReply(U8 *memory_map)
 						// The analog values use two slot, so skip the next one
 						i++;
 				}
-				else	// Otherwhise as raw value
+				else	// Otherwise as raw value
 					*(U16 *)(&modbusdata[2*i]) = HTONS((U16)(*(memory_map+memory_map_address+i)));
 
 		// Build a frame, only the pointer are stored, so it can be changed
@@ -817,7 +817,7 @@ U8 ModbusReply(U8 *memory_map)
 			// Prepare the CRC
 			*(U16*)modbuscrc = HTONS(crc16(&Modbus_oFrame));	
 		#elif(MODBUS_TCP)
-			modbusreply->lenght = 3+modbusreply->bytecount;			// In lenght is not reported the whole header lenght
+			modbusreply->length = 3+modbusreply->bytecount;			// In length is not reported the whole header length
 		#endif
 		
 		// Print a log message
@@ -937,7 +937,7 @@ void ModbusSend()
 		// Swap again from little-endian to big-endian
 		modbusreply->transactionid = HTONS(modbusframe->transactionid);
 		modbusreply->protocolid = HTONS(modbusframe->protocolid);
-		modbusreply->lenght = HTONS(modbusframe->lenght);	
+		modbusreply->length = HTONS(modbusframe->length);	
 #	endif
 
 	// Include debug functionalities, if required
@@ -1022,13 +1022,13 @@ void ModbusEcho()
 	// Swap again from little-endian to big-endian
 	modbusframe->transactionid = HTONS(modbusframe->transactionid);
 	modbusframe->protocolid = HTONS(modbusframe->protocolid);
-	modbusframe->lenght = HTONS(modbusframe->lenght);
+	modbusframe->length = HTONS(modbusframe->length);
 	modbusframe->startingaddress = HTONS(modbusframe->startingaddress);
 	modbusframe->registers = HTONS(modbusframe->registers);
 
 	// Define the Modbus output frame where data are stored
 	oFrame_Define(&Modbus_oFrame);
-	oFrame_Set(modbusin, 0, HTONS(modbusframe->lenght)+6, 0, 0);		// Leght doesn't contain the Modbus TCP transaction data	
+	oFrame_Set(modbusin, 0, HTONS(modbusframe->length)+6, 0, 0);		// Leght doesn't contain the Modbus TCP transaction data	
 #endif
 	
 	// Include debug functionalities, if required
@@ -1089,13 +1089,13 @@ void ModbusEcho()
 
 /**************************************************************************
 /*!
-	Send an execption as Modbus TCP or RTU
+	Send an exception as Modbus TCP or RTU
 */	
 /**************************************************************************/
 U8 ModbusExecption()
 {
 #	if(MODBUS_DEBUG)
-		MODBUS_LOG("(MBUS)<EXECPTION>");
+		MODBUS_LOG("(MBUS)<EXCPTION>");
 		MODBUS_LOG(">\r\n");
 #	endif		
 
@@ -1107,11 +1107,11 @@ U8 ModbusExecption()
 	// Swap again from little-endian to big-endian
 	modbusframe->transactionid = HTONS(modbusframe->transactionid);
 	modbusframe->protocolid = HTONS(modbusframe->protocolid);
-	modbusframe->lenght = HTONS(0x03);									// Exceptions has fixed lenght
+	modbusframe->length = HTONS(0x03);									// Exceptions has fixed length
 
 	// Define the Modbus output frame where data are stored
 	oFrame_Define(&Modbus_oFrame);
-	oFrame_Set(modbusin, 0, HTONS(modbusframe->lenght)+6, 0, 0);		// Leght doesn't contain the Modbus TCP transaction data	
+	oFrame_Set(modbusin, 0, HTONS(modbusframe->length)+6, 0, 0);		// Leght doesn't contain the Modbus TCP transaction data	
 #endif
 
 	// Include debug functionalities, if required
@@ -1141,7 +1141,7 @@ U8 ModbusExecption()
 
 #if(MODBUS_RTU)
 
-	// Send the header as execption
+	// Send the header as exception
 	Serial.write(modbusin, MODBUS_RTU_REPLY_HEADER);
 
 #elif(MODBUS_TCP && (ETH_W5100 || ETH_W5200 || ETH_W5500))
@@ -1194,7 +1194,7 @@ U8 Modbus(U8 *memory_map)
 			// Verify the frame
 			parsed = ModbusVerify();
 
-			// Send an answer or an execption
+			// Send an answer or an exception
 			if(parsed == MODBUS_SUCCESS)
 			{
 				fcode = ModbusReply(memory_map);
@@ -1207,7 +1207,7 @@ U8 Modbus(U8 *memory_map)
 				
 			}
 			else if(parsed == MODBUS_EXCEPTION)
-				ModbusExecption();					// Send the execption frame
+				ModbusExecption();					// Send the exception frame
 					
 			return parsed;	
 		}	

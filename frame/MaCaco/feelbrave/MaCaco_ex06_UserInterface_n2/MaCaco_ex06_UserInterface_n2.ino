@@ -21,7 +21,7 @@
 
 	MaCaco_Config.h			#define MaCaco_EXTENDED_MAP			1
 
-	Define the ethernet controller based on the used hardware,
+	Define the Ethernet controller based on the used hardware,
 	ethUsrCfg.h				#define ETH_W5100/ENC28J60			1	
 		
 	ethUsrCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -159,7 +159,7 @@ void loop()
 			MaCaco_send(network_address1, MaCaco_TYPREQ, 0, FIRST_NODE_ID, NUMBER_OF_NODES, 0);
 		}	
 		
-		// send an healty request starting from node 0, for 10 nodes
+		// send an healthy request starting from node 0, for 10 nodes
 		if(!(phase_slow % 31))
 		{
 			Serial.println("<Send Healty Request>");	

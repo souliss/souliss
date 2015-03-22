@@ -403,7 +403,7 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		frame_pnt = &vNet_header[0];							// Get header pointer
 
 		// Prepare header
-		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Lenght
+		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 		*frame_pnt++ = port;									// Frame Port
 		*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
 		frame_pnt += sizeof(U16);
@@ -630,7 +630,7 @@ U8 vNet_DataAvailable()
 
 /**************************************************************************/
 /*!
-    Retrieve the vNet port for thenext pending frame
+    Retrieve the vNet port for the next pending frame
 */
 /**************************************************************************/
 U8 vNet_GetPort()
@@ -731,7 +731,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(1);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[0].data_available = 0;
 			return VNET_DATA_FAIL;
 		}	
@@ -750,7 +750,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(3);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[2].data_available = 0;
 			return VNET_DATA_FAIL;			
 		}			
@@ -771,7 +771,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(2);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[1].data_available = 0;
 			return VNET_DATA_FAIL;
 			
@@ -794,7 +794,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(4);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[3].data_available = 0;
 			return VNET_DATA_FAIL;				
 		}	
@@ -816,7 +816,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(5);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[4].data_available = 0;
 			return VNET_DATA_FAIL;	
 		}	
@@ -945,7 +945,7 @@ U8 vNet_GetPortNumber(U8 media)
 /**************************************************************************/
 void vNet_SetSubnetMask(U16 subnetmask, U8 media)
 {
-	// If the selected media is not ethernet (ethernet media is equal to 1)
+	// If the selected media is not Ethernet (Ethernet media is equal to 1)
 	// assign the subnetmask, otherwise place the subnet mask to 0.
 	// In this way we cannot create any subnet on the Ethernet side and all
 	// data in Media 1 addresses range are shared over the same Ethernet media.

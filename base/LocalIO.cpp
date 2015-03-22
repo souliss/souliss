@@ -67,7 +67,7 @@ void Souliss_ResetInput(U8 *memory_map, U8 slot)
 	This method is useful if data shall be transferred from a device to
 	another, in that case is not allowed for a receiver node to subscribe
 	the inputs of another node.
-	A receiver node can sunscribe instead the outputs of another node, so
+	A receiver node can subscribe instead the outputs of another node, so
 	linking input and output allow a transfer of data from inputs to another
 	device via subscription mode.
 	

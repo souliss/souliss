@@ -78,7 +78,7 @@ uint8_t srvcln_connected(uint16_t port, uint8_t sock)
 	if(sock == MAX_SOCK_NUM)
 		return ETH_FAIL;
 		
-	// Look for an estabilshed connection
+	// Look for an established connection
 	if((uip_conns[sock].lport == HTONS(port)) && (uip_conns[sock].tcpstateflags == ESTABLISHED))
 		return ETH_SUCCESS;
 	
@@ -155,9 +155,9 @@ void srv_send(uint8_t sock, uint8_t mode)
 
 /**************************************************************************/
 /*!
-	Prepare data sending for a client connection. This method is tipically
+	Prepare data sending for a client connection. This method is typically
 	used just below the connection one, so there is no processing of the
-	uIP stack to evaluate if the connection is estabilished or not.
+	uIP stack to evaluate if the connection is established or not.
 */
 /**************************************************************************/
 void cln_send(uint8_t sock, uint8_t mode) 
@@ -173,7 +173,7 @@ void cln_send(uint8_t sock, uint8_t mode)
 /**************************************************************************/
 /*!
 	Runs the stack until sending and acks are completed, is used to avoid
-	more than multiple writes get overrided
+	more than multiple writes get overrides
 */
 /**************************************************************************/
 void srv_waitsend(uint8_t sock) 
@@ -196,7 +196,7 @@ void srv_waitsend(uint8_t sock)
 /**************************************************************************/
 /*!
 	Runs the stack until sending and acks are completed, is used to avoid
-	more than multiple writes get overrided
+	more than multiple writes get overrides
 */
 /**************************************************************************/
 void cln_waitsend(uint8_t sock) 

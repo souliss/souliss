@@ -96,7 +96,7 @@ typedef struct
 typedef struct
 {
 	U8 data_available;		// Data Available
-    U8 len;					// Message Lenght
+    U8 len;					// Message Length
 	U8 port;				// Message Port
 	U16 src_addr;			// Source Address
 	U16 o_src_addr;			// Original Source Address

@@ -430,17 +430,17 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			return MaCaco_send(addr, MaCaco_DATAANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));	
 	}
 	
-	// answer to a node healty request
+	// answer to a node healthy request
 	if (rx->funcode == MaCaco_HEALTYREQ)	
 	{
-		// reply with the actual node helty value
-		U8 ret = MaCaco_send(addr, MaCaco_HEALTYANS, rx->putin, rx->startoffset, rx->numberof, (memory_map + MaCaco_HEALTY_s + rx->startoffset));
+		// reply with the actual node healthy value
+		U8 ret = MaCaco_send(addr, MaCaco_HEALTYANS, rx->putin, rx->startoffset, rx->numberof, (memory_map + MaCaco_HEALTHY_s + rx->startoffset));
 	
 		// resume nodes that has failed
-		U8* healty = memory_map+MaCaco_HEALTY_s;
+		U8* healthy = memory_map+MaCaco_HEALTHY_s;
 		for(U8 i=0;i<MaCaco_NODES;i++)
-			if(*(healty+i)<MaCaco_SUBSCRHEALTY)
-				*(healty+i) = MaCaco_SUBINITHEALTY;
+			if(*(healthy+i)<MaCaco_SUBSCRHEALTY)
+				*(healthy+i) = MaCaco_SUBINITHEALTHY;
 		
 		return ret;
 	}
@@ -881,7 +881,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		#if(MaCaco_SUBSCRIBERS)
 		case(MaCaco_TYPANS) :
 			// This information is redirected to the User Interface and stored
-			// only if data persistance is activated
+			// only if data persistence is activated
 				
 			// Identify the node index
 			U8 nodeindex;
@@ -895,7 +895,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			}	
 			
 			
-			// Data persistance is active, store information
+			// Data persistence is active, store information
 			#if(MaCaco_PERSISTANCE)
 			if(rx->numberof)
 				memmove((memory_map+MaCaco_P_TYP_s+(nodeindex*MaCaco_TYPLENGHT)), rx->data, rx->numberof);
@@ -920,7 +920,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Subscription answer
 		case(MaCaco_SUBSCRANS) :
 		
-			// Look for the subcription index
+			// Look for the subscription index
 			i = 0;
 			while ((subscr_outaddr[i] != addr) && i < MaCaco_OUTMAXSUBSCR)
 				i++;
@@ -929,7 +929,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			if(i == MaCaco_OUTMAXSUBSCR)
 				return MaCaco_FUNCODE_ERR;
 			
-			// Set the subcription status flag
+			// Set the subscription status flag
 			if(subscr_outaddr[i] == addr)
 				subscr_status[i] = 1;
 			
@@ -943,7 +943,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 						break;
 
-				#if(MaCaco_PERSISTANCE)		// PERSISTANCE is active, store information
+				#if(MaCaco_PERSISTANCE)		// PERSISTENCE is active, store information
 				if(rx->numberof)
 					memmove((memory_map+MaCaco_P_OUT_s+(nodeindex*MaCaco_OUTLENGHT)), rx->data, rx->numberof);
 				#elif(MaCaco_LASTIN)		// LASTIN is active, store the last information
@@ -1037,7 +1037,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 			MaCaco_rx.data = &MaCaco_data[0];
 			status = MaCaco_parse(&MaCaco_rx);
 			
-			// analyze data and take action as per protocol
+			// analyse data and take action as per protocol
 			if (status != MaCaco_FUNCODE_ERR)
 			{
 					MaCaco_peruse(src_addr, &MaCaco_rx, memory_map);
@@ -1057,7 +1057,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 		// send data to all subscriptors
 		status = MaCaco_subAnswer(memory_map, data_chg);	
 		
-		#if(MaCaco_PERSISTANCE)			// PERSISTANCE is active, store data
+		#if(MaCaco_PERSISTANCE)			// PERSISTENCE is active, store data
 			memmove((memory_map+MaCaco_P_OUT_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
 		#elif(MaCaco_LASTIN)			// LOCALIN is active, store data
 			// Identify a free space into the LASTIN data area
@@ -1284,7 +1284,7 @@ void MaCaco_reset_lastaddr()
 #if(MaCaco_SUBSCRIBERS)
 U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl)
 {
-	U8 *healty, *count = 0;
+	U8 *healthy, *count = 0;
 	
 	// Remove the init flag
 	subscr_init=false;
@@ -1294,7 +1294,7 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 		return MaCaco_NOSUBSCRANSWER;
 	
 	// Init the pointers
-	healty = memory_map+MaCaco_HEALTY_s+subscr_chnl;
+	healthy = memory_map+MaCaco_HEALTHY_s+subscr_chnl;
 	count = subscr_count+subscr_chnl;
 	
 	// Record the output subscription
@@ -1303,23 +1303,23 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 	// If the subscribed node is battery operated we cannot perform an healthy
 	// check, because than node will spent its time sleeping. 
 	if(subscr_battery[subscr_chnl])
-		*healty = MaCaco_SUBMAXHEALTY;
+		*healthy = MaCaco_SUBMAXHEALTY;
 	
 	// If an answer was recorded, increase healthy value
 	if (subscr_status[subscr_chnl] == 1)
 	{
-		if (*healty < MaCaco_SUBSCRHEALTY)
-			*healty = 2*MaCaco_SUBSCRHEALTY;
+		if (*healthy < MaCaco_SUBSCRHEALTY)
+			*healthy = 2*MaCaco_SUBSCRHEALTY;
 		else
 		{
-			if (*healty < (MaCaco_SUBMAXHEALTY-MaCaco_SUBSINCREASE)) 
-				(*healty)+=MaCaco_SUBSINCREASE;
+			if (*healthy < (MaCaco_SUBMAXHEALTY-MaCaco_SUBSINCREASE)) 
+				(*healthy)+=MaCaco_SUBSINCREASE;
 			else
-				(*healty)=MaCaco_SUBMAXHEALTY;
+				(*healthy)=MaCaco_SUBMAXHEALTY;
 		}
 		
 		// Update the delay counter
-		*count = *healty;
+		*count = *healthy;
 		
 		// Reset subscription status flag
 		subscr_status[subscr_chnl] = 0;
@@ -1329,26 +1329,26 @@ U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numb
 		// if delay is expired subscript again and decrease healthy
 		if ((*count < MaCaco_SUBSCRHEALTY))
 		{
-			if (*healty > MaCaco_SUBSDECREASE)
+			if (*healthy > MaCaco_SUBSDECREASE)
 			{
-				// if a subscription is sent, reduce the healty and delay the next try
+				// if a subscription is sent, reduce the healthy and delay the next try
 				if(MaCaco_send(addr, MaCaco_SUBSCRREQ, putin, startoffset, numberof, 0x00)) 
 				{
-					(*healty)-=MaCaco_SUBSDECREASE;		
+					(*healthy)-=MaCaco_SUBSDECREASE;		
 					*count = MaCaco_SUBMAXHEALTY;	// Delay the next try
 				}
 				else	// try sooner to send a new subscription request
-					*count = MaCaco_SUBINITHEALTY;	// Delay the next try
+					*count = MaCaco_SUBINITHEALTHY;	// Delay the next try
 			}
 			else	// subscription is failed
-				(*healty)=0x00;
+				(*healthy)=0x00;
 		}
 		else
 			if (*count > 0x00) (*count)--;
 	}		
 
-	// return if channel is healty or failed
-	if (*healty < MaCaco_SUBSCRHEALTY) 		
+	// return if channel is healthy or failed
+	if (*healthy < MaCaco_SUBSCRHEALTY) 		
 		return MaCaco_NOSUBSCRANSWER;
 	else
 		return MaCaco_SUBSCRANSWER;
@@ -1394,7 +1394,7 @@ void MaCaco_subscribe_battery(U8 subscr_chnl)
 	is sent when the node is powered off).
 	
 	If the data from both the side of the subscription (subscriber node and
-	subscripted node) are not matching, data are not trasferred or discarded.
+	subscripted node) are not matching, data are not transferred or discarded.
 */
 /**************************************************************************/
 void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof)
@@ -1496,7 +1496,7 @@ U8 MaCaco_IsSubscribed()
 {
 	U8 i=0;
 	
-	// stops at first subcription
+	// stops at first subscription
 	while((subscr_addr[i]==0) && (i<(MaCaco_INMAXSUBSCR-1)))
 		i++;
 	
@@ -1510,7 +1510,7 @@ U8 MaCaco_IsSubscribed()
     Record an internal subscription
 		
 		Using this method the gateway starts to subscribe all the peers
-		if the PERSISTANCE or LASTIN mode is active, those data are stored in 
+		if the PERSISTENCE or LASTIN mode is active, those data are stored in 
 		the gateway and became available for external protocols.
 		
 		If any full compliant MaCaco User Mode Interface is used, this
@@ -1525,7 +1525,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	
 	/** Init the typicals **/
 
-	#if(MaCaco_PERSISTANCE)			// PERSISTANCE is active, store data
+	#if(MaCaco_PERSISTANCE)			// PERSISTENCE is active, store data
 		memmove((memory_map+MaCaco_P_TYP_s), (memory_map+MaCaco_TYP_s), MaCaco_SLOT);		
 	#elif(MaCaco_LASTIN)			// LOCALIN is active, store data	
 		// Clear the index list

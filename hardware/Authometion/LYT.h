@@ -53,7 +53,7 @@ U8 FindLYT(U8 slot);
 void LYTSetAddress(U8 slot);
 void LYTClearAddress(U8 slot);
 			
-// Define shortcuts for often used variables, for more info read about SpeakEasy	
+// Define short cuts for often used variables, for more info read about SpeakEasy	
 #define	SetLYTLamps(slot)			Souliss_SetLYTLamps(memory_map, slot)
 #define LogicLYTLamps(slot)			Souliss_Logic_LYTLamps(memory_map, slot, &data_changed)
 #define	LYTSleepTimer(slot)			Souliss_LYTLamps_Timer(memory_map, slot)			

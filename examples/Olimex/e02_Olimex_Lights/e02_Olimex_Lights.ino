@@ -80,8 +80,8 @@ void loop()
 		
 			// Inputs are pulled up at 3.3V, if placed at GND value the input will be trigged
 			// and associated to a toggle command
-			m_LowDigIn(GPIO0, Souliss_T1n_ToogleCmd, SLOT_RELAY1);
-			m_LowDigIn(GPIO1, Souliss_T1n_ToogleCmd, SLOT_RELAY2);						
+			m_LowDigIn(GPIO0, Souliss_T1n_ToggleCmd, SLOT_RELAY1);
+			m_LowDigIn(GPIO1, Souliss_T1n_ToggleCmd, SLOT_RELAY2);						
 			
 			// Execute the logic
 			Logic_T11(SLOT_RELAY1);

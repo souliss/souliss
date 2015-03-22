@@ -82,10 +82,10 @@ void loop()
 
 			U8 button_pressed=0;
 					
-			button_pressed = DigInHold(IN1, Souliss_T1n_ToogleCmd, ONTIME, LIGHT1);			// Read inputs from IN1
-			button_pressed = DigInHold(IN2, Souliss_T1n_ToogleCmd, ONTIME, LIGHT2);			// Read inputs from IN2
-			button_pressed = DigInHold(IN3, Souliss_T1n_ToogleCmd, ONTIME, LIGHT3);			// Read inputs from IN3
-			button_pressed = DigInHold(IN4, Souliss_T1n_ToogleCmd, ONTIME, LIGHT4);			// Read inputs from IN4
+			button_pressed = DigInHold(IN1, Souliss_T1n_ToggleCmd, ONTIME, LIGHT1);			// Read inputs from IN1
+			button_pressed = DigInHold(IN2, Souliss_T1n_ToggleCmd, ONTIME, LIGHT2);			// Read inputs from IN2
+			button_pressed = DigInHold(IN3, Souliss_T1n_ToggleCmd, ONTIME, LIGHT3);			// Read inputs from IN3
+			button_pressed = DigInHold(IN4, Souliss_T1n_ToggleCmd, ONTIME, LIGHT4);			// Read inputs from IN4
 		
 			Logic_SimpleLight(LIGHT1);							// Execute the logic for Relay 1
 			Logic_SimpleLight(LIGHT2);							// Execute the logic for Relay 2

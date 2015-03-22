@@ -274,8 +274,8 @@ void Souliss_SetLYTLamps(U8 *memory_map, U8 slot)
 		Hardware Command:
 			
 			If using a monostable wall switch (press and spring return), 
-			each press will toogle the output status.		
-				#define Souliss_T1n_ToogleCmd		0x01
+			each press will toggle the output status.		
+				#define Souliss_T1n_ToggleCmd		0x01
 				#define Souliss_T1n_BrightUp		0x10
 				#define Souliss_T1n_BrightDown		0x20
 			
@@ -314,7 +314,7 @@ void Souliss_SetLYTLamps(U8 *memory_map, U8 slot)
 				nCYCLES = INPUTVAL - Souliss_T1n_Timed
 			
 		Command recap, using: 
-		-  1(hex) as command, toogle the output 
+		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON
 		-  4(hex) as command, the output move to OFF
 		-  10(hex) as command, the light bright is increased
@@ -340,9 +340,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToogleCmd)		// Toogle Command
+	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
 	{
-		// Toogle the actual status of the light
+		// Toggle the actual status of the light
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)

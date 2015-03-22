@@ -54,14 +54,14 @@
 
 /**************************************************************************/
 /*!
-    Number of mutilcast groups that can be subscribed   
+    Number of multicast groups that can be subscribed   
 */
 /**************************************************************************/
 #define VNET_MULTICAST_SIZE	5
 
 /**************************************************************************/
 /*!
-    Max frame lenght  
+    Max frame length  
 */
 /**************************************************************************/
 #define VNET_MAX_FRAME   (VNET_MAX_PAYLOAD+VNET_HEADER_SIZE+VNET_OVERHEAD_SIZE)
@@ -202,7 +202,7 @@
 		In order to find out the relationship for media and address, the
 		following assignment should be followed.
 
-		*/
+*/
 /**************************************************************************/
 #define VNET_ADDR_L_M1	   	0x0000			// vNet Low Address for Media 1,  size 4 byte
 #define VNET_ADDR_H_M1	   	0x64FF			// vNet High Address for Media 1, size 4 byte

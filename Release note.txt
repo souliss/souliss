@@ -103,13 +103,13 @@ Release note for revision Alpha 5.2, on 22/05/2014
 	
 Release note for revision Alpha 5.1, on 09/03/2014
 	
-	The introduction of PERSISTANCE and LASTIN modes makes a gateway node
+	The introduction of PERSISTENCE and LASTIN modes makes a gateway node
 	able to provide data to external sources using polling protocols.
 	External protocols are now referred as Interfaces and are available either
 	on gateway as peer nodes.
 			- Introduced openHAB interface based on HTTP/XML (thanks to Fulvio Spelta)
 			- The INTERFACES takes place of HTTP and Modbus GATEWAY
-			- The INTERFACES is now handled directly on MaCaco and has PERSISTANCE and
+			- The INTERFACES is now handled directly on MaCaco and has PERSISTENCE and
 				LASTIN modes available
 			- Bugfix for USART over RS485 (thanks to Marco Pozzuolo and Juan Pinto)	
 

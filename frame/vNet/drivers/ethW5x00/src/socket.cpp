@@ -117,7 +117,7 @@ uint16_t send(SOCKET s, const uint8_t * buf, uint16_t len)
   {	
 	frame = (oFrame*)buf;				// Pointer to output frame
 	oFrame_Define(frame);				// Set the frame
-	len = oFrame_GetLenght();			// Get the total lenght	
+	len = oFrame_GetLenght();			// Get the total length	
   }
   
   if (len > W5x00.SSIZE) 
@@ -214,7 +214,7 @@ uint16_t sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t *addr, uint1
   {	
 	frame = (oFrame*)buf;				// Pointer to output frame
 	oFrame_Define(frame);				// Set the frame
-	len = oFrame_GetLenght();			// Get the total lenght	
+	len = oFrame_GetLenght();			// Get the total length	
   }  
   
   if (len > W5x00.SSIZE) ret = W5x00.SSIZE; // check size not to exceed MAX size.

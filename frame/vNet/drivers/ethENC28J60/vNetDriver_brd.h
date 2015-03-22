@@ -140,7 +140,7 @@ uint8_t  vNet_hasIncomingData_M3()
 
 /**************************************************************************/
 /*!
-	Send a messagge via TCP/IP
+	Send a message via TCP/IP
 */
 /**************************************************************************/
 uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
@@ -148,7 +148,7 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	uint8_t s, ip_addr[4];
 	uint16_t count = 0, vNet_port;
 
-	// Check message lenght
+	// Check message length
 	if ((len == 0) || (len >= UIP_PAYLOADSIZE))
 		return ETH_FAIL;
 

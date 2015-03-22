@@ -150,7 +150,7 @@ void vNet_SetAddress_M1(uint16_t addr)
 
 /**************************************************************************/
 /*!
-	Send a messagge via UDP/IP
+	Send a message via UDP/IP
 */
 /**************************************************************************/
 uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
@@ -221,12 +221,12 @@ uint8_t vNet_DataSize_M1()
 /**************************************************************************/
 /*!
 	Manage the socket status, it close or reset a socket. If incoming data
-	are available, return the data lenght
+	are available, return the data length
 */
 /**************************************************************************/
 uint8_t vNet_DataAvailable_M1()
 {
-	// Get the incoming lenght
+	// Get the incoming length
 	dataframe.len = W5x00.getRXReceivedSize(UDP_SOCK);
 	
 	// If the incoming size is bigger than the UDP header
@@ -286,7 +286,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 			stack.ip[i] 	 &= ~stack.subnetmask[i];
 			stack.gateway[i] &= ~stack.subnetmask[i];
 			
-			// Get the subnet bits from the incoming adress
+			// Get the subnet bits from the incoming address
 			stack.base_ip[i] |= (dataframe.ip[i] & stack.subnetmask[i]);	
 			stack.ip[i] 	 |= (dataframe.ip[i] & stack.subnetmask[i]);				
 			stack.gateway[i] |= (dataframe.ip[i] & stack.subnetmask[i]);				

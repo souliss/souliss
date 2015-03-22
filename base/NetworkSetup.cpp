@@ -138,7 +138,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 
 /**************************************************************************
 /*!
-	Define a gateway node as server for dynamic addressing, medias without
+	Define a gateway node as server for dynamic addressing, media without
 	an address will get one automatically.
 	
 	Is allowed to set the IP address manually or via DHCP, that address

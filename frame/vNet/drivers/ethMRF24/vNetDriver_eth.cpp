@@ -48,7 +48,7 @@ extern struct uip_conn uip_conns[UIP_CONNS];			// State for uIP connections
 
 uint8_t *appdata;										// Pointer of the incoming packet
 uint8_t *ripadrr;										// Pointer of remote IP address
-uint8_t vnetlenght=0;									// Lenght of the incoming packet
+uint8_t vnetlenght=0;									// Length of the incoming packet
 uint16_t portnumber=0;									// Port number of the incoming packet
 uint16_t sportnumber=0;									// Source port number of the incoming packet
 uint8_t arptimer=0;										// ARP table timeout						
@@ -124,7 +124,7 @@ void vNet_SetAddress_M1(uint16_t addr)
 
 /**************************************************************************/
 /*!
-	Send a messagge via TCP/IP
+	Send a message via TCP/IP
 */
 /**************************************************************************/
 uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
@@ -132,7 +132,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 	uint8_t sock, ip_addr[4];
 	uint16_t count = 0, vNet_port;
 
-	// Check message lenght
+	// Check message length
 	if ((len == 0) || (len >= UIP_PAYLOADSIZE))
 		return ETH_FAIL;
 	
@@ -203,13 +203,13 @@ uint8_t vNet_DataSize_M1()
 /**************************************************************************/
 /*!
 	Manage the socket status, it close or reset a socket. If incoming data
-	are available, return the data lenght
+	are available, return the data length
 */
 /**************************************************************************/
 uint8_t vNet_DataAvailable_M1()
 {
 	/*	If there are incoming data, the uip_input() issue a callback that set 
-		the vnetlenght value to the lenght of the vNet frame, then the value
+		the vnetlenght value to the length of the vNet frame, then the value
 		is returned and the retrieve function provide to get the data from the
 		buffer */	
 	
@@ -232,7 +232,7 @@ uint8_t vNet_DataAvailable_M1()
 	else		
 		vNet_uIP();		// Retrieve and process the incoming data
 	
-	// Return data lenght, if any
+	// Return data length, if any
 	return dlen;
 }
 
@@ -251,7 +251,7 @@ uint8_t vNet_RetrieveData_M1(uint8_t *data)
 	if((len>0 && len <= vnetlenght) && len <= (VNET_MAX_FRAME))
 	{	
 		memmove(data, appdata+1, len-1);
-		vnetlenght = 0;							// Reset the lenght
+		vnetlenght = 0;							// Reset the length
 		
 		// Verify the incoming address, is a not conventional procedure at this layer
 		// but is required to record the IP address in case of User Mode addresses

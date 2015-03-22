@@ -103,8 +103,8 @@ void XMLSERVERInterface(U8 *memory_map)
 					U8 id   = incomingURL.indexOf("?id=",force);		
 					U8 slot = incomingURL.indexOf("&slot=", id);		
 					U8 val_s  = incomingURL.indexOf("&val=", slot);		
-					id = incomingURL.substring(id+4, slot).toInt();				// Sum lenght of "?id="
-					slot = incomingURL.substring(slot+6, val_s).toInt();		// Sum lenght of "&slot="
+					id = incomingURL.substring(id+4, slot).toInt();				// Sum length of "?id="
+					slot = incomingURL.substring(slot+6, val_s).toInt();		// Sum length of "&slot="
 									
 					// This buffer is used to load values
 					U8 vals[MAXVALUES];
@@ -122,9 +122,9 @@ void XMLSERVERInterface(U8 *memory_map)
 						for(i=1;i<MAXVALUES;i++)
 							valf[i]  = incomingURL.indexOf(",", valf[i-1]+1);
 						
-						vals[0] = incomingURL.substring(val_s+5, valf[0]).toInt();			// Sum lenght of "&val="						
+						vals[0] = incomingURL.substring(val_s+5, valf[0]).toInt();			// Sum length of "&val="						
 						for(i=1;i<MAXVALUES;i++)
-							vals[i] = incomingURL.substring(valf[i-1]+1, valf[i]).toInt();	// Sun the lenght of ","
+							vals[i] = incomingURL.substring(valf[i-1]+1, valf[i]).toInt();	// Sun the length of ","
 					}
 					else
 					{		
@@ -132,9 +132,9 @@ void XMLSERVERInterface(U8 *memory_map)
 						U8 val_f  = incomingURL.indexOf(" ", val_s);					// Command should end with a space	
 						
 						// Convert to number
-						id = incomingURL.substring(id+4, slot).toInt();				// Sum lenght of "?id="
-						slot = incomingURL.substring(slot+6, val_s).toInt();		// Sum lenght of "&slot="
-						vals[0] = incomingURL.substring(val_s+5, val_f).toInt();	// Sum lenght of "&val="						
+						id = incomingURL.substring(id+4, slot).toInt();				// Sum length of "?id="
+						slot = incomingURL.substring(slot+6, val_s).toInt();		// Sum length of "&slot="
+						vals[0] = incomingURL.substring(val_s+5, val_f).toInt();	// Sum length of "&val="						
 					}
 				
 				
@@ -193,8 +193,8 @@ void XMLSERVERInterface(U8 *memory_map)
 					U8 typ   = incomingURL.indexOf("?typ=",force);
 					U8 val_s  = incomingURL.indexOf("&val=", typ);		
 					U8 val_f  = incomingURL.indexOf(" ", val_s);				// Command should end with a space	
-					typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum lenght of "?typ="
-					val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum lenght of "&val="								
+					typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum length of "?typ="
+					val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum length of "&val="								
 
 				#if(XMLSERVER_DEBUG)
 					XMLSERVER_LOG("(HTTP/XML)<GET /typ");
@@ -255,7 +255,7 @@ void XMLSERVERInterface(U8 *memory_map)
 					U8 id_f  = incomingURL.indexOf(" ", id);						// Command should end with a space	
 					
 					// If one ID is requested
-					id_for    = incomingURL.substring(id+4, id_f).toInt();			// Sum lenght of "?id="
+					id_for    = incomingURL.substring(id+4, id_f).toInt();			// Sum length of "?id="
 				}					
 		
 			#if(!MaCaco_PERSISTANCE)
@@ -304,7 +304,7 @@ void XMLSERVERInterface(U8 *memory_map)
 						memmove(&buf[bufferlen],xml[1],strlen(xml[1]));
 						bufferlen += strlen(xml[1]);
 
-						// Typicals in group Souliss_T5n need convertion from half-precision float to string
+						// Typicals in group Souliss_T5n need conversion from half-precision float to string
 						if((memory_map[MaCaco_G_TYP_s+(id_for*MaCaco_TYPLENGHT)+slot] & 0xF0 ) == Souliss_T5n)	
 						{
 							float f_val;
@@ -370,7 +370,7 @@ void XMLSERVERInterface(U8 *memory_map)
 					U8 id_f  = incomingURL.indexOf(" ", id);						// Command should end with a space	
 					
 					// If one ID is requested
-					id_for    = incomingURL.substring(id+4, id_f).toInt();			// Sum lenght of "?id="
+					id_for    = incomingURL.substring(id+4, id_f).toInt();			// Sum length of "?id="
 				}					
 		
 			#if(!MaCaco_PERSISTANCE)

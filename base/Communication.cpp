@@ -37,11 +37,11 @@ U8 roundrob_1=1,roundrob_2=1, timeout=TIMEOUT_SET;
 /*!
 	Define a communication subscription channel between two nodes
 	
-	It use MaCaco and vNet to retreive data from another node in the network
+	It use MaCaco and vNet to retrieve data from another node in the network
 	incoming data are placed in input_slot, the requested data are numof_slot
 	bytes starting from output_slot.
 	
-	Each subscription require an index, called subscr_chnl, and healty status
+	Each subscription require an index, called subscr_chnl, and healthy status
 	provide feedback on communication status.
 */	
 /**************************************************************************/	
@@ -53,8 +53,8 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 		return 0;
 		
 	// If not yet, setup the communication channel
-	if (*(memory_map+MaCaco_HEALTY_s+subscr_chnl) == 0)
-		*(memory_map+MaCaco_HEALTY_s+subscr_chnl) = MaCaco_SUBINITHEALTY;
+	if (*(memory_map+MaCaco_HEALTHY_s+subscr_chnl) == 0)
+		*(memory_map+MaCaco_HEALTHY_s+subscr_chnl) = MaCaco_SUBINITHEALTHY;
 	
 	// Subscribe data
 	return MaCaco_subscribe(addr, memory_map, memory_map + MaCaco_IN_s + input_slot, MaCaco_OUT_s + output_slot, numof_slot, subscr_chnl);
@@ -72,8 +72,8 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	U8 ret=0;
 
 	// If not yet, setup the communication channel
-	if (*(memory_map+MaCaco_HEALTY_s+roundrob_2) == 0)
-		*(memory_map+MaCaco_HEALTY_s+roundrob_2) = MaCaco_SUBINITHEALTY;
+	if (*(memory_map+MaCaco_HEALTHY_s+roundrob_2) == 0)
+		*(memory_map+MaCaco_HEALTHY_s+roundrob_2) = MaCaco_SUBINITHEALTHY;
 	
 	// Check subscription has been reset
 	if((roundrob_2 > 1) && (MaCaco_subscribe_is_init()))
@@ -119,7 +119,7 @@ void Souliss_BatteryChannels(U8 *memory_map, U16 addr)
 	Get definitions for typical from multiple remote devices
 	
 	Do same job of Souliss_GetTypical for more nodes at same time, using
-	roundrobin criteria. The data are requested only once, a periodally
+	round robin criteria. The data are requested only once, a periodical
 	refresh can be achieved using the Souliss_RefreshTypicals() method.
 */	
 /**************************************************************************/	
@@ -217,7 +217,7 @@ U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr)
 	Write on network node, act as a remote input
 	
 	It write directly into the inputs map of another node, data are moved
-	directly without a subscription, so no channel healty is provided.
+	directly without a subscription, so no channel healthy is provided.
 */	
 /**************************************************************************/	
 U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command)
@@ -392,8 +392,8 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 {
 	#if(MaCaco_SUBSCRIBERS)
 	// If not yet, init the communication channel
-	if (*(memory_map+MaCaco_HEALTY_s+0) == 0)
-		*(memory_map+MaCaco_HEALTY_s+0) = MaCaco_SUBMAXHEALTY;
+	if (*(memory_map+MaCaco_HEALTHY_s+0) == 0)
+		*(memory_map+MaCaco_HEALTHY_s+0) = MaCaco_SUBMAXHEALTY;
 	#endif
 	
 	MaCaco_DataIn();
@@ -427,7 +427,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 /*!
 	Build a distributed watchdog using a chain of devices
 	
-	Each device check the healty status of the next device, and issue an
+	Each device check the healthy status of the next device, and issue an
 	alarm in the output slot if the watchdog timer expire.
 	
 	The same slot shall be used for all the nodes of the chain.
@@ -437,7 +437,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 /**************************************************************************/
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command)
 {	
-	// Watchdog, check the healty of the previous node of the chain
+	// Watchdog, check the healthy of the previous node of the chain
 	if(memory_map[MaCaco_IN_s + chain_slot] == WTD_EXPIRE)			
 	{
 		// Watchdog timer is expired, raise the alarm

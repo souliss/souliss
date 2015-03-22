@@ -90,9 +90,9 @@ void HTTPServer(U8 *memory_map)
 					U8 val_s  = incomingURL.indexOf("&val=", slot);		
 					U8 val_f  = incomingURL.indexOf(" ", val_s);		// Command should end with a space	
 					
-					id = incomingURL.substring(id+4, slot).toInt();			// Sum lenght of "?id="
-					slot = incomingURL.substring(slot+6, val_s).toInt();	// Sum lenght of "&slot="
-					val_s = incomingURL.substring(val_s+5, val_f).toInt();	// Sum lenght of "&val="						
+					id = incomingURL.substring(id+4, slot).toInt();			// Sum length of "?id="
+					slot = incomingURL.substring(slot+6, val_s).toInt();	// Sum length of "&slot="
+					val_s = incomingURL.substring(val_s+5, val_f).toInt();	// Sum length of "&val="						
 							
 					// Send a command to the node		
 					if((id < nodes) && (id != MaCaco_LOCNODE) && ((*(U16*)(memory_map+(MaCaco_ADDRESSES_s+id*2))) != 0x0000))	// If is a remote node, the command act as remote input				
@@ -105,8 +105,8 @@ void HTTPServer(U8 *memory_map)
 					U8 typ   = incomingURL.indexOf("?typ=",force);
 					U8 val_s  = incomingURL.indexOf("&val=", typ);		
 					U8 val_f  = incomingURL.indexOf(" ", val_s);				// Command should end with a space	
-					typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum lenght of "?typ="
-					val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum lenght of "&val="								
+					typ = incomingURL.substring(typ+5, val_s).toInt();			// Sum length of "?typ="
+					val_s = incomingURL.substring(val_s+5, val_f).toInt();		// Sum length of "&val="								
 
 					U8* val_sp = &val_s;
 					

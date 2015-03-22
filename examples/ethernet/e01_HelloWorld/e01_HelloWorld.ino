@@ -64,7 +64,7 @@ void loop()
 		UPDATEFAST();	
 		
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
-			DigIn(2, Souliss_T1n_ToogleCmd, MYLEDLOGIC);			// Use the pin2 as ON/OFF toogle command
+			DigIn(2, Souliss_T1n_ToggleCmd, MYLEDLOGIC);			// Use the pin2 as ON/OFF toggle command
 			Logic_SimpleLight(MYLEDLOGIC);							// Drive the LED as per command
 			DigOut(9, Souliss_T1n_Coil, MYLEDLOGIC);				// Use the pin9 to give power to the LED according to the logic
 		} 

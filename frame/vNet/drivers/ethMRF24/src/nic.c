@@ -101,10 +101,10 @@ u8_t nic_poll(void)
 	if(!packetLength)
 	  return packetLength = 0;
 
-	// If the lenght exceed the buffer size
+	// If the length exceed the buffer size
 	if(packetLength > UIP_BUFSIZE)
 		return packetLength = 0; 
 	
-	// Return the lenght		
+	// Return the length		
 	return packetLength;	
 }

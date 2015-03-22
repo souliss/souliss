@@ -125,7 +125,7 @@ U8 oFrame_Available()
 
 /**************************************************************************/
 /*!
-    Get the total lenght
+    Get the total length
 */
 /**************************************************************************/
 U8 oFrame_GetLenght()
@@ -136,7 +136,7 @@ U8 oFrame_GetLenght()
 	// While the frame pointer is not null
 	while(frame)
 	{
-		len+=frame->header_len+frame->payload_len;		// Get the frame lenght
+		len+=frame->header_len+frame->payload_len;		// Get the frame length
 		frame = (oFrame*)frame->next;					// Move to next frame
 	}
 	

@@ -17,7 +17,7 @@
 
 	MaCaco_Config.h			#define MaCaco_EXTENDED_MAP			0
 
-	Define the ethernet controller based on the used hardware,
+	Define the Ethernet controller based on the used hardware,
 	ethUsrCfg.h				#define ETH_W5100/ENC28J60	1	
 	
 	ethUsrCfg.h				#define ETH_CLASS   		0	
@@ -108,9 +108,9 @@ void printout()
     Serial.println("");
 	
 	Serial.print("Channel 1 Healty Value : ");
-	Serial.println(MemoryMap[MaCaco_HEALTY_s+network_channel1],HEX);
+	Serial.println(MemoryMap[MaCaco_HEALTHY_s+network_channel1],HEX);
 	Serial.print("Channel 2 Healty Value : ");	
-    Serial.println(MemoryMap[MaCaco_HEALTY_s+network_channel2],HEX);
+    Serial.println(MemoryMap[MaCaco_HEALTHY_s+network_channel2],HEX);
 	
 	Serial.println("");
 	Serial.println("");
@@ -136,9 +136,9 @@ void setup()
 	vNet_SetSubnetMask(network_submask, vNet_GetMedia(network_address3));
 	vNet_SetMySuperNode(eth_address, vNet_GetMedia(network_address3));
 	
-	// Set the healty values
-	MemoryMap[MaCaco_HEALTY_s+network_channel1] = 0x25;
-	MemoryMap[MaCaco_HEALTY_s+network_channel2] = 0x25;
+	// Set the healthy values
+	MemoryMap[MaCaco_HEALTHY_s+network_channel1] = 0x25;
+	MemoryMap[MaCaco_HEALTHY_s+network_channel2] = 0x25;
 	
 	// set the analog outputs of the shared map 
 	for(i=0;i<MaCaco_SLOT;i++)
@@ -172,10 +172,10 @@ void loop()
 		if (!(phase % 5))
 		{              
 			if(!MaCaco_subscribe(network_address2, MemoryMap, &MemoryMap[MaCaco_IN_s], MaCaco_OUT_s, 4, network_channel1))
-				Serial.println("Channel 0 not healty");
+				Serial.println("Channel 0 not healthy");
 			  
 			if(!MaCaco_subscribe(network_address1, MemoryMap, &MemoryMap[MaCaco_IN_s+4], MaCaco_OUT_s+4, 4, network_channel2))
-				Serial.println("Channel 1 not healty");
+				Serial.println("Channel 1 not healthy");
 		}
 
 	 

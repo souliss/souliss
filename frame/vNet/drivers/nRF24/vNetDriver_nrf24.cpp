@@ -76,7 +76,7 @@ uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len)
 	// Before write, stop listening pipe
 	radio.stopListening();
 	
-	// Send out the oFrame, doesn't need to specify the lenght
+	// Send out the oFrame, doesn't need to specify the length
     if(radio.write(frame, 0))
 	{
 		// Listening back
@@ -117,10 +117,10 @@ uint8_t vNet_RetrieveData_M2(uint8_t *data)
 	
 	if(!state)	return 0;					// Just skip out
 	
-	// The nRF24L01 support small payloads and it could be cutted just before sending
-	// at this stage we verify the original lenght and fill the missing with zeros.
+	// The nRF24L01 support small payloads and it could be cut just before sending
+	// at this stage we verify the original length and fill the missing with zeros.
 	
-	uint8_t	original_len = *(data);			// First byte is the expected lenght of
+	uint8_t	original_len = *(data);			// First byte is the expected length of
 											// the vNet frame
 	// Fill in the missing bytes
 	if(original_len > len)

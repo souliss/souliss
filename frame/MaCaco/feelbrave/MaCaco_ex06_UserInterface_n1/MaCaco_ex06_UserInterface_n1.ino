@@ -21,7 +21,7 @@
 
 	MaCaco_Config.h			#define MaCaco_EXTENDED_MAP			1
 
-	Define the ethernet controller based on the used hardware,
+	Define the Ethernet controller based on the used hardware,
 	ethUsrCfg.h				#define ETH_W5100/ENC28J60			1	
 		
 	ethUsrCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}
@@ -121,9 +121,9 @@ void setup()
 	for(i=0;i<MaCaco_NODES;i++)
 		MemoryMap[MaCaco_ADDRESSES_s+i] = i+0x0013;	
 		
-	// set the node healty	
+	// set the node healthy	
 	for(i=0;i<MaCaco_NODES;i++)
-		MemoryMap[MaCaco_HEALTY_s+i] = i+0x00AA;	
+		MemoryMap[MaCaco_HEALTHY_s+i] = i+0x00AA;	
 	
 	// set the output values of the shared map 
 	for(j=0;j<MaCaco_NODES;j++)		

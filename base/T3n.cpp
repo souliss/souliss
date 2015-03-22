@@ -47,7 +47,7 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 		desired setpoint are stored and available for user interface or
 		any other node in the network.
 		
-		The difference is caluclated as measured values (MV) less setpoint
+		The difference is calculated as measured values (MV) less setpoint
 		(SP) D = MV - SP, the output goes on based on the sign of this
 		difference and on the selected mode (cooling / heating).
 		

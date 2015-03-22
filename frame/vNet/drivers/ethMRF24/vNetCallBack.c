@@ -31,12 +31,11 @@
 
 extern uint8_t *appdata;									// Pointer of the incoming packet
 extern uint8_t *ripadrr;									// Pointer of remote IP address
-extern uint8_t vnetlenght;									// Lenght of the incoming packet
+extern uint8_t vnetlenght;									// Length of the incoming packet
 extern uint16_t portnumber;									// Port number of the incoming packet
 extern uint16_t sportnumber;								// Source Port number of the incoming packet
 extern uint8_t arptimer;									// Timeout for ARP table
 extern oFrame vNetM1_oFrame;								// Data structure for output frame
-//extern OutBuffer outframe;	
 
 /**************************************************************************/
 /*!
@@ -59,19 +58,18 @@ void vNet_callback()
 	{
 		if(uip_conn->appstate & SENDDATA)
 		{	
-			// Set pointer and lenght to send data
+			// Set pointer and length to send data
 			uip_send((uint8_t*)(&vNetM1_oFrame), oFrame_GetLenght());
 		
 			// Flag that send is requested and empty the buffer
 			uip_conn->appstate &= ~SENDDATA;
-			//outframe.datalen = 0;
 		}
 		else if(uip_conn->appstate & CLOSECLIENT)
 			uip_flags = UIP_CLOSE;
 	}
 	else if(uip_flags & UIP_NEWDATA)
 	{
-		// Save the pointer, lenght and port of incoming data
+		// Save the pointer, length and port of incoming data
 		appdata = (uint8_t*)uip_appdata;	
 		vnetlenght = uip_len;
 		portnumber = uip_conn->lport;
@@ -83,7 +81,6 @@ void vNet_callback()
 		// Reset the connection and the data buffer
 		uip_conn->appstate = RESET;
 		oFrame_Reset();
-		//outframe.datalen = 0;
 	}
 	
 }
@@ -115,7 +112,7 @@ void vNet_UDP_callback()
 	}
 	else if(uip_flags & UIP_NEWDATA)
 	{
-		// Save the pointer, lenght and port of incoming data
+		// Save the pointer, length and port of incoming data
 		appdata = (uint8_t*)uip_appdata;	
 		vnetlenght = uip_len;
 		portnumber = uip_udp_conn->lport;
@@ -129,18 +126,18 @@ void vNet_UDP_callback()
 
 /**************************************************************************/
 /*!
-	Retrieve data from the ethernet controller and process data using uIP 
+	Retrieve data from the Ethernet controller and process data using uIP 
 	stack.
 */
 /**************************************************************************/
 uint8_t vNet_uIP()
 {
 	/*	If there are incoming data, the uip_input() issue a callback that set 
-		the vnetlenght value to the lenght of the vNet frame, then the value
+		the vnetlenght value to the length of the vNet frame, then the value
 		is returned and the retrieve function provide to get the data from the
 		buffer */	
 
-	// Retreive data from the MRF24WB0MA
+	// Retrieve data from the MRF24WB0MA
 	if((nic_poll()==0))
 	{
 		// If there are no available data
@@ -151,7 +148,7 @@ uint8_t vNet_uIP()
 		// Transmit a packet, if one is ready
 		if(uip_len > 0)
 		{
-			/* Look for the MAC addrress, if not available drop the message and issue
+			/* Look for the MAC address, if not available drop the message and issue
 				an ARP request */
 			uip_arp_out();
 			nic_send();
@@ -170,7 +167,7 @@ uint8_t vNet_uIP()
 			// Transmit a packet, if one is ready
 			if(uip_len > 0)
 			{
-				// Look for the MAC addrress, if not available drop the message and issue
+				// Look for the MAC address, if not available drop the message and issue
 				// an ARP request 
 				uip_arp_out();
 				nic_send();
@@ -203,7 +200,7 @@ uint8_t vNet_uIP()
 			// Transmit a packet, if one is ready
 			if(uip_len > 0)
 			{
-				/* Look for the MAC addrress, if not available drop the message and issue
+				/* Look for the MAC address, if not available drop the message and issue
 					an ARP request */
 				uip_arp_out();
 				nic_send();

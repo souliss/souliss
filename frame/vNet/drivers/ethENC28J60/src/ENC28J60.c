@@ -317,7 +317,7 @@ uint8_t enc28j60hasRxPkt(void)
 */
 
 // Gets a packet from the network receive buffer, if one is available.
-// The packet will by headed by an ethernet header.
+// The packet will by headed by an Ethernet header.
 //      maxlen  The maximum acceptable length of a retrieved packet.
 //      packet  Pointer where packet data should be stored.
 // Returns: Packet length in bytes if a packet was retrieved, zero otherwise.

@@ -66,7 +66,7 @@ typedef struct
 typedef struct
 {
 	U8 *data;				// Pointer to the data output buffer
-	U8 datalen;				// Data lenght	
+	U8 datalen;				// Data length	
 } OutBuffer;
 
 void vNet_Init_M1();

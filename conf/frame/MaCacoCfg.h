@@ -37,7 +37,7 @@
 /**************************************************************************/
 /*!
 	FUNCTIONAL CODES,
-		Define the type and direction of datas between peers, user can 
+		Define the type and direction of data between peers, user can 
 		add custom functional code to suite additional needs.
 		
 		Custom functional code can fit in ranges:
@@ -161,12 +161,12 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 	FRAME HEADER LENGHT,
 		The frame header of the protocol is defined as follow,	
 			Functional Code, 1 byte
-			Putin,			 2 byte
+			Put in,			 2 byte
 			Start offset,	 1 byte		
 			Number of,		 1 byte
 		
 		Functional Code, is the code used to identify the type of request,
-		Putin, is the address of the register where data should be placed,
+		Put in, is the address of the register where data should be placed,
 		Start offset, is the offset of the first requested byte,
 		Number of, is the number of requested bytes.
 		
@@ -203,7 +203,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 		makes easier IP forwarding.
 		Data are not stored in the gateway and are moving on an event base,
 		so the gateway cannot serve any polling-based protocol unless is 
-		activated PERSISTANCE mode.		
+		activated PERSISTENCE mode.		
 		
 		You are allowed to modify the number of MaCaco_NODES and MaCaco_SLOT
 		according to the below table, the values cannot be exceeded, but all 
@@ -235,7 +235,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 		and size for the shared memory map, this regardless their action as standard
 		or gateway node.
 		
-		As option you can activate PERSISTANCE or LASTIN mode, the former stores all
+		As option you can activate PERSISTENCE or LASTIN mode, the former stores all
 		incoming data and use a quite high amount of RAM; the latter stores only the
 		last incoming data.
 		
@@ -277,68 +277,68 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 
 #define MaCaco_ADDRESSES_s		(MaCaco_OUT_f+1)								// First byte of the addresses for the remote nodes
 #define MaCaco_ADDRESSES_f		(MaCaco_ADDRESSES_s+ 2*MaCaco_NODES-1)			// Last  byte of the addresses for the remote nodes
-#define MaCaco_HEALTY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
-#define MaCaco_HEALTY_f			(MaCaco_HEALTY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
+#define MaCaco_HEALTHY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
+#define MaCaco_HEALTHY_f			(MaCaco_HEALTHY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
 
 #define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeable data by a remote device
 #define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeable data by a remote device
 
-#define	MaCaco_P_TYP_s			(MaCaco_HEALTY_f+1)								// First byte for typical logic definitions in PERSISTANCE mode
-#define MaCaco_P_TYP_f			(MaCaco_P_TYP_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for typical logic definitions in PERSISTANCE mode
-#define	MaCaco_P_OUT_s			(MaCaco_P_TYP_f+1)								// First byte for output data in PERSISTANCE mode
-#define MaCaco_P_OUT_f			(MaCaco_P_OUT_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for output data in PERSISTANCE mode
+#define	MaCaco_P_TYP_s			(MaCaco_HEALTHY_f+1)								// First byte for typical logic definitions in PERSISTENCE mode
+#define MaCaco_P_TYP_f			(MaCaco_P_TYP_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for typical logic definitions in PERSISTENCE mode
+#define	MaCaco_P_OUT_s			(MaCaco_P_TYP_f+1)								// First byte for output data in PERSISTENCE mode
+#define MaCaco_P_OUT_f			(MaCaco_P_OUT_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for output data in PERSISTENCE mode
 
 #define	MaCaco_L_BUFSIZE		3												// Number of nodes stored in the buffer for LASTIN mode
 #define	MaCaco_L_IDX_NULL		255												// Null value for the index in LASTIN mode									
-#define MaCaco_L_TYP5n_s		(MaCaco_HEALTY_f+1)								// First byte for last incoming data in case of LASTIN mode
+#define MaCaco_L_TYP5n_s		(MaCaco_HEALTHY_f+1)								// First byte for last incoming data in case of LASTIN mode
 #define MaCaco_L_TYP5n_f		(MaCaco_L_TYP5n_s+(2*MaCaco_NODES))				// First byte for last incoming data in case of LASTIN mode
 #define	MaCaco_L_IDX_s			(MaCaco_L_TYP5n_f+1)							// First byte for node index in case of LASTIN mode
 #define	MaCaco_L_IDX_f			(MaCaco_L_IDX_s+MaCaco_L_BUFSIZE)				// Last byte for node index in case of LASTIN mode
 #define	MaCaco_L_OUT_s			(MaCaco_L_IDX_f+1)								// First byte for the output data in LASTIN mode 
 #define	MaCaco_L_OUT_f			(MaCaco_L_OUT_s+(MaCaco_L_BUFSIZE*MaCaco_SLOT))	// Last byte for the output data in LASTIN mode
 
-#define MaCaco_T_MEMMAP			(MaCaco_OUT_f+1)								// Lenght of the whole memory map
-#define MaCaco_S_MEMMAP			(MaCaco_HEALTY_f+1)								// Lenght of the whole memory map in case of Subscribers nodes
-#define MaCaco_P_MEMMAP			(MaCaco_P_OUT_f+1)								// Lenght of the whole memory map in case of PERSISTANCE mode
-#define	MaCaco_L_MEMMAP			(MaCaco_L_OUT_f+1)								// Lenght of the whole memory map in case of LASTIN mode
+#define MaCaco_T_MEMMAP			(MaCaco_OUT_f+1)								// Length of the whole memory map
+#define MaCaco_S_MEMMAP			(MaCaco_HEALTHY_f+1)								// Length of the whole memory map in case of Subscribers nodes
+#define MaCaco_P_MEMMAP			(MaCaco_P_OUT_f+1)								// Length of the whole memory map in case of PERSISTENCE mode
+#define	MaCaco_L_MEMMAP			(MaCaco_L_OUT_f+1)								// Length of the whole memory map in case of LASTIN mode
 
 #if(MaCaco_PERSISTANCE)
-#	define	MaCaco_G_TYP_s		MaCaco_P_TYP_s									// Pointer for gateway data in case of PERSISTANCE mode
+#	define	MaCaco_G_TYP_s		MaCaco_P_TYP_s									// Pointer for gateway data in case of PERSISTENCE mode
 #	define	MaCaco_G_TYP_f		MaCaco_P_TYP_f
-#	define	MaCaco_G_OUT_s		MaCaco_P_OUT_s                                  // Pointer for gateway data in case of PERSISTANCE mode
+#	define	MaCaco_G_OUT_s		MaCaco_P_OUT_s                                  // Pointer for gateway data in case of PERSISTENCE mode
 #	define	MaCaco_G_OUT_f		MaCaco_P_OUT_f
-#	define	MaCaco_MEMMAP		(MaCaco_P_MEMMAP+1)								// Lenght
+#	define	MaCaco_MEMMAP		(MaCaco_P_MEMMAP+1)								// Length
 #elif(MaCaco_LASTIN)
 #	define	MaCaco_G_OUT_s		MaCaco_L_OUT_s									// Pointer for gateway data in case of LASTIN mode
-#	define	MaCaco_MEMMAP		(MaCaco_L_MEMMAP+1)								// Lenght
+#	define	MaCaco_MEMMAP		(MaCaco_L_MEMMAP+1)								// Length
 #elif(MaCaco_SUBSCRIBERS)
 #	define	MaCaco_G_TYP_s		MaCaco_TYP_s									// Pointer for gateway data
 #	define	MaCaco_G_TYP_f		MaCaco_TYP_f
 #	define	MaCaco_G_OUT_s		MaCaco_OUT_s									// Pointer for gateway data
 #	define	MaCaco_G_OUT_f		MaCaco_OUT_f
-#	define	MaCaco_MEMMAP		(MaCaco_S_MEMMAP+1)								// Lenght
+#	define	MaCaco_MEMMAP		(MaCaco_S_MEMMAP+1)								// Length
 #else
 #	define	MaCaco_G_TYP_s		MaCaco_TYP_s									// Pointer for gateway data
 #	define	MaCaco_G_TYP_f		MaCaco_TYP_f
 #	define	MaCaco_G_OUT_s		MaCaco_OUT_s									// Pointer for gateway data
 #	define	MaCaco_G_OUT_f		MaCaco_OUT_f
-#	define	MaCaco_MEMMAP		(MaCaco_T_MEMMAP+1)								// Lenght
+#	define	MaCaco_MEMMAP		(MaCaco_T_MEMMAP+1)								// Length
 #endif
 
 /**************************************************************************/
 /*!
 	SUBSCRIBE MODE,
 		Devices allow subscription mode in order to share data only when a
-		change occour and not at every CPU cycle.
+		change occur and not at every CPU cycle.
 		
-		The following parameters allow tuning for subscription healty status
+		The following parameters allow tuning for subscription healthy status
 		 
 		Meaning of protocol stack is a bit different when data are received
-		as subscription of one or more devices, beucase the subscribed area 
+		as subscription of one or more devices, because the subscribed area 
 		is a fixed subarea or the shared memory map, defined via SUBSCRINDX
 		and SUBSCRLEN.
 		
-		The stack startoffset has no longer meaning, so is used to indetify
+		The stack startoffset has no longer meaning, so is used to identify
 		the subscription channel of subscribed device.
 		Each device can allow up to MaCaco_MAXSUBSCR different subscriptor 
 		devices.
@@ -358,7 +358,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_NOSUBSCRANSWER		0x00
 #define MaCaco_SUBSCRANSWER			0x01
 #define MaCaco_SUBSCRHEALTY			0x01
-#define MaCaco_SUBINITHEALTY		0x25
+#define MaCaco_SUBINITHEALTHY		0x25
 #define MaCaco_SUBMAXHEALTY			0xFF
 
 /**************************************************************************/

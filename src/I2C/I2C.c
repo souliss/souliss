@@ -282,7 +282,7 @@ uint8_t I2C_read(uint8_t *data, uint8_t numberBytes)
 		if(returnStatus == 1)
 			return(7);
 			
-		// If successfull	
+		// If successful	
 		return(returnStatus);
 	}
 	return(returnStatus);

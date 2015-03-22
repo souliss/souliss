@@ -71,7 +71,7 @@ void W5500Class::send_data_processing_offset(SOCKET s, uint16_t data_offset, con
 	{	
 		frame = (oFrame*)data;				// Pointer to output frame
 		oFrame_Define(frame);				// Set the frame
-		len = oFrame_GetLenght();			// Get the total lenght
+		len = oFrame_GetLenght();			// Get the total length
 	}
 	
 	// If there is no frame use data as pointer, otherwise get data from the oFrame

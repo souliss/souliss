@@ -50,7 +50,7 @@
 /**************************************************************************/
 void vram_write(U8 pointer, U8 *data, U8 len)
 {
-	// Check the lenght
+	// Check the length
 	if(len >= vramBUF_len)
 		return;
 		

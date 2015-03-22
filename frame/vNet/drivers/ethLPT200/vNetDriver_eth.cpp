@@ -66,7 +66,7 @@ void vNet_SetAddress_M1(uint16_t addr)
 
 /**************************************************************************/
 /*!
-	Send a messagge via UDP/IP
+	Send a message via UDP/IP
 */
 /**************************************************************************/
 uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
@@ -92,7 +92,7 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 		{	
 			// The first byte is the User Mode Index, if in range 0x01 - 0x64
 			// a standard client/server connection is used with the user interface
-			// this give rounting and NATting passthrough
+			// this give routing and NATting passthrough
 			UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
 		}
 		else

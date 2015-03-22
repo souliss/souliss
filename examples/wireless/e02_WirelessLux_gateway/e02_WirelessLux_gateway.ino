@@ -73,10 +73,10 @@ void loop()
 		// Process every 510ms the logic that control the lights
 		FAST_510ms() {
 			// Use Pin2 as ON/OFF command
-			DigIn(2, Souliss_T1n_ToogleCmd, LIGHT1_NODE1);	
+			DigIn(2, Souliss_T1n_ToggleCmd, LIGHT1_NODE1);	
 			
 			// Use Pin3 as ON/OFF command
-			DigIn(3, Souliss_T1n_ToogleCmd, LIGHT2_NODE1);		
+			DigIn(3, Souliss_T1n_ToggleCmd, LIGHT2_NODE1);		
 			
 			// Execute the logic
 			Logic_T11(LIGHT1_NODE1);

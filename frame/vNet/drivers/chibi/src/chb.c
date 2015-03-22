@@ -191,8 +191,8 @@ U8 chb_read(chb_rx_data_t *rx)
     // we have a valid len byte.
 	len = chb_buf_read();
 
-	// a device couldn't send frame out of min and max lenght,
-	// if frame lenght is out of these, discard and reset the
+	// a device couldn't send frame out of min and max length,
+	// if frame length is out of these, discard and reset the
 	// buffer
     if ((len > CHB_MAX_FRAME_LENGTH) || (len <= CHB_HDR_SZ))  
 	{

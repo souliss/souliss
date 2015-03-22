@@ -406,7 +406,7 @@ uip_arp_out(void)
     return;
   }
   
-  /* Build an ethernet header. */
+  /* Build an Ethernet header. */
   if(ipaddr[0] == 0xFFFF && ipaddr[1] == 0xFFFF)				// If is an IP broadcast
 	memset(IPBUF->ethhdr.dest.addr, 0xFF, 6);					// broadcast over MAC
   else															// else

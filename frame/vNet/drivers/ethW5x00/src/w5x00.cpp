@@ -98,7 +98,7 @@ void W5x00Class::send_data_processing_offset(SOCKET s, uint16_t data_offset, con
   {	
 	frame = (oFrame*)data;				// Pointer to output frame
 	oFrame_Define(frame);				// Set the frame
-	len = oFrame_GetLenght();			// Get the total lenght
+	len = oFrame_GetLenght();			// Get the total length
   }
   
   if (offset + len > SSIZE) 

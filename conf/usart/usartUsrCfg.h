@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss - vNet Virtualized Network
-    Copyright (C) 2011  Veseo
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,9 +45,9 @@
 */
 /**************************************************************************/
 #ifndef USARTBAUDRATE_INSKETCH
-# define USART_BAUD9k6			  0
-# define USART_BAUD19k2			 0
-# define	USART_BAUD57k6			0
+# define USART_BAUD9k6			  	0
+# define USART_BAUD19k2				0
+# define USART_BAUD57k6				0
 # define USART_BAUD115k2			1
 #endif
 

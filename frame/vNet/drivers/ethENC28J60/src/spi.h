@@ -68,7 +68,7 @@
 
 // Chip select
 #	if(BOARD_MODEL == 0x0A)			// Moteino Mega
-#		define ENC28J60_CS_BIT		BIT0        // ATmega1284 PB0 - Moteino pin 0
+#		define ENC28J60_CS_BIT		    BIT0        // ATmega1284 PB0 - Moteino pin 0
 #		define ENC28J60_CS_DDR       	DDRB
 #		define ENC28J60_CS_PORT      	PORTB
 #	else

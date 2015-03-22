@@ -70,7 +70,7 @@ void loop()
 		FAST_10ms() {
 		
 			// Use Pin2 as command
-			DigIn(2, Souliss_T1n_ToogleCmd, LEDCONTROL);		
+			DigIn(2, Souliss_T1n_ToggleCmd, LEDCONTROL);		
 			
 			// Execute the logic that handle the LED
 			Logic_LED_Strip(LEDCONTROL);

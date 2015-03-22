@@ -16,7 +16,7 @@
 
 	MaCaco_Config.h			#define MaCaco_EXTENDED_MAP			0
 
-	Define the ethernet controller based on the used hardware,
+	Define the Ethernet controller based on the used hardware,
 	ethUsrCfg.h				#define ETH_W5100/ENC28J60			1	
 		
 	ethUsrCfg.h				const uint8_t DEFAULT_BASEIPADDRESS[] = {...}

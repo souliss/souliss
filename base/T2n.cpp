@@ -46,7 +46,7 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 		recognized or the associated timer is expired. Timer must be used
 		for proper release of command.
 		Limit switches are not mandatory, but if not used, the device engine
-		shall be protected from extracurrent or shall have its own control
+		shall be protected from extra current or shall have its own control
 		center.
 		
 		Hardware Limit Switches :
@@ -58,9 +58,9 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 		Hardware Command:
 			
 			Using a monostable wall switch (press and spring return) or a 
-			software command from user interface, each press will toogle 
+			software command from user interface, each press will toggle 
 			the output status.		
-				#define Souliss_T2n_ToogleCmd		0x04
+				#define Souliss_T2n_ToggleCmd		0x04
 				
 		Software Command:
 				#define Souliss_T2n_CloseCmd		0x01
@@ -82,9 +82,9 @@ U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-	if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_ToogleCmd) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_Local) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_Local))
+	if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_ToggleCmd) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_StopCmd) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_Local) || (memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_Local))
 	{
-		if(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_ToogleCmd)
+		if(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_ToggleCmd)
 		{		
 			// Change the output value, between OPEN and CLOSE always OFF is performed	
 			if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open))
@@ -162,14 +162,14 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 	
 		It handle OPEN / CLOSE devices with alternate direction, dedicated
 		commands for OPEN, CLOSE and STOP are available. Every state change
-		goes throught the STOP command for security reason.
+		goes through the STOP command for security reason.
 		Is used for curtains or other devices that need an adjustable position.
 		
 		Once a command, it remain active until the relevant limit switch is
 		recognized or the associated timer is expired. Timer must be used
 		for proper release of command.
 		Limit switches are not mandatory, but if not used, the device engine
-		shall be protected from extracurrent or shall have its own control
+		shall be protected from extra current or shall have its own control
 		center.
 		
 		Hardware Limit Switches :
@@ -181,7 +181,7 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 		Hardware and/or Software Command:
 			
 			Using a monostable wall switch (press and spring return) or a 
-			software command from user interface, each press will toogle 
+			software command from user interface, each press will toggle 
 			the output status.			
 				#define Souliss_T2n_CloseCmd_Local	0x08
 				#define Souliss_T2n_OpenCmd_Local		0x10
@@ -193,7 +193,7 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 				#define Souliss_T2n_OpenCmd			0x02
 
 			This commands are designed to be used by an application (Souliss App, OpenHAB binding, user applications)
-			in order to support software "scenario". When the Open/Close command is recevived it is always excuted;
+			in order to support software "scenario". When the Open/Close command is received it is always excuted;
 			if the motor is running opposite direction it stops for 4 cycles then it revert motion.
 				#define Souliss_T2n_CloseCmd_SW			0x01
 				#define Souliss_T2n_OpenCmd_SW			0x02
