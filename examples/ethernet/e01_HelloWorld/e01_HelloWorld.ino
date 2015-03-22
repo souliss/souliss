@@ -10,7 +10,6 @@
 	  
 	As option you can run the same code on the following, just changing the
 	relevant configuration file at begin of the sketch
-	  -	Arduino with ENC28J60 Ethernet Shield
 	  - Arduino with W5200 Ethernet Shield
 	  - Arduino with W5500 Ethernet Shield
 		
