@@ -462,7 +462,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		{
 			// record the new address
 			(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
-	
+			
+			/*
 			// sort the node addresses	
 			U8 sort_i = 1, sorting = 0;
 			U16	sort_buffer;
@@ -487,8 +488,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 						m_address[sorting]  = sort_buffer;
 					}
 				}
-			}
 				
+			}
+			*/
+			
 			#if(MaCaco_DEBUG)
 			MaCaco_LOG("(MaCaco)<ADDRS><");
 			for(nodes=0; nodes<MaCaco_NODES; nodes++)
