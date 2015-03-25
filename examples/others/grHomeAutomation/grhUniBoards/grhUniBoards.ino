@@ -214,11 +214,9 @@ void loop()
 			SOULISS_PROCESS_TIMERS;
 
 			#if defined(DHT_SENSOR)
-				// Read the humidity
 				th = dht.readHumidity();
 				ImportAnalog(HUMIDITY, &th);
-				
-				// Read the temperature
+
 				th = dht.readTemperature();
 				ImportAnalog(TEMPERATURE, &th);	
 				
