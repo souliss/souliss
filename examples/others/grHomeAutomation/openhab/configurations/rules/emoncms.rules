@@ -1,0 +1,9 @@
+val string apikey = "bc7f72182df15162a89228d23920d874"
+
+rule "Send Living_Temp Item to Emoncms"
+
+       when
+               Item Living_Temp changed
+       then
+               sendHttpGetRequest("http://emoncms.org/input/post.json?json=Living_Temp:" + Living_Temp.state + "&apikey=" + apikey)
+end

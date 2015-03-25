@@ -1,0 +1,398 @@
+import org.openhab.core.library.types.*
+
+// GLOBAL VARIABLES
+var Number max_heating_tank_temp = 35.0
+var Number min_heating_tank_temp = 25.0
+var Number DHW_min_temp = 40.0
+var Number DHW_max_temp = 44.0
+var Number Temperature_Room_Hysteresys = 0.2
+var Number Default_Room_Temp_SP = 19.0
+
+
+/*****************************************************
+OpenHAB Auto mode disable low level control in (Souliss Auto)
+
+******************************************************/
+
+rule "HVAC_HP_OH_Auto"
+when
+	Item HP_OH_Auto changed or
+	Item HP_Souliss_Auto changed
+then
+	if (HP_Souliss_Auto.state == ON && HP_OH_Auto.state == ON)
+		HP_Souliss_Auto.sendCommand(OFF)
+
+//	logInfo("HVAC_HP_OH_Auto - ", HP_OH_Auto.toString)
+//	logInfo("HVAC_HP_OH_Auto - ", HP_Souliss_Auto.toString)
+end
+
+
+
+/*****************************************************
+Control HP Remote ON
+** TODO ** - disable in case of power request exceed 6kW
+
+******************************************************/
+rule "HVAC_HP_Remote_ON"
+when
+	Item HP_OH_Auto changed
+then
+//	logInfo("HVAC_HP_Remote_ON", "************")
+	if (HP_Remote_Switch.state == OFF)
+		HP_Remote_Switch.sendCommand(ON)
+
+//	logInfo("HVAC_HP_Remote_ON", HP_Remote_Switch.toString)
+end
+
+
+
+/*****************************************************
+Activate or disactivate the HP Circulation pump
+to manage the heating hot water production
+
+the pump is activated if the heating is requested and 
+the heating tank temperature is below min_heating_tank_temp
+
+******************************************************/
+
+rule "HVAC_HP_Circulation_Pump"
+when
+	System started or
+	Item HP_OH_Auto changed or
+	Item gHVAC_Valves changed or
+	Item HP_Temp_Heating changed
+then
+//	logInfo("HVAC_HP_Circulation_Pump", "************")
+	if (HP_OH_Auto.state == ON)
+	{
+		var heating_tank_temp = HP_Temp_Heating.state as DecimalType
+		var isHeatingNeeded = Valve_2F_Kitchen.state == ON ||
+								Valve_2F_Living.state == ON ||
+								Valve_2F_Bath1.state == ON ||
+								Valve_2F_Bath2.state == ON ||
+								Valve_2F_Bedroom1.state == ON ||
+								Valve_2F_Bedroom2.state == ON ||
+								Valve_2F_Bedroom3.state == ON
+//		logInfo("HVAC_HP_Circulation_Pump : ", heating_tank_temp.toString)
+//		logInfo("HVAC_HP_Circulation_Pump : ", isHeatingNeeded.toString)
+
+		if (HP_Circulation_Pump.state == ON)
+		{
+			if( heating_tank_temp > max_heating_tank_temp || !isHeatingNeeded )
+			{
+				HP_Circulation_Pump.sendCommand(OFF)
+			}	
+		}
+		else
+		{
+			if( heating_tank_temp < min_heating_tank_temp && isHeatingNeeded )
+			{
+				HP_Circulation_Pump.sendCommand(ON)
+			}			
+		}
+//		logInfo("HVAC_HP_Circulation_Pump : ", HP_Circulation_Pump.toString)
+	}
+end
+
+
+/*****************************************************
+Manage the Domestinc Hot Water production
+
+DHW production is requested if the measured temp is below DHW_min_temp
+DHW is not requested with measured temp above the DHW_max_temp
+
+******************************************************/
+
+rule "HVAC_DHW_Request"
+when
+	System started or
+	Item HP_OH_Auto changed or	
+	Item HP_Temp_DHW changed
+then
+//	logInfo("HVAC_DHW_Request", HP_OH_Auto.toString)
+	if (HP_OH_Auto.state == ON)
+	{	
+		var DHW_temp = HP_Temp_DHW.state as DecimalType
+//		logInfo("HVAC_DHW_Request", DHW_temp.toString)
+		
+		if (HP_DHW_Request.state == ON && DHW_temp > DHW_max_temp)
+		{
+//			logInfo("HVAC_DHW_Request", "Set DHW Request to OFF")
+			HP_DHW_Request.sendCommand(OFF)
+		}
+
+		else if (HP_DHW_Request.state == OFF && DHW_temp < DHW_min_temp)
+		{
+//			logInfo("HVAC_DHW_Request", "Set DHW Request to ON")
+			HP_DHW_Request.sendCommand(ON)
+		}
+	}
+//	logInfo("HVAC_DHW_Request", HP_DHW_Request.toString)
+end
+
+rule "HVAC_Living"
+when 
+//	Time cron "* * * * * ?" or
+	System started or
+	Item Temperature_2F_Living_SP changed or
+    Item Temperature_2F_Living changed or
+    item UR_2F_Living changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+
+
+	try { 
+		var set_point = Temperature_2F_Living_SP.state as DecimalType
+		var current_temp = Temperature_2F_Living.state as DecimalType
+		var current_ur = UR_2F_Living.state as DecimalType
+//		logInfo("HVAC_Living", set_point.toString)
+//		logInfo("HVAC_Living", current_temp.toString)
+
+		// calculate dew point
+		Temperature_2F_Living_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Living.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Living.sendCommand(OFF)
+
+			else if (Valve_2F_Living.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Living.sendCommand(ON)		
+		}
+
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Living_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+	
+end
+
+
+
+rule "HVAC_Kitchen"
+when 
+	System started or
+	Item Temperature_2F_Kitchen_SP changed or
+    Item Temperature_2F_Kitchen changed or
+    item UR_2F_Kitchen changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+
+
+	try { 
+		var Number set_point = Temperature_2F_Kitchen_SP.state as DecimalType
+		var Number current_temp = Temperature_2F_Kitchen.state as DecimalType
+		var Number current_ur = UR_2F_Kitchen.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Kitchen_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Kitchen.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Kitchen.sendCommand(OFF)
+
+			else if (Valve_2F_Kitchen.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Kitchen.sendCommand(ON)
+		}
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Kitchen_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+
+end
+
+rule "HVAC_Dining"
+when 
+	System started or
+    Item Temperature_2F_Dining changed or
+    item UR_2F_Dining changed
+then
+
+
+	try { 
+		var Number current_temp = Temperature_2F_Kitchen.state as DecimalType
+		var Number current_ur = UR_2F_Kitchen.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Dining_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+	}
+	catch (Exception e)
+	{ 
+	}
+
+end
+
+rule "HVAC_Bedroom1"
+when 
+	System started or
+	Item Temperature_2F_Bedroom1_SP changed or
+    Item Temperature_2F_Bedroom1 changed or
+    item UR_2F_Bedroom1 changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+
+
+	try { 
+		var Number set_point = Temperature_2F_Bedroom1_SP.state as DecimalType
+		var Number current_temp = Temperature_2F_Bedroom1.state as DecimalType
+		var Number current_ur = UR_2F_Bedroom1.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Bedroom1_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Bedroom1.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Bedroom1.sendCommand(OFF)
+
+			else if (Valve_2F_Bedroom1.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Bedroom1.sendCommand(ON)
+		}
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Bedroom1_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+
+end
+
+
+rule "HVAC_Bedroom2"
+when 
+	System started or
+	Item Temperature_2F_Bedroom2_SP changed or
+    Item Temperature_2F_Bedroom2 changed or
+    item UR_2F_Bedroom2 changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+
+
+	try { 
+		var Number set_point = Temperature_2F_Bedroom2_SP.state as DecimalType
+		var Number current_temp = Temperature_2F_Bedroom2.state as DecimalType
+		var Number current_ur = UR_2F_Bedroom2.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Bedroom2_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Bedroom2.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Bedroom2.sendCommand(OFF)
+	
+			else if (Valve_2F_Bedroom2.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Bedroom2.sendCommand(ON)
+		}
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Bedroom2_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+
+end
+
+
+rule "HVAC_Bedroom3"
+when 
+	System started or
+	Item Temperature_2F_Bedroom3_SP changed or
+    Item Temperature_2F_Bedroom3 changed or
+    item UR_2F_Bedroom3 changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+
+
+	try { 
+		var Number set_point = Temperature_2F_Bedroom3_SP.state as DecimalType
+		var Number current_temp = Temperature_2F_Bedroom3.state as DecimalType
+		var Number current_ur = UR_2F_Bedroom3.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Bedroom3_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Bedroom3.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Bedroom3.sendCommand(OFF)
+	
+			else if (Valve_2F_Bedroom3.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Bedroom3.sendCommand(ON)
+		}
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Bedroom3_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+
+end
+
+rule "HVAC_Bath1"
+when 
+	System started or
+	Item Temperature_2F_Bath1_SP changed or
+    Item Temperature_2F_Bath1 changed or
+    item UR_2F_Bath1 changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+	try { 
+		var Number set_point = Temperature_2F_Bath1_SP.state as DecimalType
+		var Number current_temp = Temperature_2F_Bath1.state as DecimalType
+		var Number current_ur = UR_2F_Bath1.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Bath1_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Bath1.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Bath1.sendCommand(OFF)
+
+			else if (Valve_2F_Bath1.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Bath1.sendCommand(ON)
+		}
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Bath1_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+
+end
+
+
+rule "HVAC_Bath2"
+when 
+	System started or
+	Item Temperature_2F_Bath2_SP changed or
+    Item Temperature_2F_Bath2 changed or
+    item UR_2F_Bath2 changed or
+    Valves_Manual_Mode changed from ON to OFF
+then
+
+
+	try { 
+		var Number set_point = Temperature_2F_Bath2_SP.state as DecimalType
+		var Number current_temp = Temperature_2F_Bath2.state as DecimalType
+		var Number current_ur = UR_2F_Bath2.state as DecimalType
+
+		// calculate dew point
+		Temperature_2F_Bath2_DP.sendCommand(current_temp-(100-current_ur)/5)
+
+		if (Valves_Manual_Mode.state == OFF || Valves_Manual_Mode.state == Uninitialized)
+		{
+			if (Valve_2F_Bath2.state == ON && current_temp > set_point + Temperature_Room_Hysteresys)
+				Valve_2F_Bath2.sendCommand(OFF)
+	
+			else if (Valve_2F_Bath2.state == OFF && current_temp < set_point - Temperature_Room_Hysteresys)
+				Valve_2F_Bath2.sendCommand(ON)
+		}
+	}
+	catch (Exception e) // temperature set point undefined
+	{ 
+		Temperature_2F_Bath2_SP.sendCommand(Default_Room_Temp_SP) 
+	}
+
+end
