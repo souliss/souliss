@@ -19,7 +19,7 @@ __asm volatile ("nop");
 ***************************************************************************/
 
 // Define the boards that we want program in order to create the appropriate sketch.
-#define	ROW1B2
+#define	TESTB1
 
 //#define DEBUG
 
@@ -30,6 +30,7 @@ __asm volatile ("nop");
 	#define VNET_DEBUG 		1
 #endif
 
+
 #include "grhBoardsSetup.h"
 
 #if defined(DHT_SENSOR)
@@ -37,7 +38,6 @@ __asm volatile ("nop");
 	#define TEMPERATURE_1		(DHT_SENSOR+2)
 	#define HUMIDITY			(DHT_SENSOR+3)
 	#define HUMIDITY_1			(DHT_SENSOR+4)
-	#define DEADBAND			0.05
 #endif
 
 #if defined(BOARD_PRODINO_V2)
@@ -71,10 +71,10 @@ __asm volatile ("nop");
 
 #include "grhSoulissCommon.h"
 #include "Souliss.h"
-//#include "SpeakEasy.h"
 #include "SPI.h"
 #include "grhSoulissCustom.h"
 #include "NTC.h"
+#include <DHT.h>	
 
 #if defined(BOARD_PRODINO_V2)
 	#include "HW_Setup_DINo_v2.h"
@@ -84,7 +84,8 @@ __asm volatile ("nop");
 
 
 #if defined(DHT_SENSOR)
-	ssDHT22_Init(ONE_WIRE_PIN, DHT_SENSOR);
+	DHT dht(ONE_WIRE_PIN, DHT22);
+	float th=0;
 #endif
 
 SOULISS_GLOBALS;
@@ -159,9 +160,9 @@ void setup()
 	SOULISS_DEFINE_TYPICALS;
 
 	#if defined(DHT_SENSOR)
-		Souliss_SetT52(memory_map, TEMPERATURE);
-		Souliss_SetT53(memory_map, HUMIDITY);
-		ssDHT_Begin(DHT_SENSOR);
+		Set_Temperature(TEMPERATURE);
+		Set_Humidity(HUMIDITY);
+		dht.begin();
 	#endif
 
 } 
@@ -182,8 +183,8 @@ void loop()
 			SOULISS_PROCESS_LOGICS;
 
 			#if defined(DHT_SENSOR)
-				Souliss_Logic_T52(memory_map, TEMPERATURE, DEADBAND, &data_changed);\
-				Souliss_Logic_T53(memory_map, HUMIDITY, DEADBAND, &data_changed);
+				Logic_Humidity(HUMIDITY);
+				Logic_Temperature(TEMPERATURE);
 			#endif
 
 			SOULISS_SET_OUTPUTS;
@@ -213,10 +214,14 @@ void loop()
 			SOULISS_PROCESS_TIMERS;
 
 			#if defined(DHT_SENSOR)
-				float temperature = ssDHT_readTemperature(DHT_SENSOR);
-				Souliss_ImportAnalog(memory_map, TEMPERATURE, &temperature);
-				float humidity = ssDHT_readHumidity(DHT_SENSOR);
-				Souliss_ImportAnalog(memory_map, HUMIDITY, &humidity);
+				// Read the humidity
+				th = dht.readHumidity();
+				ImportAnalog(HUMIDITY, &th);
+				
+				// Read the temperature
+				th = dht.readTemperature();
+				ImportAnalog(TEMPERATURE, &th);	
+				
 			#endif		
 		}		
 	}
@@ -233,5 +238,4 @@ void loop()
 
 		}
 } 
-
 

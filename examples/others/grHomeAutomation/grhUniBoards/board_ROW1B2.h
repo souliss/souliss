@@ -15,7 +15,7 @@
 								Set_SimpleLight(LIGHT_GW2);
 
 #define SOULISS_READ_INPUTS 	ssLightsGroupIN(IN1, LIGHT_KITCHEN_1, LIGHT_KITCHEN_3);\
-								DigIn(IN1, Souliss_T1n_ToggleCmd, LIGHT_GW2);	
+								DigIn(IN2, Souliss_T1n_ToggleCmd, LIGHT_GW2);	
 
 #define SOULISS_PROCESS_LOGICS 	Logic_LightsGroup(LIGHT_KITCHEN_1, LIGHT_KITCHEN_3);\
 								Logic_SimpleLight(LIGHT_GW2);

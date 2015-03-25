@@ -14,10 +14,10 @@
 #define SOULISS_PROCESS_LOGICS 	Souliss_Logic_T22(memory_map, WINDOW_BED3, &data_changed, SHUTTER_SHORT_TIMEOUT);\
 								Souliss_Logic_T22(memory_map, WINDOW_BATH2, &data_changed, SHUTTER_SHORT_TIMEOUT);
 
-#define SOULISS_SET_OUTPUTS 	ssDigOut(OUT1, Souliss_T2n_Coil_Open,  WINDOW_BED3);\
-								ssDigOut(OUT2, Souliss_T2n_Coil_Close, WINDOW_BED3);\
-								ssDigOut(OUT3, Souliss_T2n_Coil_Open,  WINDOW_BATH2);\
-								ssDigOut(OUT4, Souliss_T2n_Coil_Close, WINDOW_BATH2);
+#define SOULISS_SET_OUTPUTS 	DigOut(RELAY1, Souliss_T2n_Coil_Open,  WINDOW_BED3);\
+								DigOut(RELAY2, Souliss_T2n_Coil_Close, WINDOW_BED3);\
+								DigOut(RELAY3, Souliss_T2n_Coil_Open,  WINDOW_BATH2);\
+								DigOut(RELAY4, Souliss_T2n_Coil_Close, WINDOW_BATH2);
 
 #define SOULISS_PROCESS_TIMERS 	Timer_Windows(WINDOW_BED3);\
 								Timer_Windows(WINDOW_BATH2);

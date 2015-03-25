@@ -7,8 +7,7 @@
 
 #define SOULISS_GLOBALS			
 #define SOULISS_DEFINE_TYPICALS Set_LightsGroup(LIGHT_ENTRANCE_1, LIGHT_ENTRANCE_2);\
-  								Set_LightsGroup(LIGHT_BATH_1, LIGHT_BATH_2);\
-								Souliss_SetT52(memory_map, TEMPERATURE);
+  								Set_LightsGroup(LIGHT_BATH_1, LIGHT_BATH_2);
 
 #define SOULISS_READ_INPUTS 	ssLightsGroupIN(IN1, LIGHT_ENTRANCE_1, LIGHT_ENTRANCE_2);\
 								ssLightsGroupIN(IN2, LIGHT_BATH_1, LIGHT_BATH_2);	
@@ -16,10 +15,10 @@
 #define SOULISS_PROCESS_LOGICS 	Logic_LightsGroup(LIGHT_ENTRANCE_1, LIGHT_ENTRANCE_2);\
 								Logic_LightsGroup(LIGHT_BATH_1, LIGHT_BATH_2);
 
-#define SOULISS_SET_OUTPUTS 	CntRelay1(LIGHT_ENTRANCE_1);\
-								CntRelay2(LIGHT_ENTRANCE_2);\
-								CntRelay3(LIGHT_BATH_1);\
-								CntRelay4(LIGHT_BATH_2);
+#define SOULISS_SET_OUTPUTS 	DigOut(RELAY1, Souliss_T1n_Coil, LIGHT_ENTRANCE_1);\
+								DigOut(RELAY2, Souliss_T1n_Coil, LIGHT_ENTRANCE_2);\
+								DigOut(RELAY3, Souliss_T1n_Coil, LIGHT_BATH_1);\
+								DigOut(RELAY4, Souliss_T1n_Coil, LIGHT_BATH_2);
 
 #define SOULISS_PROCESS_TIMERS 	Timer_LightsGroup(LIGHT_ENTRANCE_1, LIGHT_ENTRANCE_2);\
 								Timer_LightsGroup(LIGHT_BATH_1, LIGHT_BATH_2);

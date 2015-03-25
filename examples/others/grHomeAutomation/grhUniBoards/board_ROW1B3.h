@@ -13,15 +13,15 @@
 								Set_SimpleLight(LIGHT_STAIRS);
 
 #define SOULISS_READ_INPUTS 	ssLightsGroupIN(IN1, LIGHT_DINING_1, LIGHT_DINING_3);\
-								ReadInput2(LIGHT_STAIRS);
+								DigIn(IN2, Souliss_T1n_ToggleCmd, LIGHT_STAIRS);
 
 #define SOULISS_PROCESS_LOGICS 	Logic_LightsGroup(LIGHT_DINING_1, LIGHT_DINING_3);\
 								Logic_SimpleLight(LIGHT_STAIRS);
 
-#define SOULISS_SET_OUTPUTS 	CntRelay1(LIGHT_DINING_1);\
-								CntRelay2(LIGHT_DINING_2);\
-								CntRelay3(LIGHT_DINING_3);\
-								CntRelay4(LIGHT_STAIRS);
+#define SOULISS_SET_OUTPUTS 	DigOut(RELAY1, Souliss_T1n_Coil, LIGHT_DINING_1);\
+								DigOut(RELAY2, Souliss_T1n_Coil, LIGHT_DINING_2);\
+								DigOut(RELAY3, Souliss_T1n_Coil, LIGHT_DINING_3);\
+								DigOut(RELAY4, Souliss_T1n_Coil, LIGHT_STAIRS);
 
 #define SOULISS_PROCESS_TIMERS 	Timer_LightsGroup(LIGHT_DINING_1, LIGHT_DINING_3);\
 								Timer_SimpleLight(LIGHT_STAIRS);

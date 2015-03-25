@@ -11,9 +11,9 @@
 
 #define SOULISS_PROCESS_LOGICS 	Logic_LightsGroup(LIGHT_BEDROOM2_1, LIGHT_BEDROOM2_4);
 
-#define SOULISS_SET_OUTPUTS 	CntRelay1(LIGHT_BEDROOM2_1);\
-								CntRelay2(LIGHT_BEDROOM2_2);\
-								CntRelay3(LIGHT_BEDROOM2_3);\
-								CntRelay4(LIGHT_BEDROOM2_4);
+#define SOULISS_SET_OUTPUTS 	DigOut(RELAY1, Souliss_T1n_Coil, LIGHT_BEDROOM2_1);\
+								DigOut(RELAY2, Souliss_T1n_Coil, LIGHT_BEDROOM2_2);\
+								DigOut(RELAY3, Souliss_T1n_Coil, LIGHT_BEDROOM2_3);\
+								DigOut(RELAY4, Souliss_T1n_Coil, LIGHT_BEDROOM2_4);
 
 #define SOULISS_PROCESS_TIMERS 	Timer_LightsGroup(LIGHT_BEDROOM2_1, LIGHT_BEDROOM2_4);
