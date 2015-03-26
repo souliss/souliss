@@ -1,0 +1,440 @@
+sitemap default label="Main Menu"
+{
+	Frame {
+
+		Text label="Attico e Terrazzo" icon="attic"
+		{
+			Text label="Loft" icon="bedroom"
+			{	
+				Switch item=Light_3F_Loft_1 label="Luce 1"
+				Switch item=Light_3F_Loft_2 label="Luce 2"
+				Switch item=Light_3F_Toilet label="Luce Bagno"
+
+			}
+
+			Text label="Terrazzo" icon="terrace"
+			{	
+				Switch item=Light_3F_Terrace_1 label="Luce 1"
+				Switch item=Light_3F_Terrace_2 label="Luce 2"
+				Switch item=Light_3F_Terrace_3 label="Luce 3"
+
+			}
+		
+		}
+
+		Text label="Secondo Piano" icon="firstfloor"
+		{
+			Text label="Ingresso" icon="door"
+			{	
+				Switch item=Light_2F_Stairs label="Applique"
+			}
+
+			Text label="Salotto" icon="sofa"
+			{	
+				Switch item=Light_2F_Living_1 label="Luce 1"
+				Switch item=Light_2F_Living_2 label="Luce 2"
+				Switch item=Light_2F_Living_3 label="Luce 3"
+				Switch item=Light_2F_Living_4 label="Luce 4"			 
+				Switch item=Windows_2F_Living label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Living
+					Text item=UR_2F_Living
+					Text item=Temperature_2F_Living_DP
+					Text item=Valve_2F_Living label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Living_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Living label="Valvola Zona"					
+					}
+				}
+			}
+
+
+			Text label="Cucina" icon="kitchen"
+			{	
+				Switch item=Light_2F_Kitchen_1 label="Applique"
+				Switch item=Light_2F_Kitchen_2 label="Soffitto"
+				Switch item=Light_2F_Kitchen_3 label="Sotto Pensile"
+				Switch item=Windows_2F_Kitchen label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Kitchen
+					Text item=UR_2F_Kitchen
+					Text item=Temperature_2F_Kitchen_DP
+					Text item=Valve_2F_Kitchen label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Kitchen_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Kitchen label="Valvola Zona"
+					}
+				}
+			}
+
+			Text label="Pranzo" icon="table"
+			{	
+				Switch item=Light_2F_Dining_1 label="Striscia LED"
+				Switch item=Light_2F_Dining_2 label="Soffitto"
+				Switch item=Light_2F_Dining_3 label="Applique"
+				Switch item=Windows_2F_Dining label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Dining
+					Text item=UR_2F_Dining
+					Text item=Temperature_2F_Dining_DP
+				}
+			}
+
+			Text label="Camera 1" icon="bedroom"
+			{	
+				Switch item=Light_2F_Bedroom1 label="Soffitto"
+				Switch item=Windows_2F_Bedroom1 label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Bedroom1
+					Text item=UR_2F_Bedroom1
+					Text item=Temperature_2F_Bedroom1_DP
+					Text item=Valve_2F_Bedroom1 label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Bedroom1_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Bedroom1 label="Valvola Zona"
+					}
+				}
+			}
+
+			Text label="Camera 2" icon="bedroom"
+			{	
+				Switch item=Light_2F_Bedroom2_1 label="Striscia LED"
+				Switch item=Light_2F_Bedroom2_2 label="Comodino DX"
+				Switch item=Light_2F_Bedroom2_3 label="Comodino SX"
+				Switch item=Light_2F_Bedroom2_4 label="Soffitto"
+				Switch item=Windows_2F_Bedroom2 label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Bedroom2
+					Text item=UR_2F_Bedroom2
+					Text item=Temperature_2F_Bedroom2_DP
+					Text item=Valve_2F_Bedroom2 label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Bedroom2_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Bedroom2 label="Valvola Zona"					
+					}					
+				}
+			}
+
+			Text label="Camera 3" icon="bedroom"
+			{	
+				Switch item=Light_2F_Bedroom3 label="Soffitto"
+				Switch item=Windows_2F_Bedroom3 label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Bedroom3
+					Text item=UR_2F_Bedroom3
+					Text item=Temperature_2F_Bedroom3_DP
+					Text item=Valve_2F_Bedroom3 label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Bedroom3_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Bedroom3 label="Valvola Zona"					
+					}
+				}
+			}
+
+			Text label="Disimpegno 1" icon="corridor"
+			{	
+				Switch item=Light_2F_GW1 label="Soffitto"
+
+			}
+
+			Text label="Disimpegno 2" icon="corridor"
+			{	
+				Switch item=Light_2F_GW2 label="Soffitto"
+
+			}
+
+			Text label="Bagno 1" icon="bath"
+			{	
+				Switch item=Light_2F_Bath1_1 label="Specchio"
+				Switch item=Light_2F_Bath1_2 label="Soffitto"
+				Switch item=Light_2F_Bath1_3 label="Lavanderia"
+				Switch item=Windows_2F_Bath1 label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Bath1
+					Text item=UR_2F_Bath1
+					Text item=Temperature_2F_Bath1_DP
+					Text item=Valve_2F_Bath1 label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Bath1_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Bath1 label="Valvola Zona"					
+					}
+				}
+			}
+
+			Text label="Bagno 2" icon="bath"
+			{	
+				Switch item=Light_2F_Bath2_1 label="Specchio"
+				Switch item=Light_2F_Bath2_2 label="Soffitto"
+				Switch item=Windows_2F_Bath2 label="Tapparella"
+
+				Text label="Clima" icon="climate"
+				{
+					Text item=Temperature_2F_Bath2
+					Text item=UR_2F_Bath2
+					Text item=Temperature_2F_Bath2_DP
+					Text item=Valve_2F_Bath2 label="Valvola Zona"
+					Text label="Impostazioni" icon="settings"
+					{
+						Setpoint item=Temperature_2F_Bath2_SP step=0.5 minValue=15 maxValue=30
+						Switch item=Valve_2F_Bath2 label="Valvola Zona"					
+					}
+				}
+			}
+		}
+	}
+	
+
+
+
+
+
+	Frame {
+		Group item=gLights icon="light-off"
+		Group item=gRolleshutters
+		Text label="Clima" icon="climate"
+		{
+			Text label="Pompa di Calore" icon="climate"
+			{
+				Text item=HP_Temp_DHW
+				Text item=HP_Temp_Heating
+				Text item=HP_Temp_Bottom
+				Text item=HP_Temp_Heating_Flow
+				Text item=HP_Temp_Heating_Ret				
+				Text label="Impostazioni" icon="settings"
+				{
+					Switch item=HP_OH_Auto
+					Switch item=HP_Souliss_Auto
+					Switch item=HP_Remote_Switch
+					Switch item=HP_Circulation_Pump
+					Switch item=HP_DHW_Request
+					Switch item=HP_Heat_Cool
+				}
+			}
+			Text label="Zone HVAC" icon="climate"
+			{
+				Frame label="Salotto" icon="sofa"
+				{
+					Text item=Temperature_2F_Living
+					Setpoint item=Temperature_2F_Living_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Living
+					Text item=Temperature_2F_Living_DP
+					Switch item=Valve_2F_Living label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Living period=D refresh=1800
+							Chart item=UR_2F_Living period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Living period=W refresh=3600
+							Chart item=UR_2F_Living period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Cucina" icon="kitchen"
+				{
+					Text item=Temperature_2F_Kitchen
+					Setpoint item=Temperature_2F_Kitchen_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Kitchen
+					Text item=Temperature_2F_Kitchen_DP
+					Switch item=Valve_2F_Kitchen label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Kitchen period=D refresh=1800
+							Chart item=UR_2F_Kitchen period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Kitchen period=W refresh=3600
+							Chart item=UR_2F_Kitchen period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Pranzo" icon="table"
+				{
+					Text item=Temperature_2F_Dining
+					Text item=UR_2F_Dining
+					Text item=Temperature_2F_Dining_DP
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Dining period=D refresh=1800
+							Chart item=UR_2F_Dining period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Dining period=W refresh=3600
+							Chart item=UR_2F_Dining period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Camera 1" icon="bedroom"
+				{
+					Text item=Temperature_2F_Bedroom1
+					Setpoint item=Temperature_2F_Bedroom1_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Bedroom1
+					Text item=Temperature_2F_Bedroom1_DP
+					Switch item=Valve_2F_Bedroom1 label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Bedroom1 period=D refresh=1800
+							Chart item=UR_2F_Bedroom1 period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Bedroom1 period=W refresh=3600
+							Chart item=UR_2F_Bedroom1 period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Camera 2" icon="bedroom"
+				{
+					Text item=Temperature_2F_Bedroom2
+					Setpoint item=Temperature_2F_Bedroom2_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Bedroom2
+					Text item=Temperature_2F_Bedroom2_DP
+					Switch item=Valve_2F_Bedroom2 label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Bedroom2 period=D refresh=1800
+							Chart item=UR_2F_Bedroom2 period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Bedroom2 period=W refresh=3600
+							Chart item=UR_2F_Bedroom2 period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Camera 3" icon="bedroom"
+				{
+					Text item=Temperature_2F_Bedroom3
+					Setpoint item=Temperature_2F_Bedroom3_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Bedroom3
+					Text item=Temperature_2F_Bedroom3_DP
+					Switch item=Valve_2F_Bedroom3 label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Bedroom3 period=D refresh=1800
+							Chart item=UR_2F_Bedroom3 period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Bedroom3 period=W refresh=3600
+							Chart item=UR_2F_Bedroom3 period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Bagno 1" icon="bath"
+				{
+					Text item=Temperature_2F_Bath1
+					Setpoint item=Temperature_2F_Bath1_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Bath1
+					Text item=Temperature_2F_Bath1_DP
+					Switch item=Valve_2F_Bath1 label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Bath1 period=D refresh=1800
+							Chart item=UR_2F_Bath1 period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Bath1 period=W refresh=3600
+							Chart item=UR_2F_Bath1 period=W refresh=3600
+						}
+					}
+				}
+				Frame label="Bagno 2" icon="bath"
+				{
+					Text item=Temperature_2F_Bath2
+					Setpoint item=Temperature_2F_Bath2_SP step=0.5 minValue=15 maxValue=30
+					Text item=UR_2F_Bath2
+					Text item=Temperature_2F_Bath2_DP
+					Switch item=Valve_2F_Bath2 label="Valvola Zona"
+					Text label="Storico" icon="chart"
+					{
+						Text label="Giorno" icon="chart"
+						{
+							Chart item=Temperature_2F_Bath2 period=D refresh=1800
+							Chart item=UR_2F_Bath2 period=D refresh=1800
+						}
+						Text label="Settimana" icon="chart"
+						{
+							Chart item=Temperature_2F_Bath2 period=W refresh=3600
+							Chart item=UR_2F_Bath2 period=W refresh=3600
+						}
+					}
+				}
+
+			}
+
+			Text label="Valvole Zone HVAC" icon="climate"
+			{
+				Frame 
+				{
+					Switch item=Valves_Manual_Mode
+				}
+
+				Frame label="Zone"
+				{
+					Switch item=Valve_2F_Kitchen
+					Switch item=Valve_2F_Living
+					Switch item=Valve_2F_Bath1
+					Switch item=Valve_2F_Bath2
+					Switch item=Valve_2F_Bedroom1
+					Switch item=Valve_2F_Bedroom2
+					Switch item=Valve_2F_Bedroom3
+					Switch item=Valve_3F_Loft		
+				}
+
+			}
+
+
+		}
+	}
+
+	Frame label="Group Operations" {
+		Switch item=gLights icon="light-off" mappings=[OFF="All Off"]
+	}
+
+	Frame label="Diagnostics" {
+		Group item=gDiagnostics
+		}
+
+	Frame label="Date" {
+		Text item=Date
+	}
+}
