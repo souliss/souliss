@@ -536,5 +536,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 		memory_map[MaCaco_AUXIN_s + slot] = Souliss_NOTTRIGGED;
 		return Souliss_TRIGGED;
 	}	
+	
+	return Souliss_NOTRIGGED;
 }
 
