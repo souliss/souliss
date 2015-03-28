@@ -29,7 +29,7 @@
 #define SETUP_AW    0x03
 #define SETUP_RETR  0x04
 #define RF_CH       0x05
-#define RF_SETUP    0x06
+#define RF_SETUP    0x26
 #define STATUS      0x07
 #define OBSERVE_TX  0x08
 #define CD          0x09
