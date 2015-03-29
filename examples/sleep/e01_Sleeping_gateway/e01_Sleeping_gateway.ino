@@ -20,6 +20,7 @@
 #include "conf/ethW5100.h"					// Ethernet through Wiznet W5100
 #include "conf/nRF24L01.h"
 #include "conf/Gateway.h"					// The main node is the Gateway
+#include "conf/DynamicAddressing.h"			// Use dynamic addressing
 
 // Include framework code and libraries
 #include <SPI.h>

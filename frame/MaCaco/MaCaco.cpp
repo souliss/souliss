@@ -198,7 +198,7 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
 	{
 		#if (MaCaco_DEBUG)
 		// Print the outgoing message header
-		MaCaco_LOG("(MaCaco) Err:UNSFC");
+		MaCaco_LOG("(MaCaco) Err:UNSFC\r\n");
 		#endif
 		
 		return MaCaco_FUNCODE_ERR;	// functional code not supported
@@ -450,7 +450,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 	#if(MaCaco_USERMODE)	
 	// record a join request
-	if (rx->funcode == MaCaco_JOINNETWORK)
+	if ((rx->funcode == MaCaco_JOINNETWORK) || (rx->funcode == MaCaco_JOINANDRESET))
 	{			
 		// look for a non used address register
 		U8 nodes=0;
@@ -506,6 +506,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// Restart the subscriptions	
 			MaCaco_subscribe_reset();	
 		}
+		else if (rx->funcode == MaCaco_JOINANDRESET)
+			MaCaco_subscribe_reset();	// Restart the subscriptions	
 			
 		// if the join request is from a nodes that previously got an address, flag the
 		// request as completed
@@ -633,6 +635,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				// is completed
 				proposedaddress = nodeaddress;
 				
+				// Take your time, don't flood the network
+				for(U8 i=0; i<VNET_MEDIA_NUMBER; i++)
+					delay(MaCaco_FLOODPROTECTION);
+			
 				// send the assigned address
 				return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, (U8*)(&proposedaddress));
 			}
@@ -673,6 +679,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					// is completed
 					proposedaddress = nodeaddress;
 					
+					// Take your time, don't flood the network
+					for(U8 i=0; i<VNET_MEDIA_NUMBER; i++)
+						delay(MaCaco_FLOODPROTECTION);
+			
 					// send the assigned address
 					return MaCaco_send(0xFFFF, MaCaco_DINADDRESSANS, rx->putin, vNetMedia, 0x02, (U8*)(&proposedaddress));
 				}	
@@ -704,6 +714,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		{
 			// Get the subnet from the address
 			vNetAddr &= (vNet_GetSubnetMask(vNetMedia));
+			
+			// Take your time, don't flood the network
+			for(U8 i=0; i<VNET_MEDIA_NUMBER; i++)
+				delay(MaCaco_FLOODPROTECTION);
 			
 			// Send as non-rebroadcastable message
 			return MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETANS, rx->putin, rx->startoffset, 0x02, (U8*)(&vNetAddr));

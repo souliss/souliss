@@ -537,6 +537,6 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 		return Souliss_TRIGGED;
 	}	
 	
-	return Souliss_NOTRIGGED;
+	return Souliss_NOTTRIGGED;
 }
 

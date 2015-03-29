@@ -70,6 +70,10 @@ uint8_t vNet_Send_M2(uint16_t addr, oFrame *frame, uint8_t len)
 	if(len > VNET_MAX_PAYLOAD)
 		return VNET_DATA_FAIL;
 
+	// If is a vNet broadcast, move on the broadcast pipe
+	if((addr == VNET_ADDR_wBRDC) || (addr == VNET_ADDR_nBRDC))
+		addr = VNET_ADDR_BRDC;
+	
 	// Set the pipe address of the destination node
 	radio.openWritingPipe((NRF24_PIPE | ((uint64_t)addr)));
 

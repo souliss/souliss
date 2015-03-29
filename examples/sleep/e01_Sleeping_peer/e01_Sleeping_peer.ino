@@ -3,7 +3,8 @@
 	
 	A battery operated node (Peer) is activated on press of a pushbutton and/or on
 	time base, each time the node wake-ups it sends data to the gateway (that is always
-	powered on).
+	powered on). An additional pin is used to keep the node active for all the time
+	required to complete the network configuration.
 	
 	To have low battery consumption you need a device without voltage regulator and other
 	hardware that continuously get power even when the microcontroller is sleeping.  
@@ -22,17 +23,19 @@
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/nRF24L01.h"
 #include "conf/Sleep.h"
+#include "conf/DynamicAddressing.h"			// Use dynamic addressing
 
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
 
 #define BATT_LEVEL		0			 
-
+#define	STAYUP_PIN		3					// Keeps the node asleep
+#define	StayUp()		digitalRead(STAYUP_PIN)
 void setup()
 {	
 	Initialize();
-	
+
 	// Set an analog value to measure the battery voltage
 	Set_AnalogIn(BATT_LEVEL);
 
@@ -40,7 +43,7 @@ void setup()
 	// to configure any parameter here.
 	SetDynamicAddressing();
 	GetAddress();	
-	
+
 	/*****
 		The default sleep time is about 30 minutes, you can change this from the
 		base/Sleeping.h file, or using the following defines on top of the sketch
@@ -57,13 +60,19 @@ void setup()
 	*****/
 	
 	sleepInit(SLEEPMODE_TIMER);
+	
+	// Use an external input to force the node in asleep, keep it activated till you
+	// configuration (node address and typicals) are completed and you are able to
+	// interact with your node from the user interface.
+	// Once the setup is completed, release this pin and let the node sleep
+	pinMode(STAYUP_PIN, INPUT);
 
 }
 
 void loop()
 {   
 	// If the node wake-ups then this statement is executed
-	if(wasSleeping())
+	if(wasSleeping() || StayUp())
 	{	
 		// Here we start to play
 		EXECUTEFAST() {						
@@ -97,7 +106,7 @@ void loop()
 				Read_AnalogIn(BATT_LEVEL);
 			
 				// Back to sleep
-				if(isTimeToSleep())	
+				if(isTimeToSleep() && !StayUp())	
 				{
 					/**************
 					Add below the code required to sleep custom devices connected, like:

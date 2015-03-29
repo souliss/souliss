@@ -283,3 +283,15 @@ void Souliss_JoinNetwork()
 		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, (U8 *)keyidval, 0, 0, 0);
 }
 
+/**************************************************************************
+/*!
+	Send a request to join a network and request a reset of the subscription, 
+	use carefully only at begin on a join
+*/	
+/**************************************************************************/
+void Souliss_JoinAndReset()
+{
+	// Request to join a network only if I've got an address
+	if(vNet_GetAddress(vNet_MyMedia()))
+		MaCaco_send(0xFFFF, MaCaco_JOINANDRESET, (U8 *)keyidval, 0, 0, 0);
+}

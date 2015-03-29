@@ -221,6 +221,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
 #define	JoinNetwork()											Souliss_JoinNetwork()
+#define	JoinAndReset()											Souliss_JoinAndReset()
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
 #define	SetAsBatteryNode(address, index)						Souliss_SetRemoteAddress(memory_map, address, index);	\
@@ -276,18 +277,20 @@ unsigned long tmr_fast=0, tmr_slow=0;
 													JoinNetwork();					\
 												}
 
-#define	GetAddress()							for(uint8_t n=0;n<VNET_MEDIA_NUMBER;n++) {											\
-													while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {	\
-														for(U8 i=0; i<100; i++) {									\
-															Souliss_CommunicationData(memory_map, &data_changed);	\
-															delay(100);	}											\
-														delay(1000);}												\
-													while(!MaCaco_IsSubscribed()) {									\
-														Souliss_JoinNetwork();										\
-														for(U8 i=0; i<10; i++) {									\
-															Souliss_CommunicationData(memory_map, &data_changed);	\
-															delay(100);	}											\
-													delay(1000);}}
+#define	GetAddress()							for(uint8_t n=0;n<VNET_MEDIA_NUMBER;n++) {								\
+													while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {		\
+														for(U16 i=0; i<1000; i++) {										\
+															if(Souliss_CommunicationData(memory_map, &data_changed))	\
+																break;													\
+															delay(10);	}												\
+														}													\
+													while(!MaCaco_IsSubscribed()) {										\
+														Souliss_JoinAndReset();											\
+														for(U16 i=0; i<1000; i++) {										\
+															if(Souliss_CommunicationData(memory_map, &data_changed))	\
+																break;													\
+															delay(10);	}												\
+													}}
 																														
 												
 

@@ -134,7 +134,8 @@
 #define	MaCaco_SUBNETREQ		0x2A	// Subnet request (broadcast)
 #define	MaCaco_SUBNETANS		0x3A	// Subnet answer (broadcast)
 #define	MaCaco_JOINNETWORK		0x2B	// Join a network gateway (broadcast)
-#define	MaCaco_SETIP			0x3C	// Set an IP address at runtime (broadcast)
+#define	MaCaco_JOINANDRESET		0x2C	// Join a network gateway and request a subscription reset (broadcast)
+#define	MaCaco_SETIP			0x3D	// Set an IP address at runtime (broadcast)
 
 #define	MaCaco_FORCETYP			0x71	// Force input values by typical logic (from a peer)
 #define	MaCaco_ACTIONMSG		0x72	// Send an Action Message
@@ -142,7 +143,7 @@
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01
 
-#define	MaCaco_FUNCODE_NO (17+20+2)
+#define	MaCaco_FUNCODE_NO (17+21+2)
 
 const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x08, 0x18, 0x09, 0x19, 
@@ -153,7 +154,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x33, 0x34, 0x25, 0x35,
 											   0x26, 0x36, 0x27, 0x37,
 											   0x28, 0x38, 0x29, 0x39,
-											   0x2A, 0x3A, 0x2B, 0x3C,
+											   0x2A, 0x3A, 0x2B, 0x2C,
+											   0x3D,
 											   0x71, 0x72};
 		  
 /**************************************************************************/
@@ -373,5 +375,13 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #ifndef	MaCaco_DEBUG_INSKETCH
 #	define MaCaco_DEBUG  		0
 #endif
+
+/**************************************************************************/
+/*!
+	A delay value in millisecond to avoid flood of frames on the network
+*/
+/**************************************************************************/
+#define MaCaco_FLOODPROTECTION	1000
+
 
 #endif
