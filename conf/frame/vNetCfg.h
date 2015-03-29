@@ -138,6 +138,22 @@
 */
 /**************************************************************************/
 #define VNET_LOOPS  		0								
+
+/**************************************************************************/
+/*!
+	If enabled hold the code just after the re-broadcast, this result in a
+	delay before the frame is passed to the upper layers.
+	
+        Value       Status
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#ifndef VNET_BRDDELAY_INSKETCH
+#	define VNET_BRDDELAY_ENABLE		0
+#endif
+
+#define	VNET_BRDDELAY				1000
 								
 /**************************************************************************/
 /*!

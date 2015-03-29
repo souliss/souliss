@@ -1195,8 +1195,13 @@ U8 vNet_RoutingBridging(U8 media)
 		if(vNet_Media_Data[media-1].o_src_addr)
 			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
 				if(vnet_media_en[i] && (!skip_mymedia || (i != (media-1))))
+				{
 					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
-
+					#if(VNET_BRDDELAY_ENABLE)
+					delay(VNET_BRDDELAY);
+					#endif
+				}	
+			
 		// If is a multicast
 		if(((vNet_Media_Data[media-1].o_src_addr) > VNET_ADDR_L_MLC) && ((vNet_Media_Data[media-1].o_src_addr) <= VNET_ADDR_H_MLC))
 		{
@@ -1216,7 +1221,7 @@ U8 vNet_RoutingBridging(U8 media)
 		vNet_Media_Data[media-1].len-=VNET_HEADER_SIZE;
 		return vNet_Media_Data[media-1].len;	// Process the message	
 		
-	#else	// Only supernodes can spread a broadcast message across the network
+	#else	// A standard node cannot re-broadcast frames
 
 		// If is a multicast
 		if(((vNet_Media_Data[media-1].o_src_addr) > VNET_ADDR_L_MLC) && ((vNet_Media_Data[media-1].o_src_addr) <= VNET_ADDR_H_MLC))
