@@ -87,7 +87,12 @@ ISR(WDT_vect)
 		sleepcounter  = wakeupTime;
 		wakeupscycles = wakeupCycles;
 	}
-	else sleepcounter--;
+	else 
+	{
+		// is not yet time to wakeup
+		sleepcounter--;
+		sleepNow();
+	}
 }
 
 void wakeUpNow()        // here the interrupt is handled after wakeup

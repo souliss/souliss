@@ -70,7 +70,29 @@ void setup()
 }
 
 void loop()
-{   
+{  
+
+	// Back to sleep
+	if(isTimeToSleep() && !StayUp())	
+	{
+		/**************
+		Add below the code required to sleep custom devices connected, like:
+			- Sensor,
+			- Voltage regulator,
+			- ...
+		**************/
+					
+		// Sleep microcontroller and radio
+		sleepNow();
+					
+		/**************
+		Add below the code required to wakeup custom devices connected, like:
+			- Sensor,
+			- Voltage regulator,
+			- ...
+		**************/
+	}	
+ 
 	// If the node wake-ups then this statement is executed
 	if(wasSleeping() || StayUp())
 	{	
@@ -104,27 +126,6 @@ void loop()
 				
 				ImportAnalog(BATT_LEVEL, &batterycharge);
 				Read_AnalogIn(BATT_LEVEL);
-			
-				// Back to sleep
-				if(isTimeToSleep() && !StayUp())	
-				{
-					/**************
-					Add below the code required to sleep custom devices connected, like:
-						- Sensor,
-						- Voltage regulator,
-						- ...
-					**************/
-					
-					// Sleep microcontroller and radio
-					sleepNow();
-					
-					/**************
-					Add below the code required to wakeup custom devices connected, like:
-						- Sensor,
-						- Voltage regulator,
-						- ...
-					**************/
-				}	
 			} 
 			
 		}
