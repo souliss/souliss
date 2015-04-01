@@ -23,7 +23,7 @@
 #include "bconf/StandardArduino.h"			// Use a standard Arduino
 #include "conf/nRF24L01.h"
 #include "conf/Sleep.h"
-#include "conf/DynamicAddressing.h"			// Use dynamic addressing
+#include "conf/DynamicAddressing.h"         // Use dynamic address
 
 // Include framework code and libraries
 #include <SPI.h>
