@@ -24,10 +24,10 @@
 #include "conf/nRF24L01.h"
 #include "conf/Sleep.h"
 <<<<<<< HEAD
-#include "conf/DynamicAddressing.h"         // Use dynamic address
-=======
 #include "conf/DynamicAddressing.h"			// Use dynamic addressing
->>>>>>> b420adf982aa2a5f2b9cda7d4b9c9b956a95fd31
+=======
+#include "conf/DynamicAddressing.h"         // Use dynamic address
+>>>>>>> 8d15654e3579506f6f8d228ab0bcdc0c369453ce
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -74,7 +74,29 @@ void setup()
 }
 
 void loop()
-{   
+{  
+
+	// Back to sleep
+	if(isTimeToSleep() && !StayUp())	
+	{
+		/**************
+		Add below the code required to sleep custom devices connected, like:
+			- Sensor,
+			- Voltage regulator,
+			- ...
+		**************/
+					
+		// Sleep microcontroller and radio
+		sleepNow();
+					
+		/**************
+		Add below the code required to wakeup custom devices connected, like:
+			- Sensor,
+			- Voltage regulator,
+			- ...
+		**************/
+	}	
+ 
 	// If the node wake-ups then this statement is executed
 	if(wasSleeping() || StayUp())
 	{	
@@ -108,27 +130,6 @@ void loop()
 				
 				ImportAnalog(BATT_LEVEL, &batterycharge);
 				Read_AnalogIn(BATT_LEVEL);
-			
-				// Back to sleep
-				if(isTimeToSleep() && !StayUp())	
-				{
-					/**************
-					Add below the code required to sleep custom devices connected, like:
-						- Sensor,
-						- Voltage regulator,
-						- ...
-					**************/
-					
-					// Sleep microcontroller and radio
-					sleepNow();
-					
-					/**************
-					Add below the code required to wakeup custom devices connected, like:
-						- Sensor,
-						- Voltage regulator,
-						- ...
-					**************/
-				}	
 			} 
 			
 		}
