@@ -91,6 +91,11 @@ void loop()
 			- Voltage regulator,
 			- ...
 		**************/
+		
+		// We want send a frame once back from sleep, so we set the trigger and this
+		// will force the node to send its state to the gateway
+		SetTrigger();
+		
 	}	
  
 	// If the node wake-ups then this statement is executed
