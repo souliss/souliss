@@ -25,7 +25,7 @@
 #ifndef TYP_H
 #define TYP_H
 
-#include "src/types.h"
+#include "tools/types.h"
 
 // Defines for Typicals
 #define	Souliss_T1n						0x10			// Typicals Group 0x10

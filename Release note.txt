@@ -7,7 +7,7 @@ Release note for revision ... (Friariello)
 	for battery operated devices.
 		- Configuration is only available through inSketch or changing the configuration files
 		- Quick Configuration is deprecated.
-		- Support for battery operated devices (TODO)
+		- Support for battery operated devices
 		- Dynamic Addressing works also in case of complex network
 		- Gateway IP address can be configured at runtime from SoulissApp (TODO)
 		- EEPROM is used to retain network configuration for either Gateway and Peers (TODO)

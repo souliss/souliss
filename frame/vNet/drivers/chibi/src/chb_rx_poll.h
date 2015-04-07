@@ -42,7 +42,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "GetConfig.h"				// need : chibiUsrCfg.h
-#include "src/types.h"
+#include "tools/types.h"
 
 void chb_rcv_poll();
 

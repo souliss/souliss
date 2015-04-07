@@ -20,8 +20,8 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DYNADDRESSING_H
-#define bconf_DYNADDRESSING_H
+#ifndef bconf_USERCONF_H
+#define bconf_USERCONF_H
 
 /**************************************************************************/
 /*!

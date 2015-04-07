@@ -40,7 +40,7 @@
  *****************************************************************************/
 
 #include <string.h>
-#include "src/types.h"
+#include "tools/types.h"
 #include "external.h"
 #include "g2100.h"
 #include "spi.h"
