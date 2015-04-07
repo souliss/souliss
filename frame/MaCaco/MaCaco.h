@@ -27,7 +27,7 @@
 #ifndef MACACO_H
 #define MACACO_H
 
-#include "src/types.h"
+#include "tools/types.h"
 #include "GetConfig.h"			// need : MaCaco_Config.h
 
 typedef struct

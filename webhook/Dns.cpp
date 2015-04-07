@@ -10,7 +10,7 @@
 #endif
 
 #include "EthernetUdp.h"
-#include "src/util.h"
+#include "tools/util.h"
 
 #include "Dns.h"
 #include <string.h>

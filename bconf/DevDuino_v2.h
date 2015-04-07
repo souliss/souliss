@@ -22,8 +22,8 @@
     \file 
     \ingroup
 */
-#ifndef bconf_ssSTDARDUINO_H
-#define bconf_ssSTDARDUINO_H
+#ifndef bconf_ssDEVDUINO_H
+#define bconf_ssDEVDUINO_H
 
 #define BOARD_MODEL_INSKETCH
 #define	BOARD_MODEL			0x02

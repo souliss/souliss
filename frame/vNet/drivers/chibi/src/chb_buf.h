@@ -35,7 +35,7 @@
 #define CHB_BUF_H
 
 #include "GetConfig.h"				// need : chibiUsrCfg.h
-#include "src/types.h"
+#include "tools/types.h"
 
 #if (CHIBI_PROMISCUOUS)
     // if we're using promiscuous mode, we may end up capturing a lot of frames.

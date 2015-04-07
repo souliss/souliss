@@ -33,7 +33,7 @@
 */
 
 #include <Arduino.h>
-#include "src/types.h"
+#include "tools/types.h"
 #include "Typicals.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
@@ -112,7 +112,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.h"
-#include "src/IEEE754/float16.h"
+#include "tools/IEEE754/float16.h"
 
 #include "frame/MaCaco/MaCaco.cpp"
 #include "frame/vNet/vNet.cpp"
@@ -135,7 +135,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 #include "hardware/IOdef.cpp"
 
 // Include methods for half-precision floating points
-#include "src/IEEE754/float16.c"
+#include "tools/IEEE754/float16.c"
 
 // Include Souliss code base and typicals
 #include "base/Communication.cpp"
@@ -148,7 +148,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 #include "base/T5n.cpp"
 
 
-#include "src/types.h"
+#include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
 #include "base/ActionMessages.h"
@@ -160,12 +160,13 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.h"
-#include "src/IEEE754/float16.h"	
+#include "tools/IEEE754/float16.h"	
 
 #if (SOULISS_DEBUG)
 	#define SOULISS_LOG Serial.print
 #endif
 
 #include "base/SpeakEasy.h"
+#include "user/user_config.h"
 
 #endif

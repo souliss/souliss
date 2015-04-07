@@ -34,7 +34,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "src/types.h"
+#include "tools/types.h"
 
 void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port);
 void UserMode_Remove(U16 addr);

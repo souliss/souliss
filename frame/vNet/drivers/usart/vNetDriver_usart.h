@@ -28,7 +28,7 @@
 #define VNET_USART_H
 
 #include "Arduino.h"
-#include "src/types.h"
+#include "tools/types.h"
 #include "GetConfig.h"				// need : usartUsrCfg.h
 
 #define USART_SUCCESS			0x01

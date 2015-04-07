@@ -35,7 +35,7 @@
 #define CHB_H
 
 #include "GetConfig.h"				// need : chibiUsrCfg.h
-#include "src/types.h"
+#include "tools/types.h"
 
 #define CHB_HDR_SZ        9    // FCF + seq + pan_id + dest_addr + src_addr (2 + 1 + 2 + 2 + 2)
 #define CHB_FCS_LEN       2

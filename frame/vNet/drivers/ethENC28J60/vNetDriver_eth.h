@@ -29,7 +29,7 @@
 
 #include "Arduino.h"
 #include "GetConfig.h"				// need : ethUsrCfg.h
-#include "src/types.h"
+#include "tools/types.h"
 
 #include "frame/vNet/stack/uIP/uip.h"
 #include "frame/vNet/stack/uIP/uip_arch.h"

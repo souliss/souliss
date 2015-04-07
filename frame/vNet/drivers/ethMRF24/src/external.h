@@ -8,7 +8,7 @@
 #ifndef EXTERNAL_H_
 #define EXTERNAL_H_
 
-#include "src/types.h"
+#include "tools/types.h"
 
 extern const prog_char ssid[];
 extern U8 ssid_len;

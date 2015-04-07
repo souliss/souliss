@@ -37,7 +37,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "GetConfig.h"				// need : chibiUsrCfg.h
-#include "src/types.h"
+#include "tools/types.h"
 
 #define CHB_SPI_CMD_RW      0xC0    /**<  Register Write (short mode). */
 #define CHB_SPI_CMD_RR      0x80    /**<  Register Read (short mode). */

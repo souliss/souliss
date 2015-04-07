@@ -66,7 +66,7 @@
 #ifndef I2C_H
 #define I2C_H
 
-#include "src/types.h"
+#include "tools/types.h"
 
 #define START           		0x08
 #define REPEATED_START  		0x10

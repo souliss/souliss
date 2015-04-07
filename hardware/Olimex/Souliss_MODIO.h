@@ -26,7 +26,7 @@
 #define SOULISS_MODIO_H
 
 #include "MODIO.h"
-#include "src/types.h"
+#include "tools/types.h"
 
 U8 Souliss_MODIO_In();
 U8 Souliss_MODIO_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot);
