@@ -51,6 +51,7 @@ extern TCPIP stack;
 #if (VNET_DEBUG)
 	#define VNET_LOG Serial.print
 #endif
+
 /**************************************************************************/
 /*!
 	Set the vNet address and all the network parameters

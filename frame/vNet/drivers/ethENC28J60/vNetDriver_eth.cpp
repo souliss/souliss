@@ -29,6 +29,7 @@
 
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
+#include "vNetDriver_brd.h"
 
 #include "frame/vNet/stack/uIP/uip.c"
 #include "frame/vNet/stack/uIP/uip_arch.c"
@@ -61,6 +62,8 @@ oFrame vNetM1_oFrame;									// Data structure for output frame
 TCPIP stack;											// Structure for IP definitions
 
 extern bool addrsrv;
+extern uint16_t vNetM3_address;
+extern uint16_t vNetM3_srcaddr;
 
 /**************************************************************************/
 /*!
