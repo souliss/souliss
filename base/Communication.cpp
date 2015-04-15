@@ -267,7 +267,7 @@ U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
     Broadcast an action message
 */
 /**************************************************************************/
-U8 Souliss_BroadcastAction(U8 *memory_map, U16 message, U8 action)
+U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 {
 	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
 }
@@ -277,7 +277,7 @@ U8 Souliss_BroadcastAction(U8 *memory_map, U16 message, U8 action)
     Multicast an action message
 */
 /**************************************************************************/
-U8 Souliss_MulticastAction(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
+U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
 {
 	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
 }
@@ -287,7 +287,7 @@ U8 Souliss_MulticastAction(U16 multicast_addr, U8 *memory_map, U16 message, U8 a
     Broadcast an action message
 */
 /**************************************************************************/
-U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
+U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
 	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
 }
@@ -297,7 +297,7 @@ U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action, U8* da
     Multicast an action message
 */
 /**************************************************************************/
-U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
+U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
 	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
 }
@@ -307,7 +307,7 @@ U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 messag
     Return if there is a matching action message
 */
 /**************************************************************************/
-U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action)
+U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
 {
 	// action message are in the queue
 	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
@@ -339,7 +339,7 @@ U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action)
     Return if there is a matching action message
 */
 /**************************************************************************/
-U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8* len)
+U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* len)
 {
 	// action message are in the queue
 	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
