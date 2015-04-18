@@ -164,6 +164,12 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	for(i=1; i<VNET_MEDIA_NUMBER; i++)
 		if(vnet_media_en[i] && !vNet_GetAddress(i+1))
 			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, ((vnet_addr_l[i] & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));	
+		
+	// If previously we got the network addresses, recover them from EEPROM
+	#if(DYNAMICADDRESSING)
+	if(Return_ID()==STORE__DEFAULTID)
+		Return_PeerAddresses((uint16_t*)(memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+	#endif	
 }
 
 /**************************************************************************
@@ -209,14 +215,24 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
 	U8 i, usedmedia;			
 	
+	// Generate a a key identifier, this is the ID of the node
+	if(!keyidval)
+		for(i=0;i<size;i++)
+			keyidval+=(i*i)*id[i];	
+	
+	// If in the past the node has got an address, we use it again
+	if(keyidval == Return_ID())
+	{
+		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
+			if(Return_Addresses(i))
+				Souliss_SetAddress(Return_Addresses(i), DYNAMICADDR_SUBNETMASK, ((Return_Addresses(i) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+		
+		return 0;
+	}
+	
 	// If no address is set
 	if(vNet_MyMediasWithoutAddress(&usedmedia))
 	{
-		// Generate a a key identifier
-		if(!keyidval)
-			for(i=0;i<size;i++)
-				keyidval+=(i*i)*id[i];	
-	
 		// Verify if the addressing information are available in the configuration
 		// parameters of the memory map
 		
@@ -238,10 +254,18 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 				{
 					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 
+					// Store the node ID
+					if(keyidval) Store_ID(keyidval);
+					
+					// Store the address
+					for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
+						if(vNet_GetAddress(i))
+							Store_Address(vNet_GetAddress(i), i);
+					
 					// Configuration data can be now removed
 					for(U8 i=0; i<MaCaco_QUEUELEN; i++)
 						*(memory_map + MaCaco_QUEUE_s + i) = 0;
-
+					
 					return 0;	// Addressing is complete, we can quit
 				}					
 				else	// Request an address starting from the actual subnet

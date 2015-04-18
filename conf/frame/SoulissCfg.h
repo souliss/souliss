@@ -101,8 +101,9 @@
 /**************************************************************************/
 /*!
 	The dynamic addressing node act as server for Souliss addresses over
-	the network. It works for single media and bridged networks with a single
-	bridge acting as addressing server.
+	the network.
+	Once enabled, node addresses are stored in the EEPROM, use the constant
+	FIRST_EEPROM_BYTE to identify the first usable byte in your EEPROM.
 	
         Value       
         0x0         Disable (Default)

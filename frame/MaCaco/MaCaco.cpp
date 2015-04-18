@@ -79,7 +79,7 @@ extern bool addrsrv;
 
 /**************************************************************************/
 /*!
-    Init the memory map
+    Init the memory map and the EEPROM
 */
 /**************************************************************************/
 void MaCaco_init(U8* memory_map)
@@ -105,6 +105,11 @@ void MaCaco_init(U8* memory_map)
 		subscr_battery[i] = 0;		
 		subscr_count[i] = 0;	
 	}	
+	
+	// Init the EEPROM
+	#if(DYNAMICADDRESSING)
+	Store_Init();	
+	#endif		
 }
 
 /**************************************************************************/
@@ -448,7 +453,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
 		
-	#if(MaCaco_USERMODE)	
+	#if(MaCaco_USERMODE && DYNAMICADDRESSING)	
 	// record a join request
 	if ((rx->funcode == MaCaco_JOINNETWORK) || (rx->funcode == MaCaco_JOINANDRESET))
 	{			
@@ -463,34 +468,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// record the new address
 			(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
 			
-			/*
-			// sort the node addresses	
-			U8 sort_i = 1, sorting = 0;
-			U16	sort_buffer;
-			U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
-		
-			// out of this for all address are sorted, out of the local address
-			for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
-			{
-				// don't sort zeros
-				if(m_address[sort_i] == 0x0000) break;
-					
-				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
-				{
-					// don't sort zeros
-					if(m_address[sorting] == 0x0000) break; 
-					
-					// sort ascending
-					if(m_address[sort_i] > m_address[sorting])
-					{
-						sort_buffer         = m_address[sort_i];
-						m_address[sort_i]   = m_address[sorting];
-						m_address[sorting]  = sort_buffer;
-					}
-				}
-				
-			}
-			*/
+			// store the new values	
+			Store_ID(STORE__DEFAULTID);
+			Store_PeerAddresses((uint16_t*)(memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
 			
 			#if(MaCaco_DEBUG)
 			MaCaco_LOG("(MaCaco)<ADDRS><");

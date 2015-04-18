@@ -280,8 +280,8 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 
 #define MaCaco_ADDRESSES_s		(MaCaco_OUT_f+1)								// First byte of the addresses for the remote nodes
 #define MaCaco_ADDRESSES_f		(MaCaco_ADDRESSES_s+ 2*MaCaco_NODES-1)			// Last  byte of the addresses for the remote nodes
-#define MaCaco_HEALTHY_s			(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
-#define MaCaco_HEALTHY_f			(MaCaco_HEALTHY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
+#define MaCaco_HEALTHY_s		(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
+#define MaCaco_HEALTHY_f		(MaCaco_HEALTHY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
 
 #define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeable data by a remote device
 #define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeable data by a remote device

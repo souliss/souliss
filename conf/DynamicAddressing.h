@@ -25,6 +25,9 @@
 #ifndef bconf_DYNADDRESSING_H
 #define bconf_DYNADDRESSING_H
 
+// Be aware that dynamic addressing enable also the use of EEPROM, use FIRST_EEPROM_BYTE
+// to identify the first usable byte in your EEPROM.
+
 #define	DYNAMICADDRESSING_INSKETCH
 #define	IPBROADCAST_INSKETCH
 
