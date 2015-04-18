@@ -1250,6 +1250,14 @@ U8 vNet_RoutingBridging(U8 media)
 		U8 out_media;
 		vNet_OutPath(vNet_Media_Data[media-1].f_dest_addr, &routed_addr, &out_media);
 		
+		// Prevent routing on the same media (out of wireless radio, for range extender function)
+		if((out_media-1)!=VNET_MEDIA2_ID) && ((media-1) == (out_media-1))
+			return VNET_DATA_FAIL;											// Broadcasting media, like M3 and M5
+																			// may have SuperNode to resend frames
+																			// across the network into the same
+																			// broadcasting domain. This just flood
+																			// the network.
+		
 		// Move out the message on the path
 		if(vNet_SendRoute(routed_addr, out_media, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len))
 			return VNET_DATA_ROUTED;
