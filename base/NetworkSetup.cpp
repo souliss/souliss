@@ -205,19 +205,13 @@ void Souliss_SetDynamicAddressing()
 /*!
 	Before proceed to request and address, at first boot, look for a previously
 	assigned address.
-	
-	The id[] used shall be the same of Souliss_DynamicAddressing
+
 */	
 /**************************************************************************/
-U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map, const char id[], U8 size)
+U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)
 {
-	// Generate a a key identifier, this is the ID of the node
-	if(!keyidval)
-		for(uint8_t i=0;i<size;i++)
-			keyidval+=(i*i)*id[i];	
-	
 	// If in the past the node has got an address, we use it again
-	if(keyidval == Return_ID())
+	if(STORE__DEFAULTID == Return_ID())
 	{
 		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
 			if(Return_Addresses(i))
@@ -270,7 +264,7 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 
 					// Store the node ID
-					if(keyidval) Store_ID(keyidval);
+					Store_ID(STORE__DEFAULTID);
 					
 					// Store the address
 					for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
