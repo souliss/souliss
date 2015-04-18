@@ -1176,7 +1176,8 @@ U8 vNet_RoutingBridging(U8 media)
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
 		U8 skip_mymedia = 1;		// If set, we don't rebroadcast over the same media
-
+		U8 actual_media = vNet_GetMedia(vNet_Media_Data[media-1].o_src_addr);
+		
 		// Modify the destination address as subnet broadcast, this will avoid broadcast loops	
 		if(vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)
 		{
@@ -1194,7 +1195,7 @@ U8 vNet_RoutingBridging(U8 media)
 		// If the source address isn't null, rebroadcast the message over the active media
 		if(vNet_Media_Data[media-1].o_src_addr)
 			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
-				if(vnet_media_en[i] && (!skip_mymedia || (i != (media-1))))
+				if(vnet_media_en[i] && (!skip_mymedia || (i != actual_media)))
 				{
 					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
 					#if(VNET_BRDDELAY_ENABLE)
@@ -1251,7 +1252,7 @@ U8 vNet_RoutingBridging(U8 media)
 		vNet_OutPath(vNet_Media_Data[media-1].f_dest_addr, &routed_addr, &out_media);
 		
 		// Prevent routing on the same media (out of wireless radio, for range extender function)
-		if((out_media-1)!=VNET_MEDIA2_ID) && ((media-1) == (out_media-1))
+		if(((out_media-1)!=VNET_MEDIA2_ID) && ((media-1) == (out_media-1)))
 			return VNET_DATA_FAIL;											// Broadcasting media, like M3 and M5
 																			// may have SuperNode to resend frames
 																			// across the network into the same

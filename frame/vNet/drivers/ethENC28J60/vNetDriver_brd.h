@@ -48,6 +48,10 @@ extern oFrame vNetM1_oFrame;
 extern uint8_t vNetM1_header;
 extern TCPIP stack;
 
+#if (VNET_DEBUG)
+	#define VNET_LOG Serial.print	
+#endif
+
 /**************************************************************************/
 /*!
 	Set the vNet address and all the network parameters
@@ -74,6 +78,20 @@ extern TCPIP stack;
 #       else
 			enc28j60Init((U8 *)&MAC_ADDRESS[0]);
 #       endif 
+
+		// Include debug functionalities, if required
+		#if(VNET_DEBUG)
+
+		// Print IP address 
+		VNET_LOG("(IP)<");
+		for(U8 i=0; i<4; i++)
+		{
+			VNET_LOG(ip_addr[i],HEX);
+			VNET_LOG(",");
+		}
+		
+		VNET_LOG(">\r\n");
+		#endif	
 		
 		vNet_Begin_M1(UDP_SOCK);								// Start listen on socket
 		

@@ -90,6 +90,7 @@
 			0x2A	Subnet request (broadcast)
 			0x3A    Subnet answer (broadcast)
 			0x2B    Join a network gateway (broadcast)
+			0x2C    Join a network gateway and reset (broadcast)			
 			0x3C    Set an IP address at runtime (broadcast)
 			
 		Unstructured Functional Codes:
