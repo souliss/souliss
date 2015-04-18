@@ -37,6 +37,7 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+#include <EEPROM.h>
 #include "Souliss.h"
 
 #define LIGHT1					0			// This is the memory slot used for the execution of the logic

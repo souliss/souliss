@@ -203,6 +203,31 @@ void Souliss_SetDynamicAddressing()
 
 /**************************************************************************
 /*!
+	Before proceed to request and address, at first boot, look for a previously
+	assigned address.
+	
+	The id[] used shall be the same of Souliss_DynamicAddressing
+*/	
+/**************************************************************************/
+U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map, const char id[], U8 size)
+{
+	// Generate a a key identifier, this is the ID of the node
+	if(!keyidval)
+		for(uint8_t i=0;i<size;i++)
+			keyidval+=(i*i)*id[i];	
+	
+	// If in the past the node has got an address, we use it again
+	if(keyidval == Return_ID())
+	{
+		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
+			if(Return_Addresses(i))
+				Souliss_SetAddress(Return_Addresses(i), DYNAMICADDR_SUBNETMASK, ((Return_Addresses(i) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+		
+		return 0;
+	}	
+}
+/**************************************************************************
+/*!
 	Request an addressing and parse the answer, need an unique identifier
 	id that is used while the node hasn't a valid address.
 	
@@ -215,24 +240,14 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 {
 	U8 i, usedmedia;			
 	
-	// Generate a a key identifier, this is the ID of the node
-	if(!keyidval)
-		for(i=0;i<size;i++)
-			keyidval+=(i*i)*id[i];	
-	
-	// If in the past the node has got an address, we use it again
-	if(keyidval == Return_ID())
-	{
-		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
-			if(Return_Addresses(i))
-				Souliss_SetAddress(Return_Addresses(i), DYNAMICADDR_SUBNETMASK, ((Return_Addresses(i) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
-		
-		return 0;
-	}
-	
 	// If no address is set
 	if(vNet_MyMediasWithoutAddress(&usedmedia))
 	{
+		// Generate a a key identifier, this is the ID of the node
+		if(!keyidval)
+			for(i=0;i<size;i++)
+				keyidval+=(i*i)*id[i];	
+		
 		// Verify if the addressing information are available in the configuration
 		// parameters of the memory map
 		

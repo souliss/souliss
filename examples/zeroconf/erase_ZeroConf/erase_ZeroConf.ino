@@ -7,8 +7,10 @@
 	
 ***************************************************************************/
 #include "conf/DynamicAddressing.h"					// Use dynamic address
+#define VNET_MEDIA_INSKETCH
 
 // Include framework code and libraries
+#include <EEPROM.h>
 #include "Souliss.h"
 
 

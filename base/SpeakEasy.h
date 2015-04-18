@@ -277,7 +277,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 													JoinNetwork();					\
 												}
 
-#define	GetAddress()							for(uint8_t n=0;n<VNET_MEDIA_NUMBER;n++) {								\
+#define	GetAddress()							Souliss_DynamicAddressing_FirstBoot (memory_map, __TIME__, 9);			\
+												for(uint8_t n=0;n<VNET_MEDIA_NUMBER;n++) {								\
 													while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {		\
 														for(U16 i=0; i<1000; i++) {										\
 															if(Souliss_CommunicationData(memory_map, &data_changed))	\

@@ -56,8 +56,8 @@
 // Remove the ID, this identify a not initialized EEPROM
 void Store_Clear()
 {
-	EEPROM.write(STORE__INDEX+STORE__ID_s  , 0);
-	EEPROM.write(STORE__INDEX+STORE__ID_s+1, 0);	
+	for(uint8_t i=0;i<EEPROM.length();i++)
+		EEPROM.write(STORE__INDEX+STORE__ID_s+i, 0);
 }
 
 void Store_8bit(uint8_t addr, uint16_t store_val)
@@ -93,39 +93,39 @@ uint16_t Return_16bit(uint8_t addr)
 // Store the node ID, a valid node ID identify an EEPROM with proper values
 void Store_ID(uint16_t id)
 {
-	Store_16bit(STORE__ID_s, id);
+	Store_16bit(STORE__INDEX+STORE__ID_s, id);
 }
 
 // Read the node ID, a valid node ID identify an EEPROM with proper values
 uint16_t Return_ID()
 {
-	return Return_16bit(STORE__ID_s);
+	return Return_16bit(STORE__INDEX+STORE__ID_s);
 }
 
 // Store a vNet address
 void Store_Address(uint16_t address, uint8_t media)
 {
-	Store_16bit(STORE__ADDR_s+2*(media-1), address);
+	Store_16bit(STORE__INDEX+STORE__ADDR_s+2*(media-1), address);
 }
 
 // Return a vNet address
 uint8_t Return_Addresses(uint8_t media)
 {
-	return Return_16bit(STORE__ADDR_s+2*(media-1));
+	return Return_16bit(STORE__INDEX+STORE__ADDR_s+2*(media-1));
 }
 
 // Store all the peer addresses
 void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		Store_16bit(STORE__ADDR_s+2*i, addresses[i]);
+		Store_16bit(STORE__INDEX+STORE__ADDR_s+2*i, addresses[i]);
 }
 
 // Store all the peer addresses
 void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		addresses[i] = Return_16bit(STORE__ADDR_s+2*i);
+		addresses[i] = Return_16bit(STORE__INDEX+STORE__ADDR_s+2*i);
 }
 
 #endif
