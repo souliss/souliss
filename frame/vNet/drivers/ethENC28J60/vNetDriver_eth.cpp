@@ -54,7 +54,6 @@ uint16_t sportnumber=0;									// Source port number of the incoming packet
 uint8_t arptimer=0;										// ARP table timeout						
 uint8_t usedsock=MAX_SOCK_NUM;							// Socket used at last shift
 uint8_t mac_addr[6];									// MAC Address
-uint8_t rawdata=0;										// Flag if there are raw data (not UDP/IP, TCP/IP, ICMP, ARP)
 
 U8 vNetM1_header;										// Header for output frame
 oFrame vNetM1_oFrame;									// Data structure for output frame
@@ -222,13 +221,6 @@ uint8_t vNet_DataAvailable_M1()
 		// HTTP frame are not handled at this stage, but requires a dedicated
 		// call to HTTP method in the main program
 	}
-	#if(VNET_MEDIA3_ENABLE)
-	else if(rawdata)
-	{
-		// RAW data are not handled at this stage, but requires a dedicated
-		// call to vNet Media3 method
-	}	
-	#endif
 	else		
 		vNet_uIP();		// Retrieve and process the incoming data
 	
