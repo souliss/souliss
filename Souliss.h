@@ -68,12 +68,12 @@ U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command);
 U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof);
 U8 Souliss_MassiveCommand(U16 addr, U8 typ, U8 command);
 U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command);
-U8 Souliss_BroadcastAction(U8 *memory_map, U16 message, U8 action);
-U8 Souliss_MulticastAction(U16 multicast_addr, U8 *memory_map, U16 message, U8 action);
-U8 Souliss_BroadcastActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
-U8 Souliss_MulticastActionMessage(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
-U8 Souliss_GetAction(U8 *memory_map, U16 message, U8 action);
-U8 Souliss_GetActionMessage(U8 *memory_map, U16 message, U8 action, U8* data, U8* len);
+U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action);
+U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 action);
+U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
+U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len);
+U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action);
+U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* len);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);
@@ -151,7 +151,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
-#include "base/ActionMessages.h"
+#include "base/PublishSubscribe.h"
 #include "base/Sleeping.h"
 #include "base/SpeakEasy.h"
 

@@ -519,7 +519,7 @@ uip_process(u8_t flag)
   
   uip_appdata = &uip_buf[40 + UIP_LLH_LEN];
   
-  /* Check if we were invoked because of the perodic timer fireing. */
+  /* Check if we were invoked because of the periodic timer firing. */
   if(flag == UIP_TIMER) {
 #if UIP_REASSEMBLY
     if(uip_reasstmr != 0) {

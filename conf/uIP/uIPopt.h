@@ -374,7 +374,7 @@ typedef unsigned short uip_stats_t;
  * \hideinitializer
  */
 #define UIP_BUFSIZE	     	160
-#define UIP_PAYLOADSIZE     	120
+#define UIP_PAYLOADSIZE     120
 
 /**
  * Determines if statistics support should be compiled in.

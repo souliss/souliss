@@ -1171,12 +1171,13 @@ U8 vNet_RoutingBridging(U8 media)
 	// If is a broadcast message that needs to be spread over the network
 	else if ((vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)  || (vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_wBRDC))
 	{
-	#if (VNET_SUPERNODE)
+	// The MEDIA1 and MEDIA3 use the same broadcast domain, so re-broadcast isn't required	
+	#if ((VNET_SUPERNODE) && (VNET_MEDIA2_ID || VNET_MEDIA4_ID || VNET_MEDIA5_ID))
 		// Generally there is no need to rebroadcast a frame over the same media from where has been received,
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
 		U8 skip_mymedia = 1;		// If set, we don't rebroadcast over the same media
-
+		
 		// Modify the destination address as subnet broadcast, this will avoid broadcast loops	
 		if(vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)
 		{
@@ -1194,14 +1195,15 @@ U8 vNet_RoutingBridging(U8 media)
 		// If the source address isn't null, rebroadcast the message over the active media
 		if(vNet_Media_Data[media-1].o_src_addr)
 			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
-				if(vnet_media_en[i] && (!skip_mymedia || (i != (media-1))))
+				if(vnet_media_en[i] && (!skip_mymedia || (i != media-1)) 
+					&& !((i == VNET_MEDIA1_ID) && (media-1 == VNET_MEDIA3_ID)) && !((i == VNET_MEDIA3_ID) && (media-1 == VNET_MEDIA1_ID)))
 				{
 					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
 					#if(VNET_BRDDELAY_ENABLE)
 					delay(VNET_BRDDELAY);
 					#endif
 				}	
-			
+		
 		// If is a multicast
 		if(((vNet_Media_Data[media-1].o_src_addr) > VNET_ADDR_L_MLC) && ((vNet_Media_Data[media-1].o_src_addr) <= VNET_ADDR_H_MLC))
 		{
@@ -1249,6 +1251,14 @@ U8 vNet_RoutingBridging(U8 media)
 		// Find out the routing/bridging path
 		U8 out_media;
 		vNet_OutPath(vNet_Media_Data[media-1].f_dest_addr, &routed_addr, &out_media);
+		
+		// Prevent routing on the same media (out of wireless radio, for range extender function)
+		if(((out_media-1)!=VNET_MEDIA2_ID) && ((media-1) == (out_media-1)))
+			return VNET_DATA_FAIL;											// Broadcasting media, like M3 and M5
+																			// may have SuperNode to resend frames
+																			// across the network into the same
+																			// broadcasting domain. This just flood
+																			// the network.
 		
 		// Move out the message on the path
 		if(vNet_SendRoute(routed_addr, out_media, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len))
