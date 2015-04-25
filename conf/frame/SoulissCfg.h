@@ -112,6 +112,7 @@
 /**************************************************************************/
 #ifndef DYNAMICADDRESSING_INSKETCH
 #	define DYNAMICADDRESSING  	0
+#	define USEEEPROM			0
 #endif
 
 #define	DYNAMICADDR_IPVNETNODE	0x004D

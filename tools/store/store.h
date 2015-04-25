@@ -19,5 +19,6 @@ void Store_Address(unit16_t address, uint8_t media);
 uint8_t Return_Addresses(uint8_t media);
 void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses);
 void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses);
+uint16_t Return_SinglePeerAddresses(uint8_t n_addr);
 
 #endif

@@ -46,7 +46,7 @@
 #	define	FIRST_EEPROM_BYTE	(STORE__INDEX+1)	
 #endif
 
-#define	Store_Init()		{}			
+#define	Store_Init()				{}			
 
 #define User_Store_8bit(addr,val)	Store_8bit(FIRST_EEPROM_BYTE+addr,val)	
 #define User_Return_8bit(addr)		Return_8bit(FIRST_EEPROM_BYTE+addr)
@@ -121,11 +121,17 @@ void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 		Store_16bit(STORE__INDEX+STORE__ADDR_s+2*i, addresses[i]);
 }
 
-// Store all the peer addresses
+// Return all the peer addresses
 void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
 		addresses[i] = Return_16bit(STORE__INDEX+STORE__ADDR_s+2*i);
+}
+
+// Return single the peer addresses
+uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
+{
+	return Return_16bit(STORE__INDEX+STORE__ADDR_s+2*n_addr);
 }
 
 #endif

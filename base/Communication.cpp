@@ -264,7 +264,7 @@ U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
 
 /**************************************************************************/
 /*!
-    Broadcast an action message
+    Publish an event in broadcast
 */
 /**************************************************************************/
 U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
@@ -274,7 +274,7 @@ U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 
 /**************************************************************************/
 /*!
-    Multicast an action message
+    Publish an event in multicast
 */
 /**************************************************************************/
 U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
@@ -284,7 +284,7 @@ U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 
 
 /**************************************************************************/
 /*!
-    Broadcast an action message
+    Publish data in broadcast
 */
 /**************************************************************************/
 U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
@@ -294,7 +294,7 @@ U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 mess
 
 /**************************************************************************/
 /*!
-    Multicast an action message
+    Publish data in multicast
 */
 /**************************************************************************/
 U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
@@ -304,7 +304,7 @@ U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message,
 
 /**************************************************************************/
 /*!
-    Return if there is a matching action message
+    Return if there is a matching subscribed event
 */
 /**************************************************************************/
 U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
@@ -316,7 +316,7 @@ U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<Action Message>");
+		SOULISS_LOG("(ss)<Sub>");
 		SOULISS_LOG("<|0x");
 		SOULISS_LOG((*(U16 *)confparameters_p),HEX);
 		SOULISS_LOG("|0x");
@@ -336,7 +336,7 @@ U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
 
 /**************************************************************************/
 /*!
-    Return if there is a matching action message
+    Return if there is a matching subscribed event
 */
 /**************************************************************************/
 U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* len)
@@ -356,7 +356,7 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<Action Message>");
+		SOULISS_LOG("(ss)<Sub>");
 		SOULISS_LOG("<|0x");
 		SOULISS_LOG(_message,HEX);
 		SOULISS_LOG("|0x");

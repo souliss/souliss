@@ -166,9 +166,22 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 			Souliss_SetAddress((vnet_addr_l[i] | DYNAMICADDR_GATEWAYNODE), DYNAMICADDR_SUBNETMASK, ((vnet_addr_l[i] & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));	
 		
 	// If previously we got the network addresses, recover them from EEPROM
-	#if(DYNAMICADDRESSING)
+	#if(USEEEPROM)
 	if(Return_ID()==STORE__DEFAULTID)
 		Return_PeerAddresses((uint16_t*)(memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+	
+		#if (SOULISS_DEBUG)
+		// Print debug messages
+		SOULISS_LOG("(ss)<rAddr>");
+		SOULISS_LOG("<|0x");
+		for(i=0;i<MaCaco_NODES;i++)
+		{	
+			SOULISS_LOG(*(uint16_t*)(memory_map + MaCaco_ADDRESSES_s+2*i),HEX);
+			SOULISS_LOG("|0x");
+		}			
+		SOULISS_LOG(">\r\n");
+		#endif
+
 	#endif	
 }
 
@@ -210,15 +223,37 @@ void Souliss_SetDynamicAddressing()
 /**************************************************************************/
 U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)
 {
+	#if(USEEEPROM)
 	// If in the past the node has got an address, we use it again
 	if(STORE__DEFAULTID == Return_ID())
 	{
-		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
-			if(Return_Addresses(i))
-				Souliss_SetAddress(Return_Addresses(i), DYNAMICADDR_SUBNETMASK, ((Return_Addresses(i) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+		#if (SOULISS_DEBUG)
+		// Print debug messages
+		SOULISS_LOG("(ss)<sID>");
+		SOULISS_LOG("<|0x");
+		SOULISS_LOG(Return_ID(),HEX);
+		SOULISS_LOG(">\r\n");
+		#endif
 		
-		return 0;
-	}	
+		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
+		{
+			if(Return_Addresses(i))
+			{
+				#if (SOULISS_DEBUG)
+				// Print debug messages
+				SOULISS_LOG("(ss)<rAdd>");
+				SOULISS_LOG("<|0x");
+				SOULISS_LOG(Return_Addresses(i),HEX);
+				SOULISS_LOG(">\r\n");
+				#endif				
+				
+				Souliss_SetAddress(Return_Addresses(i), DYNAMICADDR_SUBNETMASK, ((Return_Addresses(i) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+			}	
+		}	
+	}
+	#endif
+	
+	return 0;
 }
 /**************************************************************************
 /*!
@@ -263,13 +298,33 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 				{
 					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 
+					#if(USEEEPROM)
 					// Store the node ID
 					Store_ID(STORE__DEFAULTID);
 					
 					// Store the address
-					for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
+					for(i=1; i<=VNET_MEDIA_NUMBER; i++)
 						if(vNet_GetAddress(i))
 							Store_Address(vNet_GetAddress(i), i);
+						
+						#if (SOULISS_DEBUG)
+						// Print debug messages
+						SOULISS_LOG("(ss)<sID>");
+						SOULISS_LOG("<|0x");
+						SOULISS_LOG(Return_ID(),HEX);
+						SOULISS_LOG(">\r\n");
+					
+						SOULISS_LOG("(ss)<sAddr>");
+						SOULISS_LOG("<|0x");
+						for(i=1; i<=VNET_MEDIA_NUMBER; i++)
+						{	
+							SOULISS_LOG(Return_Addresses(i),HEX);
+							SOULISS_LOG("|0x");
+						}			
+						SOULISS_LOG(">\r\n");
+						#endif
+		
+					#endif
 					
 					// Configuration data can be now removed
 					for(U8 i=0; i<MaCaco_QUEUELEN; i++)

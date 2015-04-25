@@ -37,6 +37,7 @@
 //	Only the Gateway node will use either unicast (to communicate with user interface) and broadcast.
 
 #define	DYNAMICADDRESSING					1
+#define USEEEPROM							1
 #define	IPBROADCAST							1
 
 #	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway

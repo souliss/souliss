@@ -107,7 +107,7 @@ void MaCaco_init(U8* memory_map)
 	}	
 	
 	// Init the EEPROM
-	#if(DYNAMICADDRESSING)
+	#if(USEEEPROM)
 	Store_Init();	
 	#endif		
 }
@@ -469,8 +469,29 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
 			
 			// store the new values	
+			#if(USEEEPROM)
 			Store_ID(STORE__DEFAULTID);
 			Store_PeerAddresses((uint16_t*)(memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+			
+			#if (SOULISS_DEBUG)
+			// Print debug messages
+			SOULISS_LOG("(ss)<sID>");
+			SOULISS_LOG("<|0x");
+			SOULISS_LOG(Return_ID(),HEX);
+			SOULISS_LOG(">\r\n");
+					
+			SOULISS_LOG("(ss)<sPddr>");
+			SOULISS_LOG("<|0x");
+			for(i=0; i<MaCaco_NODES; i++)
+			{	
+				SOULISS_LOG(Return_SinglePeerAddresses(i),HEX);
+				SOULISS_LOG("|0x");
+			}			
+			SOULISS_LOG(">\r\n");
+			#endif
+			
+			#endif
+			
 			
 			#if(MaCaco_DEBUG)
 			MaCaco_LOG("(MaCaco)<ADDRS><");
