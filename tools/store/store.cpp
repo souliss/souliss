@@ -37,7 +37,7 @@
 #define STORE__ID_s			0												// Identifier (2 bytes)
 #define	STORE__ADDR_s		2												// Address M1 to M5 (2 bytes per address)
 #define	STORE__ADDR_f		(STORE__ADDR_s+2*MEDIA_NUMBER-1)				// Address M1 to M5 (2 bytes per address)
-#define	STORE__PADDR_s		STORE__ADDR_f									// First peer address (for gateway)
+#define	STORE__PADDR_s		(STORE__ADDR_f+1)									// First peer address (for gateway)
 #define STORE__PADDR_f		(STORE__PADDR_s+2*MaCaco_NODES-1)				// Last peer address  (for gateway)
 
 #if(DYNAMICADDRESSING)
@@ -57,7 +57,7 @@
 void Store_Clear()
 {
 	for(uint8_t i=0;i<EEPROM.length();i++)
-		EEPROM.write(STORE__INDEX+STORE__ID_s+i, 0);
+		EEPROM.update(STORE__INDEX+STORE__ID_s+i, 0);
 }
 
 void Store_8bit(uint8_t addr, uint16_t store_val)
@@ -118,20 +118,20 @@ uint8_t Return_Addresses(uint8_t media)
 void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		Store_16bit(STORE__INDEX+STORE__ADDR_s+2*i, addresses[i]);
+		Store_16bit(STORE__INDEX+STORE__PADDR_s+2*i, addresses[i]);
 }
 
 // Return all the peer addresses
 void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		addresses[i] = Return_16bit(STORE__INDEX+STORE__ADDR_s+2*i);
+		addresses[i] = Return_16bit(STORE__INDEX+STORE__PADDR_s+2*i);
 }
 
 // Return single the peer addresses
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
 {
-	return Return_16bit(STORE__INDEX+STORE__ADDR_s+2*n_addr);
+	return Return_16bit(STORE__INDEX+STORE__PADDR_s+2*n_addr);
 }
 
 #endif

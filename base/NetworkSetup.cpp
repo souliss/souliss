@@ -172,7 +172,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<rAddr>");
+		SOULISS_LOG("(ss)<rPddr>");
 		SOULISS_LOG("<|0x");
 		for(i=0;i<MaCaco_NODES;i++)
 		{	
