@@ -524,16 +524,16 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	
 		return MaCaco_FUNCODE_OK;	
 	}	
+	#endif
 
+	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
 	{		
 		// Count the number of nodes
 		U8 nodes = 0;	
-		#if(MaCaco_USERMODE)	
 		while(((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
 			nodes++;
-		#endif
 		
 		// Add the actual number of nodes on the database structure frame
 		cmd[0] = nodes;		
@@ -546,9 +546,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
-	#endif
 	
-	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
 	if (rx->funcode == MaCaco_DISCOVERREQ)
 	{		

@@ -115,8 +115,10 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 #include "tools/IEEE754/float16.h"
 
 // Some bytes in the EEPROM are reserved
-#include "tools/store/store.h"
-#include "tools/store/store.cpp"
+#if(USEEEPROM)
+#	include "tools/store/store.h"
+#	include "tools/store/store.cpp"
+#endif
 
 #include "frame/MaCaco/MaCaco.cpp"
 #include "frame/vNet/vNet.cpp"
