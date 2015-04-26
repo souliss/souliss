@@ -885,7 +885,8 @@ void vNet_SetAddress(U16 addr, U8 media)
 /**************************************************************************/
 U16 vNet_GetAddress(U8 media)
 {
-	return vNet_Media[media-1].src_addr;
+	if(vnet_media_en[media-1])		return vNet_Media[media-1].src_addr;
+	else 							return 0;
 }
 
 /**************************************************************************/

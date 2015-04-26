@@ -36,8 +36,8 @@
 
 #define STORE__ID_s			0												// Identifier (2 bytes)
 #define	STORE__ADDR_s		2												// Address M1 to M5 (2 bytes per address)
-#define	STORE__ADDR_f		(STORE__ADDR_s+2*MEDIA_NUMBER-1)				// Address M1 to M5 (2 bytes per address)
-#define	STORE__PADDR_s		(STORE__ADDR_f+1)									// First peer address (for gateway)
+#define	STORE__ADDR_f		(STORE__ADDR_s+2*VNET_MEDIA_NUMBER-1)			// Address M1 to M5 (2 bytes per address)
+#define	STORE__PADDR_s		(STORE__ADDR_f+1)								// First peer address (for gateway)
 #define STORE__PADDR_f		(STORE__PADDR_s+2*MaCaco_NODES-1)				// Last peer address  (for gateway)
 
 #if(DYNAMICADDRESSING)
@@ -57,7 +57,7 @@
 void Store_Clear()
 {
 	for(uint8_t i=0;i<EEPROM.length();i++)
-		EEPROM.update(STORE__INDEX+STORE__ID_s+i, 0);
+		EEPROM.update(i, 0);
 }
 
 void Store_8bit(uint8_t addr, uint16_t store_val)
@@ -73,7 +73,8 @@ uint16_t Return_8bit(uint8_t addr)
 void Store_16bit(uint8_t addr, uint16_t store_val)
 {	
 	// Point the ID as a byte
-	uint8_t *val = (uint8_t*)(&store_val);
+	uint16_t s_val = store_val;
+	uint8_t *val = (uint8_t*)(&s_val);
 
 	EEPROM.update(STORE__INDEX+addr, *val++);
 	EEPROM.update(STORE__INDEX+addr+1, *val);
@@ -93,45 +94,45 @@ uint16_t Return_16bit(uint8_t addr)
 // Store the node ID, a valid node ID identify an EEPROM with proper values
 void Store_ID(uint16_t id)
 {
-	Store_16bit(STORE__INDEX+STORE__ID_s, id);
+	Store_16bit(STORE__ID_s, id);
 }
 
 // Read the node ID, a valid node ID identify an EEPROM with proper values
 uint16_t Return_ID()
 {
-	return Return_16bit(STORE__INDEX+STORE__ID_s);
+	return Return_16bit(STORE__ID_s);
 }
 
 // Store a vNet address
 void Store_Address(uint16_t address, uint8_t media)
 {
-	Store_16bit(STORE__INDEX+STORE__ADDR_s+2*(media-1), address);
+	Store_16bit(STORE__ADDR_s+2*(media-1), address);
 }
 
 // Return a vNet address
-uint8_t Return_Addresses(uint8_t media)
+uint16_t Return_Addresses(uint8_t media)
 {
-	return Return_16bit(STORE__INDEX+STORE__ADDR_s+2*(media-1));
+	return Return_16bit(STORE__ADDR_s+2*(media-1));
 }
 
 // Store all the peer addresses
 void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		Store_16bit(STORE__INDEX+STORE__PADDR_s+2*i, addresses[i]);
+		Store_16bit(STORE__PADDR_s+2*i, addresses[i]);
 }
 
 // Return all the peer addresses
 void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		addresses[i] = Return_16bit(STORE__INDEX+STORE__PADDR_s+2*i);
+		addresses[i] = Return_16bit(STORE__PADDR_s+2*i);
 }
 
 // Return single the peer addresses
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
 {
-	return Return_16bit(STORE__INDEX+STORE__PADDR_s+2*n_addr);
+	return Return_16bit(STORE__PADDR_s+2*n_addr);
 }
 
 #endif

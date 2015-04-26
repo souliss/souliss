@@ -316,9 +316,9 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 					
 						SOULISS_LOG("(ss)<sAddr>");
 						SOULISS_LOG("<|0x");
-						for(i=1; i<=VNET_MEDIA_NUMBER; i++)
+						for(uint8_t j=1; j<=VNET_MEDIA_NUMBER; j++)
 						{	
-							SOULISS_LOG(Return_Addresses(i),HEX);
+							SOULISS_LOG(Return_Addresses(j),HEX);
 							SOULISS_LOG("|0x");
 						}			
 						SOULISS_LOG(">\r\n");
