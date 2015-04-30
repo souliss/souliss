@@ -218,6 +218,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define myNode				memory_map, &data_changed
 #define	ResetTrigger()		(data_changed=0)
 
+#define SetAddress												Souliss_SetAddress
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
 #define	JoinNetwork()											Souliss_JoinNetwork()
