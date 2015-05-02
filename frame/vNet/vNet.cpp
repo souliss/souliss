@@ -1099,7 +1099,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 			subn = addr & DYNAMICADDR_SUBNETMASK;				// Use a standard subnetmask if the media isn't configured
 
 		// Look into the routing table
-		while ((route_table[route_index] != subn) && (route_index < VNET_ROUTING_TABLE))	
+		while ((route_index < VNET_ROUTING_TABLE) && (route_table[route_index] != subn))	
 			route_index++;														   	
 			
 		// Apply the routing path found in route table, if any
