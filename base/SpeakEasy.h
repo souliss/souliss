@@ -246,6 +246,13 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
 #define	RemoteInput												Souliss_RemoteInput
 #define	RemoteInputs											Souliss_RemoteInputs
+#define	Init_XMLServer()										XMLSERVERInit(memory_map)
+#define	Run_XMLServer()											XMLSERVERInterface(memory_map)
+#define	Init_Modbus()											ModbusInit(memory_map)
+#define	Run_Modbus()											Modbus(memory_map)
+#define	Init_HTTPServer()										{}
+#define	Run_HTTPServer()										HTTPServer(memory_map)
+
 
 /*****************************************/
 
