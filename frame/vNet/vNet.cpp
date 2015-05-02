@@ -1097,13 +1097,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		}
 		else
 			subn = addr & DYNAMICADDR_SUBNETMASK;				// Use a standard subnetmask if the media isn't configured
-		
-		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<NHBOR><|0x");
-		VNET_LOG(*media,HEX);
-		VNET_LOG(">\r\n");
-		#endif
-		
+
 		// Look into the routing table
 		while ((route_table[route_index] != subn) && (route_index < VNET_ROUTING_TABLE))	
 			route_index++;														   	
@@ -1114,6 +1108,13 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 			*routed_addr = dest_route_table[route_index];
 			*media = vNet_GetMedia(*routed_addr);	
 		}	
+		
+		#if(VNET_DEBUG)
+		VNET_LOG("(vNet)<NHBOR><|0x");
+		VNET_LOG(*media,HEX);
+		VNET_LOG(">\r\n");
+		#endif		
+		
 		#else	
 		// Route to my supernode
 			
