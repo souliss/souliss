@@ -100,7 +100,7 @@ void loop()
         FAST_910ms()    {
         
             // Acquire temperature from the microcontroller ADC
-            AnalogIn(A0, ANALOGDAQ, 0.04, -10); // The raw data is 0-1024, scaled as -10 to +30 Celsius
+            AnalogIn(A0, ANALOGDAQ+1, 0.04, -10); // The raw data is 0-1024, scaled as -10 to +30 Celsius
         }       
         
         // Process data communication
