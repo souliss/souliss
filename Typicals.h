@@ -173,7 +173,7 @@
 
 #define Souliss_T3n_RstCmd				0x0000
 #define Souliss_T3n_HeatingOn			0x02		// Heating Active
-#define Souliss_T3n_CoolingOn			0x03		// Cooling Active
+#define Souliss_T3n_CoolingOn			0x04		// Cooling Active
 #define Souliss_T3n_FanOn1				0x08		// Fan 1 Running
 #define Souliss_T3n_FanOn2				0x10		// Fan 2 Running
 #define Souliss_T3n_FanOn3				0x20		// Fan 3 Running
