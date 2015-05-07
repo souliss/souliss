@@ -116,35 +116,35 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
 	
 	// Store actual value as difference with requested setpoint
-	if(*(U16*)(memory_map + MaCaco_IN_s + slot + 1) != Souliss_T3n_RstCmd)
+	if(*(U16*)(memory_map + MaCaco_IN_s + slot) != Souliss_T3n_RstCmd)
 	{		
 		// If there is a too small change in the new temperature
 			if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
 				actual_temp = in_temp;													// Set the new temperature value
-		
-		*(U16*)(memory_map + MaCaco_IN_s + slot + 1) = Souliss_T3n_RstCmd;		// Reset	
 	}
 	
 	// Trig the next change of the state
 	i_trigger = Souliss_TRIGGED;	
 		
 	// Check the actual operational mode (Cooling / Heating)
-	if(!(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
+	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode)
 	{
 		// Heating Mode
-		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp)){
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingOn;	// Active the heating 
-		else if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
+		}else if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
 		else
 			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
 	}
-	else if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingMode)
+	else if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingMode)
 	{
 		// Cooling Mode
-		if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
+		if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp)){
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingOn;	// Active the cooling 
-		else if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
+		}else if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling 
 		else
 			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
@@ -182,7 +182,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_AsMeasured)
 			actual_setpnt = actual_temp;											// As actual temperature
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Cooling)
-			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingMode;				// Set Cooling Mode
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingMode;				// Set Cooling Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Heating)
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingMode;				// Set Heating Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanAuto)
@@ -195,13 +195,11 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		{
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1);											// Active Fan1
 			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);
-		
 		}
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanMed)
 		{
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2);						// Active Fan1 + Fan2
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_FanOn3;
-		
 		}
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanHigh)		
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Active Fan1 + Fan2 + Fan3
@@ -272,7 +270,7 @@ void Souliss_SetT32(U8 *memory_map, U8 slot)
 					(Auto/Cool/Dry/Fan/Heat)
 				
 				Group D - Temperature
-					(from 16°C to 30°C, encoded) 
+					(from 16Â°C to 30Â°C, encoded) 
 	
 			In the definitions are available the commands that shall be mapped
 			versus the air conditioner.
