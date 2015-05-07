@@ -83,6 +83,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_halfday()	if (!(phase_slow % 4321))
 #define	SLOW_1day()		if (!(phase_slow % 8641))
 
+#define EXECUTESPEEDY() else
 #define UPDATESPEEDY()	phase_speedy = (phase_speedy + 1) % num_phases
 #define	SPEEDY_x(n)		if (!(phase_speedy % n))
 
@@ -341,4 +342,6 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define ResetTrigger()				data_changed=0;	
 #define	Initialize()				MaCaco_init(memory_map)
 #define	isTrigger()					data_changed
+
 #endif
+

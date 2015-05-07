@@ -60,11 +60,13 @@ void setup()
 void loop()
 { 
     // Here we start to play
-    EXECUTEFAST() {                     
+    EXECUTEFAST()
+    {                     
         UPDATEFAST();   
         
         // Execute the logic to report the analog value to the user interface         
-        FAST_110ms() {
+        FAST_110ms()
+        {
             // Compare the acquired input with the stored one, send the new value to the
             // user interface if the difference is greater than the dead-band
             Read_AnalogIn(ANALOGDAQ);
@@ -73,12 +75,13 @@ void loop()
         // Process data communication
         FAST_GatewayComms();
     }
-else
+    EXECUTESPEEDY()
     {
         UPDATESPEEDY();
       
         // Execute the code every 3 times of free MCU       
-        SPEEDY_x(3) {
+        SPEEDY_x(3)
+        {
         
             // Acquire data from the microcontroller ADC
             AnalogIn(A0, ANALOGDAQ, 0.09, 0);   // The raw data is 0-1024, scaled as 0-100% without bias (100 / 1024 = 0.09)
