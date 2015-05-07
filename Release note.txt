@@ -10,9 +10,9 @@ Release note for revision ... (Friariello)
 		- Support for battery operated devices
 		- Dynamic Addressing works also in case of complex network
 		- Gateway IP address can be configured at runtime from SoulissApp (TODO)
-		- EEPROM is used to retain network configuration for either Gateway and Peers (TODO)
+		- EEPROM is used to retain network configuration for either Gateway and Peers
 		- Review of all examples
-		- Zeroconfig examples (TODO)
+		- Zeroconfig examples
 		- Official introduction of new logic typicals T31, T1B (TODO)
 		- Introduction of Publish/Subscribe user methods
 		- Massive commands can be used between nodes
