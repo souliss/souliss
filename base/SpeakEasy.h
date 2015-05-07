@@ -340,5 +340,5 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define SetTrigger()				data_changed=1;	
 #define ResetTrigger()				data_changed=0;	
 #define	Initialize()				MaCaco_init(memory_map)
-
+#define	isTrigger()					data_changed
 #endif
