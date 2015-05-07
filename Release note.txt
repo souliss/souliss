@@ -1,10 +1,5 @@
 Souliss
-Copyright (C) 2011-2015  Veseo
-
-Work in progress
-		- Support for battery operated devices (TODO)
-		- Gateway IP address can be configured at runtime from SoulissApp (TODO)
-		- Official introduction of new logic typicals T31, T1B (TODO)
+Copyright (C) 2011-2015
 		
 Release note for revision v7.0.3, on 07/05/2015
 	
