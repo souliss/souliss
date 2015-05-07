@@ -164,7 +164,7 @@
 #define Souliss_T3n_FanHigh				0x09		// Heating / Cooling Fan High
 #define Souliss_T3n_FanAuto				0x0A		// Heating / Cooling Fan Automatic
 #define Souliss_T3n_FanManual			0x0B		// Heating / Cooling Fan Manual
-#define Souliss_T3n_DeadBand			0.05		// Percentage Deadband
+#define Souliss_T3n_DeadBand			0.01		// Percentage Deadband
 #define Souliss_T3n_ThMed				0.10		// Threshold for medium speed
 #define Souliss_T3n_ThHigh				0.15		// Threshold for high speed
 #define Souliss_T3n_SetTemp				0x0C		// Set the setpoint
