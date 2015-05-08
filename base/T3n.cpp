@@ -123,7 +123,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	{		
 		// If there is a too small change in the new temperature
 			if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
-				actual_temp = in_temp;													// Set the new temperature value
+				actual_temp = in_temp;									// Set the new temperature value
 	}
 			
 	// Check the actual operational mode (Cooling / Heating)
