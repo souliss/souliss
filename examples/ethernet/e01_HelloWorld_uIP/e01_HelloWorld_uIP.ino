@@ -5,21 +5,14 @@
     using SoulissApp (get it from Play Store).  
     
     Run this code on one of the following boards:
-      - Arduino Ethernet (W5100) 
-      - Arduino with Ethernet Shield (W5100)
-      
-    As option you can run the same code on the following, just changing the
-    relevant configuration file at begin of the sketch
-      - Arduino with W5200 Ethernet Shield
-      - Arduino with W5500 Ethernet Shield
+      - Arduino with ENC28J60 Ethernet Shield
         
 ***************************************************************************/
 
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
-#include "conf/ethW5100.h"                  // Ethernet through Wiznet W5100
+#include "conf/ethENC28J60.h"               // Ethernet through Wiznet W5100
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/Webhook.h"                   // Enable DHCP and DNS
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -28,25 +21,23 @@
 // This identify the number of the LED logic
 #define MYLEDLOGIC          0               
 
-// This sketch will use DHCP, but a generic IP address is defined in case
-// the DHCP will fail. Generally this IP address will not be used and doesn't
-// need to be used in SoulissApp
-IPAddress ip(192, 168, 1, 77);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 255, 0);
-#define myvNet_address  ip[3]
+// Define the network configuration according to your router settings
+uint8_t ip_address[4]  = {192, 168, 1, 77};
+uint8_t subnet_mask[4] = {255, 255, 255, 0};
+uint8_t ip_gateway[4]  = {192, 168, 1, 1};
+#define Gateway_address 77
+#define myvNet_address  ip_address[3]       // The last byte of the IP address (77) is also the vNet address
+#define myvNet_subnet   0xFF00
+#define myvNet_supern   Gateway_address
 
 void setup()
 {   
     Initialize();
 
-    // Network configuration
-    if(Ethernet.begin()==0)                     // Get an address via DHCP     
-        Ethernet.begin(ip, gateway, subnet);    // If DHCP fails, use a manual address
-    else
-        ip = Ethernet.localIP();                            
-    SetAsGateway(myvNet_address);       // Set this node as gateway for SoulissApp  
-    
+     // Set network parameters
+    Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
+    SetAsGateway(myvNet_address);                                   // Set this node as gateway for SoulissApp  
+     
     Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic
     
     // We connect a pushbutton between 5V and pin2 with a pulldown resistor 

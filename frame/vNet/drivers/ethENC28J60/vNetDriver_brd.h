@@ -33,6 +33,7 @@
 #include "vNetDriver_eth.h"
 
 #define	vNet_Init_M3()						vNet_Init_M1()
+#define vNet_Begin_M3						vNet_Begin_M1
 #define	vNet_DataAvailable_M3()				vNet_DataAvailable_M1()
 #define	vNet_RetrieveData_M3(data)			vNet_RetrieveData_M1(data)
 
@@ -47,6 +48,10 @@ oFrame vNetM3_oFrame;								// Data structure for output frame
 extern oFrame vNetM1_oFrame;	
 extern uint8_t vNetM1_header;
 extern TCPIP stack;
+
+#if (VNET_DEBUG)
+	#define VNET_LOG Serial.print	
+#endif
 
 /**************************************************************************/
 /*!
@@ -74,34 +79,22 @@ extern TCPIP stack;
 #       else
 			enc28j60Init((U8 *)&MAC_ADDRESS[0]);
 #       endif 
-		
-		vNet_Begin_M1(UDP_SOCK);								// Start listen on socket
 
 		// Include debug functionalities, if required
 		#if(VNET_DEBUG)
-		uint8_t addrval[6];
-		
-		// Print MAC address 
-		W5x00.getMACAddress(addrval);
-		VNET_LOG("(MAC)<");
-		for(U8 i=0; i<6; i++)
-		{
-			VNET_LOG(addrval[i],HEX);
-			VNET_LOG(",");
-		}
-		VNET_LOG(">\r\n");
 
 		// Print IP address 
-		W5x00.getIPAddress(addrval);
 		VNET_LOG("(IP)<");
 		for(U8 i=0; i<4; i++)
 		{
-			VNET_LOG(addrval[i],HEX);
+			VNET_LOG(ip_addr[i],HEX);
 			VNET_LOG(",");
 		}
 		
 		VNET_LOG(">\r\n");
 		#endif	
+		
+		vNet_Begin_M3(UDP_SOCK);								// Start listen on socket
 		
 	}
 #else

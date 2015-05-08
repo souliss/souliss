@@ -323,7 +323,7 @@ uint8_t enc28j60hasRxPkt(void)
 // Returns: Packet length in bytes if a packet was retrieved, zero otherwise.
 uint16_t enc28j60PacketReceive(uint16_t maxlen, uint8_t* packet)
 {
-        	uint16_t rxstat;
+    uint16_t rxstat;
 	uint16_t len;
 	// check if a packet has been received and buffered
 	//if( !(enc28j60Read(EIR) & EIR_PKTIF) ){

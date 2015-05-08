@@ -79,7 +79,7 @@ extern bool addrsrv;
 
 /**************************************************************************/
 /*!
-    Init the memory map
+    Init the memory map and the EEPROM
 */
 /**************************************************************************/
 void MaCaco_init(U8* memory_map)
@@ -105,6 +105,11 @@ void MaCaco_init(U8* memory_map)
 		subscr_battery[i] = 0;		
 		subscr_count[i] = 0;	
 	}	
+	
+	// Init the EEPROM
+	#if(USEEEPROM)
+	Store_Init();	
+	#endif		
 }
 
 /**************************************************************************/
@@ -448,7 +453,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
 		
-	#if(MaCaco_USERMODE)	
+	#if(MaCaco_USERMODE && DYNAMICADDRESSING)	
 	// record a join request
 	if ((rx->funcode == MaCaco_JOINNETWORK) || (rx->funcode == MaCaco_JOINANDRESET))
 	{			
@@ -463,34 +468,30 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// record the new address
 			(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
 			
-			/*
-			// sort the node addresses	
-			U8 sort_i = 1, sorting = 0;
-			U16	sort_buffer;
-			U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
-		
-			// out of this for all address are sorted, out of the local address
-			for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
-			{
-				// don't sort zeros
-				if(m_address[sort_i] == 0x0000) break;
+			// store the new values	
+			#if(USEEEPROM)
+			Store_ID(STORE__DEFAULTID);
+			Store_PeerAddresses((uint16_t*)(memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+			
+			#if (SOULISS_DEBUG)
+			// Print debug messages
+			SOULISS_LOG("(ss)<sID>");
+			SOULISS_LOG("<|0x");
+			SOULISS_LOG(Return_ID(),HEX);
+			SOULISS_LOG(">\r\n");
 					
-				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
-				{
-					// don't sort zeros
-					if(m_address[sorting] == 0x0000) break; 
-					
-					// sort ascending
-					if(m_address[sort_i] > m_address[sorting])
-					{
-						sort_buffer         = m_address[sort_i];
-						m_address[sort_i]   = m_address[sorting];
-						m_address[sorting]  = sort_buffer;
-					}
-				}
-				
-			}
-			*/
+			SOULISS_LOG("(ss)<sPddr>");
+			SOULISS_LOG("<|0x");
+			for(i=0; i<MaCaco_NODES; i++)
+			{	
+				SOULISS_LOG(Return_SinglePeerAddresses(i),HEX);
+				SOULISS_LOG("|0x");
+			}			
+			SOULISS_LOG(">\r\n");
+			#endif
+			
+			#endif
+			
 			
 			#if(MaCaco_DEBUG)
 			MaCaco_LOG("(MaCaco)<ADDRS><");
@@ -523,16 +524,16 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	
 		return MaCaco_FUNCODE_OK;	
 	}	
+	#endif
 
+	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
 	{		
 		// Count the number of nodes
 		U8 nodes = 0;	
-		#if(MaCaco_USERMODE)	
 		while(((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
 			nodes++;
-		#endif
 		
 		// Add the actual number of nodes on the database structure frame
 		cmd[0] = nodes;		
@@ -545,9 +546,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
-	#endif
 	
-	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
 	if (rx->funcode == MaCaco_DISCOVERREQ)
 	{		

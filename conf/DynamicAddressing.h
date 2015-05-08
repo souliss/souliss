@@ -25,6 +25,9 @@
 #ifndef bconf_DYNADDRESSING_H
 #define bconf_DYNADDRESSING_H
 
+// Be aware that dynamic addressing enable also the use of EEPROM, use FIRST_EEPROM_BYTE
+// to identify the first usable byte in your EEPROM.
+
 #define	DYNAMICADDRESSING_INSKETCH
 #define	IPBROADCAST_INSKETCH
 
@@ -34,6 +37,7 @@
 //	Only the Gateway node will use either unicast (to communicate with user interface) and broadcast.
 
 #define	DYNAMICADDRESSING					1
+#define USEEEPROM							1
 #define	IPBROADCAST							1
 
 #	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway
