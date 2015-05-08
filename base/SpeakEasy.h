@@ -83,6 +83,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_halfday()	if (!(phase_slow % 4321))
 #define	SLOW_1day()		if (!(phase_slow % 8641))
 
+#define EXECUTESPEEDY() else
 #define UPDATESPEEDY()	phase_speedy = (phase_speedy + 1) % num_phases
 #define	SPEEDY_x(n)		if (!(phase_speedy % n))
 
@@ -218,8 +219,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define myNode				memory_map, &data_changed
 #define	ResetTrigger()		(data_changed=0)
 
+#define SetAddress												Souliss_SetAddress
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
+#define	SetIPAddress											Souliss_SetIPAddress
 #define	JoinNetwork()											Souliss_JoinNetwork()
 #define	JoinAndReset()											Souliss_JoinAndReset()
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
@@ -240,11 +243,20 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define nDigOut(pin,value,slot)									Souliss_nDigOut(pin, value, memory_map, slot)
 #define LowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
 #define nLowDigOut(pin,value,slot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
+#define DigOutToggle(pin,value,slot)							Souliss_DigOutToggle(pin, value, memory_map, slot)
 #define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
 #define	AnalogIn(pin, slot, conv, bias)							Souliss_AnalogIn(pin, memory_map, slot, conv, bias)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
 #define	RemoteInput												Souliss_RemoteInput
 #define	RemoteInputs											Souliss_RemoteInputs
+#define	RoutingTable											vNet_SetRoutingTable
+#define	Init_XMLServer()										XMLSERVERInit(memory_map)
+#define	Run_XMLServer()											XMLSERVERInterface(memory_map)
+#define	Init_Modbus()											ModbusInit(memory_map)
+#define	Run_Modbus()											Modbus(memory_map)
+#define	Init_HTTPServer()										{}
+#define	Run_HTTPServer()										HTTPServer(memory_map)
+
 
 /*****************************************/
 
@@ -329,5 +341,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define SetTrigger()				data_changed=1;	
 #define ResetTrigger()				data_changed=0;	
 #define	Initialize()				MaCaco_init(memory_map)
+#define	isTrigger()					data_changed
 
 #endif
+
