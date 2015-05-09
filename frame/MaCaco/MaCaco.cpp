@@ -84,7 +84,7 @@ extern bool addrsrv;
 /**************************************************************************/
 void MaCaco_init(U8* memory_map)
 {
-	U8 i=0;
+	U16 i=0;
 	
 	for(i=0;i<MaCaco_MEMMAP;i++)
 		*(memory_map+i)=0;
