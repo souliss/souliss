@@ -98,7 +98,7 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 		Using the Souliss_nDigOut method matching with following state defines
 		let control heating, cooling and fans.
 				#define Souliss_T3n_HeatingOn			0x02
-				#define Souliss_T3n_CoolingOn			0x03
+				#define Souliss_T3n_CoolingOn			0x04
 				#define Souliss_T3n_FanOn1				0x08
 				#define Souliss_T3n_FanOn2				0x10
 				#define Souliss_T3n_FanOn3				0x20	
