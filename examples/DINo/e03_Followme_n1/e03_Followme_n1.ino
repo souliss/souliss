@@ -100,10 +100,10 @@ void loop()
             // If a button has been press
             if(button_pressed)
             {       
-                U8 cmd[LIGHT_NO];
+                U8 i, cmd[LIGHT_NO];
                 
                 // Define the command to align the status of the twin node
-                for(U8 i=LIGHT1;i<LIGHT_NO;i++)
+                for(i=LIGHT1;i<LIGHT_NO;i++)
                     if(mOutput(i))
                         cmd[i]=Souliss_T1n_OnCmd;
                     else
