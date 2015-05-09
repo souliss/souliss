@@ -115,40 +115,55 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
 	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
 	
+	// Trig the next change of the state
+	i_trigger = Souliss_TRIGGED;
+	
 	// Store actual value as difference with requested setpoint
 	if(*(U16*)(memory_map + MaCaco_IN_s + slot) != Souliss_T3n_RstCmd)
 	{		
 		// If there is a too small change in the new temperature
 			if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
-				actual_temp = in_temp;													// Set the new temperature value
+				actual_temp = in_temp;									// Set the new temperature value
 	}
-	
-	// Trig the next change of the state
-	i_trigger = Souliss_TRIGGED;	
-		
+			
 	// Check the actual operational mode (Cooling / Heating)
 	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode)
 	{
 		// Heating Mode
-		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp)){
+		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingOn){
+			i_trigger = Souliss_NOTTRIGGED;
+			}
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingOn;	// Active the heating 
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
-		}else if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
+		} else if((actual_temp-actual_setpnt) > (Souliss_T3n_DeadBand*actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_HeatingOn){  
+			i_trigger = Souliss_NOTTRIGGED;
+			}
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
-		else
-			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
-	}
-	else if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingMode)
-	{
+		} else
+			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig
+		} else if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingMode)
+		{
 		// Cooling Mode
-		if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp)){
+		if((actual_temp-actual_setpnt) > (Souliss_T3n_DeadBand*actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingOn){
+			i_trigger = Souliss_NOTTRIGGED;
+			}
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingOn;	// Active the cooling 
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
-		}else if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+		}else if((actual_temp-actual_setpnt) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingOn) { 
+			i_trigger = Souliss_NOTTRIGGED;	
+			}
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling 
-		else
+		} else
 			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
-	}
+		}
 
 	// Check the fan mode (Manual / Auto)
 	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_FanAutoState)
@@ -172,6 +187,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	
 	// If new setpoint is available, store it
+	if(memory_map[MaCaco_IN_s + slot] != Souliss_T3n_RstCmd)
 	if(memory_map[MaCaco_IN_s + slot] != Souliss_T3n_RstCmd)
 	{	
 		// Check out the setpoint request
@@ -270,7 +286,7 @@ void Souliss_SetT32(U8 *memory_map, U8 slot)
 					(Auto/Cool/Dry/Fan/Heat)
 				
 				Group D - Temperature
-					(from 16Â°C to 30Â°C, encoded) 
+					(from 16°C to 30°C, encoded) 
 	
 			In the definitions are available the commands that shall be mapped
 			versus the air conditioner.
