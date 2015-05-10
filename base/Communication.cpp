@@ -57,7 +57,7 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 		*(memory_map+MaCaco_HEALTHY_s+subscr_chnl) = MaCaco_SUBINITHEALTHY;
 	
 	// Subscribe data
-	return MaCaco_subscribe(addr, memory_map, memory_map + MaCaco_IN_s + input_slot, MaCaco_OUT_s + output_slot, numof_slot, subscr_chnl);
+	return MaCaco_subscribe(addr, memory_map, input_slot, MaCaco_OUT_s + output_slot, numof_slot, subscr_chnl);
 }
 
 /**************************************************************************
@@ -269,7 +269,7 @@ U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
 /**************************************************************************/
 U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 {
-	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, 0, 0);
 }
 
 /**************************************************************************/
@@ -279,7 +279,7 @@ U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 /**************************************************************************/
 U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
 {
-	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, 0, 0);
 }
 
 /**************************************************************************/
@@ -289,7 +289,7 @@ U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 
 /**************************************************************************/
 U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
-	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, message_len, data);
 }
 
 /**************************************************************************/
@@ -299,7 +299,7 @@ U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 mess
 /**************************************************************************/
 U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
-	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, message_len, data);
 }
 
 /**************************************************************************/

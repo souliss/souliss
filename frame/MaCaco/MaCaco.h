@@ -34,14 +34,14 @@ typedef struct
 {
 	U8  datain;			// Number of communication media with incoming data
     U8  funcode;		// Functional Code
-    U8  *putin;			// Put in, where data will be placed
+    U16 putin;			// Put in, where data will be placed
     U8  startoffset;	// Start offset
     U8  numberof;		// Number of bytes
 	U8  *data;			// Message Data
 } MaCaco_rx_data_t;
 
 void MaCaco_init(U8* memory_map);
-U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl);
+U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U16 putin, U8 startoffset, U8 numberof, U8 subscr_chnl);
 void MaCaco_subscribe_reset();
 void MaCaco_subscribe_battery(U8 subscr_chnl);
 void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof);
@@ -54,8 +54,8 @@ U16 MaCaco_reqtyp_lastaddr();
 void MaCaco_reset_lastaddr();
 void MaCaco_DataIn();
 U8 MaCaco_retrieve(U8* memory_map, U8* data_chg);
-U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 *data);
-U8 MaCacoUserMode_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 l_numberof, U8 u_numberof, U8 *l_data, U8 *u_data);
+U8 MaCaco_send(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof, U8 *data);
+U8 MaCacoUserMode_send(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof, U8 l_numberof, U8 u_numberof, U8 *l_data, U8 *u_data);
 U8 MaCaco_getfuncode();
 U16 MaCaco_getputin();
 U8 MaCaco_getstartoffset();
