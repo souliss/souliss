@@ -36,56 +36,56 @@
 #if (VNET_MEDIA1_ENABLE)
 	// Driver for Wiznet W5100 / W5200
 	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
-		#include "drivers/ethW5x00/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.cpp"	
 	#endif
 	
 	// Driver for Microchip EN28J60
 	#if (ETH_ENC28J60)
-		#include "drivers/ethENC28J60/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.cpp"	
 	#endif
 
 	// Driver for Microchip MRF2WB0MA
 	#if (WIFI_MRF24)
-		#include "drivers/ethMRF24/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.cpp"	
 	#endif	
 	
 #endif
 	
 #if (VNET_MEDIA2_ENABLE)
 	#if(CHIBI_AT86RF230)
-		#include "drivers/chibi/vNetDriver_chibi.c"	
+		#include "drivers/mcu_avr/chibi/vNetDriver_chibi.c"	
 	#endif	
 	
 	#if(NRF24)
-		#include "drivers/nRF24/vNetDriver_nrf24.cpp"
+		#include "drivers/mcu_avr/nRF24/vNetDriver_nrf24.cpp"
 	#endif	
 	
 	#if(HOPERF_RFM69)
-		#include "drivers/RFM69/vNetDriver_rfm69.cpp"
+		#include "drivers/mcu_avr/RFM69/vNetDriver_rfm69.cpp"
 	#endif		
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)
 	// Driver for Wiznet W5100 / W5200 / W5500 (broadcast only)
 	#if ((ETH_W5100 || ETH_W5200 || ETH_W5500) && (!VNET_MEDIA1_ENABLE))
-		#include "drivers/ethW5x00/vNetDriver_eth.cpp"	
-		#include "drivers/ethW5x00/vNetDriver_brd.h"
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_brd.h"
 	#elif((ETH_W5100 || ETH_W5200 || ETH_W5500))
-		#include "drivers/ethW5x00/vNetDriver_brd.h"
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_brd.h"
 	#endif
 	
 	// Driver for Microchip EN28J60 (broadcast only)
 	#if ((ETH_ENC28J60) && (!VNET_MEDIA1_ENABLE))
-		#include "drivers/ethENC28J60/vNetDriver_eth.cpp"
-		#include "drivers/ethENC28J60/vNetDriver_brd.h"	
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.cpp"
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_brd.h"	
 	#elif(ETH_ENC28J60)
-		#include "drivers/ethENC28J60/vNetDriver_brd.h"		
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_brd.h"		
 	#endif	
 	
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)
-	#include "drivers/usart/vNetDriver_usart.cpp"
+	#include "drivers/mcu_avr/usart/vNetDriver_usart.cpp"
 #endif	
 
 #if (VNET_DEBUG)

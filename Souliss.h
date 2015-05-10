@@ -40,14 +40,18 @@
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#	define MAXINPIN		69		// Max number of input pins
-#elif defined(__AVR_ATmega1284P__)
-#	define MAXINPIN		40		// Max number of input pins
-#elif defined(__AVR_ATmega32U4__)
-#	define MAXINPIN		29		// Max number of input pins
-#else
-#	define MAXINPIN		29		// Max number of input pins
+#if(BOARD_MODEL == 0x01)	// Atmel AVR Atmega
+#	if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#		define MAXINPIN		69		// Max number of input pins
+#	elif defined(__AVR_ATmega1284P__)
+#		define MAXINPIN		40		// Max number of input pins
+#	elif defined(__AVR_ATmega32U4__)
+#		define MAXINPIN		29		// Max number of input pins
+#	else
+#		define MAXINPIN		29		// Max number of input pins
+#	endif
+#elif(BOARD_MODEL == 0x02)	// Expressif ESP8266
+#		define MAXINPIN		29		// Max number of input pins	
 #endif
 
 	 
