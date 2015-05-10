@@ -46,10 +46,6 @@
 		#include "drivers/ethMRF24/vNetDriver_eth.h"	
 	#endif
 	
-	// Driver for MAuthometion HF-LPT200
-	#if (WIFI_LPT200)
-		#include "drivers/ethLPT200/vNetDriver_eth.h"	
-	#endif		
 #endif
 
 #if (VNET_MEDIA2_ENABLE)
