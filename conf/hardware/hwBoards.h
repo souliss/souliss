@@ -28,6 +28,22 @@
 
 /**************************************************************************/
 /*!
+	Select the microcontroller where Souliss for which Souliss have to be
+	compiled. This assume that your IDE contains the relevant cores.
+	        
+		Value       Media
+        0x00        No selection (Default)
+		0x01		Atmel AVR ATmega
+        0x02        Expressif ESP8266
+ 
+*/
+/**************************************************************************/
+#ifndef MCU_TYPE_INSKETCH
+#	define	MCU_TYPE		0x00
+#endif
+
+/**************************************************************************/
+/*!
 	Select the used board type, this selection define the layout of the
 	auxiliary pins for the used microcontroller board.
 	        

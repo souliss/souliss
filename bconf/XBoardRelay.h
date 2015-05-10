@@ -25,6 +25,10 @@
 #ifndef bconf_XBOARDRELAY_H
 #define bconf_XBOARDRELAY_H
 
+// Arduino AVR Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE			0x01
+
 #define	ETH_INSKETCH
 #define VNET_MEDIA_INSKETCH
 #define	BOARD_MODEL_INSKETCH

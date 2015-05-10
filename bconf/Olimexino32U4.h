@@ -25,6 +25,10 @@
 #ifndef bconf_ssOLIMEX32U4_H
 #define bconf_ssOLIMEX32U4_H
 
+// Arduino AVR Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE			0x01
+
 #define BOARD_MODEL_INSKETCH
 #define	BOARD_MODEL			0x05
 
