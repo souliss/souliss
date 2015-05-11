@@ -902,7 +902,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			U8 nodeindex;
 			for(nodeindex=MaCaco_LOCNODE+1; nodeindex<MaCaco_NODES ; nodeindex++)
 			{
-				if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
+				if(addr == (C8TO16(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 				{
 					lasttyp_addr = addr;	// Store the address of the nodes that gives this reply
 					break;
@@ -955,7 +955,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				// Identify the node index
 				U8 nodeindex;
 				for(nodeindex=1; nodeindex<MaCaco_NODES ; nodeindex++)
-					if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
+					if(addr == (C8TO16(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 						break;
 
 				#if(MaCaco_PERSISTANCE)		// PERSISTENCE is active, store information

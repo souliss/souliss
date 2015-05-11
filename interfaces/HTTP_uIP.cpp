@@ -64,7 +64,7 @@ void HTTPServer(U8 *memory_map)
         {	
 			// Count the number of nodes
 			nodes = 0;	
-			while(*(U16*)(memory_map+(MaCaco_ADDRESSES_s+nodes*2)) != 0x0000)
+			while(C8TO16(memory_map+(MaCaco_ADDRESSES_s+nodes*2)) != 0x0000)
 				nodes++;
 		
 			srvcln_discard();			
@@ -95,8 +95,8 @@ void HTTPServer(U8 *memory_map)
 					val_s = incomingURL.substring(val_s+5, val_f).toInt();	// Sum length of "&val="						
 							
 					// Send a command to the node		
-					if((id < nodes) && (id != MaCaco_LOCNODE) && ((*(U16*)(memory_map+(MaCaco_ADDRESSES_s+id*2))) != 0x0000))	// If is a remote node, the command act as remote input				
-						Souliss_RemoteInput(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, val_s);
+					if((id < nodes) && (id != MaCaco_LOCNODE) && ((C8TO16(memory_map+(MaCaco_ADDRESSES_s+id*2))) != 0x0000))	// If is a remote node, the command act as remote input				
+						Souliss_RemoteInput(C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*id), slot, val_s);
 					else if (id == MaCaco_LOCNODE)								// If is a local node (me), the command is written back
 						memory_map[MaCaco_IN_s+slot] = val_s;
 				}
@@ -114,8 +114,8 @@ void HTTPServer(U8 *memory_map)
 					for(U8 id=0;id<MaCaco_NODES;id++)
 					{						
 						// Send a command to the node	
-						if((id != MaCaco_LOCNODE) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id)) != 0x0000))	// If is a remote node, the command act as remote input								
-							MaCaco_send(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*id), MaCaco_TYP, 0, typ, 1, val_sp);		
+						if((id != MaCaco_LOCNODE) && (C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*id) != 0x0000))	// If is a remote node, the command act as remote input								
+							MaCaco_send(C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*id), MaCaco_TYP, 0, typ, 1, val_sp);		
 						else if (id == MaCaco_LOCNODE)																	// If is a local node (me), the command is written back
 						{
 							U8 typ_mask;

@@ -749,7 +749,9 @@ U8 ModbusReply(U8 *memory_map)
 		
 		#if(MODBUS_RTU)
 			// Prepare the CRC
-			*(U16*)modbuscrc = HTONS(crc16(&Modbus_oFrame));	
+			U16 t_modbuscrc = HTONS(crc16(&Modbus_oFrame));	
+			*(modbuscrc)     = C16TO8L(t_modbuscrc);
+			*(modbuscrc + 1) = C16TO8L(t_modbuscrc);
 		#elif(MODBUS_TCP)
 			modbusreply->length = 3+modbusreply->bytecount;			// In length is not reported the whole header length
 		#endif
@@ -794,7 +796,10 @@ U8 ModbusReply(U8 *memory_map)
 						i++;
 				}
 				else	// Otherwise as raw value
-					*(U16 *)(&modbusdata[2*i]) = HTONS((U16)(*(memory_map+memory_map_address+i)));
+				{
+					*(&modbusdata[2*i])   = C16TO8L(HTONS((U16)(*(memory_map+memory_map_address+i))));
+					*(&modbusdata[2*i+1]) = C16TO8H(HTONS((U16)(*(memory_map+memory_map_address+i))));
+				}	
 
 		// Build a frame, only the pointer are stored, so it can be changed
 		// also after the output frame is build
@@ -815,7 +820,9 @@ U8 ModbusReply(U8 *memory_map)
 		
 		#if(MODBUS_RTU)
 			// Prepare the CRC
-			*(U16*)modbuscrc = HTONS(crc16(&Modbus_oFrame));	
+			U16 t_modbuscrc = HTONS(crc16(&Modbus_oFrame));	
+			*(modbuscrc)     = C16TO8L(t_modbuscrc);
+			*(modbuscrc + 1) = C16TO8L(t_modbuscrc);
 		#elif(MODBUS_TCP)
 			modbusreply->length = 3+modbusreply->bytecount;			// In length is not reported the whole header length
 		#endif
@@ -1174,7 +1181,7 @@ U8 Modbus(U8 *memory_map)
 	if(modbustranfer_id)
 	{
 		// Data has been parsed at a later cycle, so just send the value
-		Souliss_RemoteInput(*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*modbustranfer_id), modbustranfer_slot, modbustranfer_var);	
+		Souliss_RemoteInput(C8TO16(memory_map+MaCaco_ADDRESSES_s+2*modbustranfer_id), modbustranfer_slot, modbustranfer_var);	
 			
 		// Reset	
 		modbustranfer_id=0;

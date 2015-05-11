@@ -98,7 +98,9 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 void Souliss_SetLocalAddress(U8 *memory_map, U16 addr)
 {
 	// Set the remote address of a node into the vNet
-	*(U16*)(memory_map+MaCaco_ADDRESSES_s) = addr;
+	*(memory_map+MaCaco_ADDRESSES_s)   = C16TO8L(addr);
+	*(memory_map+MaCaco_ADDRESSES_s+1) = C16TO8H(addr);
+	
 }
 
 /**************************************************************************
@@ -109,7 +111,8 @@ void Souliss_SetLocalAddress(U8 *memory_map, U16 addr)
 void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 {
 	// Set the remote address of a node into the vNet
-	*(U16*)(memory_map+MaCaco_ADDRESSES_s+node*2) = addr;
+	*(memory_map+MaCaco_ADDRESSES_s+node*2)   = C16TO8L(addr);
+	*(memory_map+MaCaco_ADDRESSES_s+node*2+1) = C16TO8H(addr);	
 }
 #endif
 /**************************************************************************
@@ -282,7 +285,7 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 		
 		// The first parameter is the keyidval number used to identify my previous request
 		U8 *confparameters_p = (memory_map + MaCaco_QUEUE_s);
-		if((*(U16 *)confparameters_p) == keyidval)
+		if(C8TO16(confparameters_p) == keyidval)
 		{
 			// The next parameter is the media
 			confparameters_p+=sizeof(U16);
@@ -290,13 +293,13 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 			{
 				// Load the address
 				confparameters_p++;
-				U8 proposedsubnet = (*(U16 *)confparameters_p)>>8;	// Subnet in case of dynamic address (0xFF00) has only one
+				U8 proposedsubnet = C8TO16(confparameters_p)>>8;	// Subnet in case of dynamic address (0xFF00) has only one
 																	// byte for subnet identification
 				
 				// If we got a full address
-				if((*(U16 *)confparameters_p) & ~DYNAMICADDR_SUBNETMASK)
+				if(C8TO16(confparameters_p) & ~DYNAMICADDR_SUBNETMASK)
 				{
-					Souliss_SetAddress((*(U16 *)confparameters_p), DYNAMICADDR_SUBNETMASK, (((*(U16 *)confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+					Souliss_SetAddress(C8TO16(confparameters_p), DYNAMICADDR_SUBNETMASK, (C8TO16(confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 
 					#if(USEEEPROM)
 					// Store the node ID
