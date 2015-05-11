@@ -299,7 +299,7 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 				// If we got a full address
 				if(C8TO16(confparameters_p) & ~DYNAMICADDR_SUBNETMASK)
 				{
-					Souliss_SetAddress(C8TO16(confparameters_p), DYNAMICADDR_SUBNETMASK, (C8TO16(confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+					Souliss_SetAddress(C8TO16(confparameters_p), DYNAMICADDR_SUBNETMASK, ((C8TO16(confparameters_p) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 
 					#if(USEEEPROM)
 					// Store the node ID
