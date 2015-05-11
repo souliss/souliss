@@ -37,10 +37,10 @@
 #	include "src/w5500.cpp"
 #endif
 
-#include "frame/vNet/drivers/ethW5x00/src/socket.cpp"
+#include "frame/vNet/drivers/mcu_avr/ethW5x00/src/socket.cpp"
 #include "frame/vNet/tools/UserMode.c"
 
-#include "frame/vNet/drivers/ethW5x00/ServerClient.cpp"
+#include "frame/vNet/drivers/mcu_avr/ethW5x00/ServerClient.cpp"
 
 #if (VNET_DEBUG)
 	#define VNET_LOG Serial.print

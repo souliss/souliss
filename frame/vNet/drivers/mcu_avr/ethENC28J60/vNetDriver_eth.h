@@ -35,10 +35,10 @@
 #include "frame/vNet/stack/uIP/uip_arch.h"
 #include "frame/vNet/stack/uIP/uip_arp.h"
 
-#include "frame/vNet/drivers/ethENC28J60/vNetCallBack.h"
-#include "frame/vNet/drivers/ethENC28J60/src/ENC28J60.h"
-#include "frame/vNet/drivers/ethENC28J60/src/nic.h"
-#include "frame/vNet/drivers/ethENC28J60/ServerClient.h"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/vNetCallBack.h"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/src/ENC28J60.h"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/src/nic.h"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/ServerClient.h"
 #include "frame/vNet/tools/UserMode.h"
 
 // Application state option

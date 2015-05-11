@@ -34,13 +34,14 @@
 
 #include <Arduino.h>
 #include "tools/types.h"
+#include "tools/util.h"
 #include "Typicals.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#if(BOARD_MODEL == 0x01)	// Atmel AVR Atmega
+#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
 #	if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #		define MAXINPIN		69		// Max number of input pins
 #	elif defined(__AVR_ATmega1284P__)
@@ -50,7 +51,7 @@
 #	else
 #		define MAXINPIN		29		// Max number of input pins
 #	endif
-#elif(BOARD_MODEL == 0x02)	// Expressif ESP8266
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 #		define MAXINPIN		29		// Max number of input pins	
 #endif
 

@@ -24,11 +24,11 @@
 // to point directly as *(U16*) not-odd addresses.
 //
 // This assume a lower-endian architecture
-#define	8TO16(addr)	((*(addr+1) << 8) | *addr)
+#define	C8TO16(addr)	((*(addr+1) << 8) | *addr)
 
 // Read a 16 bit value as two 8 bit ones, this is endian 
 // independent
-#define	16TO8L(addr) ((U8)(addr & 0x00FF))
-#define	16TO8H(addr) ((U8)((addr & 0xFF00) >> 8))
+#define	C16TO8L(addr) ((U8)(addr & 0x00FF))
+#define	C16TO8H(addr) ((U8)((addr & 0xFF00) >> 8))
 
 #endif

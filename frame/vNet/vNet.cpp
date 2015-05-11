@@ -206,10 +206,12 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	// Prepare header
 	*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 	*frame_pnt++ = port;									// Frame Port
-	*(U16 *)frame_pnt = addr;								// Final Destination Address
-	frame_pnt += sizeof(U16);
-	*(U16 *)frame_pnt = vNet_Media[media-1].src_addr;		// Original Source Address
-	frame_pnt += sizeof(U16);
+	
+	*frame_pnt++ = C16TO8L(addr);							// Final Destination Address
+	*frame_pnt++ = C16TO8H(addr);	
+
+	*frame_pnt++ = C16TO8L(vNet_Media[media-1].src_addr);	// Original Source Address
+	*frame_pnt++ = C16TO8H(vNet_Media[media-1].src_addr);	
 	
 	// Build the complete frame
 	oFrame_Define(&vNet_oFrame);
@@ -298,11 +300,12 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 			// Prepare header
 			*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 			*frame_pnt++ = port;									// Frame Port
-			*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
-			frame_pnt += sizeof(U16);
-			*(U16 *)frame_pnt = vNet_Media[media].src_addr;			// Original Source Address
-			frame_pnt += sizeof(U16);
+			*frame_pnt++ = C16TO8L(broadcast_addr);					// Final Destination Address
+			*frame_pnt++ = C16TO8H(broadcast_addr);				
 			
+			*frame_pnt++ = C16TO8L(vNet_Media[media].src_addr);		// Original Source Address
+			*frame_pnt++ = C16TO8H(vNet_Media[media].src_addr);				
+					
 			// Build the complete frame
 			oFrame_Define(&vNet_oFrame);
 			oFrame_Set(vNet_header, 0, VNET_HEADER_SIZE, 0, &message);
@@ -400,12 +403,12 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 
 		// Prepare header
 		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
-		*frame_pnt++ = port;									// Frame Port
-		*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
-		frame_pnt += sizeof(U16);
-		*(U16 *)frame_pnt = multicastgroup;						// Original Source Address
-		frame_pnt += sizeof(U16);
-		
+		*frame_pnt++ = port;									// Frame Port		
+		*frame_pnt++ = C16TO8L(broadcast_addr);					// Final Destination Address
+		*frame_pnt++ = C16TO8H(broadcast_addr);				
+		*frame_pnt++ = C16TO8L(multicastgroup);					// Original Source Address
+		*frame_pnt++ = C16TO8H(multicastgroup);				
+				
 		// Build the complete frame
 		oFrame_Define(&vNet_oFrame);
 		oFrame_Set(vNet_header, 0, VNET_HEADER_SIZE, 0, &message);
@@ -505,9 +508,9 @@ U8 vNet_SendRoute(U16 routed_addr, U8 media, U8 *data, U8 len)
 	VNET_LOG("|0x");
 	VNET_LOG(data[1],HEX);
 	VNET_LOG("|0x");
-	VNET_LOG(*(U16*)(data+2),HEX);
+	VNET_LOG(C8TO16(data+2),HEX);
 	VNET_LOG("|0x");
-	VNET_LOG(*(U16*)(data+4),HEX);
+	VNET_LOG(C8TO16(data+4),HEX);
 		
 	for(U8 i=VNET_HEADER_SIZE;i<len;i++)
 	{
@@ -1179,7 +1182,9 @@ U8 vNet_RoutingBridging(U8 media)
 		// Modify the destination address as subnet broadcast, this will avoid broadcast loops	
 		if(vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)
 		{
-			*(U16*)(vNet_Media_Data[media-1].data+2) = VNET_ADDR_wBRDC;
+			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_wBRDC);
+			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_wBRDC);
+			
 
 			// Rebroadcast over wireless media is allowed
 			if((media-1)==VNET_MEDIA2_ID)
@@ -1187,7 +1192,9 @@ U8 vNet_RoutingBridging(U8 media)
 		}
 		#if(VNET_LOOPS)
 		else
-			*(U16*)(vNet_Media_Data[media-1].data+2) = VNET_ADDR_nBRDC;		// Prevent broadcast loops
+			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_nBRDC);		// Prevent broadcast loops
+			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_nBRDC);
+		
 		#endif
 		
 		// If the source address isn't null, rebroadcast the message over the active media
@@ -1285,10 +1292,10 @@ void vNet_ParseFrame(U8 media)
 				
 	vNet_Media_Data[media-1].port = *data_pnt++;					// Retrieve Port
 				
-	vNet_Media_Data[media-1].f_dest_addr = (U16)*(U16 *)data_pnt;	// Retrieve Final Destination Address
+	vNet_Media_Data[media-1].f_dest_addr = C8TO16(data_pnt);		// Retrieve Final Destination Address
 	data_pnt += sizeof(U16);
 				
-	vNet_Media_Data[media-1].o_src_addr = (U16)*(U16 *)data_pnt;	// Retrieve Original Source Address
+	vNet_Media_Data[media-1].o_src_addr = C8TO16(data_pnt);			// Retrieve Original Source Address
 	data_pnt += sizeof(U16);
 
 	switch(media)

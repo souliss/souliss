@@ -39,7 +39,7 @@
 #include "src/socket.h"
 #include "frame/vNet/tools/UserMode.h"
 
-#include "frame/vNet/drivers/ethW5x00/ServerClient.h"
+#include "frame/vNet/drivers/mcu_avr/ethW5x00/ServerClient.h"
 
 
 typedef struct

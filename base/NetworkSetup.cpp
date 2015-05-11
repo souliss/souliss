@@ -333,7 +333,7 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 					return 0;	// Addressing is complete, we can quit
 				}					
 				else	// Request an address starting from the actual subnet
-					MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, proposedsubnet, 0, 0);
+					MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, keyidval, proposedsubnet, 0, 0);
 								
 				return 1;				
 				
@@ -347,9 +347,9 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 
 		// Request a new address (if supernode) or a subnet
 		#if(VNET_SUPERNODE)
-			MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, (U8 *)keyidval, (0xF0 + usedmedia), 0, 0);
+			MaCaco_send(VNET_ADDR_BRDC, MaCaco_DINADDRESSREQ, keyidval, (0xF0 + usedmedia), 0, 0);
 		#else
-			MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETREQ, (U8 *)keyidval, (usedmedia), 0, 0);	// this is a non rebroadcastable frame, so it get till the nearest supernode/bridge
+			MaCaco_send(VNET_ADDR_nBRDC, MaCaco_SUBNETREQ, keyidval, (usedmedia), 0, 0);	// this is a non rebroadcastable frame, so it get till the nearest supernode/bridge
 		#endif
 		
 		return 1;
@@ -368,7 +368,7 @@ void Souliss_JoinNetwork()
 {
 	// Request to join a network only if I've got an address
 	if(vNet_GetAddress(vNet_MyMedia()))
-		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, (U8 *)keyidval, 0, 0, 0);
+		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, keyidval, 0, 0, 0);
 }
 
 /**************************************************************************
@@ -381,5 +381,5 @@ void Souliss_JoinAndReset()
 {
 	// Request to join a network only if I've got an address
 	if(vNet_GetAddress(vNet_MyMedia()))
-		MaCaco_send(0xFFFF, MaCaco_JOINANDRESET, (U8 *)keyidval, 0, 0, 0);
+		MaCaco_send(0xFFFF, MaCaco_JOINANDRESET, keyidval, 0, 0, 0);
 }

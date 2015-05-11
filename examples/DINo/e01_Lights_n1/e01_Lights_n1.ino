@@ -18,6 +18,7 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+#include <EEPROM.h>
 #include "Souliss.h"
 
 // By default the board will get an IP address with .77 as last byte, you can change it

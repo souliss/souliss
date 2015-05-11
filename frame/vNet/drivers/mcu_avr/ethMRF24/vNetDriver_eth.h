@@ -37,10 +37,10 @@
 #include "frame/vNet/stack/uIP/uip_arch.h"
 #include "frame/vNet/stack/uIP/uip_arp.h"
 
-#include "frame/vNet/drivers/ethMRF24/vNetCallBack.h"
-#include "frame/vNet/drivers/ethMRF24/src/g2100.h"
-#include "frame/vNet/drivers/ethMRF24/src/nic.h"
-#include "frame/vNet/drivers/ethMRF24/ServerClient.h"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/vNetCallBack.h"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/src/g2100.h"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/src/nic.h"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/ServerClient.h"
 #include "frame/vNet/tools/UserMode.h"
 
 // Application state option

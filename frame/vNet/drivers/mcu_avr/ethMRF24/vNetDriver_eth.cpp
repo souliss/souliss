@@ -35,11 +35,11 @@
 #include "frame/vNet/stack/uIP/uip_arch.c"
 #include "frame/vNet/stack/uIP/uip_arp.c"
 
-#include "frame/vNet/drivers/ethMRF24/vNetCallBack.c"
-#include "frame/vNet/drivers/ethMRF24/src/g2100.c"
-#include "frame/vNet/drivers/ethMRF24/src/nic.c"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/vNetCallBack.c"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/src/g2100.c"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/src/nic.c"
 
-#include "frame/vNet/drivers/ethMRF24/ServerClient.c"
+#include "frame/vNet/drivers/mcu_avr/ethMRF24/ServerClient.c"
 #include "frame/vNet/tools/UserMode.c"
 
 #define ETHBUF ((struct uip_eth_hdr *)&uip_buf[0])

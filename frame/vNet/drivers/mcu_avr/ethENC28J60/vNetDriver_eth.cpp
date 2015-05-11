@@ -35,11 +35,11 @@
 #include "frame/vNet/stack/uIP/uip_arch.c"
 #include "frame/vNet/stack/uIP/uip_arp.c"
 
-#include "frame/vNet/drivers/ethENC28J60/vNetCallBack.c"
-#include "frame/vNet/drivers/ethENC28J60/src/ENC28J60.c"
-#include "frame/vNet/drivers/ethENC28J60/src/nic.c"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/vNetCallBack.c"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/src/ENC28J60.c"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/src/nic.c"
 
-#include "frame/vNet/drivers/ethENC28J60/ServerClient.c"
+#include "frame/vNet/drivers/mcu_avr/ethENC28J60/ServerClient.c"
 #include "frame/vNet/tools/UserMode.c"
 
 #define ETHBUF ((struct uip_eth_hdr *)&uip_buf[0])
