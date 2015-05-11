@@ -170,8 +170,8 @@
 #define Souliss_T3n_SetTemp				0x0C		// Set the setpoint
 #define Souliss_T3n_ShutDown			0x0D		// Shut down heating and cooling
 
-
 #define Souliss_T3n_RstCmd				0x0000
+#define Souliss_T3n_SystemOn			0x01		// System On
 #define Souliss_T3n_HeatingOn			0x02		// Heating Active
 #define Souliss_T3n_CoolingOn			0x04		// Cooling Active
 #define Souliss_T3n_FanOn1				0x08		// Fan 1 Running
