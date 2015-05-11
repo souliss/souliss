@@ -62,6 +62,17 @@ void Souliss_ResetInput(U8 *memory_map, U8 slot)
 
 /**************************************************************************
 /*!
+	Set input in memory map, this can be used to initialize values
+*/	
+/**************************************************************************/
+void Souliss_SetInput(U8 *memory_map, U8 slot, U8 value)
+{
+	memory_map[MaCaco_IN_s + slot] = value;
+}
+
+
+/**************************************************************************
+/*!
 	Create a link between input and output on the same memory map
 	
 	This method is useful if data shall be transferred from a device to
