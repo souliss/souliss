@@ -179,7 +179,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 		SOULISS_LOG("<|0x");
 		for(i=0;i<MaCaco_NODES;i++)
 		{	
-			SOULISS_LOG(*(uint16_t*)(memory_map + MaCaco_ADDRESSES_s+2*i),HEX);
+			SOULISS_LOG(C8TO16(memory_map + MaCaco_ADDRESSES_s+2*i),HEX);
 			SOULISS_LOG("|0x");
 		}			
 		SOULISS_LOG(">\r\n");
