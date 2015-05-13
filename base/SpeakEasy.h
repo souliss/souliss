@@ -343,5 +343,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Initialize()				MaCaco_init(memory_map)
 #define	isTrigger()					data_changed
 
+#define SetInput(slot, value) 		mInput(slot) = value			
+
 #endif
 
