@@ -45,6 +45,11 @@
 	#if (WIFI_MRF24)
 		#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.h"	
 	#endif
+
+	// Driver for Expressif ESP8266 WiFi
+	#if (WIFI_ESP8266)
+		#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.h"	
+	#endif	
 	
 #endif
 

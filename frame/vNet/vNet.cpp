@@ -49,6 +49,11 @@
 		#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.cpp"	
 	#endif	
 	
+	// Driver for Expressif ESP8266 WiFi
+	#if (WIFI_ESP8266)
+		#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.cpp"	
+	#endif		
+	
 #endif
 	
 #if (VNET_MEDIA2_ENABLE)

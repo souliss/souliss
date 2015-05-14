@@ -30,6 +30,26 @@
 #define	MCU_TYPE			0x02
 
 #define BOARD_MODEL_INSKETCH
-#define	BOARD_MODEL			0x00
+#define VNET_MEDIA_INSKETCH
+#define ETH_INSKETCH	
+
+#define	BOARD_MODEL					9		
+#define	COMMS_MODEL					7
+#define ETH_W5100  					0
+#define ETH_W5200  					0
+#define ETH_W5500					0
+#define ETH_ENC28J60  				0
+#define WIFI_MRF24					0
+#define WIFI_ESP8266				1
+
+#define	Init_ESP8266()	WiFi.begin(WiFi_SSID, WiFi_Password);										\
+						while (WiFi.status() != WL_CONNECTED) {										\
+						delay(500);}																\
+						Souliss_SetIPAddress(WiFi.localIP(), WiFi.subnetMask(), WiFi.gatewayIP());	\
+						SetAsGateway(*(WiFi.localIP()+3))
+						
+
+#include <ESP8266WiFi.h>
+
 
 #endif

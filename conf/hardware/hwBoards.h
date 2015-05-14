@@ -57,7 +57,7 @@
 		0x06		Olimex OLIMEXINO-328
 		0x07		DFRobots XBoard Relay
 		0x08		KMP Electronics DINo v2
-		0x09		Not used
+		0x09		ExpressIf ESP8266
 		0x0A		Moteino RFM69
  
 */
@@ -80,7 +80,7 @@
 		0x04		Olimex MOD-ENC28J60 (UEXT) with Microchip ENC28J60
 		0x05		Olimex MOD-WIFI (UEXT) with Microchip MRF24WB0MA
 		0x06		Nordic nRF24L01 and nRF24L01+
-		0x07		Not used
+		0x07		ExpressIf ESP8266
 		0x08		HopeRF RFM69CW/RFM69HCW
 */
 /**************************************************************************/
