@@ -217,7 +217,6 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define myMap				memory_map
 #define myData				&data_changed
 #define myNode				memory_map, &data_changed
-#define	ResetTrigger()		(data_changed=0)
 
 #define SetAddress												Souliss_SetAddress
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
@@ -338,8 +337,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	pOutput(node,slot)			memory_map[pOUT+slot+(node*MaCaco_SLOT)]
 #define	pOutputAsFloat(node,slot)	Souliss_SinglePrecisionFloating(memory_map+MaCaco_P_OUT_s+slot+(node*MaCaco_SLOT))
 
-#define SetTrigger()				data_changed=1;	
-#define ResetTrigger()				data_changed=0;	
+#define SetTrigger()				(data_changed=1);	
+#define ResetTrigger()				(data_changed=0);	
 #define	Initialize()				MaCaco_init(memory_map)
 #define	isTrigger()					data_changed
 

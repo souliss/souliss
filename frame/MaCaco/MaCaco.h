@@ -61,7 +61,7 @@ U16 MaCaco_getputin();
 U8 MaCaco_getstartoffset();
 U8 MaCaco_getnumberof();
 U8 MaCaco_getdatain();
-U16 MaCaco_getdatabuffer();
+U8* MaCaco_getdatabuffer();
 U8 MaCaco_IsSubscribed();
 void MaCaco_InternalSubcription();
 U8 MaCaco_isLastIn(U8 *memory_map);

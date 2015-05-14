@@ -549,7 +549,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 float Souliss_SinglePrecisionFloating(U8 *input)
 {
 	uint16_t input16 = C8TO16(input);
-	return returnfloat32(uint16_t &input16);
+	return returnfloat32(&input16);
 }
 
 /**************************************************************************
@@ -561,7 +561,7 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input)
 {
 	uint16_t output16;
 	
-	float16(&output16, &f_input);
+	float16(&output16, input);
 	
 	*(output)   = C16TO8L(output16);
 	*(output+1) = C16TO8H(output16);

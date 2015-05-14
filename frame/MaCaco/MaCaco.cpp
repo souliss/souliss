@@ -1496,9 +1496,9 @@ U8 MaCaco_getdatain()
     Get the buffer pointer
 */
 /**************************************************************************/
-U16 MaCaco_getdatabuffer()
+U8* MaCaco_getdatabuffer()
 {
-	return (U16)(&MaCaco_data[0]);
+	return MaCaco_data;
 }
 
 /**************************************************************************/

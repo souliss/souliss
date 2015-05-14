@@ -112,7 +112,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	// Convert the stored values in single precision floating points
 	in_temp       = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot + 1);
 	in_setpnt     = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot + 3);
-	actual_temp   = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 1;
+	actual_temp   = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 1);
 	actual_setpnt = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 3);
 	
 	// Trig the next change of the state

@@ -27,6 +27,7 @@
 #include "Typicals.h"
 #include <Arduino.h>
 
+#include "tools/store/store.h"
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 #include "Souliss.h"

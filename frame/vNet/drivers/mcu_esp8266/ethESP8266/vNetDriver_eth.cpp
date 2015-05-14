@@ -316,13 +316,9 @@ uint8_t vNet_DataAvailable_M1()
 	
 	// Discard
 	dataframe.len = 0;
-	
-	// Reset the socket
-	close(UDP_SOCK);
-	while(W5x00.readSnSR(UDP_SOCK) != SnSR::CLOSED);
-	
+
 	// Init the socket
-	socket(UDP_SOCK, SnMR::UDP, ETH_PORT, 0);		// Open the socket
+	udp.begin(ETH_PORT);		// Open the socket
 
 	return ETH_FAIL;
 

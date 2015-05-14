@@ -52,7 +52,7 @@
 #		define MAXINPIN		29		// Max number of input pins
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#		define MAXINPIN		29		// Max number of input pins	
+#	define MAXINPIN		29		// Max number of input pins	
 #endif
 
 	 
@@ -102,6 +102,8 @@ void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot);
 void Souliss_ResetOutput(U8 *memory_map, U8 slot);
 void Souliss_ResetInput(U8 *memory_map, U8 slot);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
+float Souliss_SinglePrecisionFloating(U8 *input);
+uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 #	include "interfaces/HTTP.h"
@@ -147,6 +149,11 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 
 // Include methods for half-precision floating points
 #include "tools/IEEE754/float16.c"
+
+#if(MCU_TYPE == 0x01)	// ATmega AVR
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#	include "mcu/mcu_ESP8266.c"	// Load special code for the ESP8266
+#endif
 
 // Include Souliss code base and typicals
 #include "base/Communication.cpp"

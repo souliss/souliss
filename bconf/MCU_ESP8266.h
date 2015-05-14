@@ -27,9 +27,10 @@
 
 // Expressif ESP8266 Board
 #define MCU_TYPE_INSKETCH
-#define	MCU_TYPE			0x02
+#define	MCU_TYPE					2
 
 #define BOARD_MODEL_INSKETCH
+#define	COMMS_MODEL_INSKETCH
 #define VNET_MEDIA_INSKETCH
 #define ETH_INSKETCH	
 
@@ -42,14 +43,9 @@
 #define WIFI_MRF24					0
 #define WIFI_ESP8266				1
 
-#define	Init_ESP8266()	WiFi.begin(WiFi_SSID, WiFi_Password);										\
-						while (WiFi.status() != WL_CONNECTED) {										\
-						delay(500);}																\
-						Souliss_SetIPAddress(WiFi.localIP(), WiFi.subnetMask(), WiFi.gatewayIP());	\
-						SetAsGateway(*(WiFi.localIP()+3))
-						
-
-#include <ESP8266WiFi.h>
-
+// The ESP8266 works always with two media, it use Media 3 to
+// remove dependence between vNet address and IP address from DHCP
+#define VNET_MEDIA1_ENABLE  		1
+#define VNET_MEDIA3_ENABLE  		1
 
 #endif

@@ -30,6 +30,7 @@
 #include "Arduino.h"
 #include "GetConfig.h"				// need : ethUsrCfg.h
 
+#include "WiFiUdp.h"
 #include "frame/vNet/tools/UserMode.h"
 
 typedef struct
