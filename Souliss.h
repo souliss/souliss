@@ -96,7 +96,6 @@ void Souliss_LinkIO(U8 *memory_map, U8 input_slot, U8 output_slot, U8 *trigger);
 void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot);
 void Souliss_ResetOutput(U8 *memory_map, U8 slot);
 void Souliss_ResetInput(U8 *memory_map, U8 slot);
-void Souliss_SetInput(U8 *memory_map, U8 slot, U8 value);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
