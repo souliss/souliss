@@ -28,7 +28,7 @@
 
 // Read a 16 bit value as two 8 bit ones, this is endian 
 // independent
-#define	C16TO8L(addr) ((U8)(addr & 0x00FF))
-#define	C16TO8H(addr) ((U8)((addr & 0xFF00) >> 8))
+#define	C16TO8L(val) ((U8)(val & 0x00FF))
+#define	C16TO8H(val) ((U8)((val & 0xFF00) >> 8))
 
 #endif

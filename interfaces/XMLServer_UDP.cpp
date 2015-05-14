@@ -238,7 +238,7 @@ void XMLSERVERInterface(U8 *memory_map)
 					{
 						float f_val;
 						
-						float32((U16*)(memory_map+(MaCaco_G_OUT_s+(idx*MaCaco_OUTLENGHT)+slot)), &f_val);
+						f_val = Souliss_SinglePrecisionFloating(memory_map+(MaCaco_G_OUT_s+(idx*MaCaco_OUTLENGHT)+slot));
 						ASCII_float2str((float)f_val, 2, &buf[bufferlen], HTTP_BUFBYTES);
 						bufferlen = strlen(buf); 
 					} 

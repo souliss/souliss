@@ -378,7 +378,7 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 /**************************************************************************/
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue)
 {
-	float16((U16*)(memory_map + MaCaco_IN_s + slot), analogvalue);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), analogvalue);
 }
 
 /**************************************************************************
@@ -395,7 +395,7 @@ void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias
 	inval = bias + scaling * inval;
 	
 	// Convert from single-precision to half-precision
-	float16((U16*)(memory_map + MaCaco_IN_s + slot), &inval);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), &inval);
 	
 }
 
@@ -540,3 +540,29 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 	return Souliss_NOTTRIGGED;
 }
 
+/**************************************************************************
+/*!
+	Convert a half-precision floating point from the memory_map in single
+	precision floating point
+*/	
+/**************************************************************************/
+float Souliss_SinglePrecisionFloating(U8 *input)
+{
+	uint16_t input16 = C8TO16(input);
+	return returnfloat32(uint16_t &input16);
+}
+
+/**************************************************************************
+/*!
+	Convert a single precision floating point into an half-precision one
+*/	
+/**************************************************************************/
+uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input)
+{
+	uint16_t output16;
+	
+	float16(&output16, &f_input);
+	
+	*(output)   = C16TO8L(output16);
+	*(output+1) = C16TO8H(output16);
+}

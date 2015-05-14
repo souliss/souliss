@@ -787,7 +787,7 @@ U8 ModbusReply(U8 *memory_map)
 						// If is an analog value, convert it as floating point
 						float f_val;
 						float* f_val_p = &f_val;
-						float32((U16*)(memory_map+memory_map_address+i), &f_val);
+						f_val = Souliss_SinglePrecisionFloating(memory_map+memory_map_address+i);
 						
 						// Convert from little to big endian
 						HTONF(modbusdata+2*i, f_val_p);

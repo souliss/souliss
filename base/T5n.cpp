@@ -73,8 +73,8 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 		
 		// Values are actually stored as half-precision floating point, this doesn't
 		// allow math operation, so convert them back to single-precision
-		float32((U16*)(memory_map + MaCaco_IN_s + slot), &m_in);
-		float32((U16*)(memory_map + MaCaco_OUT_s + slot), &m_out);
+		m_in  = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot);
+		m_out = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot);
 		
 		// If previously set as NaN or if there is a change greater than the deadband, update the output
 		if((((C8TO16(memory_map + MaCaco_IN_s + slot)) != (C8TO16(memory_map + MaCaco_OUT_s + slot))) && 

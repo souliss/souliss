@@ -5,8 +5,8 @@
 	
 ***************************************************************************/
 
-#ifndef FLOAT16_H
-#define FLOAT16_H
+#ifndef STORE_H
+#define STORE_H
 
 void Store_Clear();
 void Store_8bit(uint8_t addr, uint16_t store_val);

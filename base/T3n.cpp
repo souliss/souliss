@@ -110,10 +110,10 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	float actual_temp, actual_setpnt, in_temp, in_setpnt;
 
 	// Convert the stored values in single precision floating points
-	float32((U16*)(memory_map + MaCaco_IN_s + slot + 1), &in_temp);
-	float32((U16*)(memory_map + MaCaco_IN_s + slot + 3), &in_setpnt);
-	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
-	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
+	in_temp       = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot + 1);
+	in_setpnt     = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot + 3);
+	actual_temp   = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 1;
+	actual_setpnt = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 3);
 	
 	// Trig the next change of the state
 	i_trigger = Souliss_TRIGGED;
@@ -237,8 +237,8 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	}		
 	
 	// Convert the processed values in half precision floating points
-	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
-	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
 		
 	// Update the trigger
 	if(i_trigger)

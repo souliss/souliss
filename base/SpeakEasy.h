@@ -330,13 +330,13 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define mInput(slot)				memory_map[IN+slot]	
 #define	mTypical(slot)				memory_map[TYP+slot]
 #define mOutput(slot)				memory_map[OUT+slot]
-#define	mOutputAsFloat(node,slot)	returnfloat32((uint16_t*)&(memory_map[OUT+slot]))
+#define	mOutputAsFloat(slot)		Souliss_SinglePrecisionFloating(memory_map+MaCaco_OUT_s+slot)
 
 #define	pTYP						MaCaco_P_TYP_s
 #define	pOUT						MaCaco_P_OUT_s
 #define	pTypical(node,slot)			memory_map[pTYP+slot+(node*MaCaco_SLOT)]
 #define	pOutput(node,slot)			memory_map[pOUT+slot+(node*MaCaco_SLOT)]
-#define	pOutputAsFloat(node,slot)	returnfloat32((uint16_t*)&(memory_map[pOUT+slot+(node*MaCaco_SLOT)]))
+#define	pOutputAsFloat(node,slot)	Souliss_SinglePrecisionFloating(memory_map+MaCaco_P_OUT_s+slot+(node*MaCaco_SLOT))
 
 #define SetTrigger()				data_changed=1;	
 #define ResetTrigger()				data_changed=0;	
