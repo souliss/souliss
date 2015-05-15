@@ -5,22 +5,23 @@
     using SoulissApp (get it from Play Store).  
     
     Load this code on ESP8266 board using the porting of the Arduino core
-	for this platform.
+    for this platform.
         
 ***************************************************************************/
 
 // Configure the framework
-#include "bconf/MCU_ESP8266.h"          	// Load the code directly on the ESP8266
+#include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/DynamicAddressing.h"			// Use dynamic addressing
+#include "conf/DynamicAddressing.h"         // Use dynamic addressing
 
 // Define the WiFi name and password
 #define WIFICONF_INSKETCH
-#define	WiFi_SSID				"mywifi"
-#define	WiFi_Password			"mypassword"	
+#define WiFi_SSID               "mywifi"
+#define WiFi_Password           "mypassword"    
 
 // Include framework code and libraries
 #include <SPI.h>
+#include <ESP8266WiFi.h>
 #include "Souliss.h"
 
 // This identify the number of the LED logic
@@ -30,11 +31,15 @@ void setup()
 {   
     Initialize();
 
-	// Connect to the WiFi network and get an address from DHCP
-	Setup_ESP8266();                           
+    // Connect to the WiFi network and get an address from DHCP
+    Setup_ESP8266();                           
     SetAsGateway(myvNet_esp8266);       // Set this node as gateway for SoulissApp  
+
+    // This node will serve all the others in the network providing an address
+    SetAddressingServer();
     
     Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic
+    pinMode(5, OUTPUT);                 // Use pin 5 as output 
 }
 
 void loop()
@@ -45,6 +50,7 @@ void loop()
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
             Logic_SimpleLight(MYLEDLOGIC);
+            DigOut(5, Souliss_T1n_Coil,MYLEDLOGIC);
         } 
               
         // Here we handle here the communication with Android

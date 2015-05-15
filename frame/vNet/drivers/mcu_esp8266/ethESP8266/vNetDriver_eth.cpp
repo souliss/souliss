@@ -29,6 +29,7 @@
 
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
+#include "ESP8266WiFi.h"
 
 #include "frame/vNet/tools/UserMode.c"
 
@@ -36,12 +37,14 @@
 	#define VNET_LOG Serial.print
 #endif
 
-#define	vNet_Init_M3()						vNet_Init_M1()
-#define	vNet_DataAvailable_M3()				vNet_DataAvailable_M1()
-#define	vNet_RetrieveData_M3(data)			vNet_RetrieveData_M1(data)
-
 #define	VNET_M3_HEADER		1
 #define	VNET_M3_APPEND		2
+
+// This device always works with both Media1 and Media3 active, so there is no need to process
+// incoming data on Media3 as they are broadcast and can be read from Media1.
+void vNet_Init_M3() {}
+uint8_t vNet_DataAvailable_M3() {return 0;}
+uint8_t vNet_RetrieveData_M3(uint8_t *data) {return 0;}
 
 uint16_t vNetM3_address=0;							// Node address for the media
 uint16_t vNetM3_srcaddr=0;							// Node address from incoming frame
@@ -49,6 +52,7 @@ uint8_t  vNetM3_isdata =0;							// Flag if Media3 has incoming data
 oFrame vNetM3_oFrame;	
 
 WiFiUDP udp;										// WiFi UDP Socket
+extern ESP8266WiFiClass WiFi;
 
 unsigned long start_time;
 
@@ -93,24 +97,14 @@ void vNet_SetAddress_M1(uint16_t addr)
 
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
-	uint8_t addrvals[6];
-	uint8_t *addrval = addrvals;
-	// Print MAC address 
-	WiFi.softAPmacAddress(addrval);
-    VNET_LOG("(MAC)<");
-	for(U8 i=0; i<6; i++)
-	{
-		VNET_LOG(addrval[i],HEX);
-		VNET_LOG(",");
-	}
-	VNET_LOG(">\r\n");
+	IPAddress lIP;
 
 	// Print IP address 
-	addrval = WiFi.localIP();
+	lIP = WiFi.localIP();
     VNET_LOG("(IP)<");
 	for(U8 i=0; i<4; i++)
 	{
-		VNET_LOG(addrval[i],HEX);
+		VNET_LOG(lIP[i],HEX);
 		VNET_LOG(",");
 	}
 	VNET_LOG(">\r\n");
@@ -249,8 +243,9 @@ uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len)
 	
 	// Set the IP broadcast address
 	for(U8 i=0;i<4;i++)
-		ip_addr[i]=0xFF;
-		
+		ip_addr[i]=DEFAULT_BASEIPADDRESS[i];
+	ip_addr[3]=0xFF;
+	
 	/***
 		Add the whole length as first byte and the node address
 		at the end of the frame

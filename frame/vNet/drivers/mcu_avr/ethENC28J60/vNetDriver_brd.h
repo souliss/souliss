@@ -68,8 +68,10 @@ extern TCPIP stack;
 		oFrame_Define(&vNetM3_oFrame);
 		oFrame_Set((uint8_t*)(&vNetM3_address), 0, 1, 0, 0);
 		
-		// Translate and set the address
-		eth_vNettoIP(0x00FF, &ip_addr[0]);
+		// The Wiznet doesn't have embed DHCP support and the scope of this M3
+		// is to remove dependency on IP configuration, so we just use a NULL
+		// address
+		ip_addr[0]=ip_addr[1]=ip_addr[2]=ip_addr[3]=0;
 		eth_SetIPAddress(&ip_addr[0]);
 		
 		// Set the MAC Address	
