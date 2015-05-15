@@ -1265,3 +1265,43 @@ U8 Souliss_Logic_T1B(U8 *memory_map, U8 slot, U8 *trigger)
 	
 	return i_trigger;
 }
+
+
+/**************************************************************************
+/*!
+	Define the use of a group of Typical 11
+	A group is defined as a set of consecutive T11 slots
+*/	
+/**************************************************************************/
+void Souliss_SetT11Group(U8 *memory_map, U8 firstSlot, U8 lastSlot)
+{
+	for(U8 slot=firstSlot; slot<=lastSlot; slot++)
+	{
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_RstCmd;
+		Souliss_SetT11(memory_map, slot);
+	}
+}
+
+/**************************************************************************
+/*!
+	Logics for T11 groups
+	Simply execute T11 logics for each slot in the group
+*/	
+/**************************************************************************/
+void Souliss_Logic_T11Group(U8 *memory_map, U8 firstSlot, U8 lastSlot, U8 *trigger)
+{
+	for(U8 slot=firstSlot; slot<=lastSlot; slot++)
+		Souliss_Logic_T11(memory_map, slot, trigger);	
+}
+
+/**************************************************************************
+/*!
+	Timer for T11 groups
+	Simply execute T11 timer for each slot in the group
+*/	
+/**************************************************************************/
+void Souliss_T11Group_Timer(U8 *memory_map, U8 firstSlot, U8 lastSlot)
+{
+	for(U8 slot=firstSlot; slot<=lastSlot; slot++)
+		Souliss_T11_Timer(memory_map, slot);
+}
