@@ -24,8 +24,115 @@
 
 */
 /**************************************************************************/
+#include <stdbool.h>
+#include <stdint.h>
+#include "tools/types.h"
+#include "tools/store/store.h"
 
-#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
-#	include "tools/store/mcu_avr/store.cpp"
+// Init the use EEPROM
+void Store_Init()
+{
+	#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
+	#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+		EEPROM.begin(STORE__SIZE);
+	#endif	
+}	
+
+// Remove the ID, this identify a not initialized EEPROM
+void Store_Clear()
+{
+#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
+	for(uint8_t i=0;i<EEPROM.length();i++)
+		EEPROM.update(i, 0);
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#endif
+	for(uint8_t i=0;i<STORE__USABLESIZE;i++)
+		EEPROM.write(i, 0);
+	EEPROM.commit();	
+#endif	
+}
+
+void Store_8bit(uint8_t addr, uint8_t store_val)
+{	
+#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
+	EEPROM.update(STORE__INDEX+addr, store_val);
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	EEPROM.write(STORE__INDEX+addr, store_val);	
+	EEPROM.commit();
+#endif		
+}
+
+uint16_t Return_8bit(uint8_t addr)
+{
+	return EEPROM.read(STORE__INDEX+addr);
+}
+
+void Store_16bit(uint8_t addr, uint16_t store_val)
+{	
+	// Point the ID as a byte
+	uint16_t s_val = store_val;
+	uint8_t *val = (uint8_t*)(&s_val);
+
+#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
+	EEPROM.update(STORE__INDEX+addr, *val++);
+	EEPROM.update(STORE__INDEX+addr+1, *val);
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	EEPROM.write(STORE__INDEX+addr, *val++);
+	EEPROM.write(STORE__INDEX+addr+1, *val);
+	EEPROM.commit();
+#endif		
+}
+
+uint16_t Return_16bit(uint8_t addr)
+{
+	uint16_t store_val=0;
+	uint8_t *val=(uint8_t*)&store_val;
+
+	*val++ = EEPROM.read(STORE__INDEX+addr);
+	*val = EEPROM.read(STORE__INDEX+addr+1);
+
+	return store_val;
+}
+
+// Store the node ID, a valid node ID identify an EEPROM with proper values
+void Store_ID(uint16_t id)
+{
+	Store_16bit(STORE__ID_s, id);
+}
+
+// Read the node ID, a valid node ID identify an EEPROM with proper values
+uint16_t Return_ID()
+{
+	return Return_16bit(STORE__ID_s);
+}
+
+// Store a vNet address
+void Store_Address(uint16_t address, uint8_t media)
+{
+	Store_16bit(STORE__ADDR_s+2*(media-1), address);
+}
+
+// Return a vNet address
+uint16_t Return_Addresses(uint8_t media)
+{
+	return Return_16bit(STORE__ADDR_s+2*(media-1));
+}
+
+// Store all the peer addresses
+void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
+{
+	for(uint8_t i=0; i<n_addresses; i++)
+		Store_16bit(STORE__PADDR_s+2*i, addresses[i]);
+}
+
+// Return all the peer addresses
+void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
+{
+	for(uint8_t i=0; i<n_addresses; i++)
+		addresses[i] = Return_16bit(STORE__PADDR_s+2*i);
+}
+
+// Return single the peer addresses
+uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
+{
+	return Return_16bit(STORE__PADDR_s+2*n_addr);
+}

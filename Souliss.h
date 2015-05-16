@@ -105,16 +105,18 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
 uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
-#	include "interfaces/HTTP.h"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-#	include "interfaces/HTTP_uIP.h"
-#elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
-#	include	"webhook/webhook.h"
-#elif(XMLSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
-#	include "interfaces/XMLServer.h"
-#elif(MODBUS)
-#	include "interfaces/Modbus.h"
+#if(MCU_TYPE == 0x01) // Atmel AVR Atmega
+#	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
+#		include "interfaces/mcu_avr/HTTP.h"
+#	elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
+#		include "interfaces/mcu_avr/HTTP_uIP.h"
+#	elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
+#		include	"webhook/webhook.h"
+#	elif(XMLSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
+#		include "interfaces/mcu_avr/XMLServer.h"
+#	elif(MODBUS)
+#		include "interfaces/mcu_avr/Modbus.h"
+#	endif
 #endif
 
 // Include IO definitions and drivers for supported hardware
@@ -164,7 +166,6 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "base/T3n.cpp"
 #include "base/T4n.cpp"
 #include "base/T5n.cpp"
-
 
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
