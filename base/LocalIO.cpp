@@ -538,16 +538,16 @@ void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8
 
 */	
 /**************************************************************************/
-U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstSlot, U8 lastSlot, U8 step_duration)
+U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
 {
-	if (pin_value == PINRESET) // unpressed button
+	if( pin_value == PINRESET ) // unpressed button
 	{
 		InPin[pin] = PINRESET;
 		return MaCaco_NODATACHANGED;
 	}
 
 	// if here the button is pressed
-	if(InPin[pin] == PINRESET) // it was unpressed before
+	if( InPin[pin] == PINRESET ) // it was unpressed before
 	{
 		InPin[pin] = PINSET;
 		time = millis();								// Record time
@@ -575,7 +575,7 @@ U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstS
 		InPin[pin] = PINACTIVE;
 		return MaCaco_NODATACHANGED;
 	}
-	else if(InPin[pin]==PINACTIVE && (abs(millis()-time) > 0) && (abs(millis()-time) < step_duration))
+	else if( InPin[pin]==PINACTIVE && (abs(millis()-time) > 0) && (abs(millis()-time) < step_duration) )
 	{
 		if(memory_map[MaCaco_OUT_s + firstSlot] != Souliss_T1n_OnCoil)
 		{
@@ -586,13 +586,13 @@ U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstS
 		}
 
 	}	
-	else if(InPin[pin]==PINACTIVE && (abs(millis()-time) > step_duration))
+	else if( InPin[pin]==PINACTIVE && (abs(millis()-time) > step_duration) )
 	{
 		// this cycle is executed while the button is kept pressed
 		// the current input is 1, the previous input was 1 and some time passed from the first press
 
 		U8 powered_lights_count = (U8) ( abs(millis()-time) / step_duration + 1 );
-		if (powered_lights_count > lastSlot - firstSlot + 1)
+		if ( powered_lights_count > lastSlot - firstSlot + 1 )
 			powered_lights_count = lastSlot - firstSlot + 1;
 	
 		U8 MaCaco_STATUS = MaCaco_NODATACHANGED;
@@ -612,12 +612,12 @@ U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstS
 	return MaCaco_NODATACHANGED;
 }
 
-U8 Souliss_DigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, U8 step_duration)
+U8 Souliss_DigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
 {
 	Souliss_DigInHoldSteps_Helper(pin, digitalRead(pin), memory_map, firstSlot, lastSlot, step_duration);
 }
 
-U8 Souliss_LowDigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, U8 step_duration)
+U8 Souliss_LowDigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
 {
 	Souliss_DigInHoldSteps_Helper(pin, !digitalRead(pin), memory_map, firstSlot, lastSlot, step_duration);
 }
