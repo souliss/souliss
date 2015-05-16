@@ -89,7 +89,7 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 	vNet_SetMySuperNode(mysupernode, vNet_GetMedia(addr));		// Set vNet Supernode
 	
 }
-#if(MaCaco_SUBSCRIBERS)
+
 /**************************************************************************
 /*!
 	Set the addresses of local nodes into the memory map, shall be used
@@ -115,7 +115,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 	*(memory_map+MaCaco_ADDRESSES_s+node*2)   = C16TO8L(addr);
 	*(memory_map+MaCaco_ADDRESSES_s+node*2+1) = C16TO8H(addr);	
 }
-#endif
+
 /**************************************************************************
 /*!
 	Set an IP address and calculate automatically the vNet address, it

@@ -731,7 +731,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// collect data from answer
 	if (((rx->funcode & 0xF0) == 0x10) || ((rx->funcode & 0xF0) == 0x30) || ((rx->funcode & 0xF0) == 0x50) || ((rx->funcode & 0xF0) == 0x70))
 	{	
-		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE)	
+		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE && MaCaco_USERMODE)	
 		// set an IP address at runtime
 		if (addrsrv && (rx->funcode == MaCaco_SETIP))
 		{	
