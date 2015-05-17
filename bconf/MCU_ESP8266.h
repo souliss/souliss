@@ -48,19 +48,4 @@
 #define VNET_MEDIA1_ENABLE  		1
 #define VNET_MEDIA3_ENABLE  		1
 
-// Be aware that dynamic addressing enable also the use of EEPROM, use FIRST_EEPROM_BYTE
-// to identify the first usable byte in your EEPROM.
-
-#define	DYNAMICADDRESSING_INSKETCH
-#define	IPBROADCAST_INSKETCH
-
-// In case of DYNAMICADDRESSING and Ethernet, the IPBROADCAST is enabled. This use over Media3 broadcast IP
-// frames instead of unicast ones, so that no bind between IP address and vNet address is requested.
-//
-//	Only the Gateway node will use either unicast (to communicate with user interface) and broadcast.
-
-#define	DYNAMICADDRESSING					1
-#define USEEEPROM							1
-#define	IPBROADCAST							1
-
 #endif

@@ -40,6 +40,7 @@
 #define USEEEPROM							1
 #define	IPBROADCAST							1
 
+#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
 #	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway
 #		define VNET_MEDIA3_ENABLE  			1
 #	elif(VNET_MEDIA1_ENABLE)
@@ -49,5 +50,8 @@
 #		define	VNET_MEDIA3_ENABLE  		0
 #		define	IPBROADCAST					0
 #	endif
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#		define VNET_MEDIA3_ENABLE  			1
+#endif
 
 #endif

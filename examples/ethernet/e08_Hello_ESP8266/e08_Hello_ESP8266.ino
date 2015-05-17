@@ -12,7 +12,7 @@
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/DisableEEPROM.h"
+#include "conf/DynamicAddressing.h"
 
 // Define the WiFi name and password
 #define WIFICONF_INSKETCH
@@ -21,6 +21,7 @@
 
 // Include framework code and libraries
 #include <ESP8266WiFi.h>
+#include <EEPROM.h>
 #include "Souliss.h"
 
 // This identify the number of the LED logic
