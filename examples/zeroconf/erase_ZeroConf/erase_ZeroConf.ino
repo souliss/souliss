@@ -18,6 +18,7 @@ void setup()
 {   
     // Erase network configuration parameters from previous use of ZeroConf
     Store_Clear();
+	Store_Commit();
 }
 
 void loop()

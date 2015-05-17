@@ -172,7 +172,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	// If previously we got the network addresses, recover them from EEPROM
 	#if(USEEEPROM)
 	if(Return_ID()==STORE__DEFAULTID)
-		Return_PeerAddresses((uint16_t*)(memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+		Return_PeerAddresses((memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
 	
 		#if (SOULISS_DEBUG)
 		// Print debug messages
@@ -310,7 +310,9 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 					for(i=1; i<=VNET_MEDIA_NUMBER; i++)
 						if(vNet_GetAddress(i))
 							Store_Address(vNet_GetAddress(i), i);
-						
+					
+					Store_Commit();
+					
 						#if (SOULISS_DEBUG)
 						// Print debug messages
 						SOULISS_LOG("(ss)<sID>");

@@ -47,7 +47,6 @@ void Store_Clear()
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 	for(uint8_t i=0;i<STORE__USABLESIZE;i++)
 		EEPROM.write(i, 0);
-	EEPROM.commit();	
 #endif	
 }
 
@@ -57,7 +56,6 @@ void Store_8bit(uint8_t addr, uint8_t store_val)
 	EEPROM.update(STORE__INDEX+addr, store_val);
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 	EEPROM.write(STORE__INDEX+addr, store_val);	
-	EEPROM.commit();
 #endif		
 }
 
@@ -68,29 +66,21 @@ uint16_t Return_8bit(uint8_t addr)
 
 void Store_16bit(uint8_t addr, uint16_t store_val)
 {	
-	// Point the ID as a byte
-	uint16_t s_val = store_val;
-	uint8_t *val = (uint8_t*)(&s_val);
-
 #if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
-	EEPROM.update(STORE__INDEX+addr, *val++);
-	EEPROM.update(STORE__INDEX+addr+1, *val);
+	EEPROM.update(STORE__INDEX+addr,   C16TO8L(store_val));
+	EEPROM.update(STORE__INDEX+addr+1, C16TO8H(store_val));
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-	EEPROM.write(STORE__INDEX+addr, *val++);
-	EEPROM.write(STORE__INDEX+addr+1, *val);
-	EEPROM.commit();
+	EEPROM.write(STORE__INDEX+addr,   C16TO8L(store_val));
+	EEPROM.write(STORE__INDEX+addr+1, C16TO8H(store_val));
 #endif		
 }
 
 uint16_t Return_16bit(uint8_t addr)
 {
-	uint16_t store_val=0;
-	uint8_t *val=(uint8_t*)&store_val;
+	uint8_t val_L = EEPROM.read(STORE__INDEX+addr);
+	uint8_t val_H = EEPROM.read(STORE__INDEX+addr+1);
 
-	*val++ = EEPROM.read(STORE__INDEX+addr);
-	*val = EEPROM.read(STORE__INDEX+addr+1);
-
-	return store_val;
+	return ((U16)(val_H << 8) | (U16)(val_L));
 }
 
 // Store the node ID, a valid node ID identify an EEPROM with proper values
@@ -118,21 +108,34 @@ uint16_t Return_Addresses(uint8_t media)
 }
 
 // Store all the peer addresses
-void Store_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
+void Store_PeerAddresses(uint8_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		Store_16bit(STORE__PADDR_s+2*i, addresses[i]);
+		Store_16bit(STORE__PADDR_s+2*i, C8TO16(addresses+i));
 }
 
 // Return all the peer addresses
-void Return_PeerAddresses(uint16_t *addresses, uint8_t n_addresses)
+void Return_PeerAddresses(uint8_t *addresses, uint8_t n_addresses)
 {
 	for(uint8_t i=0; i<n_addresses; i++)
-		addresses[i] = Return_16bit(STORE__PADDR_s+2*i);
+	{
+		addresses[i]   = C16TO8L(Return_16bit(STORE__PADDR_s+2*i));
+		addresses[i+1] = C16TO8H(Return_16bit(STORE__PADDR_s+2*i));
+	}
+		
 }
 
 // Return single the peer addresses
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
 {
 	return Return_16bit(STORE__PADDR_s+2*n_addr);
+}
+
+// Commit to EEPROM
+void Store_Commit()
+{
+	#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
+	#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	EEPROM.commit();	
+	#endif
 }
