@@ -97,6 +97,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Set_T11(slot)				Souliss_SetT11(memory_map, slot)
 #define	Logic_T11(slot)				Souliss_Logic_T11(memory_map, slot, &data_changed)
 #define Timer_T11(slot)				Souliss_T11_Timer(memory_map, slot)
+#define Set_LightsGroup(firstSlot, lastSlot) 	Souliss_SetT11Group(memory_map, firstSlot, lastSlot)
+#define Timer_LightsGroup(firstSlot, lastSlot) 	Souliss_T11Group_Timer(memory_map, firstSlot, lastSlot)
+#define Logic_LightsGroup(firstSlot, lastSlot) 	Souliss_Logic_T11Group(memory_map, firstSlot, lastSlot, &data_changed)
 
 #define	Set_AutoLight(slot)			Souliss_SetT12(memory_map, slot)
 #define	Logic_AutoLight(slot) 		Souliss_Logic_T12(memory_map, slot, &data_changed)
@@ -341,6 +344,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define ResetTrigger()				(data_changed=0);	
 #define	Initialize()				MaCaco_init(memory_map)
 #define	isTrigger()					data_changed
+
+#define SetInput(slot, value) 		mInput(slot) = value			
 
 #endif
 
