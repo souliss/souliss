@@ -6,6 +6,7 @@
     node.
     
 ***************************************************************************/
+#include "bconf/StandardArduino.h"
 #include "conf/DynamicAddressing.h"                 // Use dynamic address
 #define VNET_MEDIA_INSKETCH
 
@@ -18,7 +19,7 @@ void setup()
 {   
     // Erase network configuration parameters from previous use of ZeroConf
     Store_Clear();
-	Store_Commit();
+    Store_Commit();
 }
 
 void loop()
