@@ -181,10 +181,6 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "hardware/IOdef.h"
 #include "tools/IEEE754/float16.h"	
 
-#if (SOULISS_DEBUG)
-	#define SOULISS_LOG Serial.print
-#endif
-
 #include "base/SpeakEasy.h"
 #include "user/user_config.h"
 
