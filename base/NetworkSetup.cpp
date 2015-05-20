@@ -291,17 +291,18 @@ U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)
 		
 		for(uint8_t i=1; i<=VNET_MEDIA_NUMBER; i++)
 		{
-			if(Return_Addresses(i))
+			uint16_t raddr = Return_Addresses(i);
+			if((raddr) && (i == vNet_GetMedia(raddr)))
 			{
 				#if (SOULISS_DEBUG)
 				// Print debug messages
 				SOULISS_LOG("(ss)<rAdd>");
 				SOULISS_LOG("<|0x");
-				SOULISS_LOG(Return_Addresses(i),HEX);
+				SOULISS_LOG(raddr,HEX);
 				SOULISS_LOG(">\r\n");
 				#endif				
 				
-				Souliss_SetAddress(Return_Addresses(i), DYNAMICADDR_SUBNETMASK, ((Return_Addresses(i) & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
+				Souliss_SetAddress(raddr, DYNAMICADDR_SUBNETMASK, ((raddr & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY));
 			}	
 		}	
 	}
