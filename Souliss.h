@@ -154,7 +154,6 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
 #if(MCU_TYPE == 0x01)	// ATmega AVR
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#	include "mcu/mcu_ESP8266.c"	// Load special code for the ESP8266
 #endif
 
 // Include Souliss code base and typicals

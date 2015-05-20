@@ -34,6 +34,7 @@
 
 bool FirstInit = {false}, addrsrv = {false};
 U16 keyidval=0;
+uint8_t	myvNet_dhcp=0;
 
 /**************************************************************************
 /*!
@@ -139,6 +140,55 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	// Set the address
 	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
 }
+
+/**************************************************************************
+/*!
+	Get IP Address from DHCP
+*/	
+/**************************************************************************/ 
+void Souliss_GetIPAddress()
+{
+#if((MCU_TYPE == 0x01) && ARDUINO_DHCP)	// Atmel AVR Atmega
+
+	// Use software based DHCP client
+	Ethernet.begin();
+	IPAddress ip = Ethernet.localIP();
+	
+	// The last byte of the IP address is used as vNet address
+	myvNet_dhcp = ip[3];	
+	
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	// Setup the SSID and Password
+	WiFi.begin(WiFi_SSID, WiFi_Password);
+	
+	// Connect
+	while (WiFi.status() != WL_CONNECTED) 	
+		delay(500);
+	
+	// Get the IP network parameters
+	IPAddress lIP  = WiFi.localIP();
+	IPAddress sMk  = WiFi.subnetMask();
+	IPAddress gIP  = WiFi.gatewayIP();
+	
+	uint8_t ipaddr[4];
+	uint8_t subnet[4];
+	uint8_t gateway[4];
+	
+	for(uint8_t i=0;i<4;i++)
+	{
+		ipaddr[i]  = lIP[i];
+		subnet[i]  = sMk[i];
+		gateway[i] = gIP[i];
+	}	
+
+	// The last byte of the IP address is used as vNet address
+	myvNet_dhcp = ipaddr[3];
+	
+	// Set the values in the vNet stack
+	Souliss_SetIPAddress(ipaddr, subnet, gateway);
+#endif	
+}						
+
 
 /**************************************************************************
 /*!

@@ -32,8 +32,8 @@ void setup()
     Initialize();
 
     // Connect to the WiFi network and get an address from DHCP
-    Setup_ESP8266();                           
-    SetAsGateway(myvNet_esp8266);       // Set this node as gateway for SoulissApp  
+    GetIPAddress();                           
+    SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
 
     // This node will serve all the others in the network providing an address
     SetAddressingServer();

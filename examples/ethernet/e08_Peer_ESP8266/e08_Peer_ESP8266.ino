@@ -31,7 +31,7 @@ void setup()
     Initialize();
 
     // Connect to the WiFi network and get an address from DHCP
-    Setup_ESP8266();                           
+    GetIPAddress();                           
 
     // Get address dynamically
     SetDynamicAddressing();
