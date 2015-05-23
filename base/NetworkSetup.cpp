@@ -205,8 +205,8 @@ void Souliss_GetIPAddress()
 		if(DEFAULT_GATEWAY) 		DEFAULT_GATEWAY[i] = gateway[i];
 	}
 	
-	U16 vNet_address = (U16)ip_address[i-1];			// The last byte of the IP address is the vNet one
-	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
+	U16 vNet_address = (U16)ipaddr[i-1];			// The last byte of the IP address is the vNet one
+	DEFAULT_BASEIPADDRESS[i-1]=0;					// The BASEIPADDRESS has last byte always zero
 	
 	// Set the address
 	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);	
