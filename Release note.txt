@@ -7,6 +7,7 @@ Release note for revision v7.0.4, on dd/mm/yyyy
     on Expressif ESP8266 SoC with WiFi
         - Porting for 16-bit and 32-bit microcontrollers
 		- Support for Expressif ESP8266 SoC with WiFi
+		- vNet over USART extended to ESP8266
 		- Revised examples for battery operated devices (TODO)
 		- Minor bugfix
         
