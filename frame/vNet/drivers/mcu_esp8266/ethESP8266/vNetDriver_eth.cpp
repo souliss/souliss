@@ -71,6 +71,8 @@ U8 local_buffer[VNET_MAX_FRAME];					// The WiFi library doesn't support oFrame
 													// to the serialization done with oFrames but
 													// with the ESP8266 RAM isn't a too big concern.
 
+													
+													
 /**************************************************************************/
 /*!
     The ESP8266 cannot be initialized at this stage, because this Init is
@@ -92,7 +94,7 @@ void vNet_SetAddress_M1(uint16_t addr)
 	// Translate and set the address
 	eth_vNettoIP(addr, &ip_addr[0]);
 	eth_SetIPAddress(&ip_addr[0]);
-	
+		
 	udp.begin(ETH_PORT);								// Start listen on socket
 
 	// Include debug functionalities, if required

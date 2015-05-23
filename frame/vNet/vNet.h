@@ -85,7 +85,7 @@
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)
-	#include "drivers/mcu_avr/usart/vNetDriver_usart.h"	
+	#include "drivers/generic/usart/vNetDriver_usart.h"	
 #endif	
 
 typedef struct

@@ -48,7 +48,7 @@ uint16_t myaddress=0, caindex=0, in_crc=0;
 #ifndef USARTDRIVER_INSKETCH
 #	define	USARTDRIVER	Serial	
 
-#	if (USART_DEBUG)
+#	if ((USART_DEBUG) && (MCU_TYPE == 0x01))
 #		include "SoftwareSerial.h"
 		extern SoftwareSerial myUSARTDRIVER; // RX, TX	
 #		define USART_LOG 	myUSARTDRIVER.print
@@ -389,7 +389,7 @@ uint8_t vNet_DataAvailable_M5()
 				#endif	
 				
 				// Save the transmitter crc
-				in_crc = *(uint16_t*)(usartframe+i+USART_PREAMBLE_LEN+vNetLen-USART_CRCLEN);	
+				in_crc = C8TO16(usartframe+i+USART_PREAMBLE_LEN+vNetLen-USART_CRCLEN);	
 				
 				// The frame is a valid vNet message, remove the preamble
 				memmove(usartframe, &usartframe[i+USART_PREAMBLE_LEN], vNetLen);		
@@ -501,7 +501,7 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 		// The bus is a broadcast media and every time that we get a byte we consider
 		// it as busy, if the frame is for us, we can consider it free because is our
 		// time to give an answer.
-		if((*(U16*)(usartframe+3))==myaddress)
+		if((C8TO16(usartframe+3))==myaddress)
 		{
 			setBusFree();
 			
@@ -509,7 +509,7 @@ uint8_t vNet_RetrieveData_M5(uint8_t *data)
 			USART_LOG("(USART) Set bus free\r\n");
 			#endif	
 		}
-		else if(((*(U16*)(usartframe+3)) > VNET_ADDR_NULL) && ((*(U16*)(usartframe+3)) <= VNET_ADDR_BRDC)) 
+		else if(((C8TO16(usartframe+3)) > VNET_ADDR_NULL) && ((C8TO16(usartframe+3)) <= VNET_ADDR_BRDC)) 
 		{
 			// If is a broadcast or unicast frame we are supposed to give an answer, but
 			// all nodes will probably do the same. In order to avoid collision, we wait a bit

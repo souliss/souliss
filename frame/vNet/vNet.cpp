@@ -90,7 +90,7 @@
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)
-	#include "drivers/mcu_avr/usart/vNetDriver_usart.cpp"
+	#include "drivers/generic/usart/vNetDriver_usart.cpp"
 #endif	
 
 #if (VNET_DEBUG)
