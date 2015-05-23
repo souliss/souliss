@@ -124,7 +124,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 */	
 /**************************************************************************/
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
-{
+{	
 	// Starting from IP configuration define the vNet ones
 	U8 i=0;
 	for(i=0; i<4; i++)
@@ -136,6 +136,18 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	
 	U16 vNet_address = (U16)ip_address[i-1];			// The last byte of the IP address is the vNet one
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
+
+	#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+	// Setup the SSID and Password
+	WiFi.begin(WiFi_SSID, WiFi_Password);
+	
+	// Connect
+	while (WiFi.status() != WL_CONNECTED) 	
+		delay(500);
+	
+	// Set manually an IP address
+	WiFi.config(ip_address, ip_gateway, subnet_mask);
+	#endif
 	
 	// Set the address
 	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
@@ -170,11 +182,12 @@ void Souliss_GetIPAddress()
 	IPAddress sMk  = WiFi.subnetMask();
 	IPAddress gIP  = WiFi.gatewayIP();
 	
+	uint8_t i;
 	uint8_t ipaddr[4];
 	uint8_t subnet[4];
 	uint8_t gateway[4];
 	
-	for(uint8_t i=0;i<4;i++)
+	for(i=0;i<4;i++)
 	{
 		ipaddr[i]  = lIP[i];
 		subnet[i]  = sMk[i];
@@ -184,8 +197,19 @@ void Souliss_GetIPAddress()
 	// The last byte of the IP address is used as vNet address
 	myvNet_dhcp = ipaddr[3];
 	
-	// Set the values in the vNet stack
-	Souliss_SetIPAddress(ipaddr, subnet, gateway);
+	// Starting from IP configuration define the vNet ones
+	for(i=0; i<4; i++)
+	{
+		if(DEFAULT_BASEIPADDRESS) 	DEFAULT_BASEIPADDRESS[i]=ipaddr[i];
+		if(DEFAULT_SUBMASK) 		DEFAULT_SUBMASK[i] = subnet[i];
+		if(DEFAULT_GATEWAY) 		DEFAULT_GATEWAY[i] = gateway[i];
+	}
+	
+	U16 vNet_address = (U16)ip_address[i-1];			// The last byte of the IP address is the vNet one
+	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
+	
+	// Set the address
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);	
 #endif	
 }						
 
