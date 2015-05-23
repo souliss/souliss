@@ -316,7 +316,7 @@ U8 MaCacoUserMode_send(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numbe
 /**************************************************************************/
 U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 {
-	U8 i=0, typ_mask=0xFF;
+	U16 i=0, typ_mask=0xFF;
 	
 	/*********** Request ************/	
 	
@@ -458,7 +458,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if ((rx->funcode == MaCaco_JOINNETWORK) || (rx->funcode == MaCaco_JOINANDRESET))
 	{			
 		// look for a non used address register
-		U8 nodes=0;
+		U16 nodes=0;
 		while((((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != addr) && ((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000)) && (nodes < MaCaco_NODES))
 			nodes++;
 
@@ -602,7 +602,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				vNetMedia = vNet_GetMedia(subnet+1);
 			}
 			
-			U8 nodes=0;
+			U16 nodes=0;
 			U16 nodeaddress=0x0002;
 			
 			// a supernode needs an address into another subnet
@@ -1034,8 +1034,8 @@ void MaCaco_DataIn()
 /**************************************************************************/
 U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 {
-	U8 used_media=0, len, status=0;
-	U16 src_addr = 0x0000;
+	U8 used_media=0, status=0;
+	U16 len, src_addr = 0x0000;
 
 	// If data are available
 	if(MaCaco_rx.datain > 0)
@@ -1077,7 +1077,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 			memmove((memory_map+MaCaco_P_OUT_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
 		#elif(MaCaco_LASTIN)			// LOCALIN is active, store data
 			// Identify a free space into the LASTIN data area
-			U8 i=0;
+			U16 i=0;
 			while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
 
 			if(i != MaCaco_L_BUFSIZE)
@@ -1101,7 +1101,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 /**************************************************************************/
 U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 {
-	U8 status=0, i=0, j=0;
+	U16 status=0, i=0, j=0;
 
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
@@ -1168,7 +1168,7 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 /**************************************************************************/
 U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 {
-	U8 status=0, i=0, j=0;
+	U16 status=0, i=0, j=0;
 
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
@@ -1537,7 +1537,7 @@ U8 MaCaco_IsSubscribed()
 #if(MaCaco_SUBSCRIBERS)
 void MaCaco_InternalSubcription(U8 *memory_map)
 {
-	U8 i=0;
+	U16 i=0;
 	
 	/** Init the typicals **/
 
