@@ -22,8 +22,8 @@
     \file 
     \ingroup
 */
-#ifndef bconf_ssSTDARDUINO_H
-#define bconf_ssSTDARDUINO_H
+#ifndef bconf_ssMCUESP8266_H
+#define bconf_ssMCUESP8266_H
 
 // Expressif ESP8266 Board
 #define MCU_TYPE_INSKETCH
@@ -51,5 +51,6 @@
 #define USARTDRIVER_INSKETCH
 #define USART_TXENABLE				1
 #define USART_TXENPIN				2
+#define	USARTDRIVER					Serial
 
 #endif

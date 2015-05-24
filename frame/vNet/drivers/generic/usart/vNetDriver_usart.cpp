@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "GetConfig.h"
 #include "vNetDriver_usart.h"							
 
 // Global variables used in the driver
