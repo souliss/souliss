@@ -24,8 +24,14 @@
 #include <EEPROM.h>
 #include "Souliss.h"
 
+// This identify the number GPIO0 of the Button
+#define IN0                 0
+// This identify the number GPIO5 for control Relay 
+#define RELAY_PIN           5
+
 // This identify the number of the LED logic
-#define MYLEDLOGIC          0               
+#define MYLEDLOGIC          0 
+
 
 void setup()
 {   
@@ -39,7 +45,8 @@ void setup()
     SetAddressingServer();
     
     Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic
-    pinMode(5, OUTPUT);                 // Use pin 5 as output 
+    pinMode(IN0, INPUT);                        // Use pin 0 as input
+    pinMode(RELAY_PIN, OUTPUT);                 // Use pin 5 as output 
 }
 
 void loop()
@@ -49,8 +56,9 @@ void loop()
         UPDATEFAST();   
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
+            DigIn(IN0, Souliss_T1n_ToggleCmd, MYLEDLOGIC);
             Logic_SimpleLight(MYLEDLOGIC);
-            DigOut(5, Souliss_T1n_Coil,MYLEDLOGIC);
+            DigOut(RELAY_PIN, Souliss_T1n_Coil,MYLEDLOGIC);
         } 
               
         // Here we handle here the communication with Android
