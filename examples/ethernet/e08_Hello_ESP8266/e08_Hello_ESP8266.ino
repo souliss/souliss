@@ -12,9 +12,9 @@
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/DynamicAddressing.h"
+#include "conf/IPBroadcast.h"
 
-// Define the WiFi name and password
+// **** Define the WiFi name and password ****
 #define WIFICONF_INSKETCH
 #define WiFi_SSID               "mywifi"
 #define WiFi_Password           "mypassword"    
@@ -27,6 +27,9 @@
 // This identify the number of the LED logic
 #define MYLEDLOGIC          0               
 
+// **** Define here the right pin for your ESP module **** 
+#define	OUTPUTPIN			5
+
 void setup()
 {   
     Initialize();
@@ -35,11 +38,13 @@ void setup()
     GetIPAddress();                           
     SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
 
-    // This node will serve all the others in the network providing an address
-    SetAddressingServer();
+    // This is the vNet address for this node, used to communicate with other
+	// nodes in your Souliss network
+    SetAddress(0xAB01, 0xFF00, 0x0000);
     
     Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic
-    pinMode(5, OUTPUT);                 // Use pin 5 as output 
+	
+    pinMode(OUTPUTPIN, OUTPUT);         // Use pin as output 
 }
 
 void loop()
@@ -50,7 +55,7 @@ void loop()
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
             Logic_SimpleLight(MYLEDLOGIC);
-            DigOut(5, Souliss_T1n_Coil,MYLEDLOGIC);
+            DigOut(OUTPUTPIN, Souliss_T1n_Coil,MYLEDLOGIC);
         } 
               
         // Here we handle here the communication with Android
