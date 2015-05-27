@@ -15,15 +15,17 @@
 
 // Include and Configure DHT11 SENSOR
 #include "DHT.h"
-#define DHTPIN 13     // what pin we're connected to
-#define DHTTYPE DHT11   // DHT 11 
-DHT dht(DHTPIN, DHTTYPE, 15);
+#define DHTPIN              13       // what pin we're connected to
+#define DHTTYPE             DHT11   // DHT 11 
+DHT dht(DHTPIN, DHTTYPE, 15);       
 
 // This identify the number of the LED logic
 #define TEMPERATURE         0
 #define HUMIDITY            2
 
-#define Debug Serial        //Change to Serial1 if you want to use the GPIO2 to TX
+#define Debug               Serial  //Change to Serial1 if you want to use the GPIO2 to TX
+#define DebugDHT            1       //0 - None      / 1 - Show data on Serial  
+#define Celsius             1       //0 - Farenheit / 1 Celsius
 
 void setup()
 {   
@@ -43,7 +45,6 @@ void setup()
     Set_Humidity(HUMIDITY);
 }
 
-
 void loop()
 { 
     // Here we start to play
@@ -62,25 +63,38 @@ void loop()
     EXECUTESLOW() {
         UPDATESLOW();
             SLOW_10s() {  
-              // Read temperature and humidity from DHT every 10 seconds  
-              float h = dht.readHumidity();
-              // Read temperature as Celsius
-              float t = dht.readTemperature();
-              
-              // Check if any reads failed and exit early (to try again).
-              if (isnan(h) || isnan(t) {
-                Debug.println("Failed to read from DHT sensor!");
-              }
-            
-              Debug.print("Humidity: "); 
-              Debug.print(h);
-              Debug.print(" %\t");
-              Debug.print("Temperature: "); 
-              Debug.print(t);
-              Debug.print(" *C ");
-
-              Souliss_ImportAnalog(memory_map, TEMPERATURE, &t);
-              Souliss_ImportAnalog(memory_map, HUMIDITY, &h); 
+                Souliss_ReadDHT(TEMPERATURE, HUMIDITY);   
             } 
     }
-}    
+}   
+void Souliss_ReadDHT(uint8_t TEMPERATURE_SLOT, uint8_t HUMIDITY_SLOT){
+    // Read temperature and humidity from DHT every 10 seconds  
+    float h = dht.readHumidity();
+    // Read temperature as Celsius
+    float t = dht.readTemperature();
+    // Read temperature as Fahrenheit
+    float f = dht.readTemperature(true);
+
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t) || isnan(f)) {
+        Debug.println("Failed to read from DHT sensor!");
+    }
+    if(DebugDHT){
+        Debug.print("Humidity: "); 
+        Debug.print(h);
+        Debug.print(" %\t");
+        if(Celsius){
+            Debug.print("Temperature: "); 
+            Debug.print(t);
+            Debug.print(" *C ");
+        }else{
+            Debug.print("Temperature: "); 
+            Debug.print(f);
+            Debug.print(" *F ");
+        }
+    }
+                
+    if(Celsius) Souliss_ImportAnalog(memory_map, TEMPERATURE_SLOT, &t);
+    else Souliss_ImportAnalog(memory_map, TEMPERATURE_SLOT, &f);
+    Souliss_ImportAnalog(memory_map, HUMIDITY_SLOT, &h); 
+}
