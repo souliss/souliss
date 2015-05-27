@@ -1,14 +1,15 @@
 First steps for using Arduino IDE + ESP
 
- 
-
 (Thank You Dario)
-
 This is the procedure from the Arduino/ESP8266 Github
 
 •Install Arduino 1.6.4 from the Arduino website.
+
 •Start Arduino and open Perferences window.
-•Enter http://arduino.esp8266.com/package_esp8266com_index.json into Additional Board Manager URLs field. You can add multiple URLs, separating them with commas.
+
+•Enter http://arduino.esp8266.com/package_esp8266com_index.json into Additional Board Manager URLs field. You can add 
+multiple URLs, separating them with commas.
+
 •Open Boards Manager from Tools > Board menu and install esp8266 platform (and don't forget to select your ESP8266 board from Tools > Board menu after installation).
 
 Once done, install manually (not from the library manager) souliss friariello-porting
@@ -34,9 +35,6 @@ DHT Integration:
 
 -Example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E01_ESP_DHT11.ino
 
-
-
-
 -Wiring. You can power from 3.3v directly the DHT and connect DATA to any PIN. 
 
  
@@ -49,10 +47,6 @@ In most cases OneWire library isn't on the Arduino IDE or have an Older version,
 
 - Example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E02_ESP_Dallas.ino
 
-
-
-
-
 - Wiring. You can power with 3.3v. You need a 4k7 resistor from VCC to DATA PIN, you can use any pin.
 
  
@@ -63,29 +57,25 @@ Library: https://github.com/openenergymonitor/EmonLib
 
 https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/SoftwareSerial
 
-
-
 Due the limitations on the ADC pin I'll use an ATTINY to get the data and send via SoftwareSerial to the ESP, so first steps needs to be done before.
 
 Load a sketch to Attiny: 
-
- 
 
 Start Arduino and Load the Arduino as ISP example to an Arduino (any of them)
 Connect to the Attiny following this scheme:
 
 ​Open Perferences window.
 Enter https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json into Additional Board Manager URLs field. You can add multiple URLs, separating them with commas. Note: I've an error if I put the esp and the attiny separated by comma, but you can add the attiny and when its programmed leave only the ESP one.
+
 Open Boards Manager from Tools > Board menu and install attiny platform (and don't forget to select your Attiny 1mhz Internal Clock board from Tools > Board menu after installation).
+
 Select on Tools Arduino as ISP 
+
 Load this sketch to the Attiny:
 Sketch Attiny:  https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E06_ATTINY_EMONLIB
 
-
-
-
 The Current Sensor I use is SCT-013-000 and connecto to the PIN A1 of the Attiny using this scheme:
-
+[IMAGE]
 
 ​Where RVD = 10kohm and Burden is 220ohm.
 
@@ -119,13 +109,9 @@ Lux Integration
 -Scheme:  (Sorry by this, I explain better if needed)
 
 3.3v --- 220ohm ---- LDR ---- 100 ohm ----- GND
-
-                             LDR ----  -  ADC ----- 10kohm ------ GND
+                     LDR ----  -  ADC ----- 10kohm ------ GND
 
 - Example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E03_ESP_LDR.ino
-
-
-
 
 PWM Integration
 
