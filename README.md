@@ -1,4 +1,4 @@
-First steps for using Arduino IDE + ESP
+#First steps for using Arduino IDE + ESP
 
 (Thank You Dario)
 This is the procedure from the Arduino/ESP8266 Github
@@ -15,7 +15,7 @@ multiple URLs, separating them with commas.
 Once done, install manually (not from the library manager) souliss friariello-porting
 
 
-https://github.com/souliss/souliss/archive/friariello-porting.zip
+https://github.com/souliss/souliss/archive/friariello.zip
 
 -------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ To use this integration and examples you need to download some libraries.
 
   
 
-DHT Integration:
+##DHT Integration:
 
 -Library: https://github.com/adafruit/DHT-sensor-library
 
@@ -39,7 +39,7 @@ DHT Integration:
 
  
 
-Dallas Integration
+##Dallas Integration
 
 - Library: https://github.com/milesburton/Arduino-Temperature-Control-Library
 
@@ -51,7 +51,7 @@ In most cases OneWire library isn't on the Arduino IDE or have an Older version,
 
  
 
-EmonLib Integration
+##EmonLib Integration
 
 Library: https://github.com/openenergymonitor/EmonLib
 
@@ -75,7 +75,7 @@ Load this sketch to the Attiny:
 Sketch Attiny:  https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E06_ATTINY_EMONLIB
 
 The Current Sensor I use is SCT-013-000 and connecto to the PIN A1 of the Attiny using this scheme:
-[IMAGE]
+![](WEBPAGE) 
 
 ​Where RVD = 10kohm and Burden is 220ohm.
 
@@ -100,7 +100,7 @@ ESP example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E06_
 
  
 
-Lux Integration
+##Lux Integration
 
 -Library:  No library needed, just a function to map values on example.
 
@@ -109,11 +109,12 @@ Lux Integration
 -Scheme:  (Sorry by this, I explain better if needed)
 
 3.3v --- 220ohm ---- LDR ---- 100 ohm ----- GND
+
                      LDR ----  -  ADC ----- 10kohm ------ GND
 
 - Example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E03_ESP_LDR.ino
 
-PWM Integration
+##PWM Integration
 
 Library: No library needed, just use the last core from the Boards Managed
 
