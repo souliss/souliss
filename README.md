@@ -1,4 +1,4 @@
-#First steps for using Arduino IDE + ESP
+#First steps for using Souliss on a ESP8266 with Arduino IDE
 
 (Thank You Dario)
 This is the procedure from the Arduino/ESP8266 Github
@@ -61,17 +61,17 @@ Due the limitations on the ADC pin I'll use an ATTINY to get the data and send v
 
 Load a sketch to Attiny: 
 
-Start Arduino and Load the Arduino as ISP example to an Arduino (any of them)
+•Start Arduino and Load the Arduino as ISP example to an Arduino (any of them)
 Connect to the Attiny following this scheme:
 
-​Open Perferences window.
+•Open Perferences window.
 Enter https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json into Additional Board Manager URLs field. You can add multiple URLs, separating them with commas. Note: I've an error if I put the esp and the attiny separated by comma, but you can add the attiny and when its programmed leave only the ESP one.
 
-Open Boards Manager from Tools > Board menu and install attiny platform (and don't forget to select your Attiny 1mhz Internal Clock board from Tools > Board menu after installation).
+•Open Boards Manager from Tools > Board menu and install attiny platform (and don't forget to select your Attiny 1mhz Internal Clock board from Tools > Board menu after installation).
 
-Select on Tools Arduino as ISP 
+•Select on Tools - Programmer Arduino as ISP 
 
-Load this sketch to the Attiny:
+•Load this sketch to the Attiny:
 Sketch Attiny:  https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E06_ATTINY_EMONLIB
 
 The Current Sensor I use is SCT-013-000 and connecto to the PIN A1 of the Attiny using this scheme:
@@ -85,20 +85,11 @@ Serial TX from the Attiny is on Pin 4 and must be connected to the RX from ESP.
 
 Now on ESP we need to use for debug purposes the Serial1 (TX on GPIO2) and the Standard Serial Pins to receive data from Attiny, only the RX pin is used.  Note: This Serial1 only trasmit.
 
- 
-
 Due the ESP GPIO2 must be connected to GND to load sketches and the RX must be released from the Attiny before load a sketch I added a jumper, I'll use the same jumper to connect both, with this solution we avoid possible problems when we are loading sketches to the ESP.
-
- 
 
 And finally this is the example for ESP that reads the meassurement from attiny and push to Souliss
 
 ESP example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E06_ESP_EMONLIB
-
- 
-
-
- 
 
 ##Lux Integration
 
@@ -121,11 +112,5 @@ Library: No library needed, just use the last core from the Boards Managed
 Note: analogWrite(PIN, VALUE*4) Value on ESP It's 0-1024 range instead the 0-255 from the Arduino, just add *4  to send the right value.
 
 Example: https://github.com/juanpintom/Souliss_ESP_Examples/blob/master/E04_ESP_PWM.ino
-
-
-
-
-
-
 
 I hope this can help many people to get your nodes working easily.
