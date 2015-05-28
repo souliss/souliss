@@ -134,17 +134,17 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "frame/vNet/vNet.cpp"
 
 #if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
-	#include "interfaces/HTTP.cpp"
+	#include "interfaces/mcu_avr/HTTP.cpp"
 #elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-	#include "interfaces/HTTP_uIP.cpp"
+	#include "interfaces/mcu_avr/HTTP_uIP.cpp"
 #elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-#	include "interfaces/XMLServer_HTTP.cpp"
+#	include "interfaces/mcu_avr/XMLServer_HTTP.cpp"
 #elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-#	include "interfaces/XMLServer_UDP.cpp"
+#	include "interfaces/mcu_avr/XMLServer_UDP.cpp"
 #elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
-#	include "interfaces/XMLServer_HTTP_uIP.cpp"
+#	include "interfaces/mcu_avr/XMLServer_HTTP_uIP.cpp"
 #elif(MODBUS)
-#	include "interfaces/Modbus.cpp"
+#	include "interfaces/mcu_avr/Modbus.cpp"
 #endif
 	
 // Include IO definitions and drivers for supported hardware
