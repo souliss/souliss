@@ -33,7 +33,7 @@ void setup()
     Initialize();
 
     // Get the IP address from DHCP
-    GetIpAddress();                          
+    GetIPAddress();                          
     SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
     
     Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic

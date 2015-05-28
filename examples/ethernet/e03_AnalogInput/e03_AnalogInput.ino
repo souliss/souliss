@@ -35,25 +35,13 @@
 #define ANALOGDAQ               0           // This is the memory slot used for the execution of the logic
 #define DEADBAND                0.05        // Deadband value 5%  
 
-// This sketch will use DHCP, but a generic IP address is defined in case
-// the DHCP will fail. Generally this IP address will not be used and doesn't
-// need to be used in SoulissApp
-IPAddress ip(192, 168, 1, 77);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 255, 0);
-#define myvNet_address  ip[3]
-
 void setup()
 {   
     Initialize();
 
-    // Network configuration
-    if(Ethernet.begin()==0)                     // Get an address via DHCP     
-        Ethernet.begin(ip, gateway, subnet);    // If DHCP fails, use a manual address
-    else
-        ip = Ethernet.localIP();                         
-                
-    SetAsGateway(myvNet_address);               // Set this node as gateway for SoulissApp  
+    // Get the IP address from DHCP
+    GetIPAddress();                          
+    SetAsGateway(myvNet_dhcp);                  // Set this node as gateway for SoulissApp  
     Set_AnalogIn(ANALOGDAQ);                    // Set an analog input value
 }
 
