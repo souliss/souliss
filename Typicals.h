@@ -135,7 +135,7 @@
 #define Souliss_T2n_CloseCmd			Souliss_T2n_CloseCmd_SW		// Close Command (legacy)
 #define Souliss_T2n_OpenCmd				Souliss_T2n_OpenCmd_SW		// Open Command (legacy)
 #define Souliss_T2n_StopCmd				0x04		// Stop Command
-#define Souliss_T2n_CloseCmd_Local		0x08		// Close Command (only from local pushbutton)
+#define Souliss_T2n_CloseCmd_Local		0x12		// Close Command (only from local pushbutton)
 #define Souliss_T2n_OpenCmd_Local		0x10		// Open Command (only from local pushbutton)
 #define Souliss_T2n_ToggleCmd			0x08		// Toggle Command
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
