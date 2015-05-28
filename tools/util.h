@@ -19,5 +19,16 @@
                    ((x)>>24 & 0x000000FFUL) )
 #define NTOHL(x) HTONL(x)
 
+// Read a value as 16 bit into from an 8bit data pointer
+// this is a cross MCU solution, some MCU doesn't allow
+// to point directly as *(U16*) not-odd addresses.
+//
+// This assume a lower-endian architecture
+#define	C8TO16(addr)	((U16)(*(addr+1) << 8) | (U16)*(addr))
+
+// Read a 16 bit value as two 8 bit ones, this is endian 
+// independent
+#define	C16TO8L(val) ((U8)((val) & 0x00FF))
+#define	C16TO8H(val) ((U8)(((val) & 0xFF00) >> 8))
 
 #endif

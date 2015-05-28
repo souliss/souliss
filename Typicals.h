@@ -164,16 +164,16 @@
 #define Souliss_T3n_FanHigh				0x09		// Heating / Cooling Fan High
 #define Souliss_T3n_FanAuto				0x0A		// Heating / Cooling Fan Automatic
 #define Souliss_T3n_FanManual			0x0B		// Heating / Cooling Fan Manual
-#define Souliss_T3n_DeadBand			0.05		// Percentage Deadband
+#define Souliss_T3n_DeadBand			0.01		// Percentage Deadband
 #define Souliss_T3n_ThMed				0.10		// Threshold for medium speed
 #define Souliss_T3n_ThHigh				0.15		// Threshold for high speed
 #define Souliss_T3n_SetTemp				0x0C		// Set the setpoint
 #define Souliss_T3n_ShutDown			0x0D		// Shut down heating and cooling
 
-
 #define Souliss_T3n_RstCmd				0x0000
+#define Souliss_T3n_SystemOn			0x01		// System On
 #define Souliss_T3n_HeatingOn			0x02		// Heating Active
-#define Souliss_T3n_CoolingOn			0x03		// Cooling Active
+#define Souliss_T3n_CoolingOn			0x04		// Cooling Active
 #define Souliss_T3n_FanOn1				0x08		// Fan 1 Running
 #define Souliss_T3n_FanOn2				0x10		// Fan 2 Running
 #define Souliss_T3n_FanOn3				0x20		// Fan 3 Running

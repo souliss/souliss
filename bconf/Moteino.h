@@ -25,6 +25,10 @@
 #ifndef bconf_ssMOTEINO_H
 #define bconf_ssMOTEINO_H
 
+// Arduino AVR Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE			0x01
+
 #define RFM69_INSKETCH
 #define VNET_MEDIA_INSKETCH
 #define	COMMS_MODEL_INSKETCH

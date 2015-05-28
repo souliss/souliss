@@ -378,7 +378,7 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 /**************************************************************************/
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue)
 {
-	float16((U16*)(memory_map + MaCaco_IN_s + slot), analogvalue);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), analogvalue);
 }
 
 /**************************************************************************
@@ -395,7 +395,7 @@ void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias
 	inval = bias + scaling * inval;
 	
 	// Convert from single-precision to half-precision
-	float16((U16*)(memory_map + MaCaco_IN_s + slot), &inval);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), &inval);
 	
 }
 
@@ -516,6 +516,112 @@ void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8
 		digitalWrite(pin, LOW);
 }
 
+
+/**************************************************************************
+/*!
+	Link the shared memory map to an hardware pin
+
+	Designed to work with T11Groups
+	A Group is simply defined as a set of consecutive T11 slots (from firstSlot to lastSlot)
+	
+	It is used to handle lightning in a room having multiple lights with the use of
+	one single monostable pushbutton.
+
+	Starting with all lights off, one press turns on the first light as a standard T11.
+	By holding the pushbutton all the others lights in the group are turned on in sequence.
+	step_duration defines how long the button has to be held before turning on the next slot.
+
+	Starting with some of the lights on, one press turns off the whole group in once.
+
+	The following is an helper function.
+	Souliss_DigInHoldSteps and Souliss_LowDigInHoldSteps should be used for positive or falling edge inputs
+
+*/	
+/**************************************************************************/
+U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
+{
+	if( pin_value == PINRESET ) // unpressed button
+	{
+		InPin[pin] = PINRESET;
+		return MaCaco_NODATACHANGED;
+	}
+
+	// if here the button is pressed
+	if( InPin[pin] == PINRESET ) // it was unpressed before
+	{
+		InPin[pin] = PINSET;
+		time = millis();								// Record time
+		// this is the first cycle detecting the button press: current input=1, previous input=0
+
+		// verify if some of the lights in the group are ON
+		for(U8 i=firstSlot; i<=lastSlot; i++)
+		{
+			if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OnCoil)
+			{
+				// there's at least one light ON
+				// the user must have been pressing to turn everything OFF
+				// then cycle on all the remaining slots to put set all of them to OFF
+				for (U8 j = i; j <= lastSlot; j++)
+					memory_map[MaCaco_IN_s + j] = Souliss_T1n_OffCmd;
+
+				return MaCaco_DATACHANGED; 
+			}
+		}
+
+		// if here all lights were OFF
+
+		// do nothing to filter false activations for spikes
+		// the first slot will be set to on on the next cicle
+		InPin[pin] = PINACTIVE;
+		return MaCaco_NODATACHANGED;
+	}
+	else if( InPin[pin]==PINACTIVE && (abs(millis()-time) > 0) && (abs(millis()-time) < step_duration) )
+	{
+		if(memory_map[MaCaco_OUT_s + firstSlot] != Souliss_T1n_OnCoil)
+		{
+			// the user must have been pressing to turn some lights ON
+			// let's start to turn ON the first light in the group
+			memory_map[MaCaco_IN_s + firstSlot] = Souliss_T1n_OnCmd;
+			return MaCaco_DATACHANGED;	
+		}
+
+	}	
+	else if( InPin[pin]==PINACTIVE && (abs(millis()-time) > step_duration) )
+	{
+		// this cycle is executed while the button is kept pressed
+		// the current input is 1, the previous input was 1 and some time passed from the first press
+
+		U8 powered_lights_count = (U8) ( abs(millis()-time) / step_duration + 1 );
+		if ( powered_lights_count > lastSlot - firstSlot + 1 )
+			powered_lights_count = lastSlot - firstSlot + 1;
+	
+		U8 MaCaco_STATUS = MaCaco_NODATACHANGED;
+
+		for(U8 i=0; i<powered_lights_count; i++)
+		{
+			if(memory_map[MaCaco_OUT_s + firstSlot + i] == Souliss_T1n_OffCoil)
+			{
+				// only if the light is not powered, turn it on
+				memory_map[MaCaco_IN_s + firstSlot + i] = Souliss_T1n_OnCmd;
+				MaCaco_STATUS = MaCaco_DATACHANGED;
+			}
+		}
+		return MaCaco_STATUS;
+	}
+	
+	return MaCaco_NODATACHANGED;
+}
+
+U8 Souliss_DigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
+{
+	Souliss_DigInHoldSteps_Helper(pin, digitalRead(pin), memory_map, firstSlot, lastSlot, step_duration);
+}
+
+U8 Souliss_LowDigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
+{
+	Souliss_DigInHoldSteps_Helper(pin, !digitalRead(pin), memory_map, firstSlot, lastSlot, step_duration);
+}
+
 /**************************************************************************
 /*!
 	This is a special function that can be used to ensure that the output
@@ -540,3 +646,29 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 	return Souliss_NOTTRIGGED;
 }
 
+/**************************************************************************
+/*!
+	Convert a half-precision floating point from the memory_map in single
+	precision floating point
+*/	
+/**************************************************************************/
+float Souliss_SinglePrecisionFloating(U8 *input)
+{
+	uint16_t input16 = C8TO16(input);
+	return returnfloat32(&input16);
+}
+
+/**************************************************************************
+/*!
+	Convert a single precision floating point into an half-precision one
+*/	
+/**************************************************************************/
+uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input)
+{
+	uint16_t output16;
+	
+	float16(&output16, input);
+	
+	*(output)   = C16TO8L(output16);
+	*(output+1) = C16TO8H(output16);
+}

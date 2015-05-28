@@ -25,6 +25,10 @@
 #ifndef bconf_IOTUINO_H
 #define bconf_IOTUINO_H
 
+// Arduino AVR Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE			0x01
+
 #define	BOARD_MODEL_INSKETCH
 #define	IOBOARD_MODEL_INSKETCH
 

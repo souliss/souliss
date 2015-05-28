@@ -57,7 +57,7 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 		*(memory_map+MaCaco_HEALTHY_s+subscr_chnl) = MaCaco_SUBINITHEALTHY;
 	
 	// Subscribe data
-	return MaCaco_subscribe(addr, memory_map, memory_map + MaCaco_IN_s + input_slot, MaCaco_OUT_s + output_slot, numof_slot, subscr_chnl);
+	return MaCaco_subscribe(addr, memory_map, input_slot, MaCaco_OUT_s + output_slot, numof_slot, subscr_chnl);
 }
 
 /**************************************************************************
@@ -83,8 +83,8 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	if(roundrob_2 < MaCaco_NODES)
 	{
 		// Open and/or check one communication channel at each round
-		if (((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) != 0x0000))
-			ret = MaCaco_subscribe((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)), memory_map, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);		// Use putin as zero to flag a passthrough		
+		if (((C8TO16(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) != 0x0000))
+			ret = MaCaco_subscribe((C8TO16(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)), memory_map, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN, roundrob_2);		// Use putin as zero to flag a passthrough		
 		else
 		{
 			roundrob_2=1;		// Node number 0 is the local node
@@ -107,7 +107,7 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 void Souliss_BatteryChannels(U8 *memory_map, U16 addr)
 {
 	for(U8 i=0;i<MaCaco_NODES;i++)
-		if(((*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) == addr))
+		if(((C8TO16(memory_map+MaCaco_ADDRESSES_s+2*roundrob_2)) == addr))
 		{
 			MaCaco_subscribe_battery(i);
 			return;
@@ -130,7 +130,7 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 	if(s)
 	{
 		// Pointer to the node address
-		U16* m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+		U16 m_addr = C8TO16(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
 		
 		// Update the timeout
 		if(timeout)	timeout--;
@@ -153,11 +153,11 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 			MaCaco_reqtyp_decrease();
 			
 			// Pointer to the node address
-			m_addr = (U16*)(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
+			m_addr = C8TO16(memory_map+MaCaco_ADDRESSES_s+2*roundrob_1);
 		}
 		
 		// If the node answer has been received
-		if((*m_addr != 0x0000) && (*m_addr == MaCaco_reqtyp_lastaddr()))
+		if((m_addr != 0x0000) && (m_addr == MaCaco_reqtyp_lastaddr()))
 		{
 			// At next cycle move to next node
 			if(roundrob_1 < MaCaco_NODES) 
@@ -178,7 +178,7 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 		}
 			
 		// Send a request to the node, if the address is zero there are no more node to process
-		if (*m_addr != 0x0000)	MaCaco_send(*m_addr, MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+		if (m_addr != 0x0000)	MaCaco_send(m_addr, MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
 		else 
 		{
 			// Reset
@@ -264,47 +264,47 @@ U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
 
 /**************************************************************************/
 /*!
-    Broadcast an action message
+    Publish an event in broadcast
 */
 /**************************************************************************/
 U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 {
-	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, 0, 0);
 }
 
 /**************************************************************************/
 /*!
-    Multicast an action message
+    Publish an event in multicast
 */
 /**************************************************************************/
 U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
 {
-	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, 0, 0);
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, 0, 0);
 }
 
 /**************************************************************************/
 /*!
-    Broadcast an action message
+    Publish data in broadcast
 */
 /**************************************************************************/
 U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
-	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
+	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, message_len, data);
 }
 
 /**************************************************************************/
 /*!
-    Multicast an action message
+    Publish data in multicast
 */
 /**************************************************************************/
 U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
-	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, (U8 *)message, action, message_len, data);
+	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, message_len, data);
 }
 
 /**************************************************************************/
 /*!
-    Return if there is a matching action message
+    Return if there is a matching subscribed event
 */
 /**************************************************************************/
 U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
@@ -312,13 +312,13 @@ U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
 	// action message are in the queue
 	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 	
-	if(((*(U16 *)confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action))
+	if((C8TO16(confparameters_p) == message) && (*(confparameters_p+sizeof(U16)) == action))
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<Action Message>");
+		SOULISS_LOG("(ss)<Sub>");
 		SOULISS_LOG("<|0x");
-		SOULISS_LOG((*(U16 *)confparameters_p),HEX);
+		SOULISS_LOG(C8TO16(confparameters_p),HEX);
 		SOULISS_LOG("|0x");
 		SOULISS_LOG((*(confparameters_p+sizeof(U16))),HEX);		
 		SOULISS_LOG(">\r\n");
@@ -336,7 +336,7 @@ U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
 
 /**************************************************************************/
 /*!
-    Return if there is a matching action message
+    Return if there is a matching subscribed event
 */
 /**************************************************************************/
 U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* len)
@@ -345,7 +345,7 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 	U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 	
 	// Get the message value
-	U16 _message=(*(U16 *)confparameters_p);
+	U16 _message=C8TO16(confparameters_p);
 	confparameters_p+=sizeof(U16);
 	
 	// Get the action value
@@ -356,7 +356,7 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<Action Message>");
+		SOULISS_LOG("(ss)<Sub>");
 		SOULISS_LOG("<|0x");
 		SOULISS_LOG(_message,HEX);
 		SOULISS_LOG("|0x");

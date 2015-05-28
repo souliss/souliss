@@ -98,7 +98,7 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 		Using the Souliss_nDigOut method matching with following state defines
 		let control heating, cooling and fans.
 				#define Souliss_T3n_HeatingOn			0x02
-				#define Souliss_T3n_CoolingOn			0x03
+				#define Souliss_T3n_CoolingOn			0x04
 				#define Souliss_T3n_FanOn1				0x08
 				#define Souliss_T3n_FanOn2				0x10
 				#define Souliss_T3n_FanOn3				0x20	
@@ -110,45 +110,63 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	float actual_temp, actual_setpnt, in_temp, in_setpnt;
 
 	// Convert the stored values in single precision floating points
-	float32((U16*)(memory_map + MaCaco_IN_s + slot + 1), &in_temp);
-	float32((U16*)(memory_map + MaCaco_IN_s + slot + 3), &in_setpnt);
-	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
-	float32((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
+	in_temp       = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot + 1);
+	in_setpnt     = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot + 3);
+	actual_temp   = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 1);
+	actual_setpnt = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot + 3);
+
+	// Trig the next change of the state
+	i_trigger = Souliss_TRIGGED;
 	
 	// Store actual value as difference with requested setpoint
-	if(*(U16*)(memory_map + MaCaco_IN_s + slot + 1) != Souliss_T3n_RstCmd)
+	if(C8TO16(memory_map + MaCaco_IN_s + slot) != Souliss_T3n_RstCmd)
 	{		
 		// If there is a too small change in the new temperature
 			if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
-				actual_temp = in_temp;													// Set the new temperature value
-		
-		*(U16*)(memory_map + MaCaco_IN_s + slot + 1) = Souliss_T3n_RstCmd;		// Reset	
+				actual_temp = in_temp;									// Set the new temperature value
 	}
-	
-	// Trig the next change of the state
-	i_trigger = Souliss_TRIGGED;	
 		
 	// Check the actual operational mode (Cooling / Heating)
-	if(!(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
+	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_SystemOn)
+	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode)
 	{
 		// Heating Mode
 		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingOn){
+			i_trigger = Souliss_NOTTRIGGED;
+			}
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingOn;	// Active the heating 
-		else if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
+		} else if((actual_temp-actual_setpnt) > (Souliss_T3n_DeadBand*actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_HeatingOn){  
+			i_trigger = Souliss_NOTTRIGGED;
+			}
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
-		else
-			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig	
-	}
-	else if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingMode)
-	{
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
+		} else
+			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig
+		} else if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingMode)
+		{
 		// Cooling Mode
-		if(((actual_temp-actual_setpnt)) > (Souliss_T3n_DeadBand*actual_temp))
+		if((actual_temp-actual_setpnt) > (Souliss_T3n_DeadBand*actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_CoolingOn){
+			i_trigger = Souliss_NOTTRIGGED;
+			}
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingOn;	// Active the cooling 
-		else if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
-			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling 
-		else
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
+		}else if((actual_temp-actual_setpnt) < (-1 * Souliss_T3n_DeadBand * actual_temp))
+		{
+			if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingOn) { 
+			i_trigger = Souliss_NOTTRIGGED;	
+			}
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
+		} else
 			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
-	}
+		}
 
 	// Check the fan mode (Manual / Auto)
 	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_FanAutoState)
@@ -182,7 +200,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_AsMeasured)
 			actual_setpnt = actual_temp;											// As actual temperature
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Cooling)
-			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingMode;				// Set Cooling Mode
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingMode;				// Set Cooling Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Heating)
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingMode;				// Set Heating Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanAuto)
@@ -195,13 +213,11 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		{
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1);											// Active Fan1
 			memory_map[MaCaco_OUT_s + slot] &= ~(Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);
-		
 		}
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanMed)
 		{
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2);						// Active Fan1 + Fan2
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_FanOn3;
-		
 		}
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanHigh)		
 			memory_map[MaCaco_OUT_s + slot] |= (Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3);	// Active Fan1 + Fan2 + Fan3
@@ -210,26 +226,36 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 			// Get the value from the input
 			memory_map[MaCaco_OUT_s + slot + 3] = memory_map[MaCaco_IN_s + slot + 3];
 			memory_map[MaCaco_OUT_s + slot + 4] = memory_map[MaCaco_IN_s + slot + 4];
-			
+		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
+			// Update the trigger
+			if(i_trigger)
+			*trigger = i_trigger;
 			return Souliss_TRIGGED;				
 		}
-		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_ShutDown)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T3n_RstCmd;
+		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_ShutDown){
+			memory_map[MaCaco_OUT_s + slot] &= ~ (Souliss_T3n_SystemOn | Souliss_T3n_FanOn1 | Souliss_T3n_FanOn2 | Souliss_T3n_FanOn3 | Souliss_T3n_CoolingOn | Souliss_T3n_HeatingOn);
+			memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
+			// Update the trigger
+			if(i_trigger)
+			*trigger = i_trigger;
+			return Souliss_TRIGGED;				
+		}
 		
-			
+		memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_SystemOn;					// Set System On
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
 		i_trigger = Souliss_TRIGGED;		
 	}		
 	
+	memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
 	// Convert the processed values in half precision floating points
-	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
-	float16((U16*)(memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
+	Souliss_HalfPrecisionFloating((memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
 		
 	// Update the trigger
 	if(i_trigger)
 		*trigger = i_trigger;
-	
+
 	return i_trigger;		
 }
 

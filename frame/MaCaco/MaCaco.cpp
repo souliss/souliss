@@ -41,7 +41,7 @@ oFrame MacacoUserMode_oFrame;						// Data structure for output frame (data from
 
 // store incoming subscription state
 U16 subscr_addr[MaCaco_INMAXSUBSCR] = {0x0000};	
-U8* subscr_putin[MaCaco_INMAXSUBSCR] = {0x0000};
+U16 subscr_putin[MaCaco_INMAXSUBSCR] = {0x0000};
 U8 subscr_startoffset[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_numberof[MaCaco_INMAXSUBSCR] = {0x00};
 U8 subscr_funcode[MaCaco_INMAXSUBSCR] = {0x00};
@@ -58,7 +58,7 @@ U8 subscr_count[MaCaco_OUTMAXSUBSCR] = {0x00};
 // store incoming typical logic request
 U16 reqtyp_addr = 0x0000;	
 U16 lasttyp_addr = 0x0000;
-U8* reqtyp_putin = 0x0000;
+U16 reqtyp_putin = 0x0000;
 U8 reqtyp_startoffset = 0x00;
 U8 reqtyp_numberof = 0x00;
 U8 reqtyp_times = 0;
@@ -79,12 +79,12 @@ extern bool addrsrv;
 
 /**************************************************************************/
 /*!
-    Init the memory map
+    Init the memory map and the EEPROM
 */
 /**************************************************************************/
 void MaCaco_init(U8* memory_map)
 {
-	U8 i=0;
+	U16 i=0;
 	
 	for(i=0;i<MaCaco_MEMMAP;i++)
 		*(memory_map+i)=0;
@@ -105,6 +105,11 @@ void MaCaco_init(U8* memory_map)
 		subscr_battery[i] = 0;		
 		subscr_count[i] = 0;	
 	}	
+	
+	// Init the EEPROM
+	#if(USEEEPROM)
+	Store_Init();	
+	#endif		
 }
 
 /**************************************************************************/
@@ -176,7 +181,7 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
 	func = rx->funcode;
 	
 	// Read the value as 16 bit and convert it to pointer for an 8 bit variable
-	rx->putin = (U8 *)(*(U16 *)data_ptr);	// Put in...
+	rx->putin = C8TO16(data_ptr);	// Put in...
 	data_ptr += sizeof(U16);
 	
 	rx->startoffset = *data_ptr++;			// Start offset
@@ -211,7 +216,7 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
     Build frame and write to destination device, it use the oFrame structure
 */
 /**************************************************************************/
-U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 *data)
+U8 MaCaco_send(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof, U8 *data)
 {
 	U8 *frame_pnt, *data_pnt, status;
 	
@@ -222,8 +227,8 @@ U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 
 	*frame_pnt++ = funcode;
 	
 	// Read the value as 16 bit and convert the pointer for an 16 bit variable
-	*(U16 *)frame_pnt = (U16) putin;
-	frame_pnt += sizeof(U16);
+	*frame_pnt++=C16TO8L(putin);
+	*frame_pnt++=C16TO8H(putin);
 	
 	*frame_pnt++ = startoffset;	
 	*frame_pnt++ = numberof;
@@ -255,7 +260,7 @@ U8 MaCaco_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 
 	it use the oFrame structure
 */
 /**************************************************************************/
-U8 MaCacoUserMode_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numberof, U8 l_numberof, U8 u_numberof, U8 *l_data, U8 *u_data)
+U8 MaCacoUserMode_send(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8 numberof, U8 l_numberof, U8 u_numberof, U8 *l_data, U8 *u_data)
 {
 	U8 *frame_pnt, *l_data_pnt, *u_data_pnt, status;
 	
@@ -267,8 +272,8 @@ U8 MaCacoUserMode_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numbe
 	*frame_pnt++ = funcode;
 	
 	// Read the value as 16 bit and convert the pointer for an 16 bit variable
-	*(U16 *)frame_pnt = (U16) putin;
-	frame_pnt += sizeof(U16);
+	*frame_pnt++=C16TO8L(putin);
+	*frame_pnt++=C16TO8H(putin);
 	
 	*frame_pnt++ = startoffset;	
 	*frame_pnt++ = numberof;
@@ -311,7 +316,7 @@ U8 MaCacoUserMode_send(U16 addr, U8 funcode, U8 *putin, U8 startoffset, U8 numbe
 /**************************************************************************/
 U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 {
-	U8 i=0, typ_mask=0xFF;
+	U16 i=0, typ_mask=0xFF;
 	
 	/*********** Request ************/	
 	
@@ -379,7 +384,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			{
 				// Count the number of nodes
 				U8 nodes = 0;	
-				while(((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
+				while(((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
 					nodes++;
 					
 				subscr_numberof[i] = nodes;	
@@ -448,56 +453,55 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_PINGREQ)
 		return MaCaco_send(addr, MaCaco_PINGANS, rx->putin, 0x00, 0x00, 0x00);
 		
-	#if(MaCaco_USERMODE)	
+	#if(MaCaco_USERMODE && DYNAMICADDRESSING)	
 	// record a join request
 	if ((rx->funcode == MaCaco_JOINNETWORK) || (rx->funcode == MaCaco_JOINANDRESET))
 	{			
 		// look for a non used address register
-		U8 nodes=0;
-		while((((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != addr) && ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000)) && (nodes < MaCaco_NODES))
+		U16 nodes=0;
+		while((((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != addr) && ((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000)) && (nodes < MaCaco_NODES))
 			nodes++;
 
 		// if the node wasn't recorded, assign it
-		if((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
+		if((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes) != addr) && nodes < MaCaco_NODES)
 		{
 			// record the new address
-			(*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) = addr;
+			*(memory_map + MaCaco_ADDRESSES_s + 2*nodes)     = C16TO8L(addr);
+			*(memory_map + MaCaco_ADDRESSES_s + 2*nodes + 1) = C16TO8H(addr);
 			
-			/*
-			// sort the node addresses	
-			U8 sort_i = 1, sorting = 0;
-			U16	sort_buffer;
-			U16* m_address = (U16 *)(memory_map + MaCaco_ADDRESSES_s);
-		
-			// out of this for all address are sorted, out of the local address
-			for(sort_i=1; sort_i<MaCaco_NODES; sort_i++)
-			{
-				// don't sort zeros
-				if(m_address[sort_i] == 0x0000) break;
+			
+			// store the new values	
+			#if(USEEEPROM)
+			Store_ID(STORE__DEFAULTID);
+			Store_PeerAddresses((memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+			Store_Commit();
+			
+			#if (SOULISS_DEBUG)
+			// Print debug messages
+			SOULISS_LOG("(ss)<sID>");
+			SOULISS_LOG("<|0x");
+			SOULISS_LOG(Return_ID(),HEX);
+			SOULISS_LOG(">\r\n");
 					
-				for(sorting=sort_i+1; sorting<MaCaco_NODES; sorting++)
-				{
-					// don't sort zeros
-					if(m_address[sorting] == 0x0000) break; 
-					
-					// sort ascending
-					if(m_address[sort_i] > m_address[sorting])
-					{
-						sort_buffer         = m_address[sort_i];
-						m_address[sort_i]   = m_address[sorting];
-						m_address[sorting]  = sort_buffer;
-					}
-				}
-				
-			}
-			*/
+			SOULISS_LOG("(ss)<sPddr>");
+			SOULISS_LOG("<|0x");
+			for(i=0; i<MaCaco_NODES; i++)
+			{	
+				SOULISS_LOG(Return_SinglePeerAddresses(i),HEX);
+				SOULISS_LOG("|0x");
+			}			
+			SOULISS_LOG(">\r\n");
+			#endif
+			
+			#endif
+			
 			
 			#if(MaCaco_DEBUG)
 			MaCaco_LOG("(MaCaco)<ADDRS><");
 			for(nodes=0; nodes<MaCaco_NODES; nodes++)
 			{
 				MaCaco_LOG("|0x");
-				MaCaco_LOG((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
+				MaCaco_LOG((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
 				
 			}
 			MaCaco_LOG(">\r\n");
@@ -511,28 +515,28 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 		// if the join request is from a nodes that previously got an address, flag the
 		// request as completed
-		if (randomkeyid == (U16)rx->putin)	// identify the node from the keyval
+		if (randomkeyid == rx->putin)	// identify the node from the keyval
 			randomkeyid = 0;
 		else
 		{
 			// identify the node from the address
 			for(nodes=0; nodes<MaCaco_NODES; nodes++)
-				if(proposedaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+				if(proposedaddress == (C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
 					randomkeyid = 0;
 		}		
 	
 		return MaCaco_FUNCODE_OK;	
 	}	
+	#endif
 
+	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
 	{		
 		// Count the number of nodes
 		U8 nodes = 0;	
-		#if(MaCaco_USERMODE)	
-		while(((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
+		while(((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) != 0x0000) && nodes < MaCaco_NODES)
 			nodes++;
-		#endif
 		
 		// Add the actual number of nodes on the database structure frame
 		cmd[0] = nodes;		
@@ -545,9 +549,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// Send the actual number of nodes and the other static information contained in cmd
 		return MaCaco_send(addr, MaCaco_DBSTRUCTANS, rx->putin, 0x00, rx->numberof, cmd);
 	}
-	#endif
 	
-	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a discover request
 	if (rx->funcode == MaCaco_DISCOVERREQ)
 	{		
@@ -564,13 +566,13 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_DINADDRESSREQ)
 	{	
 		// Process new and yet issued requests
-		if ((randomkeyid == 0) || (randomkeyid == (U16)rx->putin))
+		if ((randomkeyid == 0) || (randomkeyid == rx->putin))
 		{
 			// If there are no pending request or a yet open pending request
 			// proceed and provide an address
 			
 			// the putin is used as random key identifier
-			randomkeyid = (U16)rx->putin;
+			randomkeyid = rx->putin;
 			
 			// the startoffset is used as media number
 			// 
@@ -600,7 +602,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				vNetMedia = vNet_GetMedia(subnet+1);
 			}
 			
-			U8 nodes=0;
+			U16 nodes=0;
 			U16 nodeaddress=0x0002;
 			
 			// a supernode needs an address into another subnet
@@ -617,7 +619,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					for(nodes=0;nodes<MaCaco_NODES;nodes++)
 					{
 						// if there is yet another node in the subnet, move to the next one
-						if((nodeaddress & DYNAMICADDR_SUBNETMASK) == ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) && DYNAMICADDR_SUBNETMASK))
+						if((nodeaddress & DYNAMICADDR_SUBNETMASK) == ((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) && DYNAMICADDR_SUBNETMASK))
 						{
 							nodeaddress+=((~DYNAMICADDR_SUBNETMASK)+1);	//move to the next subnet					
 							tryagain=1;
@@ -653,7 +655,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				{
 					// verify if there are yet devices on the same media
 					for(nodes=0;nodes<MaCaco_NODES;nodes++)
-						if((subnet & DYNAMICADDR_SUBNETMASK) == ((*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) & DYNAMICADDR_SUBNETMASK))
+						if((subnet & DYNAMICADDR_SUBNETMASK) == ((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)) & DYNAMICADDR_SUBNETMASK))
 							nodeaddress++;
 				
 					// define the node address
@@ -665,7 +667,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					{
 						for(nodes=0;nodes<MaCaco_NODES;nodes++)
 						{
-							if(nodeaddress == (*(U16 *)(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
+							if(nodeaddress == (C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
 							{
 								nodeaddress++;						
 								tryagain=1;
@@ -730,7 +732,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// collect data from answer
 	if (((rx->funcode & 0xF0) == 0x10) || ((rx->funcode & 0xF0) == 0x30) || ((rx->funcode & 0xF0) == 0x50) || ((rx->funcode & 0xF0) == 0x70))
 	{	
-		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE)	
+		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE && MaCaco_USERMODE)	
 		// set an IP address at runtime
 		if (addrsrv && (rx->funcode == MaCaco_SETIP))
 		{	
@@ -769,8 +771,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 				
 				// store the putin value
-				(*(U16 *)confparameters_p) = (U16)rx->putin;
-				confparameters_p += sizeof(U16);
+				*confparameters_p++=C16TO8L(rx->putin);
+				*confparameters_p++=C16TO8H(rx->putin);
 				
 				// store the startoffset value
 				*confparameters_p = rx->startoffset;
@@ -793,8 +795,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				U8*	confparameters_p = (memory_map + MaCaco_QUEUE_s);
 					
 				// store the putin value, this is the action message identifier
-				(*(U16 *)confparameters_p) = (U16)rx->putin;
-				confparameters_p += sizeof(U16);
+				*confparameters_p++=C16TO8L(rx->putin);
+				*confparameters_p++=C16TO8H(rx->putin);
 					
 				// store the startoffset and numberof values
 				*confparameters_p = rx->startoffset;
@@ -886,7 +888,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				return MaCaco_FUNCODE_OK;
 			}
 			else	// Data shall be sent to a remote node
-				return MaCaco_send(*(U16 *)(memory_map+MaCaco_ADDRESSES_s+rx->startoffset*2), MaCaco_FORCEREGSTR, 0, MaCaco_IN_s, rx->numberof, rx->data);
+				return MaCaco_send(C8TO16(memory_map+MaCaco_ADDRESSES_s+rx->startoffset*2), MaCaco_FORCEREGSTR, 0, MaCaco_IN_s, rx->numberof, rx->data);
 				
 		break;
 		#endif
@@ -901,7 +903,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			U8 nodeindex;
 			for(nodeindex=MaCaco_LOCNODE+1; nodeindex<MaCaco_NODES ; nodeindex++)
 			{
-				if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
+				if(addr == (C8TO16(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 				{
 					lasttyp_addr = addr;	// Store the address of the nodes that gives this reply
 					break;
@@ -954,7 +956,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				// Identify the node index
 				U8 nodeindex;
 				for(nodeindex=1; nodeindex<MaCaco_NODES ; nodeindex++)
-					if(addr == (*(U16*)(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
+					if(addr == (C8TO16(memory_map+MaCaco_ADDRESSES_s+2*nodeindex)))
 						break;
 
 				#if(MaCaco_PERSISTANCE)		// PERSISTENCE is active, store information
@@ -981,8 +983,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			else	// This flag data subscribed for local use
 			#endif
 			{
-				if ((rx->putin >= &memory_map[MaCaco_WRITE_s] && rx->putin <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
-					memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address
+				if (((memory_map+MaCaco_IN_s+rx->putin) >= &memory_map[MaCaco_WRITE_s]) && ((memory_map+MaCaco_IN_s+rx->putin) <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
+					memmove(memory_map+MaCaco_IN_s+rx->putin, rx->data, rx->numberof); // data collected in putin address
 				else
 					return MaCaco_FUNCODE_ERR;				
 			}			
@@ -993,8 +995,8 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		
 		// All others functional codes
 		default :
-			if ((rx->putin >= &memory_map[MaCaco_WRITE_s] && rx->putin <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
-				memmove(rx->putin, rx->data, rx->numberof); // data collected in putin address			
+			if (((memory_map+MaCaco_IN_s+rx->putin) >= &memory_map[MaCaco_WRITE_s]) && ((memory_map+MaCaco_IN_s+rx->putin) <= &memory_map[MaCaco_WRITE_f]) && (rx->numberof > 0))				
+				memmove((memory_map+MaCaco_IN_s+rx->putin), rx->data, rx->numberof); // data collected in putin address			
 			return MaCaco_FUNCODE_OK;
 			
 		break;
@@ -1032,8 +1034,8 @@ void MaCaco_DataIn()
 /**************************************************************************/
 U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 {
-	U8 used_media=0, len, status=0;
-	U16 src_addr = 0x0000;
+	U8 used_media=0, status=0;
+	U16 len, src_addr = 0x0000;
 
 	// If data are available
 	if(MaCaco_rx.datain > 0)
@@ -1075,7 +1077,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 			memmove((memory_map+MaCaco_P_OUT_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
 		#elif(MaCaco_LASTIN)			// LOCALIN is active, store data
 			// Identify a free space into the LASTIN data area
-			U8 i=0;
+			U16 i=0;
 			while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
 
 			if(i != MaCaco_L_BUFSIZE)
@@ -1099,7 +1101,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 /**************************************************************************/
 U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 {
-	U8 status=0, i=0, j=0;
+	U16 status=0, i=0, j=0;
 
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
@@ -1166,7 +1168,7 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 /**************************************************************************/
 U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 {
-	U8 status=0, i=0, j=0;
+	U16 status=0, i=0, j=0;
 
 	// Send data to all subscribers
 	while (i < MaCaco_INMAXSUBSCR)
@@ -1296,7 +1298,7 @@ void MaCaco_reset_lastaddr()
 */
 /**************************************************************************/
 #if(MaCaco_SUBSCRIBERS)
-U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U8 *putin, U8 startoffset, U8 numberof, U8 subscr_chnl)
+U8 MaCaco_subscribe(U16 addr, U8 *memory_map, U16 putin, U8 startoffset, U8 numberof, U8 subscr_chnl)
 {
 	U8 *healthy, *count = 0;
 	
@@ -1423,7 +1425,7 @@ void MaCaco_subscribe_record(U16 addr, U8 funcode, U16 putin, U8 startoffset, U8
 	{
 		subscr_addr[i]  = addr;
 		subscr_funcode[i] = funcode;
-		subscr_putin[i] = (U8*)putin;
+		subscr_putin[i] = putin;
 		subscr_startoffset[i] = startoffset;
 		subscr_numberof[i] = numberof;
 	}
@@ -1456,7 +1458,7 @@ U8 MaCaco_getfuncode()
 /**************************************************************************/
 U16 MaCaco_getputin()
 {
-	return (U16)MaCaco_rx.putin;
+	return MaCaco_rx.putin;
 }
 
 /**************************************************************************/
@@ -1495,9 +1497,9 @@ U8 MaCaco_getdatain()
     Get the buffer pointer
 */
 /**************************************************************************/
-U16 MaCaco_getdatabuffer()
+U8* MaCaco_getdatabuffer()
 {
-	return (U16)(&MaCaco_data[0]);
+	return MaCaco_data;
 }
 
 /**************************************************************************/
@@ -1535,7 +1537,7 @@ U8 MaCaco_IsSubscribed()
 #if(MaCaco_SUBSCRIBERS)
 void MaCaco_InternalSubcription(U8 *memory_map)
 {
-	U8 i=0;
+	U16 i=0;
 	
 	/** Init the typicals **/
 

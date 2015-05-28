@@ -34,20 +34,25 @@
 
 #include <Arduino.h>
 #include "tools/types.h"
+#include "tools/util.h"
 #include "Typicals.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#	define MAXINPIN		69		// Max number of input pins
-#elif defined(__AVR_ATmega1284P__)
-#	define MAXINPIN		40		// Max number of input pins
-#elif defined(__AVR_ATmega32U4__)
-#	define MAXINPIN		29		// Max number of input pins
-#else
-#	define MAXINPIN		29		// Max number of input pins
+#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
+#	if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#		define MAXINPIN		69		// Max number of input pins
+#	elif defined(__AVR_ATmega1284P__)
+#		define MAXINPIN		40		// Max number of input pins
+#	elif defined(__AVR_ATmega32U4__)
+#		define MAXINPIN		29		// Max number of input pins
+#	else
+#		define MAXINPIN		29		// Max number of input pins
+#	endif
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#	define MAXINPIN		29		// Max number of input pins	
 #endif
 
 	 
@@ -61,6 +66,7 @@ void Souliss_BatteryChannels(U8 *memory_map, U16 addr);
 U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr);
 void Souliss_JoinNetwork();
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway);
+void Souliss_GetIPAddress();
 void Souliss_SetAddressingServer(U8 *memory_map);
 void Souliss_SetDynamicAddressing();
 U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size);
@@ -97,22 +103,32 @@ void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot);
 void Souliss_ResetOutput(U8 *memory_map, U8 slot);
 void Souliss_ResetInput(U8 *memory_map, U8 slot);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
+float Souliss_SinglePrecisionFloating(U8 *input);
+uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
-#	include "interfaces/HTTP.h"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-#	include "interfaces/HTTP_uIP.h"
-#elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
-#	include	"webhook/webhook.h"
-#elif(XMLSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
-#	include "interfaces/XMLServer.h"
-#elif(MODBUS)
-#	include "interfaces/Modbus.h"
+#if(MCU_TYPE == 0x01) // Atmel AVR Atmega
+#	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
+#		include "interfaces/mcu_avr/HTTP.h"
+#	elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
+#		include "interfaces/mcu_avr/HTTP_uIP.h"
+#	elif(ARDUINO_ETHLIB && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
+#		include	"webhook/webhook.h"
+#	elif(XMLSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
+#		include "interfaces/mcu_avr/XMLServer.h"
+#	elif(MODBUS)
+#		include "interfaces/mcu_avr/Modbus.h"
+#	endif
 #endif
 
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.h"
 #include "tools/IEEE754/float16.h"
+
+// Some bytes in the EEPROM are reserved
+#if(USEEEPROM)
+#	include "tools/store/store.h"
+#	include "tools/store/store.cpp"
+#endif
 
 #include "frame/MaCaco/MaCaco.cpp"
 #include "frame/vNet/vNet.cpp"
@@ -137,6 +153,10 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 // Include methods for half-precision floating points
 #include "tools/IEEE754/float16.c"
 
+#if(MCU_TYPE == 0x01)	// ATmega AVR
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#endif
+
 // Include Souliss code base and typicals
 #include "base/Communication.cpp"
 #include "base/LocalIO.cpp"
@@ -146,7 +166,6 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 #include "base/T3n.cpp"
 #include "base/T4n.cpp"
 #include "base/T5n.cpp"
-
 
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
@@ -161,10 +180,6 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 // Include IO definitions and drivers for supported hardware
 #include "hardware/IOdef.h"
 #include "tools/IEEE754/float16.h"	
-
-#if (SOULISS_DEBUG)
-	#define SOULISS_LOG Serial.print
-#endif
 
 #include "base/SpeakEasy.h"
 #include "user/user_config.h"

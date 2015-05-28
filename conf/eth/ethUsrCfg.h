@@ -43,8 +43,8 @@
 		ETH_W5200		-  Wiznet    W5200 			(Wired Ethernet)
 		ETH_W5500		-  Wiznet    W5500 			(Wired Ethernet)		
 		ETH_ENC28J60	-  Microchip ENC28J60		(Wired Ethernet)
-		WIFI_MRF24		-  Microchip MRF24WB0MA 	(WiFi  Ethernet) 
-		WIFI_LPT200		-  Authometion HF-LPT200	(WiFi  Ethernet)
+		WIFI_MRF24		-  Microchip MRF24WB0MA 	(WiFi) 
+		WIFI_ESP8266	-  Expressif ESP8266		(SoC with WiFi)
 */
 /**************************************************************************/
 #ifndef ETH_INSKETCH				
@@ -53,7 +53,7 @@
 #	define ETH_W5500		0
 #	define ETH_ENC28J60  	0
 #	define WIFI_MRF24		0
-#	define WIFI_LPT200		0
+#	define WIFI_ESP8266		0
 #endif
 /**************************************************************************/
 /*!

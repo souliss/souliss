@@ -34,8 +34,11 @@ void Souliss_SetT51(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T51;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 	
-	*(U16*)(memory_map + MaCaco_IN_s + slot)  = 0xFE00;	// Use NaN as init value
-	*(U16*)(memory_map + MaCaco_OUT_s + slot) = 0xFE00;	// Use NaN as init value
+	*(memory_map + MaCaco_IN_s + slot)      = 0x00;	// Use NaN as init value
+	*(memory_map + MaCaco_IN_s + slot + 1)  = 0xFE;	// Use NaN as init value
+	
+	*(memory_map + MaCaco_OUT_s + slot)     = 0x00;	// Use NaN as init value
+	*(memory_map + MaCaco_OUT_s + slot + 1) = 0xFE;	// Use NaN as init value
 }
 
 /**************************************************************************
@@ -60,20 +63,22 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 	if((memory_map[MaCaco_IN_s + slot] != 0) || (memory_map[MaCaco_IN_s + slot + 1] != 0))
 	{	
 		// If the input is not a number (NaN) force the output at same value
-		if((*(U16*)(memory_map + MaCaco_IN_s + slot)) == 0xFE00)	
+		if((C8TO16(memory_map + MaCaco_IN_s + slot)) == 0xFE00)	
 		{
-			*(U16*)(memory_map + MaCaco_OUT_s + slot) = 0xFE00;		// Force at NaN
+			*(memory_map + MaCaco_OUT_s + slot)     = 0x00;		// Force at NaN
+			*(memory_map + MaCaco_OUT_s + slot + 1) = 0xFE;		// Force at NaN
+			
 			return 0;
 		}
 		
 		// Values are actually stored as half-precision floating point, this doesn't
 		// allow math operation, so convert them back to single-precision
-		float32((U16*)(memory_map + MaCaco_IN_s + slot), &m_in);
-		float32((U16*)(memory_map + MaCaco_OUT_s + slot), &m_out);
+		m_in  = Souliss_SinglePrecisionFloating(memory_map + MaCaco_IN_s + slot);
+		m_out = Souliss_SinglePrecisionFloating(memory_map + MaCaco_OUT_s + slot);
 		
 		// If previously set as NaN or if there is a change greater than the deadband, update the output
-		if((((*(U16*)(memory_map + MaCaco_IN_s + slot)) != (*(U16*)(memory_map + MaCaco_OUT_s + slot))) && 
-				*(U16*)(memory_map + MaCaco_OUT_s + slot) == 0xFE00) || 
+		if((((C8TO16(memory_map + MaCaco_IN_s + slot)) != (C8TO16(memory_map + MaCaco_OUT_s + slot))) && 
+				C8TO16(memory_map + MaCaco_OUT_s + slot) == 0xFE00) || 
 				(abs(m_in - m_out) > abs(deadband*m_in)))
 		{
 			// Store the new value
@@ -123,6 +128,9 @@ void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ)
 	memory_map[MaCaco_TYP_s + slot] = typ;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 
-	*(U16*)(memory_map + MaCaco_IN_s + slot)  = 0xFE00;	// Use NaN as init value
-	*(U16*)(memory_map + MaCaco_OUT_s + slot) = 0xFE00;	// Use NaN as init value
+	*(memory_map + MaCaco_IN_s + slot)      = 0x00;	// Use NaN as init value
+	*(memory_map + MaCaco_IN_s + slot + 1)  = 0xFE;	// Use NaN as init value
+	
+	*(memory_map + MaCaco_OUT_s + slot)     = 0x00;	// Use NaN as init value
+	*(memory_map + MaCaco_OUT_s + slot + 1) = 0xFE;	// Use NaN as init value
 }

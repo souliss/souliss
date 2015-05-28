@@ -83,6 +83,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_halfday()	if (!(phase_slow % 4321))
 #define	SLOW_1day()		if (!(phase_slow % 8641))
 
+#define EXECUTESPEEDY() else
 #define UPDATESPEEDY()	phase_speedy = (phase_speedy + 1) % num_phases
 #define	SPEEDY_x(n)		if (!(phase_speedy % n))
 
@@ -96,6 +97,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Set_T11(slot)				Souliss_SetT11(memory_map, slot)
 #define	Logic_T11(slot)				Souliss_Logic_T11(memory_map, slot, &data_changed)
 #define Timer_T11(slot)				Souliss_T11_Timer(memory_map, slot)
+#define Set_LightsGroup(firstSlot, lastSlot) 	Souliss_SetT11Group(memory_map, firstSlot, lastSlot)
+#define Timer_LightsGroup(firstSlot, lastSlot) 	Souliss_T11Group_Timer(memory_map, firstSlot, lastSlot)
+#define Logic_LightsGroup(firstSlot, lastSlot) 	Souliss_Logic_T11Group(memory_map, firstSlot, lastSlot, &data_changed)
 
 #define	Set_AutoLight(slot)			Souliss_SetT12(memory_map, slot)
 #define	Logic_AutoLight(slot) 		Souliss_Logic_T12(memory_map, slot, &data_changed)
@@ -216,10 +220,12 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define myMap				memory_map
 #define myData				&data_changed
 #define myNode				memory_map, &data_changed
-#define	ResetTrigger()		(data_changed=0)
 
+#define SetAddress												Souliss_SetAddress
 #define	SetAddressingServer()									Souliss_SetAddressingServer(memory_map)
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
+#define	SetIPAddress											Souliss_SetIPAddress
+#define GetIPAddress											Souliss_GetIPAddress
 #define	JoinNetwork()											Souliss_JoinNetwork()
 #define	JoinAndReset()											Souliss_JoinAndReset()
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
@@ -240,11 +246,20 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define nDigOut(pin,value,slot)									Souliss_nDigOut(pin, value, memory_map, slot)
 #define LowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
 #define nLowDigOut(pin,value,slot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
+#define DigOutToggle(pin,value,slot)							Souliss_DigOutToggle(pin, value, memory_map, slot)
 #define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
 #define	AnalogIn(pin, slot, conv, bias)							Souliss_AnalogIn(pin, memory_map, slot, conv, bias)
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
 #define	RemoteInput												Souliss_RemoteInput
 #define	RemoteInputs											Souliss_RemoteInputs
+#define	RoutingTable											vNet_SetRoutingTable
+#define	Init_XMLServer()										XMLSERVERInit(memory_map)
+#define	Run_XMLServer()											XMLSERVERInterface(memory_map)
+#define	Init_Modbus()											ModbusInit(memory_map)
+#define	Run_Modbus()											Modbus(memory_map)
+#define	Init_HTTPServer()										{}
+#define	Run_HTTPServer()										HTTPServer(memory_map)
+
 
 /*****************************************/
 
@@ -277,7 +292,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 													JoinNetwork();					\
 												}
 
-#define	GetAddress()							for(uint8_t n=0;n<VNET_MEDIA_NUMBER;n++) {								\
+#define	GetAddress()							Souliss_DynamicAddressing_FirstBoot (memory_map);						\
+												for(uint8_t n=0;n<VNET_MEDIA_NUMBER;n++) {								\
 													while(Souliss_DynamicAddressing (memory_map, __TIME__, 9)) {		\
 														for(U16 i=0; i<1000; i++) {										\
 															if(Souliss_CommunicationData(memory_map, &data_changed))	\
@@ -317,16 +333,20 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define mInput(slot)				memory_map[IN+slot]	
 #define	mTypical(slot)				memory_map[TYP+slot]
 #define mOutput(slot)				memory_map[OUT+slot]
-#define	mOutputAsFloat(node,slot)	returnfloat32(&(memory_map[OUT+slot]))
+#define	mOutputAsFloat(slot)		Souliss_SinglePrecisionFloating(memory_map+MaCaco_OUT_s+slot)
 
 #define	pTYP						MaCaco_P_TYP_s
 #define	pOUT						MaCaco_P_OUT_s
 #define	pTypical(node,slot)			memory_map[pTYP+slot+(node*MaCaco_SLOT)]
 #define	pOutput(node,slot)			memory_map[pOUT+slot+(node*MaCaco_SLOT)]
-#define	pOutputAsFloat(node,slot)	returnfloat32(&(memory_map[pOUT+slot+(node*MaCaco_SLOT)]))
+#define	pOutputAsFloat(node,slot)	Souliss_SinglePrecisionFloating(memory_map+MaCaco_P_OUT_s+slot+(node*MaCaco_SLOT))
 
-#define SetTrigger()				data_changed=1;	
-#define ResetTrigger()				data_changed=0;	
+#define SetTrigger()				(data_changed=1);	
+#define ResetTrigger()				(data_changed=0);	
 #define	Initialize()				MaCaco_init(memory_map)
+#define	isTrigger()					data_changed
+
+#define SetInput(slot, value) 		mInput(slot) = value			
 
 #endif
+

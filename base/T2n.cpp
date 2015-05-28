@@ -218,11 +218,24 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	U8 i_trigger=0;														// Internal trigger
 	if(timeout<=Souliss_T2n_Timer_Off)	timeout=Souliss_T2n_Timer_Val;
 	else if (timeout>Souliss_T2n_Timer_Val) timeout=Souliss_T2n_Timer_Val;
-	
+
+	// convert toggle command in the right open/close
+	if( memory_map[MaCaco_IN_s + slot] == Souliss_T2n_ToggleCmd )
+	{
+		if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) || 
+			(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Close))
+			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_OpenCmd_SW;
+		else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) || 
+			(memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_LimSwitch_Open))
+			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_CloseCmd_SW;
+		else
+			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_OpenCmd_SW;	
+	}
+
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
-		if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) || 
+	if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_SW) || 
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_SW) || 
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_OpenCmd_Local) ||
 		(memory_map[MaCaco_IN_s + slot] == Souliss_T2n_CloseCmd_Local) ||		
@@ -276,7 +289,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Close;			// Close Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  	i_trigger = Souliss_TRIGGED;
+  		i_trigger = Souliss_TRIGGED;
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Open) || 
 			((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) && 
@@ -291,7 +304,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_NoLimSwitch;				// No Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  	i_trigger = Souliss_TRIGGED;	
+	  	i_trigger = Souliss_TRIGGED;	
 	}	
 	
 	// Update the trigger
