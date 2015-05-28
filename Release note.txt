@@ -1,7 +1,7 @@
 Souliss
 Copyright (C) 2011-2015
 
-Release note for revision v7.0.4, on 27/05/2014
+Release note for revision v7.0.5, on 27/05/2014
 
     Porting for 16-bit and 32-bit microcontrollers and support to run Souliss directly
     on Expressif ESP8266 SoC with WiFi
