@@ -52,7 +52,7 @@ void loop()
         
         FAST_7110ms()
         { 
-              float ldr_read = get_lux(in, out, sizeofarray)/100.0;  //  /10.0;  //ORIGINAL
+              float ldr_read = get_lux(in, out, sizeofarray)/10.0;  //ORIGINAL
               if (ldr_read == 0) ldr_read = 0.01;
               Souliss_ImportAnalog(memory_map, LDR, &ldr_read);
         }
