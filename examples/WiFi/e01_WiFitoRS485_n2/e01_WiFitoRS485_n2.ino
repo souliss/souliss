@@ -11,7 +11,7 @@
 
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
-#include "con/usart.h"                      // USART / RS485 transceiver
+#include "conf/usart.h"                      // USART / RS485 transceiver
 
 // Include framework code and libraries
 #include <ESP8266WiFi.h>
