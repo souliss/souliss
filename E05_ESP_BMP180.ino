@@ -1,8 +1,7 @@
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/DynamicAddressing.h"         // Use dynamic addressing
-
+#include "conf/IPBroadcast.h"
 
 // Define the WiFi name and password
 #define WIFICONF_INSKETCH
@@ -41,6 +40,11 @@ void setup()
     GetIPAddress();     
     SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
 
+    // This is the vNet address for this node, used to communicate with other
+	// nodes in your Souliss network
+    SetAddress(0xAB01, 0xFF00, 0x0000);
+    //Example of Peer Definition
+    //SetAsPeerNode(0xAB02, 1);
 
     if (pressure.begin())
        Debug.println("BMP180 init success");
