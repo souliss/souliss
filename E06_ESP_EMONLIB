@@ -29,8 +29,13 @@ void setup()
     // Connect to the WiFi network and get an address from DHCP
     GetIPAddress();     
     SetAsGateway(myvNet_dhcp);
-
     // This node will serve all the others in the network providing an address
+    
+    // This is the vNet address for this node, used to communicate with other
+	// nodes in your Souliss network
+    SetAddress(0xAB01, 0xFF00, 0x0000);
+    //Example of Peer Definition
+    //SetAsPeerNode(0xAB02, 1);
     
     Set_Current(CURRENT);
     Set_Power(WATTS);
