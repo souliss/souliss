@@ -136,7 +136,9 @@
 #define	MaCaco_SUBNETANS		0x3A	// Subnet answer (broadcast)
 #define	MaCaco_JOINNETWORK		0x2B	// Join a network gateway (broadcast)
 #define	MaCaco_JOINANDRESET		0x2C	// Join a network gateway and request a subscription reset (broadcast)
-#define	MaCaco_SETIP			0x3D	// Set an IP address at runtime (broadcast)
+#define	MaCaco_SETIP			0x2D	// Set an IP address at runtime and Gateway/Peer mode(broadcast)
+#define	MaCaco_WIFISSID			0x2E	// Set WiFi SSID at runtime (broadcast)
+#define	MaCaco_WIFIPSW			0x2F	// Set WiFi Password at runtime (broadcast)
 
 #define	MaCaco_FORCETYP			0x71	// Force input values by typical logic (from a peer)
 #define	MaCaco_ACTIONMSG		0x72	// Send an Action Message
@@ -144,7 +146,7 @@
 #define MaCaco_FUNCODE_ERR 		0x00
 #define MaCaco_FUNCODE_OK  		0x01
 
-#define	MaCaco_FUNCODE_NO (17+21+2)
+#define	MaCaco_FUNCODE_NO (17+23+2)
 
 const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x08, 0x18, 0x09, 0x19, 
@@ -156,7 +158,7 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 											   0x26, 0x36, 0x27, 0x37,
 											   0x28, 0x38, 0x29, 0x39,
 											   0x2A, 0x3A, 0x2B, 0x2C,
-											   0x3D,
+											   0x2D, 0x2E, 0x2F,
 											   0x71, 0x72};
 		  
 /**************************************************************************/

@@ -529,6 +529,34 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	}	
 	#endif
 
+	#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE && MaCaco_USERMODE)	
+	// set an IP address at runtime
+	if (addrsrv && (rx->funcode == MaCaco_SETIP))
+	{	
+		// the payload contains the IPv4 address in the first four bytes
+		// then the subnetmask and gateway IP
+		U8 i, setbaseipaddr[4];
+		U16 vnetaddress = 0;
+			
+		for(i=0;i<4;i++)
+			setbaseipaddr[i] = (*(rx->data+i) & *(rx->data+4+i));					// Byte-wise AND to get the subnet IP address
+			
+		eth_SetBaseIP((uint8_t *)setbaseipaddr);									// Base IP address			
+		eth_SetSubnetMask((uint8_t *)(rx->data+4));									// Subnetmask
+		eth_SetGateway((uint8_t *)(rx->data+8));									// Gateway IP
+			
+		// use the last byte from the IP address to define the vNet one
+		vnetaddress += (setbaseipaddr[3] & DYNAMICADDR_SUBNETMASK);
+			
+		vNet_SetAddress(vnetaddress, vNet_GetMedia(vnetaddress));																// Set vNet Address
+		vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, vNet_GetMedia(vnetaddress));													// Set vNet Subnetmask
+		vNet_SetMySuperNode(((vnetaddress & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY), vNet_GetMedia(vnetaddress));		// Set vNet Supernode
+			
+		// set the address only once
+		addrsrv = false;
+	}
+	#endif	
+	
 	#if(MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	
 	// answer to a database structure request
 	if (rx->funcode == MaCaco_DBSTRUCTREQ)
@@ -732,34 +760,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	// collect data from answer
 	if (((rx->funcode & 0xF0) == 0x10) || ((rx->funcode & 0xF0) == 0x30) || ((rx->funcode & 0xF0) == 0x50) || ((rx->funcode & 0xF0) == 0x70))
 	{	
-		#if(DYNAMICADDRESSING && VNET_MEDIA1_ENABLE && MaCaco_USERMODE)	
-		// set an IP address at runtime
-		if (addrsrv && (rx->funcode == MaCaco_SETIP))
-		{	
-			// the payload contains the IPv4 address in the first four bytes
-			// then the subnetmask and gateway IP
-			U8 i, setbaseipaddr[4];
-			U16 vnetaddress = 0;
-			
-			for(i=0;i<4;i++)
-				setbaseipaddr[i] = (*(rx->data+i) & *(rx->data+4+i));					// Byte-wise AND to get the subnet IP address
-			
-			eth_SetBaseIP((uint8_t *)setbaseipaddr);									// Base IP address			
-			eth_SetSubnetMask((uint8_t *)(rx->data+4));									// Subnetmask
-			eth_SetGateway((uint8_t *)(rx->data+8));									// Gateway IP
-			
-			// use the last byte from the IP address to define the vNet one
-			vnetaddress += (setbaseipaddr[3] & DYNAMICADDR_SUBNETMASK);
-			
-			vNet_SetAddress(vnetaddress, vNet_GetMedia(vnetaddress));																// Set vNet Address
-			vNet_SetSubnetMask(DYNAMICADDR_SUBNETMASK, vNet_GetMedia(vnetaddress));													// Set vNet Subnetmask
-			vNet_SetMySuperNode(((vnetaddress & DYNAMICADDR_SUBNETMASK) | DYNAMICADDR_GATEWAY), vNet_GetMedia(vnetaddress));		// Set vNet Supernode
-			
-			// set the address only once
-			addrsrv = false;
-		}
-		#endif
-		
 		#if(DYNAMICADDRESSING)	
 		// record the dynamic address provided
 		if ((rx->funcode == MaCaco_DINADDRESSANS) || (rx->funcode == MaCaco_SUBNETANS))

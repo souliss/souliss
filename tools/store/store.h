@@ -18,8 +18,16 @@
 #define	STORE__ADDR_f		(STORE__ADDR_s+2*VNET_MEDIA_NUMBER-1)			// Address M1 to M5 (2 bytes per address)
 #define	STORE__PADDR_s		(STORE__ADDR_f+1)								// First peer address (for gateway)
 #define STORE__PADDR_f		(STORE__PADDR_s+2*MaCaco_NODES-1)				// Last peer address  (for gateway)
-#define	STORE__USABLESIZE	(STORE__PADDR_f)
-#define	STORE__SIZE			(STORE__INDEX+STORE__PADDR_f)
+#define	STORE__GATEWAY_s	(STORE__PADDR_f+1)								// Gateway/Peer mode
+#define	STORE__GATEWAY_f	(STORE__GATEWAY_s+1)
+#define	STORE__IPADDR_s		(STORE__GATEWAY_f+1)							// IPv4 Address, Subnet mask and IPv4 Gateway
+#define	STORE__IPADDR_f		(STORE__IPADDR_s+3*4)
+#define	STORE__WIFISSID_s	(STORE__IPADDR_f+1)								// WiFi SSID
+#define	STORE__WIFISSID_f	(STORE__WIFISSID_s+24)
+#define	STORE__WIFIPSW_s	(STORE__WIFISSID_f+1)							// WiFi Password
+#define	STORE__WIFIPSW_f	(STORE__WIFIPSW_s+64)
+#define	STORE__USABLESIZE	(STORE__WIFIPSW_f)
+#define	STORE__SIZE			(STORE__INDEX+STORE__WIFIPSW_f)
 
 #if(DYNAMICADDRESSING)
 #	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__PADDR_f+1)
