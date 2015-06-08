@@ -24,7 +24,7 @@
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/ethW5100.h"                  // Ethernet through Wiznet W5100
-#include "conf/usart.h"						// USART RS485
+#include "conf/usart.h"                     // USART RS485
 #include "conf/Gateway.h"                   // The main node is the Gateway
 
 // Include framework code and libraries
@@ -55,7 +55,7 @@ void setup()
     Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
     SetAsGateway(myvNet_address);                                   // Set this node as gateway for SoulissApp  
     SetAddress(Gateway_RS485, myvNet_subnet, 0);                    // Set the address on the RS485 bus
-	
+    
     // This node as gateway will get data from the Peer
     SetAsPeerNode(Peer_address, 1); 
     
