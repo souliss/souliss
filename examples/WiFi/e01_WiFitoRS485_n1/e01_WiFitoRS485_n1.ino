@@ -42,7 +42,7 @@ void setup()
     // This is the vNet address for this node, used to communicate with other
     // nodes in your Souliss network
     SetAddress(0xAB01, 0xFF00, 0x0000);
-    SetAddress(0xCE01, 0xFF00, 0x0000)
+    SetAddress(0xCE01, 0xFF00, 0x0000);
     SetAsPeerNode(0xCE02, 1);
     
     Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic
