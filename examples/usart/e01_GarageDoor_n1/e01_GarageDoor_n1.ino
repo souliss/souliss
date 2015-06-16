@@ -46,16 +46,17 @@
 uint8_t ip_address[4]  = {192, 168, 1, 77};
 uint8_t subnet_mask[4] = {255, 255, 255, 0};
 uint8_t ip_gateway[4]  = {192, 168, 1, 1};
-#define Gateway_address 77
 #define myvNet_address  ip_address[3]       // The last byte of the IP address (77) is also the vNet address
+// Define the RS485 network configuration
 #define myvNet_subnet   0xFF00
-#define myvNet_supern   Gateway_address
 #define Gateway_RS485   0xCE01
 #define Peer_RS485      0xCE02
 
 #define GARAGEDOOR_NODE1            0                       
 #define GARAGEDOOR_NODE2            0   
 #define GARAGELIGHT_NODE2           1
+
+#define INPUT_PIN	2 // Use Pin2 as ON/OFF command
 
 void setup()
 {   
@@ -70,7 +71,7 @@ void setup()
     SetAsPeerNode(Peer_RS485, 1); 
     
     // Define inputs, outputs pins and pulldown
-    pinMode(2, INPUT);  // Hardware pulldown required
+	pinMode(INPUT_PIN, INPUT);  // Hardware pulldown required
     
 }
 
@@ -84,10 +85,10 @@ void loop()
         FAST_510ms() {
             
             // Use Pin2 as ON/OFF command
-            if(DigIn(2, Souliss_T2n_ToggleCmd, GARAGEDOOR_NODE1))
+            if(DigIn(INPUT_PIN, Souliss_T2n_ToggleCmd, GARAGEDOOR_NODE1))
             {
                 // Send data
-                Souliss_RemoteInput(Peer_address, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));
+                Souliss_RemoteInput(Peer_RS485, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));
                 Souliss_ResetInput(memory_map, GARAGEDOOR_NODE1);
             }
         } 
