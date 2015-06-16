@@ -5,7 +5,9 @@
     relays that drive the motor and get the limit switches, the other has one 
     push-button for opening and closing the door. The door can be controlled
     also via Android (download SoulissApp from Play Store).
-    
+   
+	Connect the boards via USART crossing TX or RX, or through an RS485 transceiver.
+   
     Ensure to use limit switches to protect the motor once the door is completely
     closed or open, if limit switches are not used the motor should be self-protected.
         
@@ -18,13 +20,21 @@
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/usart.h"                     // USART RS485
 
+/*************/
+// Use the following if you are using an RS485 transceiver with 
+// transmission enable pin, otherwise delete this section.
+//
+#define USARTDRIVER_INSKETCH
+#define USART_TXENABLE          1
+#define USART_TXENPIN           3
+/*************/
+
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
 
 // Define the network configuration according to your router settings
 #define Gateway_address 77
-#define Peer_address    78
 #define myvNet_address  ip_address[3]       // The last byte of the IP address (77) is also the vNet address
 #define myvNet_subnet   0xFF00
 #define myvNet_supern   Gateway_address

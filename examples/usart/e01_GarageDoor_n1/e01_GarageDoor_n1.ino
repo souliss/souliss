@@ -1,11 +1,13 @@
 /**************************************************************************
     Souliss - Garage Door
     
-    Control a garage door using two Ethernet boards: one device act on the 
-    relays that drive the motor and get the limit switches, the other has one 
+    Control a garage door using two boards connected via USART: one device act on 
+	the relays that drive the motor and get the limit switches, the other has one 
     push-button for opening and closing the door. The door can be controlled
     also via Android (download SoulissApp from Play Store).
     
+	Connect the boards via USART crossing TX or RX, or through an RS485 transceiver.
+	
     Ensure to use limit switches to protect the motor once the door is completely
     closed or open, if limit switches are not used the motor should be self-protected.
         
@@ -26,6 +28,15 @@
 #include "conf/ethW5100.h"                  // Ethernet through Wiznet W5100
 #include "conf/usart.h"                     // USART RS485
 #include "conf/Gateway.h"                   // The main node is the Gateway
+
+/*************/
+// Use the following if you are using an RS485 transceiver with 
+// transmission enable pin, otherwise delete this section.
+//
+#define USARTDRIVER_INSKETCH
+#define USART_TXENABLE          1
+#define USART_TXENPIN           3
+/*************/
 
 // Include framework code and libraries
 #include <SPI.h>
