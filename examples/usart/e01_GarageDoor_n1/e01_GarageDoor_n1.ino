@@ -36,7 +36,6 @@ uint8_t ip_address[4]  = {192, 168, 1, 77};
 uint8_t subnet_mask[4] = {255, 255, 255, 0};
 uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 #define Gateway_address 77
-#define Peer_address    78
 #define myvNet_address  ip_address[3]       // The last byte of the IP address (77) is also the vNet address
 #define myvNet_subnet   0xFF00
 #define myvNet_supern   Gateway_address
@@ -57,7 +56,7 @@ void setup()
     SetAddress(Gateway_RS485, myvNet_subnet, 0);                    // Set the address on the RS485 bus
     
     // This node as gateway will get data from the Peer
-    SetAsPeerNode(Peer_address, 1); 
+    SetAsPeerNode(Peer_RS485, 1); 
     
     // Define inputs, outputs pins and pulldown
     pinMode(2, INPUT);  // Hardware pulldown required
