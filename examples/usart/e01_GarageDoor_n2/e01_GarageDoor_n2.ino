@@ -27,6 +27,7 @@
 #define USARTDRIVER_INSKETCH
 #define USART_TXENABLE          1
 #define USART_TXENPIN           3
+#define USARTDRIVER             Serial
 /*************/
 
 // Include framework code and libraries
