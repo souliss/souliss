@@ -44,6 +44,8 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 #define GARAGEDOOR_NODE2            0   
 #define GARAGELIGHT_NODE2           1
 
+#define INPUT_PIN	2 // Use Pin2 as ON/OFF command
+
 void setup()
 {   
     Initialize();
@@ -56,7 +58,7 @@ void setup()
     SetAsPeerNode(Peer_address, 1); 
     
     // Define inputs, outputs pins and pulldown
-    pinMode(2, INPUT);  // Hardware pulldown required
+    pinMode(INPUT_PIN, INPUT);  // Hardware pulldown required
     
 }
 
@@ -70,7 +72,7 @@ void loop()
         FAST_510ms() {
             
             // Use Pin2 as ON/OFF command
-            if(DigIn(2, Souliss_T2n_ToggleCmd, GARAGEDOOR_NODE1))
+            if(DigIn(INPUT_PIN, Souliss_T2n_ToggleCmd, GARAGEDOOR_NODE1))
             {
                 // Send data
                 Souliss_RemoteInput(Peer_address, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));

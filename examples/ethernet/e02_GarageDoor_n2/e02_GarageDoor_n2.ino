@@ -43,6 +43,13 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 #define GARAGEDOOR_NODE2            0   
 #define GARAGELIGHT_NODE2           1
 
+#define INPUTPIN_LIMIT_OPENING 2
+#define INPUTPIN_LIMIT_CLOSING 4
+
+#define OUTPUTPIN_LAMP 7
+#define OUTPUTPIN_OPENING 8
+#define OUTPUTPIN_CLOSING 9
+
 void setup()
 {   
     Initialize();
@@ -55,12 +62,12 @@ void setup()
     Set_SimpleLight(GARAGELIGHT_NODE2);
     
     // Define inputs, outputs pins
-    pinMode(2, INPUT);                  // Hardware pulldown required
-    pinMode(3, INPUT);                  // Hardware pulldown required
+    pinMode(INPUTPIN_LIMIT_OPENING, INPUT);                  // Hardware pulldown required
+    pinMode(INPUTPIN_LIMIT_CLOSING, INPUT);                  // Hardware pulldown required
 
-    pinMode(7, OUTPUT); 
-    pinMode(8, OUTPUT);
-    pinMode(9, OUTPUT);
+    pinMode(OUTPUTPIN_LAMP, OUTPUT);
+    pinMode(OUTPUTPIN_OPENING, OUTPUT);
+    pinMode(OUTPUTPIN_CLOSING, OUTPUT);
 }
 
 void loop()
@@ -73,16 +80,16 @@ void loop()
         // cames directly from SoulissApp or the push-button located on the other node
         FAST_510ms() {
         
-            // Use Pin3 and Pin 4 as limit switches
-            DigIn(2, Souliss_T2n_LimSwitch_Open, GARAGEDOOR_NODE2);
-            DigIn(3, Souliss_T2n_LimSwitch_Close, GARAGEDOOR_NODE2);            
+            // Use Pin2 and Pin 4 as limit switches
+            DigIn(INPUTPIN_LIMIT_OPENING, Souliss_T2n_LimSwitch_Open, GARAGEDOOR_NODE2);
+            DigIn(INPUTPIN_LIMIT_CLOSING, Souliss_T2n_LimSwitch_Close, GARAGEDOOR_NODE2);
             
             // Execute the logic for door or gate
             Logic_GarageDoor(GARAGEDOOR_NODE1);
             
             // Use Pin8 and Pin9 to control the open and close command through relays
-            DigOut(8, Souliss_T2n_Coil_Open, GARAGEDOOR_NODE2); 
-            DigOut(9, Souliss_T2n_Coil_Close, GARAGEDOOR_NODE2);                
+            DigOut(OUTPUTPIN_OPENING, Souliss_T2n_Coil_Open, GARAGEDOOR_NODE2);
+            DigOut(OUTPUTPIN_CLOSING, Souliss_T2n_Coil_Close, GARAGEDOOR_NODE2);
         
         
             // If the door or gate is open / opening, switch ON the light
@@ -95,7 +102,7 @@ void loop()
             Logic_SimpleLight(GARAGELIGHT_NODE2);
             
             // Use Pin7 to control the light
-            DigOut(7, Souliss_T1n_OnCoil, GARAGELIGHT_NODE2);           
+            DigOut(OUTPUTPIN_LAMP, Souliss_T1n_OnCoil, GARAGELIGHT_NODE2);
         }
 
         // Process the communication, this include the command that are coming from SoulissApp
