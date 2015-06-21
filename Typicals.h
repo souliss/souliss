@@ -67,10 +67,11 @@
 #define Souliss_T1n_Set					0x22		// Set a state
 #define Souliss_T1n_OnFeedback			0x23		// Report the actual state as ON
 #define Souliss_T1n_OffFeedback			0x24		// Report the actual state as OFF
-#define Souliss_T1n_Timed_StdVal		0x40		// Timed ON Standard Value
 #define Souliss_T1n_Timed				0x30		// Timed ON
+#define Souliss_T1n_Timed_StdVal		0x40		// Timed ON Standard Value
 #define Souliss_T1n_PositionOnCmd		0x31		// Position constrained ON Command
 #define Souliss_T1n_RstCmd				0x00		// Reset
+
 #define Souliss_T1n_AutoState			0xF0		// AUTO Mode Feedback
 #define Souliss_T1n_Coil				0x01		// Output Feedback ON
 #define Souliss_T1n_OnCoil				0x01		// Output Feedback ON
@@ -82,7 +83,6 @@
 #define Souliss_T1n_AutoOnCoil			0xF1		// Output Feedback ON in AUTO Mode
 #define Souliss_T1n_AutoOffCoil			0xF0		// Output Feedback OFF in AUTO Mode
 #define Souliss_T1n_GoodNight			0xF1		// Output Feedback ON in GoodNight Mode
-
 #define Souliss_T1n_BrightValue			0x10		
 
 /*
@@ -138,18 +138,20 @@
 #define Souliss_T2n_CloseCmd_Local		0x12		// Close Command (only from local pushbutton)
 #define Souliss_T2n_OpenCmd_Local		0x10		// Open Command (only from local pushbutton)
 #define Souliss_T2n_ToggleCmd			0x08		// Toggle Command
+#define Souliss_T2n_LimSwitch_Close		0x14		// Close Feedback from Limit Switch
+#define Souliss_T2n_LimSwitch_Open		0x16		// Open Feedback from Limit Switch
 #define Souliss_T2n_RstCmd				0x00		// Reset Command
 #define Souliss_T2n_Timer_Val			0xC0		// Timer set value
 #define Souliss_T2n_Timer_Off			0xA0		// Timer expired value
 #define Souliss_T2n_TimedStop_Val		0xC2		// Timed stop value
 #define Souliss_T2n_TimedStop_Off		0xC0		// Timed stop exipred value
-#define Souliss_T2n_LimSwitch_Close		0x08		// Close Feedback from Limit Switch
-#define Souliss_T2n_LimSwitch_Open		0x10		// Open Feedback from Limit Switch
+#define Souliss_T2n_State_Close			0x08		// Close Feedback from Limit Switch
+#define Souliss_T2n_State_Open			0x10		// Open Feedback from Limit Switch
 #define Souliss_T2n_NoLimSwitch			0x20		// No Limit Switch
 #define Souliss_T2n_Coil_Close			0x01		// Closing
 #define Souliss_T2n_Coil_Open			0x02		// Opening
 #define Souliss_T2n_Coil_Stop			0x03		// Stopped
-#define Souliss_T2n_Coil_Off	0x00		// Start state that will become Souliss_T2n_Coil_Stop
+#define Souliss_T2n_Coil_Off	0x00				// Start state that will become Souliss_T2n_Coil_Stop
 #define Souliss_T2n_IsTemporaryStop	((memory_map[MaCaco_AUXIN_s + slot] > Souliss_T2n_TimedStop_Off) &&	(memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T2n_TimedStop_Val))
 
 // General defines for T3n

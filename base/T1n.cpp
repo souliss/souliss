@@ -961,10 +961,7 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 
 		Output status,
 		-  0(hex) for output OFF,
-		-  1(hex) for output ON.
-									
-		The next three slots contains the R, G and B values applied to the
-		light.		
+		-  1(hex) for output ON.	
 	
 */	
 /**************************************************************************/
