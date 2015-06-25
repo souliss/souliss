@@ -14,7 +14,7 @@
 #include "Souliss.h"
 
 // This identify the number of the SLOT logic
-#define LEDPWM      0
+#define LEDPWM      0     //THIS TYPICAL USES TWO SLOTS, SO THE NEXT FREE SLOT IS 2.
 
 //PWM pin
 #define LEDPWMP     5
