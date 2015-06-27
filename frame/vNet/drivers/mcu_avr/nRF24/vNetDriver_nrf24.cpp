@@ -28,6 +28,9 @@
 #include "src/RF24.cpp"
 #include "SPI.h"
 
+#define	PIPE_BRD	1	// Broadcast pipe
+#define	PIPE_UNC	2	// Unicast pipe
+
 RF24 radio(NRF24_RADIOEN, NRF24_SPICS);
 
 /**************************************************************************/
@@ -49,12 +52,12 @@ void vNet_Init_M2()
 void vNet_SetAddress_M2(uint16_t addr)
 {
 	// Set the pipe address for broadcast
-	radio.openReadingPipe(0, (NRF24_PIPE | ((uint64_t)VNET_ADDR_BRDC)));
-	radio.setAutoAck(0, false);
+	radio.openReadingPipe(PIPE_BRD, (NRF24_PIPE | ((uint64_t)VNET_ADDR_BRDC)));
+	radio.setAutoAck(PIPE_BRD, false);
 	
 	// Set the pipe address for unicast	
-	radio.openReadingPipe(1, (NRF24_PIPE | ((uint64_t)addr)));
-	radio.setAutoAck(1, true);
+	radio.openReadingPipe(PIPE_UNC, (NRF24_PIPE | ((uint64_t)addr)));
+	radio.setAutoAck(PIPE_UNC, true);
 	
 	// Start listening
 	radio.startListening();
