@@ -107,11 +107,13 @@ U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 				memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;			// Stop Command
 		
 		// If a command was issued, set the timer
-		if((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close))
+		if( ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Open) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close)) && memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T2n_Timer_Off)
+		{
 			memory_map[MaCaco_AUXIN_s + slot] = timeout;						// Set timer value
+			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
+	  		i_trigger = Souliss_TRIGGED;
+		}
 		
-		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
-  		i_trigger = Souliss_TRIGGED;
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Close) || ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) && (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off)))
 	{
@@ -276,7 +278,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Close;			// Close SW Command executable because temporary stop is over
 		
 		// If a command was issued, set the timer
-		if(!Souliss_T2n_IsTemporaryStop)
+		if(!Souliss_T2n_IsTemporaryStop && memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T2n_Timer_Off)
 		{
 			memory_map[MaCaco_AUXIN_s + slot] = timeout;							// Set timer value
 			memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset command
