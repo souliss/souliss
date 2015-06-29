@@ -250,12 +250,12 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<rPddr>");
-		SOULISS_LOG("<|0x");
+		SOULISS_LOG(F("(ss)<rPddr>"));
+		SOULISS_LOG(F("<|0x"));
 		for(i=0;i<MaCaco_NODES;i++)
 		{	
 			SOULISS_LOG(C8TO16(memory_map + MaCaco_ADDRESSES_s+2*i),HEX);
-			SOULISS_LOG("|0x");
+			SOULISS_LOG(F("|0x"));
 		}			
 		SOULISS_LOG(">\r\n");
 		#endif
@@ -307,8 +307,8 @@ U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<sID>");
-		SOULISS_LOG("<|0x");
+		SOULISS_LOG(F("(ss)<sID>"));
+		SOULISS_LOG(F("<|0x"));
 		SOULISS_LOG(Return_ID(),HEX);
 		SOULISS_LOG(">\r\n");
 		#endif
@@ -320,8 +320,8 @@ U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)
 			{
 				#if (SOULISS_DEBUG)
 				// Print debug messages
-				SOULISS_LOG("(ss)<rAdd>");
-				SOULISS_LOG("<|0x");
+				SOULISS_LOG(F("(ss)<rAdd>"));
+				SOULISS_LOG(F("<|0x"));
 				SOULISS_LOG(raddr,HEX);
 				SOULISS_LOG(">\r\n");
 				#endif				
@@ -390,17 +390,17 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 					
 						#if (SOULISS_DEBUG)
 						// Print debug messages
-						SOULISS_LOG("(ss)<sID>");
-						SOULISS_LOG("<|0x");
+						SOULISS_LOG(F("(ss)<sID>"));
+						SOULISS_LOG(F("<|0x"));
 						SOULISS_LOG(Return_ID(),HEX);
 						SOULISS_LOG(">\r\n");
 					
-						SOULISS_LOG("(ss)<sAddr>");
-						SOULISS_LOG("<|0x");
+						SOULISS_LOG(F("(ss)<sAddr>"));
+						SOULISS_LOG(F("<|0x"));
 						for(uint8_t j=1; j<=VNET_MEDIA_NUMBER; j++)
 						{	
 							SOULISS_LOG(Return_Addresses(j),HEX);
-							SOULISS_LOG("|0x");
+							SOULISS_LOG(F("|0x"));
 						}			
 						SOULISS_LOG(">\r\n");
 						#endif
