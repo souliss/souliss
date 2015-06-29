@@ -121,19 +121,19 @@ U8 MaCacoTX(U16 addr, oFrame* Macaco_oFrame, U8 len)
 {
 	#if (MaCaco_DEBUG)
 	// Print the outgoing message header
-	MaCaco_LOG("(MaCaco)<OUT>");
-	MaCaco_LOG("<|0x");
+	MaCaco_LOG(F("(MaCaco)<OUT>"));
+	MaCaco_LOG(F("<|0x"));
 	for(U8 i=0;i<MaCaco_HEADER;i++)
 	{
 		if((i!=1) || (i!=2) || (i!=4))
 		{
 			MaCaco_LOG(Macaco_oFrame->header[i],HEX);
-			MaCaco_LOG("|0x");
+			MaCaco_LOG(F("|0x"));
 		}	
 		else if((i==1))
 		{
 			MaCaco_LOG((U16)Macaco_oFrame->header[i],HEX);
-			MaCaco_LOG("|0x");
+			MaCaco_LOG(F("|0x"));
 		}	
 		else if((i==5))
 			MaCaco_LOG(Macaco_oFrame->header[i],HEX);
@@ -156,18 +156,18 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
 
 	#if (MaCaco_DEBUG)
 	// Print the outgoing message header
-	MaCaco_LOG("(MaCaco)<IN><|0x");
+	MaCaco_LOG(F("(MaCaco)<IN><|0x"));
 	for(U8 i=0;i<MaCaco_HEADER;i++)
 	{
 		if((i!=1) || (i!=2) || (i!=4))
 		{
 			MaCaco_LOG(data_ptr[i],HEX);
-			MaCaco_LOG("|0x");
+			MaCaco_LOG(F("|0x"));
 		}	
 		else if((i==1))
 		{
 			MaCaco_LOG((U16)data_ptr[i],HEX);
-			MaCaco_LOG("|0x");
+			MaCaco_LOG(F("|0x"));
 		}	
 		else if((i==5))
 			MaCaco_LOG(data_ptr[i],HEX);
@@ -203,7 +203,7 @@ U8 MaCaco_parse(MaCaco_rx_data_t *rx)
 	{
 		#if (MaCaco_DEBUG)
 		// Print the outgoing message header
-		MaCaco_LOG("(MaCaco) Err:UNSFC\r\n");
+		MaCaco_LOG(F("(MaCaco) Err:UNSFC\r\n"));
 		#endif
 		
 		return MaCaco_FUNCODE_ERR;	// functional code not supported
@@ -478,17 +478,17 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 			#if (SOULISS_DEBUG)
 			// Print debug messages
-			SOULISS_LOG("(ss)<sID>");
-			SOULISS_LOG("<|0x");
+			SOULISS_LOG(F("(ss)<sID>"));
+			SOULISS_LOG(F("<|0x"));
 			SOULISS_LOG(Return_ID(),HEX);
 			SOULISS_LOG(">\r\n");
 					
-			SOULISS_LOG("(ss)<sPddr>");
-			SOULISS_LOG("<|0x");
+			SOULISS_LOG(F("(ss)<sPddr>"));
+			SOULISS_LOG(F("<|0x"));
 			for(i=0; i<MaCaco_NODES; i++)
 			{	
 				SOULISS_LOG(Return_SinglePeerAddresses(i),HEX);
-				SOULISS_LOG("|0x");
+				SOULISS_LOG(F("|0x"));
 			}			
 			SOULISS_LOG(">\r\n");
 			#endif
@@ -497,10 +497,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			
 			
 			#if(MaCaco_DEBUG)
-			MaCaco_LOG("(MaCaco)<ADDRS><");
+			MaCaco_LOG(F("(MaCaco)<ADDRS><"));
 			for(nodes=0; nodes<MaCaco_NODES; nodes++)
 			{
-				MaCaco_LOG("|0x");
+				MaCaco_LOG(F("|0x"));
 				MaCaco_LOG((C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)),HEX);
 				
 			}
@@ -1140,12 +1140,12 @@ U8 MaCaco_PassThrough_subAnswer(U8 startoffset, U8 numberof, U8 *data)
 
 			#if (MaCaco_DEBUG)
 			// Print the outgoing message header
-			MaCaco_LOG("(MaCaco)<INSUB>");
-			MaCaco_LOG("<|0x");
+			MaCaco_LOG(F("(MaCaco)<INSUB>"));
+			MaCaco_LOG(F("<|0x"));
 			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
 			{
 				MaCaco_LOG(*(subscr_addr+i),HEX);
-				MaCaco_LOG("|0x");
+				MaCaco_LOG(F("|0x"));
 			}		
 			MaCaco_LOG(">\r\n");
 			#endif				
@@ -1219,12 +1219,12 @@ U8 MaCaco_subAnswer(U8* memory_map, U8* data_chg)
 		
 			#if (MaCaco_DEBUG)
 			// Print the outgoing message header
-			MaCaco_LOG("(MaCaco)<INSUB>");
-			MaCaco_LOG("<|0x");
+			MaCaco_LOG(F("(MaCaco)<INSUB>"));
+			MaCaco_LOG(F("<|0x"));
 			for(U8 i=0;i<MaCaco_INMAXSUBSCR;i++)
 			{
 				MaCaco_LOG(*(subscr_addr+i),HEX);
-				MaCaco_LOG("|0x");
+				MaCaco_LOG(F("|0x"));
 			}		
 			MaCaco_LOG(">\r\n");
 			#endif	
