@@ -316,10 +316,10 @@ U8 Souliss_Subscribe(U8 *memory_map, U16 message, U8 action)
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<Sub>");
-		SOULISS_LOG("<|0x");
+		SOULISS_LOG(F("(ss)<Sub>"));
+		SOULISS_LOG(F("<|0x"));
 		SOULISS_LOG(C8TO16(confparameters_p),HEX);
-		SOULISS_LOG("|0x");
+		SOULISS_LOG(F("|0x"));
 		SOULISS_LOG((*(confparameters_p+sizeof(U16))),HEX);		
 		SOULISS_LOG(">\r\n");
 		#endif
@@ -356,10 +356,10 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 	{
 		#if (SOULISS_DEBUG)
 		// Print debug messages
-		SOULISS_LOG("(ss)<Sub>");
-		SOULISS_LOG("<|0x");
+		SOULISS_LOG(F("(ss)<Sub>"));
+		SOULISS_LOG(F("<|0x"));
 		SOULISS_LOG(_message,HEX);
-		SOULISS_LOG("|0x");
+		SOULISS_LOG(F("|0x"));
 		SOULISS_LOG(_action,HEX);		
 		SOULISS_LOG(">\r\n");
 		#endif
@@ -409,12 +409,12 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 	if((*trigger) || (i<MaCaco_WRITE_f))
 	{
 		// Print debug messages
-		SOULISS_LOG("(ss)<MAP>");
-		SOULISS_LOG("<|0x");
+		SOULISS_LOG(F("(ss)<MAP>"));
+		SOULISS_LOG(F("<|0x"));
 		for(i=0;i<MaCaco_MEMMAP;i++)
 		{
 			SOULISS_LOG(memory_map[i],HEX);
-			SOULISS_LOG("|0x");
+			SOULISS_LOG(F("|0x"));
 		}
 		SOULISS_LOG(">\r\n");
 	}	
@@ -456,3 +456,4 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 	// Return the alarm state
 	return memory_map[MaCaco_OUT_s + chain_slot];	
 }
+
