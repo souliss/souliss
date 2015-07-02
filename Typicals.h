@@ -63,6 +63,7 @@
 #define Souliss_T1n_AutoCmd				0x08		// AUTO Mode Command
 #define Souliss_T1n_BrightUp			0x10		// Increase Light
 #define Souliss_T1n_BrightDown			0x20		// Decrease Light
+#define Souliss_T1n_BrightSwitch		0x15		// Switch the Bright Value
 #define Souliss_T1n_Flash				0x21		// Flash Light
 #define Souliss_T1n_Set					0x22		// Set a state
 #define Souliss_T1n_OnFeedback			0x23		// Report the actual state as ON
