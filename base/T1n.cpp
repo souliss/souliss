@@ -657,6 +657,11 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 		}	
 	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Switch the light value 
+	{
+		if(memory_map[MaCaco_OUT_s + slot] == 1)  memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown
+		else memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightUp
+	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
 		// Increase the light value
