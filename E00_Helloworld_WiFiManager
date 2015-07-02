@@ -1,10 +1,11 @@
 /*  Download WifiManager from https://github.com/tzapu/WiFiManager  */
-/*  At first start of this skech if no SSID and PASS is configured you need to connect
-    to "Souliss" Wifi and Access to 192.168.4.1 from your browser* and configure SSID and Password 
-    of your WiFi Network. The node automatically restart and work as Souliss Gateway :)
-        *(Chrome on Android not supported)
-*/        
-
+/*
+  With this Example you don't need to configure SSID and Password before compile and load the sketch. 
+  If your node doesn't connect to your WiFi or isn't configured yet you will see an open WiFi network called "Souliss", 
+  connect to the wifi and open on your browser this address: http://192.168.4.1  and configure your WiFi, 
+  then you can open your Souliss Android App and enjoy! :)
+    *(Chrome on Android not supported)
+*/
 #include <WiFiClient.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>
