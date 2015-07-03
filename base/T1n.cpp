@@ -657,10 +657,15 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 		}	
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Switch the light value 
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
 	{
-		if(memory_map[MaCaco_OUT_s + slot] == 1)  memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
-		else memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightUp;
+		// Toggle the actual status of the Bright
+		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightUp;			
+		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight ) 
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
+		else
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
@@ -1030,11 +1035,16 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1]))
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Switch the light value  
- 	{ 
- 		if(memory_map[MaCaco_OUT_s + slot] == 1)  memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown; 
- 		else memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightUp; 
- 	} 
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
+	{
+		// Toggle the actual status of the Bright
+		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightUp;			
+		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight ) 
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
+		else
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
+	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
 		// Increase the light value
