@@ -1,4 +1,3 @@
-
 /*800k - 1MOhm resistor between pins are required*/
 #define send_pin 12
 #define float_pin 14  
@@ -8,15 +7,15 @@
 #define HOLD     2
 #define RELEASE  3
 
-uint8_t count = 0;
-uint8_t decount = 0;
-uint8_t stat = NONE;
-uint8_t last_stat = NONE;
+int count = 0;
+int decount = 0;
+int stat = NONE;
+int last_stat = NONE;
 long timer = 0;
 
 #define DEBUG_CAPSENSE 1
 
-/*  WiFi Manager */
+
 /*  Download WifiManager from https://github.com/tzapu/WiFiManager  */
 
 #include <WiFiClient.h>
@@ -85,7 +84,7 @@ void setup()
     SetAddress(0xAB01, 0xFF00, 0x0000);
     SetAsPeerNode(0xAB02, 1);
 	
-    Set_SimpleLight(MYLEDLOGIC);        // Define a simple LED light logic
+    Set_DimmableLight(MYLEDLOGIC);        // Define a simple LED light logic
 	
     pinMode(OUTPUTPIN, OUTPUT);         // Use pin as output 
 }
@@ -97,9 +96,9 @@ void loop()
         UPDATEFAST();   
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
-            Serial.print(CapSense(MYLEDLOGIC,Souliss_T1n_ToggleCmd,0,float_pin, send_pin, 3, 3000, 0)); 
-            Logic_SimpleLight(MYLEDLOGIC);
-            DigOut(OUTPUTPIN, Souliss_T1n_Coil,MYLEDLOGIC);
+            CapSense(MYLEDLOGIC,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,float_pin, send_pin, 3, 2500, 1);
+            Logic_DimmableLight(MYLEDLOGIC);
+            analogWrite(OUTPUTPIN, mOutput(MYLEDLOGIC+1)*4);
         } 
               
         // Here we handle here the communication with Android
@@ -107,28 +106,35 @@ void loop()
     }
 } 
 
-uint8_t CapSense(uint8_t slot, uint8_t command, uint8_t holdcommand, uint8_t receive_p, uint8_t send_p, uint8_t thresold, uint8_t holdtime, boolean holdrepeat) {
-    //analogWrite(send_p, 512); //I don't know if this is the right value
+int CapSense(int slot, int command, int holdcommand, int receive_p, int send_p, int thresold, int holdtime, boolean holdrepeat) {
+
     boolean Read = digitalRead(receive_p);
         
-    if(DEBUG_CAPSENSE){
-        if(millis()%300==0) Serial.println("Capsense\tstat\tDRead\tcount\tdecount");
+    if(DEBUG_CAPSENSE){// && stat != NONE){
+        if(millis()%300==0) Serial.println("SlotIn Out\tPWM\tstat\tDRead\tcount\tdecount\ttimer\ttimeout");
+        Serial.print(mInput(slot));
+        Serial.print("\t");        
+        Serial.print(mOutput(slot));
+        Serial.print("\t");
+        Serial.print(mOutput(slot+1));
         Serial.print("\t");
         Serial.print(stat);
         Serial.print("\t");
         Serial.print(Read);
         Serial.print("\t");
-        //Serial.print(CapSense(float_pin, send_pin, 3, 2500, 1)); 
-        //Serial.print("\t");
         Serial.print(count);
         Serial.print("\t");
         Serial.print(decount);
         Serial.print("\t");
-        Serial.println(timer);
+        Serial.print(timer);
+        Serial.print("\t");
+        Serial.print(millis()-timer >= holdtime);
+        Serial.print("\t");
+        Serial.println(millis()-timer);
     }
     
-    if(Read){// && stat == NONE){
-       count++; 
+    if(Read) {
+      count++; 
        decount = 0;
     }else count=0;
     
@@ -140,7 +146,6 @@ uint8_t CapSense(uint8_t slot, uint8_t command, uint8_t holdcommand, uint8_t rec
         count = 0;
         decount = 0;
         stat = PRESS;
-        mInput(slot) = command;
         timer = millis();
         return stat;      
     }
@@ -156,6 +161,7 @@ uint8_t CapSense(uint8_t slot, uint8_t command, uint8_t holdcommand, uint8_t rec
     }
     if(decount >= 15){
         decount = 0;
+        if(stat == PRESS) mInput(slot) = command;
         stat = RELEASE;
         return stat;
     }
@@ -167,3 +173,4 @@ uint8_t CapSense(uint8_t slot, uint8_t command, uint8_t holdcommand, uint8_t rec
     //if(stat == NONE) return 0;
     return NONE;
 }
+
