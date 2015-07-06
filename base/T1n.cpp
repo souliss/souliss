@@ -215,8 +215,8 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 			
 		Command recap, using: 
 		-  1(hex) as command, toggle the output 
-		-  2(hex) as command, the output move to ON the mode is reset
-		-  4(hex) as command, the output move to OFF the mode is reset
+		-  2(hex) as command, the output move to ON the auto mode is reset
+		-  4(hex) as command, the output move to OFF the auto mode is reset
 		-  8(hex) as command, the mode is set to AUTO
 		- >8(hex) as command, time the output to ON if in AUTO 
 		-  0(hex) as command, no action
