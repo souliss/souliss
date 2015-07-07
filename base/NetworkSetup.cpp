@@ -464,3 +464,4 @@ void Souliss_JoinAndReset()
 	if(vNet_GetAddress(vNet_MyMedia()))
 		MaCaco_send(0xFFFF, MaCaco_JOINANDRESET, keyidval, 0, 0, 0);
 }
+
