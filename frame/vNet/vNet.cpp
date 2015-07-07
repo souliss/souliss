@@ -184,7 +184,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	if(addr==VNET_ADDR_NULL)
 	{
 		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<ADDR_NULL>\r\n");
+		VNET_LOG(F("(vNet)<ADDR_NULL>\r\n"));
 		#endif
 		
 		// Free the frame and return
@@ -201,7 +201,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 		vNet_OutPath(addr, &routed_addr, &media);			// Look for outpath message
 
 	#if(VNET_DEBUG)
-    VNET_LOG("(vNet)<MEDIA><|0x");
+    VNET_LOG(F("(vNet)<MEDIA><|0x"));
 	VNET_LOG(media,HEX);
 	VNET_LOG(">\r\n");
 	#endif
@@ -225,15 +225,15 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<OUT><DADDR><|0x");
+    VNET_LOG(F("(vNet)<OUT><DADDR><|0x"));
 	VNET_LOG(routed_addr,HEX);
-	VNET_LOG("><|0x");
+	VNET_LOG(F("><|0x"));
 	VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(port,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(addr,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(vNet_Media[media-1].src_addr,HEX);
 	
 	VNET_LOG(">\r\n");
@@ -275,7 +275,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	}
 	
 	#if(VNET_DEBUG) 
-    VNET_LOG("(vNet)<OUT>-FAIL\r\n");
+    VNET_LOG(F("(vNet)<OUT>-FAIL\r\n"));
 	#endif
 	
 	return VNET_DATA_FAIL;
@@ -318,15 +318,15 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 			// Include debug functionalities, if required
 			#if(VNET_DEBUG)
 			// Print address  
-			VNET_LOG("(vNet)<BRD><Media><|0x");
+			VNET_LOG(F("(vNet)<BRD><Media><|0x"));
 			VNET_LOG(media+1,HEX);
-			VNET_LOG("><|0x");
+			VNET_LOG(F("><|0x"));
 			VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-			VNET_LOG("|0x");
+			VNET_LOG(F("|0x"));
 			VNET_LOG(port,HEX);
-			VNET_LOG("|0x");
+			VNET_LOG(F("|0x"));
 			VNET_LOG(broadcast_addr,HEX);
-			VNET_LOG("|0x");
+			VNET_LOG(F("|0x"));
 			VNET_LOG(vNet_Media[media].src_addr,HEX);
 			
 			VNET_LOG(">\r\n");
@@ -390,7 +390,7 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 	if((multicastgroup <= VNET_ADDR_L_MLC) || (multicastgroup == VNET_ADDR_BRDC)) 
 	{
 		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<MLT><FAIL>\r\n");
+		VNET_LOG(F("(vNet)<MLT><FAIL>\r\n"));
 		#endif	
 		
 		// Free the frame and return
@@ -421,15 +421,15 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		// Include debug functionalities, if required
 		#if(VNET_DEBUG)
 		// Print address  
-		VNET_LOG("(vNet)<MLT><Media><|0x");
+		VNET_LOG(F("(vNet)<MLT><Media><|0x"));
 		VNET_LOG(media+1,HEX);
-		VNET_LOG("><|0x");
+		VNET_LOG(F("><|0x"));
 		VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(port,HEX);
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(broadcast_addr,HEX);
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(vNet_Media[media].src_addr,HEX);
 		
 		VNET_LOG(">\r\n");
@@ -506,20 +506,20 @@ U8 vNet_SendRoute(U16 routed_addr, U8 media, U8 *data, U8 len)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<OUT><ROUT><|0x");
+    VNET_LOG(F("(vNet)<OUT><ROUT><|0x"));
 	VNET_LOG(routed_addr,HEX);
-	VNET_LOG("><|0x");
+	VNET_LOG(F("><|0x"));
 	VNET_LOG(data[0],HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(data[1],HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(C8TO16(data+2),HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(C8TO16(data+4),HEX);
 		
 	for(U8 i=VNET_HEADER_SIZE;i<len;i++)
 	{
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(data[i],HEX);
 	}
 	VNET_LOG(">\r\n");
@@ -842,7 +842,7 @@ void vNet_SetAddress(U16 addr, U8 media)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<SETADDR><|0x");
+    VNET_LOG(F("(vNet)<SETADDR><|0x"));
 	VNET_LOG(vNet_Media[media-1].src_addr,HEX);
 	VNET_LOG(">\r\n");
 	#endif	
@@ -1082,7 +1082,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	*media = vNet_GetMedia(addr);
 
 	#if(VNET_DEBUG)
-    VNET_LOG("(vNet)<OUTPATH><|0x");
+    VNET_LOG(F("(vNet)<OUTPATH><|0x"));
 	VNET_LOG(*media,HEX);
 	VNET_LOG(">\r\n");
 	#endif
@@ -1114,7 +1114,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		}	
 		
 		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<NHBOR><|0x");
+		VNET_LOG(F("(vNet)<NHBOR><|0x"));
 		VNET_LOG(*media,HEX);
 		VNET_LOG(">\r\n");
 		#endif		
@@ -1340,20 +1340,20 @@ void vNet_ParseFrame(U8 media)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<IN>(0x");
+    VNET_LOG(F("(vNet)<IN>(0x"));
 	VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
-	VNET_LOG(")<|0x");
+	VNET_LOG(F(")<|0x"));
 	VNET_LOG(vNet_Media_Data[media-1].len,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(vNet_Media_Data[media-1].port,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG((U16)vNet_Media_Data[media-1].f_dest_addr,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG((U16)vNet_Media_Data[media-1].o_src_addr,HEX);
 		
 	for(U8 i=VNET_HEADER_SIZE;i<vNet_Media_Data[media-1].len;i++)
 	{
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(*(vNet_Media_Data[media-1].data+i),HEX);
 	}
 	VNET_LOG(">\r\n");
@@ -1406,9 +1406,9 @@ void vNet_ParseFrame(U8 media)
 				dest_route_table[i] = vNet_Media_Data[media-1].src_addr;
 				
 				#if(VNET_DEBUG)
-				VNET_LOG("(vNet)<ROUTEUPDATE><|0x");
+				VNET_LOG(F("(vNet)<ROUTEUPDATE><|0x"));
 				VNET_LOG(vNet_Media_Data[media-1].o_src_addr & submask,HEX);
-				VNET_LOG("|0x");
+				VNET_LOG(F("|0x"));
 				VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
 				VNET_LOG(">\r\n");
 				#endif
