@@ -657,6 +657,33 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 		}	
 	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
+	{
+		if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil ) {
+			// Decrease the light value
+			if(memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 1] -= Souliss_T1n_BrightValue;
+			if(memory_map[MaCaco_OUT_s + slot + 2] > Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 2] -= Souliss_T1n_BrightValue;
+			if(memory_map[MaCaco_OUT_s + slot + 3] > Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 3] -= Souliss_T1n_BrightValue;
+			// Save the new output value
+			for(U8 i=1;i<4;i++)
+				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_AUXIN_s + slot + i];
+		}
+        	if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)  {
+            		if(memory_map[MaCaco_OUT_s + slot + 1] < 255 - Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 1] += Souliss_T1n_BrightValue;
+			if(memory_map[MaCaco_OUT_s + slot + 2] < 255 - Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 2] += Souliss_T1n_BrightValue;
+			if(memory_map[MaCaco_OUT_s + slot + 3] < 255 - Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 3] += Souliss_T1n_BrightValue;
+			
+			// Save the new output value
+			for(U8 i=1;i<4;i++)
+				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_AUXIN_s + slot + i];
+        	}
+	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
 		// Increase the light value
@@ -1024,6 +1051,16 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		// Once is on, reset
 		if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1]))
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
+	{
+		if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil ) 
+			if(  memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 1] -= Souliss_T1n_BrightValue;
+			else memory_map[MaCaco_OUT_s + slot + 1] = 0;
+        	if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)  
+            		if(memory_map[MaCaco_OUT_s + slot + 1] < 255 - Souliss_T1n_BrightValue) 
+				memory_map[MaCaco_OUT_s + slot + 1] += Souliss_T1n_BrightValue;
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
