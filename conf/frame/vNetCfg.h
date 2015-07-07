@@ -87,7 +87,16 @@
 */
 /**************************************************************************/
 #ifndef	VNET_RESETTIME_INSKETCH
-#define VNET_RESETTIME		   0x000AFC80
+#define VNET_RESETTIME			0x000AFC80
+
+// Force a node reset using the MCU watchdog, shall be configured as 
+// #define VNET_HARDRESET  while(1)
+// this will prevent the MCU to reset the watchdog and will force a reboot.
+//
+// By default this is empty and does nothing, please note that if you haven't
+// a watchdog enabled, this will hang your node and you will need to manually
+// reebot it.
+#define VNET_HARDRESET	
 #endif
 
 /**************************************************************************/
