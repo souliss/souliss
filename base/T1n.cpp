@@ -245,7 +245,7 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
-		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OffCoil)  
+		if(((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OffCoil) || (memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState)) 
 			i_trigger = Souliss_TRIGGED;
 	
 		// Switch OFF and reset the AUTO mode
@@ -254,7 +254,7 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
-		if((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil)  
+		if(((memory_map[MaCaco_OUT_s + slot] & ~Souliss_T1n_AutoState) != Souliss_T1n_OnCoil) || (memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState))  
 			i_trigger = Souliss_TRIGGED;	
 		
 		// Switch ON and reset the AUTO mode
@@ -276,8 +276,6 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 		// If the logic is not in AUTO, active AUTO mode
 		if((memory_map[MaCaco_OUT_s + slot] == (Souliss_T1n_AutoState | Souliss_T1n_Coil)) || ((memory_map[MaCaco_OUT_s + slot] & Souliss_T1n_AutoState) != Souliss_T1n_AutoState))
 			memory_map[MaCaco_OUT_s + slot] = (Souliss_T1n_AutoState | Souliss_T1n_OffCoil);			// Switch OFF and set the AUTO mode
-		else
-			memory_map[MaCaco_OUT_s + slot] = (~Souliss_T1n_AutoState & Souliss_T1n_OffCoil);			// Switch OFF and reset the AUTO mode
 			
 		i_trigger = Souliss_TRIGGED;
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
