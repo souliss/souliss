@@ -628,7 +628,7 @@ U8 vNet_DataAvailable()
 		// Reset all the communication interfaces
 		vNet_Reset();
 		
-		#ifdef(VNET_HARDRESET)
+		#ifdef VNET_HARDRESET
 		VNET_HARDRESET;
 		#endif
 	}
