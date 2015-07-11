@@ -260,6 +260,14 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Init_HTTPServer()										{}
 #define	Run_HTTPServer()										HTTPServer(memory_map)
 
+#define RemoteDigIn												Souliss_RemoteDigIn
+#define RemoteLowDigIn											Souliss_RemoteLowDigIn
+#define RemoteDigIn2State										Souliss_RemoteDigIn2State
+#define RemoteAnalogIn2Buttons									Souliss_RemoteAnalogIn2Buttons
+#define RemoteLowDigIn2State									Souliss_RemoteLowDigIn2State
+#define RemoteDigInHold											Souliss_RemoteDigInHold
+#define RemoteLowDigInHold										Souliss_RemoteLowDigInHold
+
 
 /*****************************************/
 
