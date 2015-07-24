@@ -1,9 +1,7 @@
-//IMPORTANT NOTE!!! SKETCH IN PROGRESS!!!
-
 //MIRAR!!: http://stackoverflow.com/questions/28177544/defining-variables-within-if-else-endif-in-arduino-ide
-#if 1
-__asm volatile ("nop");
-#endif
+//#if 1
+//__asm volatile ("nop");
+//#endif
 
 //AÑADIR CAPACITIVOS - HECHO
 //Crear COLOR CYCLE para CAPACITIVO CON RGB
@@ -23,12 +21,12 @@ __asm volatile ("nop");
 //************************NODE CONFIGURATION ********************************
     
     //Enable this to use this node as GW or PEER
-    #define GATEWAY    1
-    #define PEER       0
+    //#define GATEWAY    1
+    //#define PEER       0
     
     //NETWORK ADDRESSING
-    #define STATIC     1
-    #define DYNAMIC    0
+    //#define STATIC     1
+    //#define DYNAMIC    0
   
 /*
     BYTE 1
@@ -153,10 +151,10 @@ __asm volatile ("nop");
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 
-#if GATEWAY == 1
+//#if GATEWAY == 1
     #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
     #include "conf/DynamicAddressing.h"  
-#endif
+//#endif
  
     //#include "conf/DynamicAddressing.h"  //INCLUIR EN GW
 //************** Include framework code and libraries *************************
@@ -188,7 +186,9 @@ __asm volatile ("nop");
     #define ACCESS_POINT_PASSWORD  "12345678" 
     #define AdminTimeOut 300  // Defines the Time in Seconds, when the Admin-Mode will be diabled
 
-
+    // ThingSpeak API
+    const char* serverTS = "api.thingspeak.com";
+    bool oldInputState;
   
   
     #define DHTPIN      13//16     // what pin we're connected to
@@ -218,7 +218,7 @@ __asm volatile ("nop");
 
 byte nonsense_var = 0;  //PROBAR A COMENTAR
 
-#if STATIC == 1
+/*#if STATIC == 1
     // Define the network configuration according 
     // to your router settings
     uint8_t ip_address[4]  = {192, 168, 1, 55};
@@ -228,11 +228,11 @@ byte nonsense_var = 0;  //PROBAR A COMENTAR
     #define myvNet_address  ip_address[3]  
     #define myvNet_subnet   0xFF00
     #define myvNet_supern   Gateway_address
-#endif
+#endif*/
 
 void setup()
 {
-    EEPROM.begin(512);
+    EEPROM.begin(768);
     Serial.begin(115200);
     delay(500);    
     //wifi.autoConnect("Souliss");
@@ -259,6 +259,8 @@ void setup()
 		config.TurnOffMinute = 0;
 		config.TurnOnHour = 0;
 		config.TurnOnMinute = 0;
+                config.NodeMode = true;
+                config.tsAPI = "";
 		WriteConfig();
 		Serial.println("General config applied");
 	}
@@ -286,8 +288,9 @@ void setup()
     PINS_CONFIG();
 /***************** INITIALIZE NETWORK AND SENSORS *********************/
     Initialize();
+    GetIPAddress();
     
-    if(GATEWAY && DYNAMIC) {
+    /*if(GATEWAY && DYNAMIC) {
         GetIPAddress();                           
     }
     
@@ -301,7 +304,7 @@ void setup()
     
     if(PEER && STATIC){
         Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
-    }
+    }*/
     //WebInteface_Responses(); 
         server.on ( "/main.html", processMain);
 	server.on ( "/admin/filldynamicdata", filldynamicdata );
@@ -323,17 +326,15 @@ void setup()
 	server.on ( "/admin/ntpvalues", send_NTP_configuration_values_html );
 	server.on ( "/admin/generalvalues", send_general_configuration_values_html);
 	server.on ( "/admin/devicename",     send_devicename_value_html);
- //       server.on ( "/admin.html",     ESPreboot_html);
-
- 
-
-	server.onNotFound ( []() { Serial.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
+ 	server.onNotFound ( []() { Serial.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
 	server.begin();
 	Serial.println( "HTTP server started" );
 	tkSecond.attach(1,Second_Tick);
 	UDPNTPClient.begin(2390);  // Port for NTP receive   
-
-    if(GATEWAY && DYNAMIC) {
+    
+    Souliss_Node_Start();
+    
+    /*if(GATEWAY && DYNAMIC) {
         SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
         SetAddressingServer();
         SetAddress(0xAB01, 0xFF00, 0x0000);
@@ -352,7 +353,7 @@ void setup()
     
     if(PEER && STATIC){
         SetAddress(0x00CB, 0xFF00, 0x00C8); //Antitheft & Temp/Hum esp12
-    }
+    }*/
 
 //**************************** SENSORS INITIALIZE *****************************
     if(DHT_SENSOR){
@@ -643,14 +644,24 @@ void loop()
             //#endif*/
         }
               
-        // Here we handle here the communication with Android
-       #if GATEWAY == 1
+      
+        if (config.NodeMode){
+           // Here we handle here the communication with Android as Gateway
+            FAST_GatewayComms();    
+        }
+        else { 
+            // Here we handle here the communication with Android as Peer
+            FAST_PeerComms(); 
+        }    
+
+       // Here we handle here the communication with Android
+       /*#if GATEWAY == 1
             FAST_GatewayComms();
        #endif
         
        #if PEER == 1
             FAST_PeerComms();        
-       #endif
+       #endif*/
     }
     EXECUTESLOW() {
 	UPDATESLOW();
@@ -689,13 +700,13 @@ void loop()
                 }    
                 
             } //SLOW_x10s(2) 
-            #if PEER == 1
+            //#if PEER == 1
                 SLOW_PeerJoin();
-            #endif    
+            //#endif    
       } 
-      #if PEER == 1   
+      //#if PEER == 1   
         START_PeerJoin(); 
-      #endif        
+      //#endif        
 }    
    	
    
@@ -878,3 +889,35 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
   else if(DEBUG_PRESSURE) LOG(F("error starting temperature measurement\n"));
  
 }
+
+// send data to ThingSpeak.com
+void sendInputState(bool inputState){
+ Serial.println(inputState); 
+ Serial.println(config.tsAPI);
+
+ WiFiClient client;
+ if(!client.connect(serverTS,80)) {  //   "184.106.153.149" or api.thingspeak.com
+    Serial.println("Connection Fail!");
+ }
+ else {
+    String postStr = config.tsAPI;
+           postStr +="&field1=";
+           postStr += String(inputState);
+           postStr += "\r\n";
+ 
+     client.print("POST /update HTTP/1.1\n");
+     client.print("Host: api.thingspeak.com\n");
+     client.print("Connection: close\n");
+     client.print("X-THINGSPEAKAPIKEY: "+config.tsAPI+"\n");
+     client.print("Content-Type: application/x-www-form-urlencoded\n");
+     client.print("Content-Length: ");
+     client.print(postStr.length());
+     client.print("\n\n");
+     client.print(postStr);
+     Serial.println("Send Relay State to Thingspeak");
+ 
+ }
+  client.stop();
+  Serial.println("Client to send Stoped");
+}
+

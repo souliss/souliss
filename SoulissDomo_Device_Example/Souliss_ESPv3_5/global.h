@@ -12,6 +12,8 @@ int cNTP_Update = 0;											// Counter for Updating the time via NTP
 Ticker tkSecond;												// Second - Timer for Updating Datetime Structure
 boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
 byte Minute_Old = 100;				// Helpvariable for checking, when a new Minute comes up (for Auto Turn On / Off)
+boolean nowifi = false;
+
 
 struct strConfig {
 	String ssid;
@@ -38,6 +40,8 @@ struct strConfig {
 	byte byte0;
 	byte byte1;
 	byte byte2;
+	String tsAPI;
+
 
 }   config;
 
@@ -47,16 +51,41 @@ struct strConfig {
 ** CONFIGURATION HANDLING
 **
 */
+void Souliss_Node_Start()
+{
+
+		// Read Node Mode..
+        if (config.NodeMode){
+            Serial.println("Gateway Mode");
+            // Connect to the WiFi network and get an address from DHCP                      
+            SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
+            SetAddressingServer();
+        }
+        else {
+        	Serial.println(nowifi);
+        	if(nowifi != 1) {
+            Serial.println("Peer Mode");
+            // This board request an address to the gateway at runtime, no need
+            // to configure any parameter here.
+            SetDynamicAddressing(); 
+            GetAddress();
+        	}
+
+        	//Serial.println("No WiFi");
+        }
+
+}
 
 void check_ESPMode()
 {
 	Serial.print("Connecting to AP");
 
-	for (int i=0; i < 5; i++){
+	for (int i=0; i < 10; i++){
 		(WiFi.status() != WL_CONNECTED);
 		delay(1000);
-		Serial.print(".");
-
+		Serial.println(".");
+		//break;
+	}
 			if (WiFi.status() == WL_CONNECTED) {
 			Serial.println("Admin Time Out");
 			AdminTimeOutCounter=0;
@@ -65,33 +94,27 @@ void check_ESPMode()
 			Serial.println(WiFi.localIP());
 			Serial.println("Souliss update IP Address");
 			GetIPAddress(); 
+			nowifi = false;
 
-	break;
 			}
 			else
 			{
 			WiFi.mode(WIFI_AP_STA);
-			Serial.println( "AP mode started" );
-
-			//AdminTimeOutCounter=0;
-
-			Serial.println("Souliss update IP Address");
-			GetIPAddress(); 	
+			Serial.println( "AP mode started coz' No WiFi" );
+			nowifi = true;	
 			}
-	}
-
-	
 }
 
 void ConfigureWifi()
 {
 	Serial.println("Configuring Wifi");
 	WiFi.begin (config.ssid.c_str(), config.password.c_str());
+	check_ESPMode();
 
 	if (!config.dhcp)
 	{
 		WiFi.config(IPAddress(config.IP[0],config.IP[1],config.IP[2],config.IP[3] ),  IPAddress(config.Gateway[0],config.Gateway[1],config.Gateway[2],config.Gateway[3] ) , IPAddress(config.Netmask[0],config.Netmask[1],config.Netmask[2],config.Netmask[3] ));
-		Serial.println("Souliss update IP Address");
+		Serial.println("Souliss update IP Address for STATIC");
 		GetIPAddress();  
 	}
 }
@@ -147,6 +170,8 @@ void WriteConfig()
 	EEPROM.write(308,config.byte1);
 	EEPROM.write(309,config.byte2);
 	WriteStringToEEPROM(310,config.DeviceName);
+	WriteStringToEEPROM(320,config.tsAPI);
+
 	
 
 	EEPROM.commit();
@@ -199,9 +224,11 @@ boolean ReadConfig()
 		config.byte1 = EEPROM.read(308);
 		config.byte2 = EEPROM.read(309);
 		config.DeviceName= ReadStringFromEEPROM(310);
+		config.tsAPI= ReadStringFromEEPROM(320);
+
 
 		
-		check_ESPMode();
+		//check_ESPMode();
 		
 
 		return true;

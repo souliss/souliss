@@ -1,3 +1,145 @@
+/*void WebInterface_Start(){
+    	Serial.println("Starting ES8266");
+	if (!ReadConfig())
+	{
+		// DEFAULT CONFIG
+		config.ssid = "MYSSID";
+		config.password = "MYPASSWORD";
+		config.dhcp = true;
+		config.IP[0] = 192;config.IP[1] = 168;config.IP[2] = 1;config.IP[3] = 100;
+		config.Netmask[0] = 255;config.Netmask[1] = 255;config.Netmask[2] = 255;config.Netmask[3] = 0;
+		config.Gateway[0] = 192;config.Gateway[1] = 168;config.Gateway[2] = 1;config.Gateway[3] = 1;
+		config.ntpServerName = "0.id.pool.ntp.org";
+		config.Update_Time_Via_NTP_Every =  0;
+		config.timezone = +7;
+		config.daylight = true;
+		config.DeviceName = "Not Named";
+		config.AutoTurnOff = false;
+		config.AutoTurnOn = false;
+		config.TurnOffHour = 0;
+		config.TurnOffMinute = 0;
+		config.TurnOnHour = 0;
+		config.TurnOnMinute = 0;
+		WriteConfig();
+		Serial.println("General config applied");
+	}
+	
+	
+	if (AdminEnabled)
+	{
+		Serial.println( "AP mode started" );
+                WiFi.mode(WIFI_AP_STA);
+		WiFi.softAP( ACCESS_POINT_NAME , ACCESS_POINT_PASSWORD);
+                Serial.println(WiFi.localIP());
+	}
+	else
+	{
+		Serial.println( "STA mode started" );
+                WiFi.mode(WIFI_STA);
+                Serial.println(WiFi.localIP());
+	}
+
+}
+void WebInteface_Responses(){
+	server.on ( "/main.html", processMain);
+	server.on ( "/admin/filldynamicdata", filldynamicdata );
+	
+	server.on ( "/favicon.ico",   []() { Serial.println("favicon.ico"); server.send ( 200, "text/html", "" );   }  );
+
+
+	server.on ( "/admin.html", []() { Serial.println("admin.html"); server.send ( 200, "text/html", PAGE_AdminMainPage );   }  );
+	server.on ( "/config.html", send_network_configuration_html );
+	server.on ( "/info.html", []() { Serial.println("info.html"); server.send ( 200, "text/html", PAGE_Information );   }  );
+	server.on ( "/ntp.html", send_NTP_configuration_html  );
+	server.on ( "/general.html", send_general_html  );
+//	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_EXAMPLE );  } );
+	server.on ( "/style.css", []() { Serial.println("style.css"); server.send ( 200, "text/plain", PAGE_Style_css );  } );
+	server.on ( "/microajax.js", []() { Serial.println("microajax.js"); server.send ( 200, "text/plain", PAGE_microajax_js );  } );
+	server.on ( "/admin/values", send_network_configuration_values_html );
+	server.on ( "/admin/connectionstate", send_connection_state_values_html );
+	server.on ( "/admin/infovalues", send_information_values_html );
+	server.on ( "/admin/ntpvalues", send_NTP_configuration_values_html );
+	server.on ( "/admin/generalvalues", send_general_configuration_values_html);
+	server.on ( "/admin/devicename",     send_devicename_value_html);
+ //       server.on ( "/admin.html",     ESPreboot_html);
+
+ 
+
+	server.onNotFound ( []() { Serial.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
+	server.begin();
+	Serial.println( "HTTP server started" );
+	tkSecond.attach(1,Second_Tick);
+	UDPNTPClient.begin(2390);  // Port for NTP receive
+
+}
+
+void WebInteface_Loop(){
+      if (AdminEnabled)
+	{
+		if (AdminTimeOutCounter > AdminTimeOut)
+		{
+			 AdminEnabled = false;
+			 Serial.println("Admin Mode disabled!");
+			 WiFi.mode(WIFI_STA);
+                         Serial.println( "STA mode started" );
+                         Serial.println(WiFi.localIP());
+		}
+	}
+	if (config.Update_Time_Via_NTP_Every  > 0 )
+	{
+		if (cNTP_Update > 5 && firstStart)
+		{
+			NTPRefresh();
+			cNTP_Update =0;
+			firstStart = false;
+		}
+		else if ( cNTP_Update > (config.Update_Time_Via_NTP_Every * 60) )
+		{
+
+			NTPRefresh();
+			cNTP_Update =0;
+		}
+	}
+
+	if(DateTime.minute != Minute_Old)
+	{
+		 Minute_Old = DateTime.minute;
+		 if (config.AutoTurnOn)
+		 {
+			 if (DateTime.hour == config.TurnOnHour && DateTime.minute == config.TurnOnMinute)
+			 {
+				  Serial.println("SwitchON");
+			 }
+		 }
+
+
+		 Minute_Old = DateTime.minute;
+		 if (config.AutoTurnOff)
+		 {
+			 if (DateTime.hour == config.TurnOffHour && DateTime.minute == config.TurnOffMinute)
+			 {
+				  Serial.println("SwitchOff");
+			 }
+		 }
+	}
+	server.handleClient();
+              
+              
+
+	if (Refresh)  
+	{
+		Refresh = false;
+		 //Serial.println("Refreshing...");
+		 Serial.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
+                 Serial.print(EEPROM.read(307)); Serial.print("\t");
+                 Serial.print(EEPROM.read(308)); Serial.print("\t");
+                 Serial.print(EEPROM.read(309)); Serial.print("\t");
+                 Serial.println(STORE__SIZE);                 
+	}
+
+
+}
+*/
 bool EEPROM_CONFIG(){
     
     //EEPROM CONFIGURATION READ.

@@ -13,6 +13,10 @@ const char PAGE_AdminGeneralSettings[] PROGMEM =  R"=====(
 	<td align="left">Node Name</td>
 	<td><input type="text" id="devicename" name="devicename" value=""></td>
 </tr>
+<tr>
+	<td align="left">ThingSpeak API</td>
+	<td><input type="text" id="tsAPI" name="tsAPI" value=""></td>
+</tr>
 <hr>
 <tr><p>
 	<td align="left" colspan="2">Node Mode</td>
@@ -115,6 +119,7 @@ void send_devicename_value_html()
 		
 	String values ="";
 	values += "devicename|" + (String) config.DeviceName + "|div\n";
+	values += "tsAPI|" + (String) config.tsAPI + "|div\n";
 	server.send ( 200, "text/plain", values);
 	Serial.println(__FUNCTION__); 
 	
@@ -134,6 +139,7 @@ void send_general_html()
 		String temp = "";
 		for ( uint8_t i = 0; i < server.args(); i++ ) {
 			if (server.argName(i) == "devicename") config.DeviceName = urldecode(server.arg(i)); 
+			if (server.argName(i) == "tsAPI") config.tsAPI = urldecode(server.arg(i)); 
 			if (server.argName(i) == "mnenabled") config.NodeMode = true; 
 			if (server.argName(i) == "byte0") config.byte0 = server.arg(i).toInt(); 
 			if (server.argName(i) == "byte1") config.byte1 = server.arg(i).toInt(); 
@@ -159,6 +165,7 @@ void send_general_configuration_values_html()
 {
 	String values ="";
 	values += "devicename|" +  (String)  config.DeviceName +  "|input\n";
+	values += "tsAPI|" +  (String)  config.tsAPI +  "|input\n";
 	values += "mnenabled|" +  (String) (config.NodeMode ? "checked" : "") + "|chk\n";
 	values += "byte0|" +  (String) config.byte0 + "|input\n";
 	values += "byte1|" +  (String) config.byte1 + "|input\n";
