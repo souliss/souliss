@@ -179,3 +179,4 @@ void send_general_configuration_values_html()
 	server.send ( 200, "text/plain", values);
 	Serial.println(__FUNCTION__); 
 }
+

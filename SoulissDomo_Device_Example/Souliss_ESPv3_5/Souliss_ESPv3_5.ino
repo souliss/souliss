@@ -1,15 +1,3 @@
-//MIRAR!!: http://stackoverflow.com/questions/28177544/defining-variables-within-if-else-endif-in-arduino-ide
-//#if 1
-//__asm volatile ("nop");
-//#endif
-
-//AÑADIR CAPACITIVOS - HECHO
-//Crear COLOR CYCLE para CAPACITIVO CON RGB
-
-//AÑADIR WIFI MANAGER - HECHO
-
-/*  Download WifiManager from https://github.com/tzapu/WiFiManager  */
-
 //Changed Webinterface with the new one
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -20,14 +8,6 @@
 
 //************************NODE CONFIGURATION ********************************
     
-    //Enable this to use this node as GW or PEER
-    //#define GATEWAY    1
-    //#define PEER       0
-    
-    //NETWORK ADDRESSING
-    //#define STATIC     1
-    //#define DYNAMIC    0
-  
 /*
     BYTE 1
     0 - NONE
@@ -52,10 +32,7 @@
     3 - BMP180
     */
 
-    //#define byte0    5
-    //#define byte1    1  
-    //#define byte2    3
-    
+   
     //Enable this to use DHT Sensor on PIN 16
     boolean DHT_SENSOR = true;
     
@@ -160,8 +137,6 @@
 //************** Include framework code and libraries *************************
     #include "conf/IPBroadcast.h"
     //#include <SPI.h>
-    //#include <ESP8266WiFi.h>
-    //#include <EEPROM.h>
     #include "Souliss.h"
    
    // MY FUNCTIONS LIBRARY
@@ -203,11 +178,11 @@
     static const unsigned int out[] = { 7, 30, 45, 65, 150, 300, 450, 2100, 13000};  // x10  //ULTIMO VALOR REFERENCIA
     static const unsigned int in[]  = { 100, 350, 430, 500, 680, 780, 950, 1005, 1024 };  // 0 - 1024
 
-    #define DALLASPIN   4//14     //Se declara el pin donde se conectará la DATA
+    #define DALLASPIN   4//14     //Se declara el pin donde se conectarÃ¡ la DATA
     #include <OneWire.h>
     #include <DallasTemperature.h>
-    OneWire ourWire(DALLASPIN); //Se establece el pin declarado como bus para la comunicación OneWire
-    DallasTemperature sensors(&ourWire); //Se instancia la librería DallasTemperature
+    OneWire ourWire(DALLASPIN); //Se establece el pin declarado como bus para la comunicaciÃ³n OneWire
+    DallasTemperature sensors(&ourWire); //Se instancia la librerÃ­a DallasTemperature
 
     //SDA 5  SCL 4  PINS
     #include <SFE_BMP180.h>
@@ -216,28 +191,12 @@
     // You will need to create an SFE_BMP180 object, here called "pressure":
     SFE_BMP180 pressure;
 
-byte nonsense_var = 0;  //PROBAR A COMENTAR
-
-/*#if STATIC == 1
-    // Define the network configuration according 
-    // to your router settings
-    uint8_t ip_address[4]  = {192, 168, 1, 55};
-    uint8_t subnet_mask[4] = {255, 255, 255, 0};
-    uint8_t ip_gateway[4]  = {192, 168, 1, 1};
-    #define Gateway_address 200
-    #define myvNet_address  ip_address[3]  
-    #define myvNet_subnet   0xFF00
-    #define myvNet_supern   Gateway_address
-#endif*/
-
 void setup()
 {
-    EEPROM.begin(768);
+    EEPROM.begin(STORE__SIZE);
     Serial.begin(115200);
     delay(500);    
-    //wifi.autoConnect("Souliss");
 
-    //WebInterface_Start();  
     Serial.println("Starting ES8266");
 	if (!ReadConfig())
 	{
@@ -282,7 +241,6 @@ void setup()
     
     ConfigureWifi();
      
-//    if(EEPROM_CONFIG()) WiFi.mode(WIFI_STA);
     EEPROM_CONFIG();
     SLOT_CONFIG();
     PINS_CONFIG();
@@ -290,22 +248,7 @@ void setup()
     Initialize();
     GetIPAddress();
     
-    /*if(GATEWAY && DYNAMIC) {
-        GetIPAddress();                           
-    }
-    
-    if(GATEWAY && STATIC){
-        Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
-    }
-    
-    if(PEER && DYNAMIC){
-        GetIPAddress();
-    }
-    
-    if(PEER && STATIC){
-        Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
-    }*/
-    //WebInteface_Responses(); 
+  
         server.on ( "/main.html", processMain);
 	server.on ( "/admin/filldynamicdata", filldynamicdata );
 	
@@ -334,28 +277,7 @@ void setup()
     
     Souliss_Node_Start();
     
-    /*if(GATEWAY && DYNAMIC) {
-        SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
-        SetAddressingServer();
-        SetAddress(0xAB01, 0xFF00, 0x0000);
-    }
-    
-    if(GATEWAY && STATIC){
-        SetAsGateway(myvNet_address); 
-        SetAddress(0xAB01, 0xFF00, 0x0000);
-    }
-    
-    if(PEER && DYNAMIC){
-        SetAddress(0xAB02, 0xFF00, 0x0000); //Antitheft & Temp/Hum esp12
-        //SetDynamicAddressing(); 
-        //GetAddress();    
-    }
-    
-    if(PEER && STATIC){
-        SetAddress(0x00CB, 0xFF00, 0x00C8); //Antitheft & Temp/Hum esp12
-    }*/
-
-//**************************** SENSORS INITIALIZE *****************************
+    //**************************** SENSORS INITIALIZE *****************************
     if(DHT_SENSOR){
         dht.begin();
     }
@@ -433,10 +355,7 @@ void setup()
             pinMode(LEDBP, OUTPUT);
     }
         
-    //#if defined (MaCaco_DEBUG || VNET_DEBUG)
-        LOG("Init");
-    //#endif
-    
+        
     if(BMP180){
         if (pressure.begin())
             LOG(F("BMP180 init success\r\n"));
@@ -452,8 +371,7 @@ void setup()
 
 void loop()
 { 
-    //WebInteface_Loop();
-    if (AdminEnabled)
+     if (AdminEnabled)
 	{
 		if (AdminTimeOutCounter > AdminTimeOut)
 		{
@@ -531,8 +449,8 @@ void loop()
 
             if(PWM_MODE || PIR_MODE){
                 if(CAPACITIVE){
-                    CapSense(LEDPWM0,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightToggle, CAP0P, thresold, 1500);
-                    CapSense(LEDPWM1,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightToggle, CAP1P, thresold, 1500);
+                    CapSense(LEDPWM0,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP0P, thresold, 1500);
+                    CapSense(LEDPWM1,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP1P, thresold, 1500);
                     if(DEBUG_CAPSENSE) Serial.println("");
                 }                
                 
@@ -556,8 +474,8 @@ void loop()
             
             if(RGB_MODE){
                 if(CAPACITIVE){
-                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightToggle,CAP0P, 3, 1500);
-                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightToggle,CAP1P, 3, 1500);
+                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,CAP0P, 3, 1500);
+                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,CAP1P, 3, 1500);
                 }  
                 Logic_LED_Strip(LEDRGB);
                 analogWrite(LEDRP, mOutput(LEDRGB+1)*4);
@@ -653,15 +571,6 @@ void loop()
             // Here we handle here the communication with Android as Peer
             FAST_PeerComms(); 
         }    
-
-       // Here we handle here the communication with Android
-       /*#if GATEWAY == 1
-            FAST_GatewayComms();
-       #endif
-        
-       #if PEER == 1
-            FAST_PeerComms();        
-       #endif*/
     }
     EXECUTESLOW() {
 	UPDATESLOW();
@@ -700,13 +609,13 @@ void loop()
                 }    
                 
             } //SLOW_x10s(2) 
-            //#if PEER == 1
+           
                 SLOW_PeerJoin();
-            //#endif    
+            
       } 
-      //#if PEER == 1   
+      
         START_PeerJoin(); 
-      //#endif        
+          
 }    
    	
    
@@ -920,4 +829,5 @@ void sendInputState(bool inputState){
   client.stop();
   Serial.println("Client to send Stoped");
 }
+
 
