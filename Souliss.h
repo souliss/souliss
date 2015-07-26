@@ -97,7 +97,7 @@ U8 Souliss_RemoteDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U16 
 U8 Souliss_RemoteAnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U16 addr, U8 slot);
 U8 Souliss_RemoteLowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U16 addr, U8 slot);
 U8 Souliss_RemoteDigInHold(U8 pin, U8 value, U8 value_hold, U16 addr, U8 slot, U16 holdtime);
-U8 Souliss_RemoteLowDigInHold(U8 pin, U8 value, U8 value_hold, UU16 addr, U8 slot, U16 holdtime);
+U8 Souliss_RemoteLowDigInHold(U8 pin, U8 value, U8 value_hold, U16 addr, U8 slot, U16 holdtime);
 
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue);
 void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias);
