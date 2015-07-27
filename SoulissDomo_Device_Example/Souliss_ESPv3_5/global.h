@@ -154,25 +154,22 @@ void WriteConfig()
 	EEPROM.write(42,config.Gateway[2]);
 	EEPROM.write(43,config.Gateway[3]);
 
+	EEPROM.write(44,config.AutoTurnOn);
+	EEPROM.write(45,config.AutoTurnOff);
+	EEPROM.write(46,config.TurnOnHour);
+	EEPROM.write(47,config.TurnOnMinute);
+	EEPROM.write(48,config.TurnOffHour);
+	EEPROM.write(49,config.TurnOffMinute);
+	EEPROM.write(50,config.NodeMode);
+	EEPROM.write(51,config.byte0);
+	EEPROM.write(52,config.byte1);
+	EEPROM.write(53,config.byte2);
+	WriteStringToEEPROM(54,config.DeviceName);   	//MAX 10
+	WriteStringToEEPROM(64,config.tsAPI);		//MAX 16
 
-	WriteStringToEEPROM(64,config.ssid);
-	WriteStringToEEPROM(96,config.password);
-	WriteStringToEEPROM(128,config.ntpServerName);
-
-	EEPROM.write(300,config.AutoTurnOn);
-	EEPROM.write(301,config.AutoTurnOff);
-	EEPROM.write(302,config.TurnOnHour);
-	EEPROM.write(303,config.TurnOnMinute);
-	EEPROM.write(304,config.TurnOffHour);
-	EEPROM.write(305,config.TurnOffMinute);
-	EEPROM.write(306,config.NodeMode);
-	EEPROM.write(307,config.byte0);
-	EEPROM.write(308,config.byte1);
-	EEPROM.write(309,config.byte2);
-	WriteStringToEEPROM(310,config.DeviceName);
-	WriteStringToEEPROM(320,config.tsAPI);
-
-	
+	WriteStringToEEPROM(100,config.ssid);
+	WriteStringToEEPROM(132,config.password);
+	WriteStringToEEPROM(164,config.ntpServerName);  //MAX 20
 
 	EEPROM.commit();
 	
@@ -208,31 +205,28 @@ boolean ReadConfig()
 		config.Gateway[1] = EEPROM.read(41);
 		config.Gateway[2] = EEPROM.read(42);
 		config.Gateway[3] = EEPROM.read(43);
-		config.ssid = ReadStringFromEEPROM(64);
-		config.password = ReadStringFromEEPROM(96);
-		config.ntpServerName = ReadStringFromEEPROM(128);
 		
+		config.AutoTurnOn = EEPROM.read(44);
+		config.AutoTurnOff = EEPROM.read(45);
+		config.TurnOnHour = EEPROM.read(46);
+		config.TurnOnMinute = EEPROM.read(47);
+		config.TurnOffHour = EEPROM.read(48);
+		config.TurnOffMinute = EEPROM.read(49);
+		config.NodeMode = EEPROM.read(50);
+		config.byte0 = EEPROM.read(51);
+		config.byte1 = EEPROM.read(52);
+		config.byte2 = EEPROM.read(53);
+		config.DeviceName= ReadStringFromEEPROM(54);		//MAX 10
+		config.tsAPI= ReadStringFromEEPROM(64);			//MAX 16
 		
-		config.AutoTurnOn = EEPROM.read(300);
-		config.AutoTurnOff = EEPROM.read(301);
-		config.TurnOnHour = EEPROM.read(302);
-		config.TurnOnMinute = EEPROM.read(303);
-		config.TurnOffHour = EEPROM.read(304);
-		config.TurnOffMinute = EEPROM.read(305);
-		config.NodeMode = EEPROM.read(306);
-		config.byte0 = EEPROM.read(307);
-		config.byte1 = EEPROM.read(308);
-		config.byte2 = EEPROM.read(309);
-		config.DeviceName= ReadStringFromEEPROM(310);
-		config.tsAPI= ReadStringFromEEPROM(320);
+		config.ssid = ReadStringFromEEPROM(100);
+		config.password = ReadStringFromEEPROM(132);
+		config.ntpServerName = ReadStringFromEEPROM(164);	//MAX 20
 
-
-		
 		//check_ESPMode();
-		
 
 		return true;
-		
+	
 	}
 	else
 	{
