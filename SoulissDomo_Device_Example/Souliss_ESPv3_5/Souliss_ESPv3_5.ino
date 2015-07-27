@@ -33,24 +33,24 @@
     */
 
    
-    //Enable this to use DHT Sensor on PIN 16
-    boolean DHT_SENSOR = true;
+    //DHT Sensor on PIN 16
+    boolean DHT_SENSOR;
     
-    //Enable this to use LDR Sensor on PIN ADC
-    boolean LDR_SENSOR = true;
+    //LDR Sensor on PIN ADC
+    boolean LDR_SENSOR;
     
-    //Enable this to use DALLAS Sensor on PIN 14
-    boolean DALLAS_SENSOR = true;   
+    //DALLAS Sensor on PIN 14
+    boolean DALLAS_SENSOR;   
     
-    // Enable this to use PIN 15 for PWM or PIR (PIR Sensor on PIN 2) 
-    boolean PWM_MODE = true;           
-    boolean PIR_MODE = false;
-    boolean RGB_MODE = false;
+    //PWM PIN 15 or PIR (PIR Sensor on PIN 2) 
+    boolean PWM_MODE;           
+    boolean PIR_MODE;
+    boolean RGB_MODE;
     
     //Enable this to use PINS 4, 5 for CAPACITIVE BUTTONS, RELAY1 and RELAY2 or on BMP180 pressure sensor (I2C)
-    boolean CAPACITIVE  = true;     
-    boolean RELAY = false;          
-    boolean BMP180 = false;       
+    boolean CAPACITIVE;     
+    boolean RELAY;          
+    boolean BMP180;       
 
 /**************************************************************************
     Souliss - ESP Juan Pinto Configurable Board.
@@ -70,7 +70,7 @@
     #define MaCaco_DEBUG          1
     
     #define VNET_DEBUG_INSKETCH
-    #define VNET_DEBUG  	      1
+    #define VNET_DEBUG  	  1
     
     #define DEBUG_PRESSURE        1
     
@@ -84,13 +84,14 @@
     uint8_t thresold = 3;
     
     //EEPROM NODE CONFIGURATION VALUES
-    #define EEPROM_START 307
-    #define EEPROM_END 309
+    /*
+    #define EEPROM_START 51
+    #define EEPROM_END 53
     uint8_t byte0;
     uint8_t byte1;
     uint8_t byte2;
     byte configuration[3];
-    
+    */
     
     //SLOTS VARIABLES
     uint8_t TEMPERATURE;
@@ -219,6 +220,9 @@ void setup()
 		config.TurnOnHour = 0;
 		config.TurnOnMinute = 0;
                 config.NodeMode = true;
+                config.byte0 = 0;
+                config.byte1 = 0;
+                config.byte2 = 0;
                 config.tsAPI = "";
 		WriteConfig();
 		Serial.println("General config applied");
