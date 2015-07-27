@@ -6,7 +6,7 @@ const char PAGE_NTPConfiguration[] PROGMEM = R"=====(
 <hr>
 <form action="" method="get">
 <table border="0"  cellspacing="0" cellpadding="3" >
-<tr><td align="right">NTP Server:</td><td><input type="text" id="ntpserver" name="ntpserver" maxlength="172" value=""></td></tr>
+<tr><td align="right">NTP Server:</td><td><input type="text" id="ntpserver" name="ntpserver" maxlength="20" value=""></td></tr>
 <tr><td align="right">Update:</td><td><input type="text" id="update" name="update" size="3"maxlength="6" value=""> minutes (0=disable)</td></tr>
 <tr><td>Timezone</td><td>
 <select  id="tz" name="tz">
