@@ -2,6 +2,7 @@
 bool EEPROM_CONFIG(){
     
     //EEPROM CONFIGURATION READ.
+    /*  DELETED READED FROM: config.byte0 config.byte1 ...
     LOG("EEPROM DATA: ");
     byte0 = EEPROM.read(EEPROM_START+0);
     byte1 = EEPROM.read(EEPROM_START+1);
@@ -42,9 +43,10 @@ bool EEPROM_CONFIG(){
       LOG("\t");
     }
     LOG("\r\n");
-    
+    */ 
     // DHT LDR DALLAS OPTIONS:
-    switch (configuration[EEPROM_START]) {
+    //switch (configuration[EEPROM_START]) { 
+    switch (config.byte0) {  
         case 0:
             DHT_SENSOR = false;
             LDR_SENSOR = false;
@@ -94,7 +96,8 @@ bool EEPROM_CONFIG(){
     LOG("\r\n");
     
     // PWM PIR RGB OPTIONS:
-    switch (configuration[EEPROM_START+1]) {
+    //switch (configuration[EEPROM_START+1]) {  
+    switch (config.byte1) {
         case 0:
             PWM_MODE = false;
             PIR_MODE = false;
@@ -124,7 +127,8 @@ bool EEPROM_CONFIG(){
     LOG("\r\n");
     
     // CAPACITIVE RELAY BMP180 OPTIONS
-    switch (configuration[EEPROM_START+2]) {
+    //switch (configuration[EEPROM_START+2]) {
+    switch (config.byte2) { 
         case 0:
             CAPACITIVE = false;
             RELAY = false;
