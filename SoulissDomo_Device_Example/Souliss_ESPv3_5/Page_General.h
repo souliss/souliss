@@ -11,11 +11,11 @@ const char PAGE_AdminGeneralSettings[] PROGMEM =  R"=====(
 <table border="0"  cellspacing="0" cellpadding="3" >
 <tr>
 	<td align="left">Node Name</td>
-	<td><input type="text" id="devicename" name="devicename" value=""></td>
+	<td><input type="text" id="devicename" name="devicename" value="" maxlength="10"></td>
 </tr>
 <tr>
 	<td align="left">ThingSpeak API</td>
-	<td><input type="text" id="tsAPI" name="tsAPI" value=""></td>
+	<td><input type="text" id="tsAPI" name="tsAPI" value="" maxlength="16"></td>
 </tr>
 <hr>
 <tr><p>
