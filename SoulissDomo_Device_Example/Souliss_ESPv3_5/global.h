@@ -119,6 +119,127 @@ void ConfigureWifi()
 	}
 }
 
+bool EEPROM_CONFIG(){
+    
+    //EEPROM CONFIGURATION READ.
+
+    // DHT LDR DALLAS OPTIONS:
+    //switch (configuration[EEPROM_START]) { 
+    switch (config.byte0) {  
+        case 0:
+            DHT_SENSOR = false;
+            LDR_SENSOR = false;
+            DALLAS_SENSOR = false;  
+            break;
+        case 1:
+            DHT_SENSOR = true;
+            LDR_SENSOR = false;
+            DALLAS_SENSOR = false;  
+            break;
+        case 2:
+            DHT_SENSOR = false;
+            LDR_SENSOR = true;
+            DALLAS_SENSOR = false;  
+            break;
+        case 3:
+            DHT_SENSOR = false;
+            LDR_SENSOR = false;
+            DALLAS_SENSOR = true;  
+            break;
+        case 4:
+            DHT_SENSOR = true;
+            LDR_SENSOR = true;
+            DALLAS_SENSOR = false;  
+            break;
+        case 5:
+            DHT_SENSOR = true;
+            LDR_SENSOR = false;
+            DALLAS_SENSOR = true;  
+            break;
+        case 6:
+            DHT_SENSOR = false;
+            LDR_SENSOR = true;
+            DALLAS_SENSOR = true;  
+            break;
+        case 7:
+            DHT_SENSOR = true;
+            LDR_SENSOR = true;
+            DALLAS_SENSOR = true;  
+            break;            
+    }
+    
+    LOG(DHT_SENSOR);
+    LOG(LDR_SENSOR);
+    LOG(DALLAS_SENSOR);
+    LOG(" DLD (DHT-LDR-DALLAS)");
+    LOG("\r\n");
+    
+    // PWM PIR RGB OPTIONS:
+    //switch (configuration[EEPROM_START+1]) {  
+    switch (config.byte1) {
+        case 0:
+            PWM_MODE = false;
+            PIR_MODE = false;
+            RGB_MODE = false;
+            break;
+        case 1:
+            PWM_MODE = true;
+            PIR_MODE = false;
+            RGB_MODE = false;
+            break;
+        case 2:
+            PWM_MODE = false;
+            PIR_MODE = true;
+            RGB_MODE = false;
+            break;
+        case 3:
+            PWM_MODE = false;
+            PIR_MODE = false;
+            RGB_MODE = true;
+            break;
+    }
+    LOG("PPR (PWM-PIR-RGB)");
+    LOG(PWM_MODE);
+    LOG(PIR_MODE);
+    LOG(RGB_MODE);
+    LOG(" PPR (PWM-PIR-RGB)");
+    LOG("\r\n");
+    
+    // CAPACITIVE RELAY BMP180 OPTIONS
+    //switch (configuration[EEPROM_START+2]) {
+    switch (config.byte2) { 
+        case 0:
+            CAPACITIVE = false;
+            RELAY = false;
+            BMP180 = false;
+            break;
+        case 1:
+            CAPACITIVE = true;
+            RELAY = false;
+            BMP180 = false;
+            break;
+        case 2:
+            CAPACITIVE = false;
+            RELAY = true;
+            BMP180 = false;
+            break;
+        case 3:
+            CAPACITIVE = false;
+            RELAY = false;
+            BMP180 = true;
+            break;
+    }
+    LOG("CRB (CAP-RELAY-BMP180)");
+    LOG(CAPACITIVE);
+    LOG(RELAY);
+    LOG(BMP180);
+    LOG(" CRB (CAP-RELAY-BMP180)");
+    LOG("\r\n");
+    
+    return 1;
+
+}
+
 void WriteConfig()
 {
 
