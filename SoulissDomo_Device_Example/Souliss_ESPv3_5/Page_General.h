@@ -121,7 +121,7 @@ void send_devicename_value_html()
 	values += "devicename|" + (String) config.DeviceName + "|div\n";
 	values += "tsAPI|" + (String) config.tsAPI + "|div\n";
 	server.send ( 200, "text/plain", values);
-	Serial.println(__FUNCTION__); 
+	LOG.println(__FUNCTION__); 
 	
 }
 
@@ -156,7 +156,7 @@ void send_general_html()
 		ESP.restart();
 	}
 	server.send ( 200, "text/html", PAGE_AdminGeneralSettings ); 
-	Serial.println(__FUNCTION__); 
+	LOG.println(__FUNCTION__); 
 	
 	
 }
@@ -177,6 +177,6 @@ void send_general_configuration_values_html()
 	values += "toffenabled|" +  (String) (config.AutoTurnOff ? "checked" : "") + "|chk\n";
 	values += "tonenabled|" +  (String) (config.AutoTurnOn ? "checked" : "") + "|chk\n";
 	server.send ( 200, "text/plain", values);
-	Serial.println(__FUNCTION__); 
+	LOG.println(__FUNCTION__); 
 }
 

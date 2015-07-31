@@ -89,7 +89,7 @@ void send_NTP_configuration_html()
 		firstStart = true;
 	}
 	server.send ( 200, "text/html", PAGE_NTPConfiguration ); 
-	Serial.println(__FUNCTION__); 
+	LOG.println(__FUNCTION__); 
 	
 }
 
@@ -107,7 +107,7 @@ void send_NTP_configuration_values_html()
 	values += "tz|" +  (String) config.timezone + "|input\n";
 	values += "dst|" +  (String) (config.daylight ? "checked" : "") + "|chk\n";
 	server.send ( 200, "text/plain", values);
-	Serial.println(__FUNCTION__); 
+	LOG.println(__FUNCTION__); 
 	
 }
 

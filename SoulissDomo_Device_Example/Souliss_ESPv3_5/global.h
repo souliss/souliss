@@ -56,43 +56,43 @@ void Souliss_Node_Start()
 
 		// Read Node Mode..
         if (config.NodeMode){
-            Serial.println("Gateway Mode");
+            LOG.println("Gateway Mode");
             // Connect to the WiFi network and get an address from DHCP                      
             SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
             SetAddressingServer();
         }
         else {
-        	Serial.println(nowifi);
+        	LOG.println(nowifi);
         	if(nowifi != 1) {
-            Serial.println("Peer Mode");
+            LOG.println("Peer Mode");
             // This board request an address to the gateway at runtime, no need
             // to configure any parameter here.
             SetDynamicAddressing(); 
             GetAddress();
         	}
 
-        	//Serial.println("No WiFi");
+        	//LOG.println("No WiFi");
         }
 
 }
 
 void check_ESPMode()
 {
-	Serial.print("Connecting to AP");
+	LOG.print("Connecting to AP");
 
 	for (int i=0; i < 10; i++){
 		(WiFi.status() != WL_CONNECTED);
 		delay(1000);
-		Serial.println(".");
+		LOG.println(".");
 		//break;
 	}
 			if (WiFi.status() == WL_CONNECTED) {
-			Serial.println("Admin Time Out");
+			LOG.println("Admin Time Out");
 			AdminTimeOutCounter=0;
 			WiFi.mode(WIFI_STA);
-			Serial.println( "STA mode started" );
-			Serial.println(WiFi.localIP());
-			Serial.println("Souliss update IP Address");
+			LOG.println( "STA mode started" );
+			LOG.println(WiFi.localIP());
+			LOG.println("Souliss update IP Address");
 			GetIPAddress(); 
 			nowifi = false;
 
@@ -100,21 +100,21 @@ void check_ESPMode()
 			else
 			{
 			WiFi.mode(WIFI_AP_STA);
-			Serial.println( "AP mode started coz' No WiFi" );
+			LOG.println( "AP mode started coz' No WiFi" );
 			nowifi = true;	
 			}
 }
 
 void ConfigureWifi()
 {
-	Serial.println("Configuring Wifi");
+	LOG.println("Configuring Wifi");
 	WiFi.begin (config.ssid.c_str(), config.password.c_str());
 	check_ESPMode();
 
 	if (!config.dhcp)
 	{
 		WiFi.config(IPAddress(config.IP[0],config.IP[1],config.IP[2],config.IP[3] ),  IPAddress(config.Gateway[0],config.Gateway[1],config.Gateway[2],config.Gateway[3] ) , IPAddress(config.Netmask[0],config.Netmask[1],config.Netmask[2],config.Netmask[3] ));
-		Serial.println("Souliss update IP Address for STATIC");
+		LOG.println("Souliss update IP Address for STATIC");
 		GetIPAddress();  
 	}
 }
@@ -168,11 +168,11 @@ bool EEPROM_CONFIG(){
             break;            
     }
     
-    LOG(DHT_SENSOR);
-    LOG(LDR_SENSOR);
-    LOG(DALLAS_SENSOR);
-    LOG(" DLD (DHT-LDR-DALLAS)");
-    LOG("\r\n");
+    LOG.print(DHT_SENSOR);
+    LOG.print(LDR_SENSOR);
+    LOG.print(DALLAS_SENSOR);
+    LOG.print(" DLD (DHT-LDR-DALLAS)");
+    LOG.print("\r\n");
     
     // PWM PIR RGB OPTIONS:
     //switch (configuration[EEPROM_START+1]) {  
@@ -198,12 +198,12 @@ bool EEPROM_CONFIG(){
             RGB_MODE = true;
             break;
     }
-    LOG("PPR (PWM-PIR-RGB)");
-    LOG(PWM_MODE);
-    LOG(PIR_MODE);
-    LOG(RGB_MODE);
-    LOG(" PPR (PWM-PIR-RGB)");
-    LOG("\r\n");
+    LOG.print("PPR (PWM-PIR-RGB)");
+    LOG.print(PWM_MODE);
+    LOG.print(PIR_MODE);
+    LOG.print(RGB_MODE);
+    LOG.print(" PPR (PWM-PIR-RGB)");
+    LOG.print("\r\n");
     
     // CAPACITIVE RELAY BMP180 OPTIONS
     //switch (configuration[EEPROM_START+2]) {
@@ -229,12 +229,12 @@ bool EEPROM_CONFIG(){
             BMP180 = true;
             break;
     }
-    LOG("CRB (CAP-RELAY-BMP180)");
-    LOG(CAPACITIVE);
-    LOG(RELAY);
-    LOG(BMP180);
-    LOG(" CRB (CAP-RELAY-BMP180)");
-    LOG("\r\n");
+    LOG.print("CRB (CAP-RELAY-BMP180)");
+    LOG.print(CAPACITIVE);
+    LOG.print(RELAY);
+    LOG.print(BMP180);
+    LOG.print(" CRB (CAP-RELAY-BMP180)");
+    LOG.print("\r\n");
     
     return 1;
 
@@ -243,7 +243,7 @@ bool EEPROM_CONFIG(){
 void WriteConfig()
 {
 
-	Serial.println("Writing Config");
+	LOG.println("Writing Config");
 	EEPROM.write(0,'C');
 	EEPROM.write(1,'F');
 	EEPROM.write(2,'G');
@@ -298,10 +298,10 @@ void WriteConfig()
 boolean ReadConfig()
 {
 
-	Serial.println("Reading Configuration");
+	LOG.println("Reading Configuration");
 	if (EEPROM.read(0) == 'C' && EEPROM.read(1) == 'F'  && EEPROM.read(2) == 'G' )
 	{
-		Serial.println("Configuration Found!");
+		LOG.println("Configuration Found!");
 		config.dhcp = 	EEPROM.read(16);
 
 		config.daylight = EEPROM.read(17);
@@ -351,7 +351,7 @@ boolean ReadConfig()
 	}
 	else
 	{
-		Serial.println("Configuration NOT FOUND!!!!");
+		LOG.println("Configuration NOT FOUND!!!!");
 		return false;
 	}
 }
@@ -377,7 +377,7 @@ void NTPRefresh()
 		//sendNTPpacket(timeServerIP); // send an NTP packet to a time server
 
 
-		Serial.println("sending NTP packet...");
+		LOG.println("sending NTP packet...");
 		memset(packetBuffer, 0, NTP_PACKET_SIZE);
 		packetBuffer[0] = 0b11100011;   // LI, Version, Mode
 		packetBuffer[1] = 0;     // Stratum, or type of clock
@@ -396,12 +396,12 @@ void NTPRefresh()
   
 		int cb = UDPNTPClient.parsePacket();
 		if (!cb) {
-			Serial.println("NTP no packet yet");
+			LOG.println("NTP no packet yet");
 		}
 		else 
 		{
-			Serial.print("NTP packet received, length=");
-			Serial.println(cb);
+			LOG.print("NTP packet received, length=");
+			LOG.println(cb);
 			UDPNTPClient.read(packetBuffer, NTP_PACKET_SIZE); // read the packet into the buffer
 			unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
 			unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);

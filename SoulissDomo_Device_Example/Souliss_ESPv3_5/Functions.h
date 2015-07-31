@@ -39,60 +39,60 @@ void PINS_CONFIG(){
 
 void SLOT_CONFIG(){
   int NEXTSLOT = 0;
-  Serial.println("SLOT CONFIG");  
+  LOG.println("SLOT CONFIG");  
   
   if(DHT_SENSOR){
       TEMPERATURE = NEXTSLOT;
       HUMIDITY = NEXTSLOT + 2;
       NEXTSLOT = HUMIDITY + 2;
-      Serial.print("TEMP: ");
-      Serial.println(TEMPERATURE);  
-      Serial.print("HUMI: ");
-      Serial.println(HUMIDITY);      
+      LOG.print("TEMP: ");
+      LOG.println(TEMPERATURE);  
+      LOG.print("HUMI: ");
+      LOG.println(HUMIDITY);      
   }
   
   if(PWM_MODE || PIR_MODE){
       LEDPWM0 = NEXTSLOT;
       LEDPWM1 = NEXTSLOT + 2;
       NEXTSLOT = LEDPWM1 + 2;
-      Serial.print("LEDPWM0: ");
-      Serial.println(LEDPWM0);  
-      Serial.print("LEDPWM1: ");
-      Serial.println(LEDPWM1);      
+      LOG.print("LEDPWM0: ");
+      LOG.println(LEDPWM0);  
+      LOG.print("LEDPWM1: ");
+      LOG.println(LEDPWM1);      
   }
   if(PWM_MODE){
       LEDPWM2 = NEXTSLOT;
       NEXTSLOT = LEDPWM2 + 2;
-      Serial.print("LEDPWM2: ");
-      Serial.println(LEDPWM2);     
+      LOG.print("LEDPWM2: ");
+      LOG.println(LEDPWM2);     
   }
   
   if(PIR_MODE){
       LED = NEXTSLOT;
       NEXTSLOT = LED + 1;
-      Serial.print("LED: ");
-      Serial.println(LED);       
+      LOG.print("LED: ");
+      LOG.println(LED);       
   }
   
   if(RGB_MODE){
       LEDRGB = NEXTSLOT;
       NEXTSLOT = LEDRGB + 4;
-      Serial.print("LEDRGB: ");
-      Serial.println(LEDRGB);        
+      LOG.print("LEDRGB: ");
+      LOG.println(LEDRGB);        
   }
   
   if(LDR_SENSOR){
       LDR = NEXTSLOT;
       NEXTSLOT = LDR + 2;
-      Serial.print("LDR: ");
-      Serial.println(LDR);        
+      LOG.print("LDR: ");
+      LOG.println(LDR);        
   }
   
   if(DALLAS_SENSOR){
       DALLAS = NEXTSLOT;
       NEXTSLOT = DALLAS + 2;
-      Serial.print("DALLAS: ");
-      Serial.println(DALLAS);        
+      LOG.print("DALLAS: ");
+      LOG.println(DALLAS);        
   }
   
   //GPIO 4-5 SLOT DEFINITIONS
@@ -101,30 +101,30 @@ void SLOT_CONFIG(){
       CAP0 = NEXTSLOT; 
       CAP1 = NEXTSLOT + 1;
       NEXTSLOT = CAP1 + 1;
-      Serial.print("CAP0: ");
-      Serial.println(CAP0);   
-      Serial.print("CAP1: ");
-      Serial.println(CAP1);             
+      LOG.print("CAP0: ");
+      LOG.println(CAP0);   
+      LOG.print("CAP1: ");
+      LOG.println(CAP1);             
   }
   
   if(RELAY){
       RELAY0 = NEXTSLOT;
       RELAY1 = NEXTSLOT + 1;
       NEXTSLOT = RELAY1 + 1;
-      Serial.print("RELAY0: ");
-      Serial.println(RELAY0);   
-      Serial.print("RELAY1: ");
-      Serial.println(RELAY1);         
+      LOG.print("RELAY0: ");
+      LOG.println(RELAY0);   
+      LOG.print("RELAY1: ");
+      LOG.println(RELAY1);         
   }
   
   if(BMP180){
       PRESSURE0 = NEXTSLOT;  
       BMP180TEMP = NEXTSLOT + 2;
       NEXTSLOT = BMP180TEMP + 2;
-      Serial.print("PRESSURE0: ");
-      Serial.println(PRESSURE0);   
-      Serial.print("BMP180TEMP: ");
-      Serial.println(BMP180TEMP);       
+      LOG.print("PRESSURE0: ");
+      LOG.println(PRESSURE0);   
+      LOG.print("BMP180TEMP: ");
+      LOG.println(BMP180TEMP);       
   }  
 }
 
@@ -201,23 +201,23 @@ uint8_t CapSense(uint8_t slot, uint8_t value, uint8_t value_hold, uint8_t pin, u
 
     int cycles = readCapacitivePin(pin); 
     if(DEBUG_CAPSENSE){
-          if(millis()%300==0) Serial.println("Pin\tSlotIn\tOut\tPWM\tcycles\tReturn");
-          Serial.print(pin);
-          Serial.print("\t");        
-          Serial.print(InPin[pin]);
-          Serial.print("\t");        
-          Serial.print(mInput(slot));
-          Serial.print("\t");        
-          Serial.print(mOutput(slot));
-          Serial.print("\t");
-          Serial.print(mOutput(slot+1));
-          Serial.print("\t");
-          Serial.print(cycles); 
-          Serial.print("\t");
-          Serial.print(thresold_value); 
-          Serial.print("\t");          
-          Serial.print(abs(millis()-time)); 
-          Serial.print("\t");          
+          if(millis()%300==0) LOG.println("Pin\tSlotIn\tOut\tPWM\tcycles\tReturn");
+          LOG.print(pin);
+          LOG.print("\t");        
+          LOG.print(InPin[pin]);
+          LOG.print("\t");        
+          LOG.print(mInput(slot));
+          LOG.print("\t");        
+          LOG.print(mOutput(slot));
+          LOG.print("\t");
+          LOG.print(mOutput(slot+1));
+          LOG.print("\t");
+          LOG.print(cycles); 
+          LOG.print("\t");
+          LOG.print(thresold_value); 
+          LOG.print("\t");          
+          LOG.print(abs(millis()-time)); 
+          LOG.print("\t");          
 
     }
   
@@ -237,8 +237,8 @@ uint8_t CapSense(uint8_t slot, uint8_t value, uint8_t value_hold, uint8_t pin, u
 		if(AUTOCALIBRATE && (abs(millis()-time) > 15000)){
             thresold = cycles + 4;
             if(DEBUG_CAPSENSE) { 
-                Serial.print("Autocalibrate: ");
-                Serial.println(thresold);
+                LOG.print("Autocalibrate: ");
+                LOG.println(thresold);
             }
             return thresold;
         }else{

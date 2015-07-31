@@ -64,7 +64,7 @@
 ***************************************************************************/
 //*********************   DEFINES DEBUGS AND VARIABLES ***************************
     //DEBUG LINES
-    #define LOG Serial.print
+    #define LOG Serial
     
     #define MaCaco_DEBUG_INSKETCH
     #define MaCaco_DEBUG          1
@@ -195,10 +195,10 @@
 void setup()
 {
     EEPROM.begin(STORE__SIZE);
-    Serial.begin(115200);
+    LOG.begin(115200);
     delay(500);    
 
-    Serial.println("Starting ES8266");
+    LOG.println("Starting ES8266");
 	if (!ReadConfig())
 	{
 		// DEFAULT CONFIG
@@ -225,22 +225,22 @@ void setup()
                 config.byte2 = 0;
                 config.tsAPI = "";
 		WriteConfig();
-		Serial.println("General config applied");
+		LOG.println("General config applied");
 	}
 	
 	
 	if (AdminEnabled)
 	{
-		Serial.println( "AP mode started" );
+		LOG.println( "AP mode started" );
                 WiFi.mode(WIFI_AP_STA);
 		WiFi.softAP( ACCESS_POINT_NAME , ACCESS_POINT_PASSWORD);
-                Serial.println(WiFi.localIP());
+                LOG.println(WiFi.localIP());
 	}
 	else
 	{
-		Serial.println( "STA mode started" );
+		LOG.println( "STA mode started" );
                 WiFi.mode(WIFI_STA);
-                Serial.println(WiFi.localIP());
+                LOG.println(WiFi.localIP());
 	}
     
     ConfigureWifi();
@@ -256,26 +256,26 @@ void setup()
         server.on ( "/main.html", processMain);
 	server.on ( "/admin/filldynamicdata", filldynamicdata );
 	
-	server.on ( "/favicon.ico",   []() { Serial.println("favicon.ico"); server.send ( 200, "text/html", "" );   }  );
+	server.on ( "/favicon.ico",   []() { LOG.println("favicon.ico"); server.send ( 200, "text/html", "" );   }  );
 
 
-	server.on ( "/admin.html", []() { Serial.println("admin.html"); server.send ( 200, "text/html", PAGE_AdminMainPage );   }  );
+	server.on ( "/admin.html", []() { LOG.println("admin.html"); server.send ( 200, "text/html", PAGE_AdminMainPage );   }  );
 	server.on ( "/config.html", send_network_configuration_html );
-	server.on ( "/info.html", []() { Serial.println("info.html"); server.send ( 200, "text/html", PAGE_Information );   }  );
+	server.on ( "/info.html", []() { LOG.println("info.html"); server.send ( 200, "text/html", PAGE_Information );   }  );
 	server.on ( "/ntp.html", send_NTP_configuration_html  );
 	server.on ( "/general.html", send_general_html  );
 //	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_EXAMPLE );  } );
-	server.on ( "/style.css", []() { Serial.println("style.css"); server.send ( 200, "text/plain", PAGE_Style_css );  } );
-	server.on ( "/microajax.js", []() { Serial.println("microajax.js"); server.send ( 200, "text/plain", PAGE_microajax_js );  } );
+	server.on ( "/style.css", []() { LOG.println("style.css"); server.send ( 200, "text/plain", PAGE_Style_css );  } );
+	server.on ( "/microajax.js", []() { LOG.println("microajax.js"); server.send ( 200, "text/plain", PAGE_microajax_js );  } );
 	server.on ( "/admin/values", send_network_configuration_values_html );
 	server.on ( "/admin/connectionstate", send_connection_state_values_html );
 	server.on ( "/admin/infovalues", send_information_values_html );
 	server.on ( "/admin/ntpvalues", send_NTP_configuration_values_html );
 	server.on ( "/admin/generalvalues", send_general_configuration_values_html);
 	server.on ( "/admin/devicename",     send_devicename_value_html);
- 	server.onNotFound ( []() { Serial.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
+ 	server.onNotFound ( []() { LOG.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
 	server.begin();
-	Serial.println( "HTTP server started" );
+	LOG.println( "HTTP server started" );
 	tkSecond.attach(1,Second_Tick);
 	UDPNTPClient.begin(2390);  // Port for NTP receive   
     
@@ -362,12 +362,12 @@ void setup()
         
     if(BMP180){
         if (pressure.begin())
-            LOG(F("BMP180 init success\r\n"));
+            LOG.print(F("BMP180 init success\r\n"));
         else
         {
             // Oops, something went wrong, this is usually a connection problem,
             // see the comments at the top of this sketch for the proper connections.
-            LOG(F("BMP180 init fail\r\n"));
+            LOG.print(F("BMP180 init fail\r\n"));
         }
     }
     
@@ -380,10 +380,10 @@ void loop()
 		if (AdminTimeOutCounter > AdminTimeOut)
 		{
 			 AdminEnabled = false;
-			 Serial.println("Admin Mode disabled!");
+			 LOG.println("Admin Mode disabled!");
 			 WiFi.mode(WIFI_STA);
-                         Serial.println( "STA mode started" );
-                         Serial.println(WiFi.localIP());
+                         LOG.println( "STA mode started" );
+                         LOG.println(WiFi.localIP());
 		}
 	}
 	if (config.Update_Time_Via_NTP_Every  > 0 )
@@ -409,7 +409,7 @@ void loop()
 		 {
 			 if (DateTime.hour == config.TurnOnHour && DateTime.minute == config.TurnOnMinute)
 			 {
-				  Serial.println("SwitchON");
+				  LOG.println("SwitchON");
 			 }
 		 }
 
@@ -419,7 +419,7 @@ void loop()
 		 {
 			 if (DateTime.hour == config.TurnOffHour && DateTime.minute == config.TurnOffMinute)
 			 {
-				  Serial.println("SwitchOff");
+				  LOG.println("SwitchOff");
 			 }
 		 }
 	}
@@ -430,12 +430,12 @@ void loop()
 	if (Refresh)  
 	{
 		Refresh = false;
-		 //Serial.println("Refreshing...");
-		 Serial.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
-                 Serial.print(EEPROM.read(307)); Serial.print("\t");
-                 Serial.print(EEPROM.read(308)); Serial.print("\t");
-                 Serial.print(EEPROM.read(309)); Serial.print("\t");
-                 Serial.println(STORE__SIZE);                 
+		 //LOG.println("Refreshing...");
+		 LOG.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
+                 LOG.print(EEPROM.read(307)); LOG.print("\t");
+                 LOG.print(EEPROM.read(308)); LOG.print("\t");
+                 LOG.print(EEPROM.read(309)); LOG.print("\t");
+                 LOG.println(STORE__SIZE);                 
 	}
 
     //**************************************************************************************************
@@ -455,7 +455,7 @@ void loop()
                 if(CAPACITIVE){
                     CapSense(LEDPWM0,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP0P, thresold, 1500);
                     CapSense(LEDPWM1,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP1P, thresold, 1500);
-                    if(DEBUG_CAPSENSE) Serial.println("");
+                    if(DEBUG_CAPSENSE) LOG.println("");
                 }                
                 
                 Logic_DimmableLight(LEDPWM0);                        
@@ -523,8 +523,8 @@ void loop()
             if(LDR_SENSOR){
                 float ldr_read = Souliss_GetLux(in, out, SIZEOF)/10.0;  //ORIGINAL
                 if(DEBUG_GETLUX){
-                    LOG("ldrlead: "); 
-                    LOG(ldr_read);
+                    LOG.print("ldrlead: "); 
+                    LOG.print(ldr_read);
                 }
                 if (ldr_read == 0) ldr_read = 0.01;
                 Souliss_ImportAnalog(memory_map, LDR, &ldr_read);
@@ -534,35 +534,35 @@ void loop()
         FAST_x10ms(300){
             //#if defined (MaCaco_DEBUG || VNET_DEBUG)
             /*  if(DHT_SENSOR){  
-                LOG("Hum: "); 
-                LOG(mOutputAsFloat(TEMPERATURE));
-                LOG(" %\t");
-                LOG("Temp: "); 
-                LOG(mOutputAsFloat(HUMIDITY));
-                LOG(" *C\t");
+                LOG.print("Hum: "); 
+                LOG.print(mOutputAsFloat(TEMPERATURE));
+                LOG.print(" %\t");
+                LOG.print("Temp: "); 
+                LOG.print(mOutputAsFloat(HUMIDITY));
+                LOG.print(" *C\t");
               }
               
               if(DALLAS_SENSOR){
-                LOG("Dallas: ");
-                LOG(mOutputAsFloat(DALLAS));
-                LOG(" *C\t");             
+                LOG.print("Dallas: ");
+                LOG.print(mOutputAsFloat(DALLAS));
+                LOG.print(" *C\t");             
               }
               
               if(LDR_SENSOR){
-                LOG("Lux: ");
-                LOG(mOutputAsFloat(LDR));
-                LOG(" lux\t"); 
+                LOG.print("Lux: ");
+                LOG.print(mOutputAsFloat(LDR));
+                LOG.print(" lux\t"); 
               }
               
               if(BMP180){
-                LOG("Pressure: ");  
-                LOG(mOutputAsFloat(PRESSURE0)); 
-                LOG(" mb\t");  
-                LOG("TempBMP180: ");  
-                LOG(mOutputAsFloat(BMP180TEMP)); 
-                LOG(" *C");           
+                LOG.print("Pressure: ");  
+                LOG.print(mOutputAsFloat(PRESSURE0)); 
+                LOG.print(" mb\t");  
+                LOG.print("TempBMP180: ");  
+                LOG.print(mOutputAsFloat(BMP180TEMP)); 
+                LOG.print(" *C");           
               }
-                LOG("\r\n");
+                LOG.print("\r\n");
             //#endif*/
         }
               
@@ -636,9 +636,9 @@ int Souliss_GetLux(const unsigned int* _in, const unsigned int* _out, byte size)
 
         //DEBUG
         if(DEBUG_GETLUX){
-          LOG("AnalogRead: ");
-          LOG(val);
-          LOG("\r\n");
+          LOG.print("AnalogRead: ");
+          LOG.print(val);
+          LOG.print("\r\n");
         }
         if (val <= _in[0]) return _out[0];
 	if (val >= _in[size-1]) return _out[size-1];
@@ -666,7 +666,7 @@ void Souliss_GetDHT(uint8_t SLOT_TEMPERATURE, uint8_t SLOT_HUMIDITY, boolean Cel
               
         // Check if any reads failed and exit early (to try again).
         if (isnan(h) || isnan(t) || isnan(f)) {
-            LOG("Failed to read from DHT sensor!\r\n");
+            LOG.print("Failed to read from DHT sensor!\r\n");
         }
         // Compute heat index
         // Must send in temp in Fahrenheit!
@@ -696,11 +696,11 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
   // We're using a constant called ALTITUDE in this sketch:
   
   if(DEBUG_PRESSURE){
-    LOG(F("provided altitude: "));
-    LOG(ALTITUDE,0);
-    LOG(F(" meters, "));
-    LOG(ALTITUDE*3.28084,0);
-    LOG(F(" feet\r\n"));
+    LOG.print(F("provided altitude: "));
+    LOG.print(ALTITUDE,0);
+    LOG.print(F(" meters, "));
+    LOG.print(ALTITUDE*3.28084,0);
+    LOG.print(F(" feet\r\n"));
   }  
   // If you want to measure altitude, and not pressure, you will instead need
   // to provide a known baseline pressure. This is shown at the end of the sketch.
@@ -726,11 +726,11 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
     {
       if(DEBUG_PRESSURE){ 
         // Print out the measurement:
-        LOG(F("temperature: "));
-        LOG(T,2);
-        LOG(F(" deg C, "));
-        LOG((9.0/5.0)*T+32.0,2);
-        LOG(F(" deg F\r\n"));
+        LOG.print(F("temperature: "));
+        LOG.print(T,2);
+        LOG.print(F(" deg C, "));
+        LOG.print((9.0/5.0)*T+32.0,2);
+        LOG.print(F(" deg F\r\n"));
       }    
       // Start a pressure measurement:
       // The parameter is the oversampling setting, from 0 to 3 (highest res, longest wait).
@@ -754,11 +754,11 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
         {
           if(DEBUG_PRESSURE){
             // Print out the measurement:
-            LOG(F("absolute pressure: "));
-            LOG(P,2);
-            LOG(F(" mb, "));
-            LOG(P*0.0295333727,2);
-            LOG(F(" inHg\r\n"));
+            LOG.print(F("absolute pressure: "));
+            LOG.print(P,2);
+            LOG.print(F(" mb, "));
+            LOG.print(P*0.0295333727,2);
+            LOG.print(F(" inHg\r\n"));
           }
           // The pressure sensor returns abolute pressure, which varies with altitude.
           // To remove the effects of altitude, use the sealevel function and your current altitude.
@@ -768,11 +768,11 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
 
           p0 = pressure.sealevel(P,ALTITUDE); // we're at 1655 meters (Boulder, CO)
           if(DEBUG_PRESSURE){
-            LOG(F("relative (sea-level) pressure: "));
-            LOG(p0,2);
-            LOG(F(" mb, "));
-            LOG(p0*0.0295333727,2);
-            LOG(F(" inHg\r\n"));
+            LOG.print(F("relative (sea-level) pressure: "));
+            LOG.print(p0,2);
+            LOG.print(F(" mb, "));
+            LOG.print(p0*0.0295333727,2);
+            LOG.print(F(" inHg\r\n"));
           }
           // On the other hand, if you want to determine your altitude from the pressure reading,
           // use the altitude function along with a baseline pressure (sea-level or other).
@@ -781,11 +781,11 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
 
           a = pressure.altitude(P,p0);
           if(DEBUG_PRESSURE){
-            LOG(F("computed altitude: "));
-            LOG(a,0);
-            LOG(F(" meters, "));
-            LOG(a*3.28084,0);
-            LOG(F(" feet\r\n"));
+            LOG.print(F("computed altitude: "));
+            LOG.print(a,0);
+            LOG.print(F(" meters, "));
+            LOG.print(a*3.28084,0);
+            LOG.print(F(" feet\r\n"));
           }
           float pressure = p0;
           float temperature = T; 
@@ -793,24 +793,24 @@ float Souliss_GetPressure_BMP180(uint8_t SLOT_PRESSURE, uint8_t SLOT_TEMPERATURE
           Souliss_ImportAnalog(memory_map, SLOT_TEMPERATURE, &temperature);
           return p0; 
         }
-        else if(DEBUG_PRESSURE) LOG(F("error retrieving pressure measurement\n"));
+        else if(DEBUG_PRESSURE) LOG.print(F("error retrieving pressure measurement\n"));
       }
-      else if(DEBUG_PRESSURE) LOG(F("error starting pressure measurement\n"));
+      else if(DEBUG_PRESSURE) LOG.print(F("error starting pressure measurement\n"));
     }
-    else if(DEBUG_PRESSURE) LOG(F("error retrieving temperature measurement\n"));
+    else if(DEBUG_PRESSURE) LOG.print(F("error retrieving temperature measurement\n"));
   }
-  else if(DEBUG_PRESSURE) LOG(F("error starting temperature measurement\n"));
+  else if(DEBUG_PRESSURE) LOG.print(F("error starting temperature measurement\n"));
  
 }
 
 // send data to ThingSpeak.com
 void sendInputState(bool inputState){
- Serial.println(inputState); 
- Serial.println(config.tsAPI);
+ LOG.println(inputState); 
+ LOG.println(config.tsAPI);
 
  WiFiClient client;
  if(!client.connect(serverTS,80)) {  //   "184.106.153.149" or api.thingspeak.com
-    Serial.println("Connection Fail!");
+    LOG.println("Connection Fail!");
  }
  else {
     String postStr = config.tsAPI;
@@ -827,11 +827,11 @@ void sendInputState(bool inputState){
      client.print(postStr.length());
      client.print("\n\n");
      client.print(postStr);
-     Serial.println("Send Relay State to Thingspeak");
+     LOG.println("Send Relay State to Thingspeak");
  
  }
   client.stop();
-  Serial.println("Client to send Stoped");
+  LOG.println("Client to send Stoped");
 }
 
 

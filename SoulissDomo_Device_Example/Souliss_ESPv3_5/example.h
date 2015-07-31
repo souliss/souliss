@@ -52,23 +52,23 @@ void processExample()
 {        
     if (server.args() > 0 )  // Are there any POST/GET Fields ? 
     {
-      Serial.println("atas");  
+      LOG.println("atas");  
        for ( uint8_t i = 0; i < server.args(); i++ ) {  // Iterate through the fields
             if (server.argName(i) == "firstname") 
             {
                  // Your processing for the transmitted form-variable 
                  String fName = server.arg(i);
-                 Serial.println("tengah");  
+                 LOG.println("tengah");  
             }
         }
       //server.send ( 200, "text/html", PAGE_ESPReboot );
-      Serial.println("Admin Time Out");
+      LOG.println("Admin Time Out");
       AdminTimeOutCounter=0;
-      Serial.println("Souliss update IP Address");
+      LOG.println("Souliss update IP Address");
       GetIPAddress();
     }
 
-    Serial.println("bawah");  
+    LOG.println("bawah");  
     server.send ( 200, "text/html", PAGE_example  ); 
 }
 

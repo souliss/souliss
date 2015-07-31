@@ -67,7 +67,7 @@ void send_information_values_html ()
 	values += "x_ntp|" +  (String) DateTime.hour + ":" + (String) + DateTime.minute +  ":"  + (String)  DateTime.second + " " + (String)   DateTime.year + "-" + (String)  DateTime.month + "-" + (String)  DateTime.day +  "|div\n";
 	server.send ( 200, "text/plain", values);
 	check_ESPMode();
-	Serial.println(__FUNCTION__); 
+	LOG.println(__FUNCTION__); 
 
 }
 
