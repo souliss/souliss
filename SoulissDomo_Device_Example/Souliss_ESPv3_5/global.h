@@ -15,6 +15,7 @@ byte Minute_Old = 100;				// Helpvariable for checking, when a new Minute comes 
 boolean nowifi = false;
 
 
+
 struct strConfig {
 	String ssid;
 	String password;
@@ -41,6 +42,8 @@ struct strConfig {
 	byte byte1;
 	byte byte2;
 	String tsAPI;
+	boolean rst;
+
 
 
 }   config;
@@ -54,55 +57,70 @@ struct strConfig {
 void Souliss_Node_Start()
 {
 
-		// Read Node Mode..
+	// Read Node Mode..
         if (config.NodeMode){
+          if(nowifi != 1) {
             LOG.println("Gateway Mode");
             // Connect to the WiFi network and get an address from DHCP                      
             SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
             SetAddressingServer();
+          }
+          else {
+        	LOG.println("No Gateway Mode coz No Wifi");		
+          }
+	
         }
         else {
-        	LOG.println(nowifi);
-        	if(nowifi != 1) {
+            LOG.println(nowifi);
+          if(nowifi != 1) {
             LOG.println("Peer Mode");
             // This board request an address to the gateway at runtime, no need
             // to configure any parameter here.
-            SetDynamicAddressing(); 
+            SetDynamicAddressing();  
             GetAddress();
-        	}
-
-        	//LOG.println("No WiFi");
+            //SetAddress(0xAB02, 0xFF00, 0xAB01); 
+          }
+          else {
+            LOG.println("No Peer Mode coz No Wifi");	
+          }
         }
 
 }
 
 void check_ESPMode()
 {
-	LOG.print("Connecting to AP");
-
-	for (int i=0; i < 10; i++){
+	if (WiFi.status() != WL_CONNECTED);{
+	  Serial.print("Connecting to AP");
+	  for (int i=0; i < 10; i++){
 		(WiFi.status() != WL_CONNECTED);
 		delay(1000);
-		LOG.println(".");
+		Serial.println(".");
 		//break;
+	  }
 	}
-			if (WiFi.status() == WL_CONNECTED) {
-			LOG.println("Admin Time Out");
-			AdminTimeOutCounter=0;
-			WiFi.mode(WIFI_STA);
-			LOG.println( "STA mode started" );
-			LOG.println(WiFi.localIP());
-			LOG.println("Souliss update IP Address");
-			GetIPAddress(); 
-			nowifi = false;
+	if (WiFi.status() == WL_CONNECTED) {
+		Serial.print("Already connect to : ");
+		Serial.println(WiFi.SSID());
+		Serial.println("Admin Time Out");
+		AdminTimeOutCounter=0;
+		WiFi.mode(WIFI_STA);
+		Serial.println( "STA mode started" );
+		Serial.println(WiFi.localIP());
+		Serial.println("Souliss update IP Address");
+		GetIPAddress(); 
+		delay(500);
+		nowifi = false;
 
-			}
-			else
-			{
-			WiFi.mode(WIFI_AP_STA);
-			LOG.println( "AP mode started coz' No WiFi" );
-			nowifi = true;	
-			}
+	}
+	else
+	{
+		Serial.println( "AP mode started coz' No WiFi or No Config" );
+		WiFi.mode(WIFI_AP);
+		WiFi.softAP("Souliss");
+                Serial.println(WiFi.softAPIP());
+            	nowifi = true;	
+	}
+
 }
 
 void ConfigureWifi()
@@ -115,8 +133,10 @@ void ConfigureWifi()
 	{
 		WiFi.config(IPAddress(config.IP[0],config.IP[1],config.IP[2],config.IP[3] ),  IPAddress(config.Gateway[0],config.Gateway[1],config.Gateway[2],config.Gateway[3] ) , IPAddress(config.Netmask[0],config.Netmask[1],config.Netmask[2],config.Netmask[3] ));
 		LOG.println("Souliss update IP Address for STATIC");
-		GetIPAddress();  
+		GetIPAddress();
+		LOG.println(WiFi.localIP());
 	}
+       	check_ESPMode();
 }
 
 bool EEPROM_CONFIG(){
@@ -168,7 +188,7 @@ bool EEPROM_CONFIG(){
             break;            
     }
     
-    LOG.print(DHT_SENSOR);
+    Serial1.print(DHT_SENSOR);
     LOG.print(LDR_SENSOR);
     LOG.print(DALLAS_SENSOR);
     LOG.print(" DLD (DHT-LDR-DALLAS)");
@@ -247,6 +267,7 @@ void WriteConfig()
 	EEPROM.write(0,'C');
 	EEPROM.write(1,'F');
 	EEPROM.write(2,'G');
+	EEPROM.write(3,config.rst);
 
 	EEPROM.write(16,config.dhcp);
 	EEPROM.write(17,config.daylight);
@@ -301,7 +322,9 @@ boolean ReadConfig()
 	LOG.println("Reading Configuration");
 	if (EEPROM.read(0) == 'C' && EEPROM.read(1) == 'F'  && EEPROM.read(2) == 'G' )
 	{
-		LOG.println("Configuration Found!");
+  		LOG.println("Configuration Found!");
+		config.rst = EEPROM.read(3);
+
 		config.dhcp = 	EEPROM.read(16);
 
 		config.daylight = EEPROM.read(17);

@@ -25,7 +25,7 @@ void sendRootPage()
             
         }
     }
-    server.send ( 200, "text/html", PAGE_Root ); 
+    server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_Root) );  
 }
  
 

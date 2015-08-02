@@ -97,16 +97,15 @@ void send_network_configuration_html()
 			if (server.argName(i) == "gw_3") if (checkRange(server.arg(i))) 	config.Gateway[3] =  server.arg(i).toInt();
 			if (server.argName(i) == "dhcp") config.dhcp = true;
 		}
-		server.send ( 200, "text/html", PAGE_WaitAndReload );
+		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
 		LOG.println("Write Config"); 
 		WriteConfig();
 		ConfigureWifi();
-		check_ESPMode();
-		ESP.restart();
 	}
 	else
 	{
-		server.send ( 200, "text/html", PAGE_NetworkConfiguration ); 
+            server.send ( 200, "text/html", PAGE_NetworkConfiguration ); 
+
 	}
 	LOG.println(__FUNCTION__); 
 }

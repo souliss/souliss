@@ -64,7 +64,7 @@
 ***************************************************************************/
 //*********************   DEFINES DEBUGS AND VARIABLES ***************************
     //DEBUG LINES
-    #define LOG Serial
+ //   #define LOG Serial1  //PASAR A INSKETCH en Souliss.h
     
     #define MaCaco_DEBUG_INSKETCH
     #define MaCaco_DEBUG          1
@@ -128,6 +128,8 @@
 
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
+#include "conf/usart.h"
+
 
 //#if GATEWAY == 1
     #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
@@ -159,7 +161,7 @@
     #include "main.h"
     
     #define ACCESS_POINT_NAME  "Souliss"				
-    #define ACCESS_POINT_PASSWORD  "12345678" 
+    //#define ACCESS_POINT_PASSWORD  "12345678" 
     #define AdminTimeOut 300  // Defines the Time in Seconds, when the Admin-Mode will be diabled
 
     // ThingSpeak API
@@ -198,7 +200,7 @@ void setup()
     LOG.begin(115200);
     delay(500);    
 
-    LOG.println("Starting ES8266");
+    LOG.println("Starting Souliss Node");
 	if (!ReadConfig())
 	{
 		// DEFAULT CONFIG
@@ -224,6 +226,7 @@ void setup()
                 config.byte1 = 0;
                 config.byte2 = 0;
                 config.tsAPI = "";
+                config.rst = false;
 		WriteConfig();
 		LOG.println("General config applied");
 	}
@@ -232,9 +235,10 @@ void setup()
 	if (AdminEnabled)
 	{
 		LOG.println( "AP mode started" );
-                WiFi.mode(WIFI_AP_STA);
-		WiFi.softAP( ACCESS_POINT_NAME , ACCESS_POINT_PASSWORD);
-                LOG.println(WiFi.localIP());
+                WiFi.mode(WIFI_AP);
+                WiFi.softAP(ACCESS_POINT_NAME);
+                LOG.println(WiFi.softAPIP());
+
 	}
 	else
 	{
@@ -253,34 +257,49 @@ void setup()
     GetIPAddress();
     
   
-        server.on ( "/main.html", processMain);
-	server.on ( "/admin/filldynamicdata", filldynamicdata );
-	
-	server.on ( "/favicon.ico",   []() { LOG.println("favicon.ico"); server.send ( 200, "text/html", "" );   }  );
+                server.on ( "/admin/processMain", processMain);
+            	server.on ( "/admin/filldynamicdata", filldynamicdata );	
+              	server.on ( "/favicon.ico",   []() { LOG.println("favicon.ico"); server.send ( 200, "text/html", "" );   }  );
+              	server.on ( "/admin.html", []() { LOG.println("admin.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+         	server.on ( "/config.html", send_network_configuration_html );
+              	server.on ( "/info.html", []() { LOG.println("info.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_Information ));   }  );
+              	server.on ( "/ntp.html", send_NTP_configuration_html  );
+              	server.on ( "/general.html", send_general_html  );
+                server.on ( "/main.html", processMain  );
+              	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_main );  } );
+              	server.on ( "/style.css", []() { LOG.println("style.css"); server.send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
+              	server.on ( "/microajax.js", []() { LOG.println("microajax.js"); server.send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
+              	server.on ( "/admin/values", send_network_configuration_values_html );
+              	server.on ( "/admin/connectionstate", send_connection_state_values_html );
+              	server.on ( "/admin/infovalues", send_information_values_html );
+              	server.on ( "/admin/ntpvalues", send_NTP_configuration_values_html );
+              	server.on ( "/admin/generalvalues", send_general_configuration_values_html);
+              	server.on ( "/admin/rstvalues", send_reset_values_html);
+                server.on ( "/admin/devicename",     send_devicename_value_html);
+                server.onNotFound ( []() { LOG.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
+              	server.begin();
+              	LOG.println( "HTTP server started" );
+              	tkSecond.attach(1,Second_Tick);
+              	UDPNTPClient.begin(2390);  // Port for NTP receive
 
-
-	server.on ( "/admin.html", []() { LOG.println("admin.html"); server.send ( 200, "text/html", PAGE_AdminMainPage );   }  );
-	server.on ( "/config.html", send_network_configuration_html );
-	server.on ( "/info.html", []() { LOG.println("info.html"); server.send ( 200, "text/html", PAGE_Information );   }  );
-	server.on ( "/ntp.html", send_NTP_configuration_html  );
-	server.on ( "/general.html", send_general_html  );
-//	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_EXAMPLE );  } );
-	server.on ( "/style.css", []() { LOG.println("style.css"); server.send ( 200, "text/plain", PAGE_Style_css );  } );
-	server.on ( "/microajax.js", []() { LOG.println("microajax.js"); server.send ( 200, "text/plain", PAGE_microajax_js );  } );
-	server.on ( "/admin/values", send_network_configuration_values_html );
-	server.on ( "/admin/connectionstate", send_connection_state_values_html );
-	server.on ( "/admin/infovalues", send_information_values_html );
-	server.on ( "/admin/ntpvalues", send_NTP_configuration_values_html );
-	server.on ( "/admin/generalvalues", send_general_configuration_values_html);
-	server.on ( "/admin/devicename",     send_devicename_value_html);
- 	server.onNotFound ( []() { LOG.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
-	server.begin();
-	LOG.println( "HTTP server started" );
-	tkSecond.attach(1,Second_Tick);
-	UDPNTPClient.begin(2390);  // Port for NTP receive   
     
     Souliss_Node_Start();
+    SetAddress(0xD001, 0xFF00, 0x0000);
     
+                LOG.print("vNet Media : ");
+                LOG.println (vNet_GetAddress(vNet_MyMedia()),HEX);
+                LOG.print("vNet 1 : ");
+                LOG.println (vNet_GetAddress(1),HEX);
+                LOG.print("vNet 2 : ");
+                LOG.println (vNet_GetAddress(2),HEX);
+                LOG.print("vNet 3 : ");
+                LOG.println (vNet_GetAddress(3),HEX);
+                LOG.print("vNet 4 : ");
+                LOG.println (vNet_GetAddress(4),HEX);
+                LOG.print("vNet 5 : ");
+                LOG.println (vNet_GetAddress(5),HEX);
+
+
     //**************************** SENSORS INITIALIZE *****************************
     if(DHT_SENSOR){
         dht.begin();
@@ -371,6 +390,12 @@ void setup()
         }
     }
     
+    if(CAPACITIVE){
+    
+      
+    
+    }
+    
 }
 
 void loop()
@@ -432,9 +457,9 @@ void loop()
 		Refresh = false;
 		 //LOG.println("Refreshing...");
 		 LOG.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
-                 LOG.print(EEPROM.read(307)); LOG.print("\t");
-                 LOG.print(EEPROM.read(308)); LOG.print("\t");
-                 LOG.print(EEPROM.read(309)); LOG.print("\t");
+                 LOG.print(EEPROM.read(51)); LOG.print("\t");
+                 LOG.print(EEPROM.read(52)); LOG.print("\t");
+                 LOG.print(EEPROM.read(53)); LOG.print("\t");
                  LOG.println(STORE__SIZE);                 
 	}
 
@@ -569,7 +594,9 @@ void loop()
       
         if (config.NodeMode){
            // Here we handle here the communication with Android as Gateway
-            FAST_GatewayComms();    
+            FAST_GatewayComms(); 
+            //FAST_BridgeComms();  
+   
         }
         else { 
             // Here we handle here the communication with Android as Peer
@@ -614,12 +641,20 @@ void loop()
                 
             } //SLOW_x10s(2) 
            
+            if (config.NodeMode){
+                //nothing here
+            }
+            else {
                 SLOW_PeerJoin();
-            
-      } 
+            }
+       } 
       
-        START_PeerJoin(); 
-          
+       if (config.NodeMode){
+           //nothing here
+       }
+       else {
+           START_PeerJoin(); //tell gateway that i am exist
+       }   
 }    
    	
    
