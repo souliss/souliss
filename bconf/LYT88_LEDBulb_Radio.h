@@ -22,8 +22,8 @@
     \file 
     \ingroup
 */
-#ifndef bconf_IOTUINO_H
-#define bconf_IOTUINO_H
+#ifndef bconf_LYT88_H
+#define bconf_LYT88_H
 
 // Arduino AVR Board
 #define MCU_TYPE_INSKETCH

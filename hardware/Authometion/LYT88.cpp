@@ -43,7 +43,6 @@ void InitLYT()
 	myLYTWiFi.vfInitialize(PL1167_CS_PIN);
 	vfISRInit();
 	myLYTWiFi.vfSetLocalChannel(PL1167_DEFAULT_RADIO_TRASMISSION,0);
-	myLYTWiFi.vfSetSyncWord(0,0,C_MSBYTE_SYNCWORD0,C_LSBYTE_SYNCWORD0);	
 }
 
 /**************************************************************************
@@ -59,6 +58,10 @@ void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot)
 		LYT[index].addr_b = addr_b;
 		LYT[index].slot;	
 	}
+	
+	// Set the LYT
+	myLYTWiFi.vfSetSyncWord(addr_a, addr_b, C_MSBYTE_SYNCWORD0, C_LSBYTE_SYNCWORD0);	
+	
 }
 
 /**************************************************************************
@@ -153,7 +156,7 @@ void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 	Check the actual state, the code stops until an answer has been received
 */	
 /**************************************************************************/
-void LYTState(U8* memory_map, U8 slot, U8* trigger)
+void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 {
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
@@ -334,35 +337,47 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			(memory_map[MaCaco_OUT_s + slot + 2]  >= 0xF0) &&
 			(memory_map[MaCaco_OUT_s + slot + 3]  >= 0xF0)) )			
 		{
-			LYTSetWhite(slot);
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
 		}		
 		else // Set the color
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
-		
-		// Set bright
-		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);		
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
-		// Increase the light value
-		if(memory_map[MaCaco_AUXIN_s + slot] < LYT_MaxBright) 
-			memory_map[MaCaco_AUXIN_s + slot]++;
-		
-		// Set bright
-		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
+		if((memory_map[MaCaco_OUT_s + slot + 1] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 2] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 3] < 0xF0))
+		{
+			LYTSetColorRGB(++memory_map[MaCaco_OUT_s + slot + 1], ++memory_map[MaCaco_OUT_s + slot + 2], ++memory_map[MaCaco_OUT_s + slot + 3], slot);				
+		}
+		else
+		{
+			// Increase the light value
+			if(memory_map[MaCaco_AUXIN_s + slot] < LYT_MaxBright) 
+				memory_map[MaCaco_AUXIN_s + slot]++;
+			
+			// Set bright
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
+		}
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
-		// Decrease the light value
-		if(memory_map[MaCaco_AUXIN_s + slot] > LYT_MinBright) 
-			memory_map[MaCaco_AUXIN_s + slot]--;
-			
-		// Set bright
-		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
+
+		if((memory_map[MaCaco_OUT_s + slot + 1] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 2] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 3] < 0xF0))
+		{
+			LYTSetColorRGB(--memory_map[MaCaco_OUT_s + slot + 1], --memory_map[MaCaco_OUT_s + slot + 2], --memory_map[MaCaco_OUT_s + slot + 3], slot);				
+		}
+		else
+		{		
+			// Decrease the light value
+			if(memory_map[MaCaco_AUXIN_s + slot] > LYT_MinBright) 
+				memory_map[MaCaco_AUXIN_s + slot]--;
+				
+			// Set bright
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
+		}
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}	
@@ -431,23 +446,11 @@ void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot)
 		{
 			// Set the good night mode
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
-			
-			// Notify with a quick bright change
-			uint8_t actualbright = memory_map[MaCaco_AUXIN_s + slot];
-			while(actualbright)
-				LYTSetBright(actualbright--, slot);
-			
-			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);	
 		}
 		
 		// Decrease timer and check the expiration
 		if((--memory_map[MaCaco_IN_s + slot]) == Souliss_T1n_Timed)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		
-		// Bright down the light
-		if(memory_map[MaCaco_AUXIN_s + slot])
-			LYTSetBright(--memory_map[MaCaco_AUXIN_s + slot], slot);
-		else
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;	// Lamp off
 	}	
 }
