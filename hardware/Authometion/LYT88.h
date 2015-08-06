@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Support for Authometion IoTuino
+	Souliss Support for Authometion LYT88
     Copyright (C) 2014  Veseo
 	
 ***************************************************************************/
@@ -38,7 +38,6 @@
 
 typedef struct
 {
-	U8  mode;
 	U8	addr_a;
 	U8	addr_b;
 	U8	slot;
@@ -48,7 +47,7 @@ void Souliss_SetLYTLamps(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger);					
 			
 
-void SetLYT(U8 index, U8 mode, U8 addr_a, U8 addr_b, U8 slot);
+void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot);
 U8 FindLYT(U8 slot);
 void LYTSetAddress(U8 slot);
 void LYTClearAddress(U8 slot);
