@@ -28,10 +28,16 @@
     \file 
     \ingroup
 */
-#include "Iotuino.h"
 #include "Typicals.h"
 #include "GetConfig.h"
-#include "LYT.h"
+#include "LYT88.h"
+
+#include <SPI.h>
+#include <PL1167.h>
+#include <Lytwifi.h>
+#include <WiFiInterrupt.h>
+
+#define PL1167_CS_PIN	10
 
 #define	BRIGHT_STEP		0
 
@@ -120,7 +126,7 @@ void LYTSetWhite(U8 slot)
 	uint8_t index =	FindLYT(slot);
 	
 	// Send turn OFF command
-	myLYTWiFi.###(LYT[index].addr_a,LYT[index].addr_b, 1, BRIGHT_STEP);  
+	myLYTWiFi.ui8fSetBrightnessValueAndCheck(LYT[index].addr_a,LYT[index].addr_b, 255, 1, BRIGHT_STEP);  
 }
 
 /**************************************************************************
