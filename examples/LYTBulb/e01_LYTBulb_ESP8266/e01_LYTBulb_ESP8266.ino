@@ -39,8 +39,11 @@ void loop()
     // Here we start to play
     EXECUTEFAST() {                     
         UPDATEFAST();   
-              
-        // Here we handle here the communication with Android
-        FAST_GatewayComms();                                        
+             
+        // Process the communication basic at max speed, this allow smooth handling of color and music synch                                
+        ProcessCommunication(); 
+            
+        // Complete the communication tasks at normal rate
+        FAST_GatewayComms();
     }
-} 
+}   

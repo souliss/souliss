@@ -293,10 +293,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
-		
-		// Trig the change
-		i_trigger = Souliss_TRIGGED;	
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{

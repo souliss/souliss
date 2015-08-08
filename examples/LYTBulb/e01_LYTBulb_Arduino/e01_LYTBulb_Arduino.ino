@@ -47,6 +47,7 @@ void setup()
     // Se the LYT bulbs (index, bulb type, addr_a, addr_b, logic slot), here we have
     // the first lamp (index 0) with default addresses (0, 0). Change these based on
     // the configuration of your lamps.
+    InitLYT();
     SetLYT(0, 0, 0, LYTLIGHT1);
 
     // Define a logic to handle the bulb(s)
@@ -60,8 +61,8 @@ void loop()
         UPDATEFAST();   
         
         FAST_10ms() {   // We process the logic and relevant input and output every 110 milliseconds
-            ProcessCommunication();
             LogicLYTLamps(LYTLIGHT1);       
+            ProcessCommunication();
         } 
         
         // Here we process all communication with other nodes
