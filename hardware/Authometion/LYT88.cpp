@@ -39,7 +39,7 @@
 
 #define PL1167_CS_PIN	10
 
-#define	BRIGHT_STEP		0
+#define	BRIGHT_STEP		20
 
 LYT_struct LYT[LYT_MAXNUM];								// Each RGB light use 
 LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
@@ -349,15 +349,13 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
-		if((memory_map[MaCaco_OUT_s + slot + 1] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 2] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 3] < 0xF0))
-		{
-			LYTSetColorRGB(++memory_map[MaCaco_OUT_s + slot + 1], ++memory_map[MaCaco_OUT_s + slot + 2], ++memory_map[MaCaco_OUT_s + slot + 3], slot);				
-		}
+		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]+=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 2]+=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 3]+=BRIGHT_STEP, slot);				
 		else
 		{
 			// Increase the light value
-			if(memory_map[MaCaco_AUXIN_s + slot] < LYT_MaxBright) 
-				memory_map[MaCaco_AUXIN_s + slot]++;
+			if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP)) 
+				memory_map[MaCaco_AUXIN_s + slot]+=BRIGHT_STEP;
 			
 			// Set bright
 			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
@@ -368,15 +366,13 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
 
-		if((memory_map[MaCaco_OUT_s + slot + 1] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 2] < 0xF0) || (memory_map[MaCaco_OUT_s + slot + 3] < 0xF0))
-		{
-			LYTSetColorRGB(--memory_map[MaCaco_OUT_s + slot + 1], --memory_map[MaCaco_OUT_s + slot + 2], --memory_map[MaCaco_OUT_s + slot + 3], slot);				
-		}
+		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]-=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 2]-=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 3]-=BRIGHT_STEP, slot);				
 		else
 		{		
 			// Decrease the light value
-			if(memory_map[MaCaco_AUXIN_s + slot] > LYT_MinBright) 
-				memory_map[MaCaco_AUXIN_s + slot]--;
+			if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP)) 
+				memory_map[MaCaco_AUXIN_s + slot]-=BRIGHT_STEP;
 				
 			// Set bright
 			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
@@ -410,7 +406,6 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		for(U8 i=1;i<4;i++)
 		{
 			memory_map[MaCaco_OUT_s + slot + i] = memory_map[MaCaco_IN_s + slot + i];
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 			memory_map[MaCaco_IN_s + slot + i] = Souliss_T1n_RstCmd;
 		}
 
@@ -422,7 +417,14 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			LYTSetWhite(slot);
 		}		
 		else // Set the color
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], 
+							memory_map[MaCaco_OUT_s + slot + 2], 
+							memory_map[MaCaco_OUT_s + slot + 3], 
+								slot);					
+
+		// Set the new color
+		for(U8 i=1;i<4;i++)
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		

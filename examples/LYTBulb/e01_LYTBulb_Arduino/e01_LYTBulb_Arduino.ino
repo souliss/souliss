@@ -9,12 +9,13 @@
     to an ESP8266 WiFi module.
 
     Verify shield's jumpers and select Hardware Usart while using this sketch, 
-    remember to remove the jumpers before programming the Arduino.
+    remember to remove the jumpers before programming the Arduino. Use pin 10 as
+	chip select for the radio.
     
 ***************************************************************************/
 #include "bconf/StandardArduino.h"              // Use an Arduino board
 #include "bconf/LYT88_LEDBulb_Radio.h"          // Define the board type
-#include "conf/usart.h"                         // Ethernet through Wiznet W5100
+#include "conf/usart_fast.h"                    // Ethernet through Wiznet W5100
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -60,10 +61,10 @@ void loop()
     EXECUTEFAST() {                     
         UPDATEFAST();   
         
-        FAST_10ms() {   // We process the logic and relevant input and output every 110 milliseconds
-            LogicLYTLamps(LYTLIGHT1);       
-            ProcessCommunication();
-        } 
+        // Is an unsual approach, but to get fast response to color change we run the LYT logic and
+        // basic communication processing at maximum speed.
+        LogicLYTLamps(LYTLIGHT1);       
+        ProcessCommunication();
         
         // Here we process all communication with other nodes
         FAST_PeerComms();    
@@ -73,7 +74,7 @@ void loop()
         UPDATESLOW();
         
         SLOW_10s() {
-            LYTState(LYTLIGHT1);            // Verify the lamp state
+            //LYTState(LYTLIGHT1);            // Verify the lamp state
             LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
     }

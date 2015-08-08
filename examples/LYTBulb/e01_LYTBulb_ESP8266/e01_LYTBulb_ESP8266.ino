@@ -1,12 +1,22 @@
 /**************************************************************************
+    Souliss - LYT Light Bulb
+    
+    This sketch control the Authometion LYT bubls through the Authometion
+    shield.
+    
+    Load this sketch on an ESP8266 WiFi module used to bridge via USART the
+	Arduino AVR microcontroller that handle the radio.
 
+    Verify shield's jumpers and select Hardware Usart while using this sketch, 
+    remember to remove the jumpers before programming the Arduino. Use pin 10 as
+	chip select for the radio.
         
 ***************************************************************************/
 
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/usart.h"                      // USART / RS485 transceiver
+#include "conf/usart_fast.h"                // USART / RS485 transceiver
 #include "conf/IPBroadcast.h"
 
 // **** Define the WiFi name and password ****

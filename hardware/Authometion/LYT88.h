@@ -31,8 +31,8 @@
 #ifndef LYT_H
 #define LYT_H
 
-#define	LYT_MaxBright	0x11
-#define	LYT_MedBright	0x06
+#define	LYT_MaxBright	0xFF
+#define	LYT_MedBright	0x10
 #define	LYT_MinBright	0x00
 #define	LYT_MAXNUM		0x0A			// Maximum number of LYT groups
 

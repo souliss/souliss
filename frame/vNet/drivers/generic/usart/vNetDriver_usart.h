@@ -34,7 +34,9 @@
 #define USART_SUCCESS			0x01
 #define USART_FAIL				0x00
 
-#if(USART_BAUD115k2)
+#if(USART_BAUD256k)
+#	define USART_BAUD			256000		
+#elif(USART_BAUD115k2)
 #	define USART_BAUD			115200			
 #elif(USART_BAUD19k2)
 #	define USART_BAUD			19200
