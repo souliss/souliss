@@ -361,33 +361,58 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
 		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]+=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 2]+=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 3]+=BRIGHT_STEP, slot);				
+		{	
+			for(U8 i=0;i<BRIGHT_STEP;i++)
+			{	
+				LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]++, memory_map[MaCaco_OUT_s + slot + 2]++, memory_map[MaCaco_OUT_s + slot + 3]++, slot);				
+				delay(5);
+			}
+		}
 		else
 		{
 			// Increase the light value
-			if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP)) 
-				memory_map[MaCaco_AUXIN_s + slot]+=BRIGHT_STEP;
-			
-			// Set bright
-			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
+			if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))
+			{
+				for(U8 i=0;i<BRIGHT_STEP;i++)
+				{	
+					LYTSetBright(memory_map[MaCaco_AUXIN_s + slot]++, slot);
+					delay(5);
+				}	
+			}	
 		}
 		
+		// Save the new color
+		for(U8 i=1;i<4;i++)
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
 
 		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]-=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 2]-=BRIGHT_STEP, memory_map[MaCaco_OUT_s + slot + 3]-=BRIGHT_STEP, slot);				
+		{	
+			for(U8 i=0;i<BRIGHT_STEP;i++)
+			{	
+				LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]--, memory_map[MaCaco_OUT_s + slot + 2]--, memory_map[MaCaco_OUT_s + slot + 3]--, slot);				
+				delay(5);
+			}
+		}
 		else
 		{		
 			// Decrease the light value
 			if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP)) 
-				memory_map[MaCaco_AUXIN_s + slot]-=BRIGHT_STEP;
-				
-			// Set bright
-			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
+			{
+				for(U8 i=0;i<BRIGHT_STEP;i++)
+				{	
+					LYTSetBright(memory_map[MaCaco_AUXIN_s + slot]++, slot);
+					delay(5);
+				}	
+			}					
 		}
+
+		// Save the new color
+		for(U8 i=1;i<4;i++)
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}	
@@ -433,7 +458,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 							memory_map[MaCaco_OUT_s + slot + 3], 
 								slot);					
 
-		// Set the new color
+		// Save the new color
 		for(U8 i=1;i<4;i++)
 			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		
