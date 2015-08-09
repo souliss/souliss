@@ -162,32 +162,43 @@ void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 	Check the actual state, the code stops until an answer has been received
 */	
 /**************************************************************************/
-void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
+void Souliss_LYTStateRequest(U8 slot)
 {
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
 	
 	// Request data update
-	myLYTWiFi.ui8fAskLampInfoStatusAndCheck(LYT[index].addr_a,LYT[index].addr_b);
-	
-	// Verify the actual ON/OFF state
-	if((memory_map[MaCaco_OUT_s + slot] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0]))
+	myLYTWiFi.vfAskLampInfoStatus(LYT[index].addr_a,LYT[index].addr_b);	
+}
+
+/**************************************************************************
+/*!
+	Look for the actual state answer
+*/	
+/**************************************************************************/
+void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
+{
+	if(myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS)
 	{
-		memory_map[MaCaco_OUT_s + slot] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0];
-		*trigger = MaCaco_DATACHANGED;
-	}	
-	
-	// Verify the actual color
-	if(((myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[4] == 0) && 
-	  ((memory_map[MaCaco_OUT_s + slot + 1] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1])) ||
-	  ((memory_map[MaCaco_OUT_s + slot + 2] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2])) ||
-	  ((memory_map[MaCaco_OUT_s + slot + 3] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3]))))
-	 {
-		memory_map[MaCaco_OUT_s + slot + 1] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1];
-		memory_map[MaCaco_OUT_s + slot + 2] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2];
-	    memory_map[MaCaco_OUT_s + slot + 3] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3];
-		*trigger = MaCaco_DATACHANGED;		
-	 }
+		// Verify the actual ON/OFF state
+		if((memory_map[MaCaco_OUT_s + slot] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0]))
+		{
+			memory_map[MaCaco_OUT_s + slot] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0];
+			*trigger = MaCaco_DATACHANGED;
+		}	
+		
+		// Verify the actual color
+		if(((myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[4] == 0) && 
+		  ((memory_map[MaCaco_OUT_s + slot + 1] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1])) ||
+		  ((memory_map[MaCaco_OUT_s + slot + 2] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2])) ||
+		  ((memory_map[MaCaco_OUT_s + slot + 3] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3]))))
+		 {
+			memory_map[MaCaco_OUT_s + slot + 1] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1];
+			memory_map[MaCaco_OUT_s + slot + 2] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2];
+			memory_map[MaCaco_OUT_s + slot + 3] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3];
+			*trigger = MaCaco_DATACHANGED;		
+		 }
+	}	 
 }	
 
 

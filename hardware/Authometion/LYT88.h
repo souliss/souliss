@@ -36,11 +36,6 @@
 #define	LYT_MinBright	0x00
 #define	LYT_MAXNUM		0x0A			// Maximum number of LYT groups
 
-// Speakeasy macro
-#define SetLYTLamps				Souliss_SetLYTLamps
-#define Logic_LYTLamps			Souliss_Logic_LYTLamps
-#define LYTState(slot)			Souliss_LYTState(memory_map, slot, &data_changed)
-
 typedef struct
 {
 	U8	addr_a;
@@ -51,7 +46,7 @@ typedef struct
 void Souliss_SetLYTLamps(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger);					
 void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger);
-
+void Souliss_LYTStateRequest(U8 slot);
 void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot);
 U8 FindLYT(U8 slot);
 			
@@ -59,4 +54,8 @@ U8 FindLYT(U8 slot);
 #define	SetLYTLamps(slot)			Souliss_SetLYTLamps(memory_map, slot)
 #define LogicLYTLamps(slot)			Souliss_Logic_LYTLamps(memory_map, slot, &data_changed)
 #define	LYTSleepTimer(slot)			Souliss_LYTLamps_Timer(memory_map, slot)			
+#define LYTState(slot)				Souliss_LYTState(memory_map, slot, &data_changed)
+#define LYTStateRequest				Souliss_LYTStateRequest
+
+
 #endif

@@ -10,7 +10,7 @@
 
     Verify shield's jumpers and select Hardware Usart while using this sketch, 
     remember to remove the jumpers before programming the Arduino. Use pin 10 as
-	chip select for the radio.
+    chip select for the radio.
     
 ***************************************************************************/
 #include "bconf/StandardArduino.h"              // Use an Arduino board
@@ -67,14 +67,17 @@ void loop()
         ProcessCommunication();
         
         // Here we process all communication with other nodes
-        FAST_PeerComms();    
+        FAST_1110ms() {
+            LYTState(LYTLIGHT1);
+        }
+        
     }   
     
     EXECUTESLOW() {
         UPDATESLOW();
         
         SLOW_10s() {
-            //LYTState(LYTLIGHT1);            // Verify the lamp state
+            LYTStateRequest(LYTLIGHT1);     // Request the lamp state
             LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
     }
