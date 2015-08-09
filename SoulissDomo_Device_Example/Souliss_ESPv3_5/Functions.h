@@ -5,34 +5,34 @@ void PINS_CONFIG(){
       //DHTPIN = 16;     // what pin we're connected to
     
   if(PWM_MODE){
-      LEDPWMP0 = 5;//12;      //LED STRIP ON PIN 12
-      LEDPWMP1 = 16;//13;      //LED STRIP ON PIN 13
+      LEDPWMP0 = 12;//5;      //LED STRIP ON PIN 12
+      LEDPWMP1 = 13;//16;      //LED STRIP ON PIN 13
       LEDPWMP2 = 15;      //LED STRIP ON PIN 15
   }
   
   if(PIR_MODE){
-      LEDPWMP0 = 5;//12;      //LED STRIP ON PIN 12
-      LEDPWMP1 = 16;//13;      //LED STRIP ON PIN 13
+      LEDPWMP0 = 12;//5;      //LED STRIP ON PIN 12
+      LEDPWMP1 = 13;//16;      //LED STRIP ON PIN 13
       LEDP = 15;      //LED STRIP ON PIN 15
       PIRP = 2;       //LED STRIP ON PIN 2
   }
   
   if(RGB_MODE){
-      LEDRP = 5;//12;      //LED STRIP ON PIN 12
-      LEDGP = 16;//13;      //LED STRIP ON PIN 13
+      LEDRP = 12;//5;      //LED STRIP ON PIN 12
+      LEDGP = 13;//16;      //LED STRIP ON PIN 13
       LEDBP = 15;      //LED STRIP ON PIN 15
   }
   
   //PIN OPTIONS FOR CAPACITIVE - RELAY OR BMP180
   if(CAPACITIVE){
       //SDA 5  SCL 4  PINS
-      CAP0P = 12;//4;
-      CAP1P = 14;//5;
+      CAP0P = 4;//12;
+      CAP1P = 5;//14;
   }
   
   if(RELAY){
-      RELAY0P = 12;//4;
-      RELAY1P = 14;//5;
+      RELAY0P = 4;//12;
+      RELAY1P = 5;//14;
   }
 
 }
@@ -99,12 +99,15 @@ void SLOT_CONFIG(){
   
   if(CAPACITIVE){
       CAP0 = NEXTSLOT; 
-      CAP1 = NEXTSLOT + 1;
-      NEXTSLOT = CAP1 + 1;
+      CAP1 = NEXTSLOT + 2;
+      THRE = NEXTSLOT + 4;
+      NEXTSLOT = THRE + 2;
       LOG.print("CAP0: ");
       LOG.println(CAP0);   
       LOG.print("CAP1: ");
       LOG.println(CAP1);             
+      LOG.print("THRE: ");
+      LOG.println(THRE);                   
   }
   
   if(RELAY){
@@ -234,13 +237,15 @@ uint8_t CapSense(uint8_t slot, uint8_t value, uint8_t value_hold, uint8_t pin, u
 	}
 	else if(cycles > thresold_value && (abs(millis()-time) > holdtime) && (InPin[pin]==PINSET || InPin[pin]==PINACTIVE))
 	{
-		if(AUTOCALIBRATE && (abs(millis()-time) > 15000)){
-            thresold = cycles + 4;
+	    if(AUTOCALIBRATE && (abs(millis()-time) > 15000)){
+                config.cap_thresold = cycles + 4;
+                EEPROM.write(4, cycles + 4);
+                EEPROM.commit();
             if(DEBUG_CAPSENSE) { 
                 LOG.print("Autocalibrate: ");
-                LOG.println(thresold);
+                LOG.println(config.cap_thresold);
             }
-            return thresold;
+            return config.cap_thresold;
         }else{
             InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
       		// Write timer value in memory map

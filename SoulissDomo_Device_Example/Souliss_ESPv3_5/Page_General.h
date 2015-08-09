@@ -55,7 +55,10 @@ const char PAGE_AdminGeneralSettings[] PROGMEM =  R"=====(
 		<option value="3">PRESSURE SENSOR</option>
 	</select>
 	</td></tr>
-	
+        <tr>
+        <td align="left"> Capacitive Thresold:</td>
+        <td><input type="text" id="cap_thresold" name="cap_thresold" size="2" value="5"></td>
+	</tr>
 </tr></p>
 <hr>
 <tr>
@@ -144,6 +147,7 @@ void send_general_html()
 			if (server.argName(i) == "byte0") config.byte0 = server.arg(i).toInt(); 
 			if (server.argName(i) == "byte1") config.byte1 = server.arg(i).toInt(); 
 			if (server.argName(i) == "byte2") config.byte2 = server.arg(i).toInt(); 
+        		if (server.argName(i) == "cap_thresold") config.cap_thresold = server.arg(i).toInt(); 
 			if (server.argName(i) == "tonenabled") config.AutoTurnOn = true; 
 			if (server.argName(i) == "toffenabled") config.AutoTurnOff = true; 
 			if (server.argName(i) == "tonhour") config.TurnOnHour =  server.arg(i).toInt(); 
@@ -170,6 +174,7 @@ void send_general_configuration_values_html()
 	values += "byte0|" +  (String) config.byte0 + "|input\n";
 	values += "byte1|" +  (String) config.byte1 + "|input\n";
 	values += "byte2|" +  (String) config.byte2 + "|input\n";
+	values += "cap_thresold|" +  (String) config.cap_thresold + "|input\n";
 	values += "tonhour|" +  (String)  config.TurnOnHour +  "|input\n";
 	values += "tonminute|" +   (String) config.TurnOnMinute +  "|input\n";
 	values += "toffhour|" +  (String)  config.TurnOffHour +  "|input\n";

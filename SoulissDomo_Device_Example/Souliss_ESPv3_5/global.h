@@ -43,8 +43,7 @@ struct strConfig {
 	byte byte2;
 	String tsAPI;
 	boolean rst;
-
-
+        byte cap_thresold;
 
 }   config;
 
@@ -79,6 +78,7 @@ void Souliss_Node_Start()
             SetDynamicAddressing();  
             GetAddress();
             //SetAddress(0xAB02, 0xFF00, 0xAB01); 
+            //SetAddress(0x00CA, 0xFF00, 0x00C8);
           }
           else {
             LOG.println("No Peer Mode coz No Wifi");	
@@ -232,6 +232,7 @@ bool EEPROM_CONFIG(){
             CAPACITIVE = false;
             RELAY = false;
             BMP180 = false;
+            
             break;
         case 1:
             CAPACITIVE = true;
@@ -268,6 +269,7 @@ void WriteConfig()
 	EEPROM.write(1,'F');
 	EEPROM.write(2,'G');
 	EEPROM.write(3,config.rst);
+        EEPROM.write(4,config.cap_thresold);
 
 	EEPROM.write(16,config.dhcp);
 	EEPROM.write(17,config.daylight);
@@ -324,7 +326,8 @@ boolean ReadConfig()
 	{
   		LOG.println("Configuration Found!");
 		config.rst = EEPROM.read(3);
-
+                config.cap_thresold = EEPROM.read(4);
+                
 		config.dhcp = 	EEPROM.read(16);
 
 		config.daylight = EEPROM.read(17);

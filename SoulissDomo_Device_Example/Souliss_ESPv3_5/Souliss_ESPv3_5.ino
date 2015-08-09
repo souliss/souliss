@@ -81,7 +81,7 @@
 //*********************************************************************************    
     //Autocalibrate Capacitive Sensors ON
     #define AUTOCALIBRATE         1
-    uint8_t thresold = 3;
+//    uint8_t thresold;
     
     //EEPROM NODE CONFIGURATION VALUES
     /*
@@ -123,6 +123,7 @@
     byte LEDBP;
     byte CAP0P;
     byte CAP1P;
+    byte THRE;
     byte RELAY0P;
     byte RELAY1P;
 
@@ -142,10 +143,6 @@
     //#include <SPI.h>
     #include "Souliss.h"
    
-   // MY FUNCTIONS LIBRARY
-    #include "Functions.h"
-
-
     //NEW WEBINTERFACE INCLUDES
     #include "helpers.h"
     #include "global.h"
@@ -160,6 +157,9 @@
     #include "PAGE_NetworkConfiguration.h"
     #include "main.h"
     
+    // MY FUNCTIONS LIBRARY
+    #include "Functions.h"
+    
     #define ACCESS_POINT_NAME  "Souliss"				
     //#define ACCESS_POINT_PASSWORD  "12345678" 
     #define AdminTimeOut 300  // Defines the Time in Seconds, when the Admin-Mode will be diabled
@@ -169,7 +169,7 @@
     bool oldInputState;
   
   
-    #define DHTPIN      13//16     // what pin we're connected to
+    #define DHTPIN      16//13     // what pin we're connected to
     // Include and Configure DHT11 SENSOR
     #include "DHT.h"
     #define DHTTYPE DHT11   // DHT 11 
@@ -181,7 +181,7 @@
     static const unsigned int out[] = { 7, 30, 45, 65, 150, 300, 450, 2100, 13000};  // x10  //ULTIMO VALOR REFERENCIA
     static const unsigned int in[]  = { 100, 350, 430, 500, 680, 780, 950, 1005, 1024 };  // 0 - 1024
 
-    #define DALLASPIN   4//14     //Se declara el pin donde se conectarÃ¡ la DATA
+    #define DALLASPIN   14//4     //Se declara el pin donde se conectarÃ¡ la DATA
     #include <OneWire.h>
     #include <DallasTemperature.h>
     OneWire ourWire(DALLASPIN); //Se establece el pin declarado como bus para la comunicaciÃ³n OneWire
@@ -227,6 +227,7 @@ void setup()
                 config.byte2 = 0;
                 config.tsAPI = "";
                 config.rst = false;
+                config.cap_thresold = 3;
 		WriteConfig();
 		LOG.println("General config applied");
 	}
@@ -349,6 +350,12 @@ void setup()
         Set_T51(PRESSURE0);
         Set_Temperature(BMP180TEMP);
     }
+    
+    if(CAPACITIVE){
+        Set_T51(CAP0);
+        Set_T51(CAP1);
+        Set_T51(THRE);
+    }
   
     if(RELAY){
         digitalWrite(RELAY0P,LOW);
@@ -388,12 +395,6 @@ void setup()
             // see the comments at the top of this sketch for the proper connections.
             LOG.print(F("BMP180 init fail\r\n"));
         }
-    }
-    
-    if(CAPACITIVE){
-    
-      
-    
     }
     
 }
@@ -478,8 +479,8 @@ void loop()
 
             if(PWM_MODE || PIR_MODE){
                 if(CAPACITIVE){
-                    CapSense(LEDPWM0,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP0P, thresold, 1500);
-                    CapSense(LEDPWM1,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP1P, thresold, 1500);
+                    CapSense(LEDPWM0,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP0P, config.cap_thresold, 1500);
+                    CapSense(LEDPWM1,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch, CAP1P, config.cap_thresold, 1500);
                     if(DEBUG_CAPSENSE) LOG.println("");
                 }                
                 
@@ -503,8 +504,8 @@ void loop()
             
             if(RGB_MODE){
                 if(CAPACITIVE){
-                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,CAP0P, 3, 1500);
-                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,CAP1P, 3, 1500);
+                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,CAP0P, config.cap_thresold, 1500);
+                    CapSense(LEDRGB,Souliss_T1n_ToggleCmd,Souliss_T1n_BrightSwitch,CAP1P, config.cap_thresold, 1500);
                 }  
                 Logic_LED_Strip(LEDRGB);
                 analogWrite(LEDRP, mOutput(LEDRGB+1)*4);
@@ -513,6 +514,26 @@ void loop()
             }
         }
         
+        FAST_110ms(){
+          if(CAPACITIVE){
+            float temp;
+            temp = readCapacitivePin(CAP0P);
+            if(temp>0) Souliss_ImportAnalog(memory_map, CAP0, &temp);       
+            temp = readCapacitivePin(CAP1P);
+            if(temp>0) Souliss_ImportAnalog(memory_map, CAP1, &temp);       
+            temp = config.cap_thresold;
+            Souliss_ImportAnalog(memory_map, THRE, &temp);       
+          }          
+        }
+
+        FAST_510ms(){
+           if(CAPACITIVE){           
+              Read_T51(CAP0);
+              Read_T51(CAP1);
+              Read_T51(THRE);
+           }
+        }
+
         FAST_910ms()    {
             if(DALLAS){ 
                   // Acquire temperature from the microcontroller ADC
