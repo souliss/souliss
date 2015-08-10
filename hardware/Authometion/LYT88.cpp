@@ -47,7 +47,6 @@ LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
 void InitLYT()
 {
 	myLYTWiFi.vfInitialize(PL1167_CS_PIN);
-	//vfISRInit();
 	myLYTWiFi.vfSetLocalChannel(PL1167_DEFAULT_RADIO_TRASMISSION,0);
 }
 
@@ -178,6 +177,9 @@ void Souliss_LYTStateRequest(U8 slot)
 /**************************************************************************/
 void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 {
+	// Process data coming from the bulbs
+	myLYTWiFi.vfProtocolTask();
+	
 	if(myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS)
 	{
 		// Verify the actual ON/OFF state
