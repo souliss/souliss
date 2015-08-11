@@ -1,5 +1,5 @@
 // NODO HABITACION OCIO, GW BASADO EN ESP conectado a ATMEGA644 por USART.
-/**************** ESP12 CODE **************************/
+/**************** ESP12 CODE *****************************/
 	/*
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
@@ -39,7 +39,7 @@ void loop()
     FAST_GatewayComms(); 
 }
 	*/  
-/**************** USART NODE ELEMENTS *****************/
+/**************** USART NODE ELEMENTS ********************/
 	/*      
     -Atmel ATXXX
       - Receptor IR
