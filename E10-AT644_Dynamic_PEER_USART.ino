@@ -1,9 +1,46 @@
 // NODO HABITACION OCIO, GW BASADO EN ESP conectado a ATMEGA644 por USART.
-/*
-  Distribucion del NODO:
-    -ESP12:
-      - 
-      
+/**************** ESP12 CODE **************************/
+	/*
+// Configure the framework
+#include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
+#include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
+#include "conf/DynamicAddressing.h"
+#include "conf/usart.h"                      // USART 
+#include "conf/IPBroadcast.h"
+
+// **** Define the WiFi name and password ****
+#define WIFICONF_INSKETCH
+#define WiFi_SSID               "mywifi"
+#define WiFi_Password           "mypassword"    
+
+// Include framework code and libraries
+#include <ESP8266WiFi.h>
+#include <EEPROM.h>
+#include "Souliss.h"
+
+void setup()
+{   
+    Initialize();
+
+    // Connect to the WiFi network and get an address from DHCP
+    GetIPAddress();                           
+    SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
+
+    // This is the vNet address for this node, used to communicate with other
+    // nodes in your Souliss network
+    SetAddress(0xD001, 0xFF00, 0x0000);
+    SetAddressingServer();
+}
+
+void loop()
+{
+    
+
+    FAST_GatewayComms(); 
+}
+	*/  
+/**************** USART NODE ELEMENTS *****************/
+	/*      
     -Atmel ATXXX
       - Receptor IR
       - RGB  (PWM x 3)
@@ -11,14 +48,10 @@
       - Botones x ?
       - DHT11 x 2 - Interior Exterior
       - LDR
-*/
+	*/
 
-
-
-
-
-/****************************IR REMOTE ************************************/
-
+/**************** CONFIGURATION **************************/
+	/******************* IR REMOTE   *************************/
 
 #include <IRLib.h>
 int RECV_PIN = 3;
@@ -33,7 +66,7 @@ decode_results results;
 */
 
 int remote_mode=0;
-/******************************** BUTTONS DEFINITIONS *************************/
+	/******************* IR BUTTONS DEFINITIONS **************/
 //This values are long values returned by IRremote library, to get your values enable DEBUG and see results on Serial Port
 #define DEBUG_IR  1
 #define	B0	16748655
@@ -61,44 +94,8 @@ int remote_mode=0;
 #define	B22	16773135
 #define	B23	16724175
 #define	B_Repeat	4294967295
+	/******************* SOULISS - CONFIGURATION  ************/
 
-/**************************************************************************
-	Souliss - Bridge
-	
-	It handle two lights located on two different boards and act them togheter
-	if receive a command from the push button. 
-	
-	Read Temperature - Humidity
-
-	It use Souliss Speak Easy to make write the sketch even easier.
-	
-	CONFIGURATION IS MANDATORY BEFORE COMPILING
-
-	PIN 2 - Pushbutton
-	PIN 3 - irLed
-	PIN 4 - Pushbutton
-	PIN 8 - Led
-	PIN 9 - LedPWM
-	PIN 6 - DHT11
-	PIN 7 - DHT11
-	
-	ENC28J60:
-		CS  - pin 10
-		SI  - PIN 11
-		SO  - PIN 12
-		SCK - PIN 13
-		
-		ENC CONNECTOR:
-		   *-*-*-*
-		   -     -
-		   -     -SO 
-		SI -     -SCK
-		CS -     -
-		VCC-     -GND
-	
-	******************** Configuration Parameters *********************
-	
-***************************************************************************/
 #define MaCaco_DEBUG_INSKETCH
 #define MaCaco_DEBUG  		1
 
@@ -119,7 +116,7 @@ int remote_mode=0;
 // Include framework code and libraries
 #include <SPI.h>
 #include "Souliss.h"
-
+	/******************* PIN CONFIG  *************************/
 //CORRECTION OF A BUG ON PIN DEFINITION ON SANGUINO BOOTLOADER
 #define A_0 29
 
@@ -155,8 +152,7 @@ int remote_mode=0;
 #define SensorLDR_pin   A_0//29//24//29//A5
 #define Sensor1_pin     25//30//A6
 #define Sensor2_pin     26//31//A7
-
-/*****************  SLOT DEFINITIONS  ***********************/
+	/******************* SLOT DEFINITIONS  *******************/
 
 
 #define TEMPERATURE		0			// Identify the temperature logic
@@ -185,17 +181,14 @@ dht DHT2;
 #define RELAY1                 21
 #define RELAY2                 22
 #define RELAY3                 23
-
-
+	/******************* BLOCKS CONFIGURATION  ***************/
 // 0 to DISABLE 1 TO ENABLE "BLOCKS"
 #define leds       1
 #define botones    0
 #define rgb        1
 #define relays     1
 #define sensors    1
-
-
-/************************************* COLORES ************************/
+	/******************* COLORES  ****************************/
 #define Rojo          0xFF,0x00,0x00
 #define Verde         0x00,0xFF,0x00
 #define Azul          0x00,0x00,0xFF
@@ -206,12 +199,11 @@ dht DHT2;
 #define Morado        0xFF,0x00,0xFF
 #define MoradoSuave   0xFF,0x5F,0xFF
 #define Blanco        0xFF,0xFF,0xFF
-
-/****************************** COLORS FOR setBrightColor FUNCTION ******************/
+	/******************* COLORS for setBrightColor FUNCTION **/
 #define Red           1
 #define Green         2
 #define Blue          3
-
+	/******************* KLUX TABLE FOR GET_LUX FUCNTION *****/
 //NUEVA FUNCION PARA LEER LDR Y PASARLO A KLUX:
 
 // Light calibration data
@@ -221,27 +213,17 @@ static const unsigned int out[] = { 0,1,10,30,40,60,80,170,230,340,470,700,1500,
         // note: the in array should have increasing values
 static const unsigned int in[]  = { 30,200,650,810,850,880,910,950,960,970,980,990,1000,1005,1010,1015 };
 
-void setup()
-{	
-  
-/************************ENABLE IR RECEIVER*******************/
-        //if(!Cap_Buttons){
-        //  Serial.begin(57600);
-        //  Serial.println("Start");
-        //}
-          
-        //irrecv.enableIRIn(); // Start the receiver
-        My_Receiver.enableIRIn(); // Start the receiver
-        My_Decoder.UseExtnBuf(Buffer);
-
-
-/************************ NETWORK SET ************************/ 
-        Initialize();
+/**************** SETUP **********************************/
+void setup(){	
+	/*************************** ENABLE IR RECEIVER  *****************/
+	My_Receiver.enableIRIn(); // Start the receiver
+	My_Decoder.UseExtnBuf(Buffer);
+	/*************************** NETWORK SET *************************/ 
+	Initialize();
 	
 	// Set network parameters
-        SetAddress(0xD002, 0xFF00, 0xD001); 
-
-/******************* SET LED STRIPS ********************/
+	SetAddress(0xD002, 0xFF00, 0xD001); 
+	/*************************** SET LED STRIPS  *********************/
         if (leds){
                 Set_SimpleLight(LED0);			// Define a simple LED light logic
                 Set_SimpleLight(LED1);			// Define a simple LED light logic
@@ -249,17 +231,16 @@ void setup()
                 Set_SimpleLight(LED3);			// Define a simple LED light logic
                 //Set_SimpleLight(LED4);			// Define a simple LED light logic
                 //Set_SimpleLight(LED5);			// Define a simple LED light logic
-                
         }
         if(rgb) Set_LED_Strip(LEDRGB_0);      
-        /****************** SET RELAYS ************************/
-        if(relays){
+	/*************************** SET RELAYS **************************/
+	if(relays){
                 Set_SimpleLight(RELAY0);			// Define a simple LED light logic
                 Set_SimpleLight(RELAY1);			// Define a simple LED light logic
                 Set_SimpleLight(RELAY2);			// Define a simple LED light logic        
                 Set_SimpleLight(RELAY3);			// Define a simple LED light logic  
         }
-        /***************   SET SENSORS **************************/	
+	/*************************** SET SENSORS *************************/	
         if(sensors){
         	Set_Temperature(TEMPERATURE);		// Define one temperature measure
         	Set_Humidity(HUMIDITY);				// Define one humidity measure
@@ -271,9 +252,10 @@ void setup()
                 Souliss_SetT54(memory_map, LDR);
                 
         }
-                // We connect a pushbutton between 5V and Button*_pin with a pulldown resistor 
-        	// between pin2 and GND, the LED is connected to pin9 with a resistor to
-        	// limit the current amount
+	/*************************** PIN CONFIGURATION *******************/        
+	// We connect a pushbutton between 5V and Button*_pin with a pulldown resistor 
+	// between pin2 and GND, the LED is connected to pin9 with a resistor to
+	// limit the current amount
         if(botones){
                 //pinMode(Button0_pin, INPUT);					// Hardware pulldown required
                 //pinMode(Button1_pin, INPUT);					// Hardware pulldown required
@@ -308,246 +290,215 @@ void setup()
         }
 }
 
-void loop()
-{   
-	// Here we start to play
+/**************** LOOP ***********************************/
+void loop(){   
 	EXECUTEFAST() {						
 		UPDATEFAST();	
-		FAST_30ms() {
-                     
-                     if(rgb){
-                        Logic_LED_Strip(LEDRGB_0);
-			// Use the output values to control the PWM
-			analogWrite(RGB_Red_pin, mOutput(LEDRED_0));
-			analogWrite(RGB_Green_pin, mOutput(LEDGREEN_0));
-			analogWrite(RGB_Blue_pin, mOutput(LEDBLUE_0));
-                        
-                     }
-                }
-		/* DEBUG RGB
-                        Serial.print(ssOutput(LEDRGB_0)); Serial.print(" /  ");
-                        Serial.print(ssOutput(LEDRGB_0+1)); Serial.print(" /  ");
-                        Serial.print(ssOutput(LEDRGB_0+2)); Serial.print(" /  ");
-                        Serial.print(ssOutput(LEDRGB_0+3)); Serial.println("");    
-                }*/
+		FAST_30ms() {    
+/********************* RGB LOGIC - OUTPUT - DEBUG ************************/                     
+    	if(rgb){
+				Logic_LED_Strip(LEDRGB_0);
+				// Use the output values to control the PWM
+				analogWrite(RGB_Red_pin, mOutput(LEDRED_0));
+				analogWrite(RGB_Green_pin, mOutput(LEDGREEN_0));
+				analogWrite(RGB_Blue_pin, mOutput(LEDBLUE_0));
+    	}
+    
+		// DEBUG RGB
+		//	Serial.print(ssOutput(LEDRGB_0)); Serial.print(" /  ");
+		//	Serial.print(ssOutput(LEDRGB_0+1)); Serial.print(" /  ");
+		//	Serial.print(ssOutput(LEDRGB_0+2)); Serial.print(" /  ");
+		//	Serial.print(ssOutput(LEDRGB_0+3)); Serial.println("");    
+		} //RGB LOGIC - OUTPUT - DEBUG
                 
 		FAST_50ms() {	// We process the logic and relevant input and output every 50 milliseconds
 /*********************** IR BUTTON ASSIGNATION TO SLOT *********************/    
-                        read_IR(); // READ IR CODES     
-                        Souliss_IrIn(B12, Souliss_T1n_ToggleCmd, memory_map, LED0);
-                        Souliss_IrIn(B5, Souliss_T1n_ToggleCmd, memory_map, LED1);
-                        Souliss_IrIn(B6, Souliss_T1n_ToggleCmd, memory_map, LED2);                        
-                        Souliss_IrIn(B7, Souliss_T1n_ToggleCmd, memory_map, LEDRGB_0);
-                        if(Souliss_IrIn(B2, 0xFF, memory_map, LEDRGB_0)) Serial.println("//Sleep 255");
+			read_IR(); // READ IR CODES     
+			Souliss_IrIn(B12, Souliss_T1n_ToggleCmd, memory_map, LED0);
+			Souliss_IrIn(B5, Souliss_T1n_ToggleCmd, memory_map, LED1);
+			Souliss_IrIn(B6, Souliss_T1n_ToggleCmd, memory_map, LED2);                        
+			Souliss_IrIn(B7, Souliss_T1n_ToggleCmd, memory_map, LEDRGB_0);
+			if(Souliss_IrIn(B2, 0xFF, memory_map, LEDRGB_0)) Serial.println("//Sleep 255");
                      
-                        Souliss_IrIn(B4, Souliss_T1n_ToggleCmd, memory_map, LED3);
-                        //Souliss_IrIn(B13, Souliss_T1n_ToogleCmd, memory_map, LED4);
-                        //Souliss_IrIn(B14, Souliss_T1n_ToogleCmd, memory_map, LED5); 
+			Souliss_IrIn(B4, Souliss_T1n_ToggleCmd, memory_map, LED3);
+			//Souliss_IrIn(B13, Souliss_T1n_ToogleCmd, memory_map, LED4);
+			//Souliss_IrIn(B14, Souliss_T1n_ToogleCmd, memory_map, LED5); 
 
-                        Souliss_IrIn(B15, Souliss_T1n_BrightUp, memory_map, LEDRGB_0);
-                        Souliss_IrIn(B19, Souliss_T1n_BrightDown, memory_map, LEDRGB_0);
-                        
-/*********************** BUTTON ASSIGNATION COLORS CALL FUNCTION *********************/                        
-                        //Buttons_to_Colors();   
-                        /************************************* COLORES ************************/
-                        /*
-                        #define Rojo          0xFF,0x00,0x00
-                        #define Verde         0x00,0xFF,0x00
-                        #define Azul          0x00,0x00,0xFF
-                        #define Naranja       0xFF,0x5F,0x00
-                        #define Amarillo      0xFF,0xFF,0x00
-                        #define AzulCielo     0x00,0xFF,0xFF
-                        #define AzulOscuro    0x00,0x5F,0xFF
-                        #define Morado        0xFF,0x00,0xFF
-                        #define MoradoSuave   0xFF,0x5F,0xFF
-                        #define Blanco        0xFF,0xFF,0xFF
-                        */
-                        if(Souliss_IrIn(B1, 0, memory_map, 0)) 
-                        { 
-                             if (remote_mode == 0) remote_mode=1;
-                             else remote_mode=0;
-                        }
-                        
-                        if(Souliss_IrIn(B16, 0, memory_map, LEDRGB_0)) 
-                        { 
-                            if (remote_mode == 0 ) setColor(LEDRGB_0, Naranja);
-                            else setBrightColor(LEDRGB_0, Red, Souliss_T1n_BrightUp);
-                        }
-                        if(Souliss_IrIn(B17, 0, memory_map, LEDRGB_0)) 
-                        { 
-                            if (remote_mode == 0) setColor(LEDRGB_0, Azul);
-                            else setBrightColor(LEDRGB_0, Green, Souliss_T1n_BrightUp);    
-                        }
-                        if(Souliss_IrIn(B18, 0, memory_map, LEDRGB_0)) 
-                        { 
-                            if (remote_mode == 0 ) setColor(LEDRGB_0, Morado);       
-                            else setBrightColor(LEDRGB_0, Blue, Souliss_T1n_BrightUp);                            
-                        }
-                        if(Souliss_IrIn(B20, 0, memory_map, LEDRGB_0)) 
-                        { 
-                            if (remote_mode == 0 ) setColor(LEDRGB_0, Amarillo);   
-                            else setBrightColor(LEDRGB_0, Red, Souliss_T1n_BrightDown);                         
-                        }
-                        if(Souliss_IrIn(B21, 0, memory_map, LEDRGB_0)) 
-                        { 
-                            if (remote_mode == 0 ) setColor(LEDRGB_0, Blanco);                            
-                            else setBrightColor(LEDRGB_0, Green, Souliss_T1n_BrightDown);
-                          
-                        }
-                        if(Souliss_IrIn(B22, 0, memory_map, LEDRGB_0)) 
-                        { 
-                            if (remote_mode == 0 ) setColor(LEDRGB_0, MoradoSuave);                      
-                            else setBrightColor(LEDRGB_0, Blue, Souliss_T1n_BrightDown);                            
-                        }
-                      
-                        
-/*********************** BUTTON ASSIGNATION TO SLOT *********************/
-if(botones){ 
+			Souliss_IrIn(B15, Souliss_T1n_BrightUp, memory_map, LEDRGB_0);
+			Souliss_IrIn(B19, Souliss_T1n_BrightDown, memory_map, LEDRGB_0);
+/*********************** IR BUTTON ASSIGNATION COLORS CALL FUNCTION *********************/                        
+			//Buttons_to_Colors();   
+			/************************************* COLORES ************************/
+			/*
+			#define Rojo          0xFF,0x00,0x00
+			#define Verde         0x00,0xFF,0x00
+			#define Azul          0x00,0x00,0xFF
+			#define Naranja       0xFF,0x5F,0x00
+			#define Amarillo      0xFF,0xFF,0x00
+			#define AzulCielo     0x00,0xFF,0xFF
+			#define AzulOscuro    0x00,0x5F,0xFF
+			#define Morado        0xFF,0x00,0xFF
+			#define MoradoSuave   0xFF,0x5F,0xFF
+			#define Blanco        0xFF,0xFF,0xFF
+			*/
+			
+			if(Souliss_IrIn(B1, 0, memory_map, 0)){ 
+				//Button to change between Modes
+				if (remote_mode == 0) remote_mode=1;
+				else remote_mode=0;
+			}
+      if(Souliss_IrIn(B16, 0, memory_map, LEDRGB_0)){ 
+				if (remote_mode == 0 ) setColor(LEDRGB_0, Naranja);
+				else setBrightColor(LEDRGB_0, Red, Souliss_T1n_BrightUp);
+			}
+			if(Souliss_IrIn(B17, 0, memory_map, LEDRGB_0)){ 
+				if (remote_mode == 0) setColor(LEDRGB_0, Azul);
+				else setBrightColor(LEDRGB_0, Green, Souliss_T1n_BrightUp);    
+			}
+			if(Souliss_IrIn(B18, 0, memory_map, LEDRGB_0)){ 
+				if (remote_mode == 0 ) setColor(LEDRGB_0, Morado);       
+				else setBrightColor(LEDRGB_0, Blue, Souliss_T1n_BrightUp);                            
+			}
+			if(Souliss_IrIn(B20, 0, memory_map, LEDRGB_0)){ 
+				if (remote_mode == 0 ) setColor(LEDRGB_0, Amarillo);   
+				else setBrightColor(LEDRGB_0, Red, Souliss_T1n_BrightDown);                         
+			}
+			if(Souliss_IrIn(B21, 0, memory_map, LEDRGB_0)){ 
+				if (remote_mode == 0 ) setColor(LEDRGB_0, Blanco);                            
+				else setBrightColor(LEDRGB_0, Green, Souliss_T1n_BrightDown);
+			}
+			if(Souliss_IrIn(B22, 0, memory_map, LEDRGB_0)){ 
+				if (remote_mode == 0 ) setColor(LEDRGB_0, MoradoSuave);                      
+				else setBrightColor(LEDRGB_0, Blue, Souliss_T1n_BrightDown);                            
+			}
+/*********************** PUSH BUTTON ASSIGNATION TO SLOT ***************/
+			if(botones){ 
+				DigIn(Button3_pin, Souliss_T1n_ToggleCmd, LED0);
+				DigIn(Button4_pin, Souliss_T1n_ToggleCmd, LED1);
+				DigIn(Button2_pin, Souliss_T1n_ToggleCmd, LED2);
+				//ssDigIn(Button5_pin, Souliss_T1n_ToogleCmd, LED5);
+			}
+/*********************** LOGIC LED STRIPS ******************************/                      
+ 			if(leds){
+        Logic_SimpleLight(LED0);
+				DigOut(Led0_pin, Souliss_T1n_Coil, LED0);
 
-                        DigIn(Button3_pin, Souliss_T1n_ToggleCmd, LED0);
-                        DigIn(Button4_pin, Souliss_T1n_ToggleCmd, LED1);
-                        DigIn(Button2_pin, Souliss_T1n_ToggleCmd, LED2);
-                        //ssDigIn(Button5_pin, Souliss_T1n_ToogleCmd, LED5);
-}
- /************************** LOGIC LED STRIPS *************************/                      
- if(leds){
+				Logic_SimpleLight(LED1);
+				DigOut(Led1_pin, Souliss_T1n_Coil, LED1);
 
-                        Logic_SimpleLight(LED0);
-                        DigOut(Led0_pin, Souliss_T1n_Coil, LED0);
+				Logic_SimpleLight(LED2);
+				DigOut(Led2_pin, Souliss_T1n_Coil, LED2);
 
-                        Logic_SimpleLight(LED1);
-                        DigOut(Led1_pin, Souliss_T1n_Coil, LED1);
+				Logic_SimpleLight(LED3);
+				DigOut(Led3_pin, Souliss_T1n_Coil, LED3);
 
-                        Logic_SimpleLight(LED2);
-                        DigOut(Led2_pin, Souliss_T1n_Coil, LED2);
+				//Logic_SimpleLight(LED4);
+				//ssDigOut(Led4_pin, Souliss_T1n_Coil, LED4);
 
-                        Logic_SimpleLight(LED3);
-                        DigOut(Led3_pin, Souliss_T1n_Coil, LED3);
-
-                        //Logic_SimpleLight(LED4);
-                        //ssDigOut(Led4_pin, Souliss_T1n_Coil, LED4);
-
-                        //Logic_SimpleLight(LED5);
-                        //ssDigOut(Led5_pin, Souliss_T1n_Coil, LED5);                        
-                        
-               
- }
- 
-/*************************IR BUTTONS TO RELAYS*****************************/
-                        Souliss_IrIn(B8, Souliss_T1n_ToggleCmd, memory_map, RELAY0);
-                        Souliss_IrIn(B9, Souliss_T1n_ToggleCmd, memory_map, RELAY1);
-                        Souliss_IrIn(B10, Souliss_T1n_ToggleCmd, memory_map, RELAY2);
-                        Souliss_IrIn(B11, Souliss_T1n_ToggleCmd, memory_map, RELAY3);
-/*************************** LOGIC RELAYS *********************************/
-if(relays){
-			Logic_SimpleLight(RELAY0);
-                        LowDigOut(Relay0_pin, Souliss_T1n_Coil, RELAY0);				
-			Logic_SimpleLight(RELAY1);
-                        LowDigOut(Relay1_pin, Souliss_T1n_Coil, RELAY1);				
-			Logic_SimpleLight(RELAY2);
-                        LowDigOut(Relay2_pin, Souliss_T1n_Coil, RELAY2);				
-			Logic_SimpleLight(RELAY3);
-                        LowDigOut(Relay3_pin, Souliss_T1n_Coil, RELAY3);				
-}
-    
+				//Logic_SimpleLight(LED5);
+				//ssDigOut(Led5_pin, Souliss_T1n_Coil, LED5);     
+ 			}
+/*********************** IR BUTTONS TO RELAYS***************************/
+      Souliss_IrIn(B8, Souliss_T1n_ToggleCmd, memory_map, RELAY0);
+			Souliss_IrIn(B9, Souliss_T1n_ToggleCmd, memory_map, RELAY1);
+			Souliss_IrIn(B10, Souliss_T1n_ToggleCmd, memory_map, RELAY2);
+			Souliss_IrIn(B11, Souliss_T1n_ToggleCmd, memory_map, RELAY3);
+/*********************** LOGIC RELAYS **********************************/
+			if(relays){
+				Logic_SimpleLight(RELAY0);
+        LowDigOut(Relay0_pin, Souliss_T1n_Coil, RELAY0);				
+				Logic_SimpleLight(RELAY1);
+				LowDigOut(Relay1_pin, Souliss_T1n_Coil, RELAY1);				
+				Logic_SimpleLight(RELAY2);
+				LowDigOut(Relay2_pin, Souliss_T1n_Coil, RELAY2);				
+				Logic_SimpleLight(RELAY3);
+				LowDigOut(Relay3_pin, Souliss_T1n_Coil, RELAY3);				
+			}
 		}//END FAST_50
 		
-if(sensors){		
+/*********************** SENSORS LOGIC *********************************/
+	if(sensors){		
 		FAST_510ms() {	// We retrieve data from the node with index 1 (peervNet_address)
 			Logic_Temperature(TEMPERATURE);
 			Logic_Humidity(HUMIDITY);
 		}
 		
 		FAST_710ms() {	// We retrieve typical (device type connected to the board) for node with index 1
-			//ssGetTypicals();
-                        Logic_Temperature(TEMPERATURE2);
+			Logic_Temperature(TEMPERATURE2);
 			Logic_Humidity(HUMIDITY2);
-                        
 		}
-                FAST_1110ms() { // Compare previous and new input measure and provide the updates to SoulissApp
-                      
-                        Souliss_Logic_T54(memory_map, LDR, 0.05, &data_changed);
-                     	
-                        
-                }
-}
-                FAST_PeerComms();
-
-    START_PeerJoin();
-
-                
+    FAST_1110ms() { // Compare previous and new input measure and provide the updates to SoulissApp
+			Souliss_Logic_T54(memory_map, LDR, 0.05, &data_changed);
+    }
+	}
+/*********************** PEER COMMS *******************************/
+  	FAST_PeerComms();
+  	START_PeerJoin();
 	}
 	
 	EXECUTESLOW() {
 		UPDATESLOW();
-
 		SLOW_10s() {		// We handle the light timer with a 10 seconds base time
-                          
-if(leds){
-                        Souliss_T11_Timer(memory_map, LED0);
-                        Souliss_T11_Timer(memory_map, LED1);
-                        Souliss_T11_Timer(memory_map, LED2);
-                        Souliss_T11_Timer(memory_map, LED3);
-                        //Souliss_T11_Timer(memory_map, LED4);
-                        //Souliss_T11_Timer(memory_map, LED5);                        
-                        
-    
-}
-if(rgb)                 Timer_LED_Strip(LEDRGB_0);
+			if(leds){
+				Souliss_T11_Timer(memory_map, LED0);
+				Souliss_T11_Timer(memory_map, LED1);
+				Souliss_T11_Timer(memory_map, LED2);
+				Souliss_T11_Timer(memory_map, LED3);
+				//Souliss_T11_Timer(memory_map, LED4);
+				//Souliss_T11_Timer(memory_map, LED5);                        
+			}
+			if(rgb) Timer_LED_Strip(LEDRGB_0);
 
-if(relays){
-                        Souliss_T11_Timer(memory_map, RELAY0);
-                        Souliss_T11_Timer(memory_map, RELAY1);
-                        Souliss_T11_Timer(memory_map, RELAY2);			
-                        Souliss_T11_Timer(memory_map, RELAY3);			
-}           
+			if(relays){
+				Souliss_T11_Timer(memory_map, RELAY0);
+				Souliss_T11_Timer(memory_map, RELAY1);
+				Souliss_T11_Timer(memory_map, RELAY2);			
+				Souliss_T11_Timer(memory_map, RELAY3);			
+			}           
 		} 
-if(sensors){
-		
-        SLOW_50s() {  // Read temperature and humidity from DHT every 110 seconds  
-// SENSOR 1		
-            DHT.read11(Sensor1_pin);	
-            float temperature = 0;
-	    if (DHT.temperature < 65) temperature = DHT.temperature;   // "IF" to AVOID ERRORS ON READING
-	    Souliss_ImportAnalog(memory_map, TEMPERATURE, &temperature);
+			if(sensors){
+				SLOW_50s() {  // Read temperature and humidity from DHT every 110 seconds  
+					//SENSOR 1		
+          DHT.read11(Sensor1_pin);	
+          float temperature = 0;
+					if (DHT.temperature < 65) temperature = DHT.temperature;   // "IF" to AVOID ERRORS ON READING
+					Souliss_ImportAnalog(memory_map, TEMPERATURE, &temperature);
 			
-			// Read humidity value from DHT sensor and convert from single-precision to half-precision
-            float humidity = 0;
-	    if (DHT.humidity < 100) humidity = DHT.humidity;   // "IF" to AVOID ERRORS ON READING
-	    Souliss_ImportAnalog(memory_map, HUMIDITY, &humidity);	
-	
-	}	
+					// Read humidity value from DHT sensor and convert from single-precision to half-precision
+          float humidity = 0;
+					if (DHT.humidity < 100) humidity = DHT.humidity;   // "IF" to AVOID ERRORS ON READING
+					Souliss_ImportAnalog(memory_map, HUMIDITY, &humidity);	
+				}	
         SLOW_70s() {  // Read temperature and humidity from DHT every 110 seconds  
-// SENSOR 2
-            DHT2.read11(Sensor2_pin);
-            float temperature2 = 0;
-	    if (DHT2.temperature < 65) temperature2 = DHT2.temperature; // "IF" to AVOID ERRORS ON READING
-	    Souliss_ImportAnalog(memory_map, TEMPERATURE2, &temperature2);
+					//SENSOR 2
+          DHT2.read11(Sensor2_pin);
+          float temperature2 = 0;
+					if (DHT2.temperature < 65) temperature2 = DHT2.temperature; // "IF" to AVOID ERRORS ON READING
+					Souliss_ImportAnalog(memory_map, TEMPERATURE2, &temperature2);
 			
-			// Read humidity value from DHT sensor and convert from single-precision to half-precision
-            float humidity2 = 0;
-	    if (DHT2.humidity < 100) humidity2 = DHT2.humidity; // "IF" to AVOID ERRORS ON READING
-            Souliss_ImportAnalog(memory_map, HUMIDITY2, &humidity2);	      
-	
-	}
+					// Read humidity value from DHT sensor and convert from single-precision to half-precision
+					float humidity2 = 0;
+	    		if (DHT2.humidity < 100) humidity2 = DHT2.humidity; // "IF" to AVOID ERRORS ON READING
+					Souliss_ImportAnalog(memory_map, HUMIDITY2, &humidity2);	      
+				}
         SLOW_90s() {  // Read temperature and humidity from DHT every 110 seconds 
-            //Serial.print("Time/min: ");
-            //Serial.println(millis()/60000); 
-//LDR SENSOR
-            float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //ORIGINAL
-            //float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //MEDIDA EN KLUX
-            //Serial.print("Lux: ");
-            //Serial.println(ldr_read);
-            if (ldr_read == 0) ldr_read = 0.01;
-            Souliss_ImportAnalog(memory_map, LDR, &ldr_read);
-
-	}
+          //Serial.print("Time/min: ");
+          //Serial.println(millis()/60000); 
+					//LDR SENSOR
+          float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //ORIGINAL
+          //float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //MEDIDA EN KLUX
+          //Serial.print("Lux: ");
+          //Serial.println(ldr_read);
+          if (ldr_read == 0) ldr_read = 0.01;
+          Souliss_ImportAnalog(memory_map, LDR, &ldr_read);
+				}
              
-}
+			}
 	}		
 } 
 
-//************************************** FUNCTIONS **************************************
+/**************** FUNCTIONS ******************************/
+	/******************** READ IR ******************************/
 void read_IR() {
     /*if (irrecv.decode(&results)) {
         irrecv.resume(); // Receive the next value
@@ -563,7 +514,7 @@ void read_IR() {
   }
     
 }
-
+	/******************** SOULISS IRIN *************************/
 uint8_t Souliss_IrIn(long remote_button, uint8_t value_state1, uint8_t *memory_map, uint8_t slot) {
 
     if (My_Decoder.value == remote_button)  
@@ -576,7 +527,7 @@ uint8_t Souliss_IrIn(long remote_button, uint8_t value_state1, uint8_t *memory_m
      }
      else return MaCaco_NODATACHANGED;
 }
-
+	/******************** SET COLOR ****************************/
 void setColor(uint8_t slot, uint8_t R, uint8_t G, uint8_t B)
 {
   mInput(slot+1)=R;
@@ -585,7 +536,7 @@ void setColor(uint8_t slot, uint8_t R, uint8_t G, uint8_t B)
 //  ssInput(slot)=Souliss_T1n_Coil;
   mInput(slot)=Souliss_T1n_Set;
 }
-
+	/******************** SET BRIGHTCOLOR **********************/
 void setBrightColor(uint8_t slot, uint8_t color, uint8_t value_state)  //color:  Red=1 Green=2 Blue=3
 {
   for (int i = 1; i<=3; i++)
@@ -603,10 +554,9 @@ void setBrightColor(uint8_t slot, uint8_t color, uint8_t value_state)  //color: 
   mInput(slot)=Souliss_T1n_Set;
   
 }
-
-//////////////////////////////////////////////////////////////////////////////
+	/******************** GET LUX FUNCTION *********************/
 // Calculate lux based on rawADC reading from LDR returns value in lux/10
-//////////////////////////////////////////////////////////////////////////////
+
 int get_lux(unsigned int pin, const unsigned int* _in, const unsigned int* _out, byte size)
 {
 	
@@ -626,8 +576,3 @@ int get_lux(unsigned int pin, const unsigned int* _in, const unsigned int* _out,
 	// interpolate in the right segment for the rest
 	return map(val, _in[pos-1], _in[pos], _out[pos-1], _out[pos]);
 }
-
-
-
-
-
