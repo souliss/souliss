@@ -97,10 +97,10 @@ int remote_mode=0;
 	/******************* SOULISS - CONFIGURATION  ************/
 
 #define MaCaco_DEBUG_INSKETCH
-#define MaCaco_DEBUG  		1
+#define MaCaco_DEBUG  		0
 
 #define VNET_DEBUG_INSKETCH
-#define VNET_DEBUG  		1
+#define VNET_DEBUG  		0
 
 #define SOULISS_DEBUG_INSKETCH
 #define SOULISS_DEBUG  		0
@@ -224,69 +224,69 @@ void setup(){
 	// Set network parameters
 	SetAddress(0xD002, 0xFF00, 0xD001); 
 	/*************************** SET LED STRIPS  *********************/
-        if (leds){
-                Set_SimpleLight(LED0);			// Define a simple LED light logic
-                Set_SimpleLight(LED1);			// Define a simple LED light logic
-                Set_SimpleLight(LED2);			// Define a simple LED light logic
-                Set_SimpleLight(LED3);			// Define a simple LED light logic
-                //Set_SimpleLight(LED4);			// Define a simple LED light logic
-                //Set_SimpleLight(LED5);			// Define a simple LED light logic
-        }
-        if(rgb) Set_LED_Strip(LEDRGB_0);      
+	if (leds){
+		Set_SimpleLight(LED0);			// Define a simple LED light logic
+		Set_SimpleLight(LED1);			// Define a simple LED light logic
+		Set_SimpleLight(LED2);			// Define a simple LED light logic
+		Set_SimpleLight(LED3);			// Define a simple LED light logic
+		//Set_SimpleLight(LED4);			// Define a simple LED light logic
+		//Set_SimpleLight(LED5);			// Define a simple LED light logic
+	}
+	if(rgb) Set_LED_Strip(LEDRGB_0);      
 	/*************************** SET RELAYS **************************/
 	if(relays){
-                Set_SimpleLight(RELAY0);			// Define a simple LED light logic
-                Set_SimpleLight(RELAY1);			// Define a simple LED light logic
-                Set_SimpleLight(RELAY2);			// Define a simple LED light logic        
-                Set_SimpleLight(RELAY3);			// Define a simple LED light logic  
-        }
+		Set_SimpleLight(RELAY0);			// Define a simple LED light logic
+		Set_SimpleLight(RELAY1);			// Define a simple LED light logic
+		Set_SimpleLight(RELAY2);			// Define a simple LED light logic        
+		Set_SimpleLight(RELAY3);			// Define a simple LED light logic  
+    }
 	/*************************** SET SENSORS *************************/	
-        if(sensors){
-        	Set_Temperature(TEMPERATURE);		// Define one temperature measure
-        	Set_Humidity(HUMIDITY);				// Define one humidity measure
+    if(sensors){
+		Set_Temperature(TEMPERATURE);		// Define one temperature measure
+		Set_Humidity(HUMIDITY);				// Define one humidity measure
         	
-                Set_Temperature(TEMPERATURE2);		// Define one temperature measure
-        	Set_Humidity(HUMIDITY2);		// Define one humidity measure
+		Set_Temperature(TEMPERATURE2);		// Define one temperature measure
+		Set_Humidity(HUMIDITY2);		// Define one humidity measure
         	
-                pinMode(SensorLDR_pin, INPUT);
-                Souliss_SetT54(memory_map, LDR);
+		pinMode(SensorLDR_pin, INPUT);
+		Souliss_SetT54(memory_map, LDR);
                 
-        }
+    }
 	/*************************** PIN CONFIGURATION *******************/        
 	// We connect a pushbutton between 5V and Button*_pin with a pulldown resistor 
 	// between pin2 and GND, the LED is connected to pin9 with a resistor to
 	// limit the current amount
         if(botones){
-                //pinMode(Button0_pin, INPUT);					// Hardware pulldown required
-                //pinMode(Button1_pin, INPUT);					// Hardware pulldown required
-                pinMode(Button2_pin, INPUT);					// Hardware pulldown required
-                pinMode(Button3_pin, INPUT);					// Hardware pulldown required
-                pinMode(Button4_pin, INPUT);					// Hardware pulldown required
-                pinMode(Button5_pin, INPUT);					// Hardware pulldown required
+            //pinMode(Button0_pin, INPUT);					// Hardware pulldown required
+			//pinMode(Button1_pin, INPUT);					// Hardware pulldown required
+			pinMode(Button2_pin, INPUT);					// Hardware pulldown required
+			pinMode(Button3_pin, INPUT);					// Hardware pulldown required
+			pinMode(Button4_pin, INPUT);					// Hardware pulldown required
+			pinMode(Button5_pin, INPUT);					// Hardware pulldown required
         }
         if(leds){
-        	pinMode(Led0_pin, OUTPUT);					// Power the LED
-        	pinMode(Led1_pin, OUTPUT);					// Power the LED
-        	pinMode(Led2_pin, OUTPUT);					// Power the LedPWM
-        	pinMode(Led3_pin, OUTPUT);					// Power the LED
-        	//pinMode(Led4_pin, OUTPUT);					// Power the LED
-        	//pinMode(Led5_pin, OUTPUT);					// Power the LedPWM
+			pinMode(Led0_pin, OUTPUT);					// Power the LED
+			pinMode(Led1_pin, OUTPUT);					// Power the LED
+			pinMode(Led2_pin, OUTPUT);					// Power the LedPWM
+			pinMode(Led3_pin, OUTPUT);					// Power the LED
+			//pinMode(Led4_pin, OUTPUT);					// Power the LED
+			//pinMode(Led5_pin, OUTPUT);					// Power the LedPWM
         }
         if(rgb){
-        	pinMode(RGB_Red_pin, OUTPUT);					// Power the LED
-        	pinMode(RGB_Green_pin, OUTPUT);					// Power the LED
-        	pinMode(RGB_Blue_pin, OUTPUT);					// Power the LedPWM
+			pinMode(RGB_Red_pin, OUTPUT);					// Power the LED
+			pinMode(RGB_Green_pin, OUTPUT);					// Power the LED
+			pinMode(RGB_Blue_pin, OUTPUT);					// Power the LedPWM
         }
         if(relays){
-        	digitalWrite(Relay0_pin, HIGH);
-        	digitalWrite(Relay1_pin, HIGH);
-        	digitalWrite(Relay2_pin, HIGH);
-        	digitalWrite(Relay3_pin, HIGH);
+			digitalWrite(Relay0_pin, HIGH);
+			digitalWrite(Relay1_pin, HIGH);
+			digitalWrite(Relay2_pin, HIGH);
+			digitalWrite(Relay3_pin, HIGH);
         
-                pinMode(Relay0_pin, OUTPUT);					// Power the LedPWM
-        	pinMode(Relay1_pin, OUTPUT);					// Power the LedPWM
-        	pinMode(Relay2_pin, OUTPUT);					// Power the LedPWM
-        	pinMode(Relay3_pin, OUTPUT);					// Power the LedPWM
+            pinMode(Relay0_pin, OUTPUT);					// Power the LedPWM
+			pinMode(Relay1_pin, OUTPUT);					// Power the LedPWM
+			pinMode(Relay2_pin, OUTPUT);					// Power the LedPWM
+			pinMode(Relay3_pin, OUTPUT);					// Power the LedPWM
         }
 }
 
