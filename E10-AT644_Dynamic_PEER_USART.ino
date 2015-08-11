@@ -347,7 +347,7 @@ void loop(){
 				if (remote_mode == 0) remote_mode=1;
 				else remote_mode=0;
 			}
-      if(Souliss_IrIn(B16, 0, memory_map, LEDRGB_0)){ 
+			if(Souliss_IrIn(B16, 0, memory_map, LEDRGB_0)){ 
 				if (remote_mode == 0 ) setColor(LEDRGB_0, Naranja);
 				else setBrightColor(LEDRGB_0, Red, Souliss_T1n_BrightUp);
 			}
@@ -380,7 +380,7 @@ void loop(){
 			}
 /*********************** LOGIC LED STRIPS ******************************/                      
  			if(leds){
-        Logic_SimpleLight(LED0);
+				Logic_SimpleLight(LED0);
 				DigOut(Led0_pin, Souliss_T1n_Coil, LED0);
 
 				Logic_SimpleLight(LED1);
@@ -399,14 +399,14 @@ void loop(){
 				//ssDigOut(Led5_pin, Souliss_T1n_Coil, LED5);     
  			}
 /*********************** IR BUTTONS TO RELAYS***************************/
-      Souliss_IrIn(B8, Souliss_T1n_ToggleCmd, memory_map, RELAY0);
+			Souliss_IrIn(B8, Souliss_T1n_ToggleCmd, memory_map, RELAY0);
 			Souliss_IrIn(B9, Souliss_T1n_ToggleCmd, memory_map, RELAY1);
 			Souliss_IrIn(B10, Souliss_T1n_ToggleCmd, memory_map, RELAY2);
 			Souliss_IrIn(B11, Souliss_T1n_ToggleCmd, memory_map, RELAY3);
 /*********************** LOGIC RELAYS **********************************/
 			if(relays){
 				Logic_SimpleLight(RELAY0);
-        LowDigOut(Relay0_pin, Souliss_T1n_Coil, RELAY0);				
+				LowDigOut(Relay0_pin, Souliss_T1n_Coil, RELAY0);				
 				Logic_SimpleLight(RELAY1);
 				LowDigOut(Relay1_pin, Souliss_T1n_Coil, RELAY1);				
 				Logic_SimpleLight(RELAY2);
@@ -427,9 +427,9 @@ void loop(){
 			Logic_Temperature(TEMPERATURE2);
 			Logic_Humidity(HUMIDITY2);
 		}
-    FAST_1110ms() { // Compare previous and new input measure and provide the updates to SoulissApp
+    		FAST_1110ms() { // Compare previous and new input measure and provide the updates to SoulissApp
 			Souliss_Logic_T54(memory_map, LDR, 0.05, &data_changed);
-    }
+    		}
 	}
 /*********************** PEER COMMS *******************************/
   	FAST_PeerComms();
@@ -459,38 +459,37 @@ void loop(){
 			if(sensors){
 				SLOW_50s() {  // Read temperature and humidity from DHT every 110 seconds  
 					//SENSOR 1		
-          DHT.read11(Sensor1_pin);	
-          float temperature = 0;
+					DHT.read11(Sensor1_pin);	
+					float temperature = 0;
 					if (DHT.temperature < 65) temperature = DHT.temperature;   // "IF" to AVOID ERRORS ON READING
 					Souliss_ImportAnalog(memory_map, TEMPERATURE, &temperature);
-			
 					// Read humidity value from DHT sensor and convert from single-precision to half-precision
-          float humidity = 0;
+					float humidity = 0;
 					if (DHT.humidity < 100) humidity = DHT.humidity;   // "IF" to AVOID ERRORS ON READING
 					Souliss_ImportAnalog(memory_map, HUMIDITY, &humidity);	
-				}	
-        SLOW_70s() {  // Read temperature and humidity from DHT every 110 seconds  
+				} 	
+				SLOW_70s() {  // Read temperature and humidity from DHT every 110 seconds  
 					//SENSOR 2
-          DHT2.read11(Sensor2_pin);
-          float temperature2 = 0;
+					DHT2.read11(Sensor2_pin);
+					float temperature2 = 0;
 					if (DHT2.temperature < 65) temperature2 = DHT2.temperature; // "IF" to AVOID ERRORS ON READING
 					Souliss_ImportAnalog(memory_map, TEMPERATURE2, &temperature2);
 			
 					// Read humidity value from DHT sensor and convert from single-precision to half-precision
 					float humidity2 = 0;
-	    		if (DHT2.humidity < 100) humidity2 = DHT2.humidity; // "IF" to AVOID ERRORS ON READING
+					if (DHT2.humidity < 100) humidity2 = DHT2.humidity; // "IF" to AVOID ERRORS ON READING
 					Souliss_ImportAnalog(memory_map, HUMIDITY2, &humidity2);	      
 				}
-        SLOW_90s() {  // Read temperature and humidity from DHT every 110 seconds 
-          //Serial.print("Time/min: ");
-          //Serial.println(millis()/60000); 
+        			SLOW_90s() {  // Read temperature and humidity from DHT every 110 seconds 
+          				//Serial.print("Time/min: ");
+          				//Serial.println(millis()/60000); 
 					//LDR SENSOR
-          float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //ORIGINAL
-          //float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //MEDIDA EN KLUX
-          //Serial.print("Lux: ");
-          //Serial.println(ldr_read);
-          if (ldr_read == 0) ldr_read = 0.01;
-          Souliss_ImportAnalog(memory_map, LDR, &ldr_read);
+					float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //ORIGINAL
+					//float ldr_read = get_lux(SensorLDR_pin, in, out, 16)/10.0;  //MEDIDA EN KLUX
+					//Serial.print("Lux: ");
+					//Serial.println(ldr_read);
+					if (ldr_read == 0) ldr_read = 0.01;
+					Souliss_ImportAnalog(memory_map, LDR, &ldr_read);
 				}
              
 			}
