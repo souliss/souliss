@@ -30,6 +30,7 @@
     1 - CAPACITIVE
     2 - RELAY
     3 - BMP180
+    4 - CAPACITIVE + DEBUG_CAPSENSE
     */
 
    
@@ -74,7 +75,8 @@
     
     #define DEBUG_PRESSURE        1
     
-    #define DEBUG_CAPSENSE        0
+    //#define DEBUG_CAPSENSE        0
+    boolean DEBUG_CAPSENSE = 0;
     
     #define DEBUG_GETLUX          0
 
@@ -351,7 +353,7 @@ void setup()
         Set_Temperature(BMP180TEMP);
     }
     
-    if(CAPACITIVE){
+    if(CAPACITIVE && DEBUG_CAPSENSE){
         Set_T51(CAP0);
         Set_T51(CAP1);
         Set_T51(THRE);
@@ -515,7 +517,7 @@ void loop()
         }
         
         FAST_110ms(){
-          if(CAPACITIVE){
+          if(CAPACITIVE && DEBUG_CAPSENSE){
             float temp;
             temp = readCapacitivePin(CAP0P);
             if(temp>0) Souliss_ImportAnalog(memory_map, CAP0, &temp);       
@@ -527,7 +529,7 @@ void loop()
         }
 
         FAST_510ms(){
-           if(CAPACITIVE){           
+           if(CAPACITIVE && DEBUG_CAPSENSE){           
               Read_T51(CAP0);
               Read_T51(CAP1);
               Read_T51(THRE);
