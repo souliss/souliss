@@ -50,9 +50,10 @@ const char PAGE_AdminGeneralSettings[] PROGMEM =  R"=====(
 	<tr><td>Others: </td><td>
 	<select  id="byte2" name="byte2">
 		<option value="0">None</option>
-		<option value="1">CAPACITIVEE</option>
+		<option value="1">CAPACITIVE</option>
 		<option value="2">RELAY</option>
 		<option value="3">PRESSURE SENSOR</option>
+		<option value="4">CAPACITIVE_DEBUG</option>
 	</select>
 	</td></tr>
         <tr>
