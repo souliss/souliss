@@ -689,6 +689,7 @@ int Souliss_GetLux(const unsigned int* _in, const unsigned int* _out, byte size)
 	// val = constrain(val, _in[0], _in[size-1]);
         
 	int val = analogRead(A0);
+	delay(10);  //TODO: TEST WITH LOWER VALUES
 
         //DEBUG
         if(DEBUG_GETLUX){
