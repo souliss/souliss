@@ -238,6 +238,7 @@ bool EEPROM_CONFIG(){
             CAPACITIVE = true;
             RELAY = false;
             BMP180 = false;
+            DEBUG_CAPSENSE = false;
             break;
         case 2:
             CAPACITIVE = false;
@@ -249,6 +250,13 @@ bool EEPROM_CONFIG(){
             RELAY = false;
             BMP180 = true;
             break;
+        case 4:
+            CAPACITIVE = true;
+            RELAY = false;
+            BMP180 = false;
+            DEBUG_CAPSENSE = true;
+            break;    
+            
     }
     LOG.print("CRB (CAP-RELAY-BMP180)");
     LOG.print(CAPACITIVE);
