@@ -214,7 +214,7 @@ void setup()
 		config.Gateway[0] = 192;config.Gateway[1] = 168;config.Gateway[2] = 1;config.Gateway[3] = 1;
 		config.ntpServerName = "0.id.pool.ntp.org";
 		config.Update_Time_Via_NTP_Every =  0;
-		config.timezone = +7;
+		config.timezone = +1;
 		config.daylight = true;
 		config.DeviceName = "Not Named";
 		config.AutoTurnOff = false;
