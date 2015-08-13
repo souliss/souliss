@@ -287,7 +287,7 @@ void setup()
 
     
     Souliss_Node_Start();
-    SetAddress(0xD001, 0xFF00, 0x0000);
+    //SetAddress(0xD001, 0xFF00, 0x0000);
     
                 LOG.print("vNet Media : ");
                 LOG.println (vNet_GetAddress(vNet_MyMedia()),HEX);

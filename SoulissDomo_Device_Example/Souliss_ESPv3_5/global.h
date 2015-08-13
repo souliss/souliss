@@ -63,6 +63,9 @@ void Souliss_Node_Start()
             // Connect to the WiFi network and get an address from DHCP                      
             SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
             SetAddressingServer();
+            SetAsPeerNode(0x00C7, 1);	
+            SetAsPeerNode(0x00C9, 2);	
+            SetAsPeerNode(0x00CA, 3);	            
           }
           else {
         	LOG.println("No Gateway Mode coz No Wifi");		
