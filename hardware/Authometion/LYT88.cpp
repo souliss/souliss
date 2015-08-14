@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Support for Authometion IoTuino
+	Souliss Support for Authometion LYT88
     Copyright (C) 2014  Veseo
 	
 ***************************************************************************/
@@ -28,28 +28,45 @@
     \file 
     \ingroup
 */
-#include "Iotuino.h"
 #include "Typicals.h"
 #include "GetConfig.h"
-#include "LYT.h"
+#include "LYT88.h"
+
+#include <SPI.h>
+#include <PL1167.h>
+#include <Lytwifi.h>
+#include <WiFiInterrupt.h>
+
+#define PL1167_CS_PIN	10
+
+#define	BRIGHT_STEP		20
 
 LYT_struct LYT[LYT_MAXNUM];								// Each RGB light use 
-IOTUINO Iotuino;										// Define a class to control Iotuino wireless radio
+LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
+
+void InitLYT()
+{
+	myLYTWiFi.vfInitialize(PL1167_CS_PIN);
+	myLYTWiFi.vfSetLocalChannel(PL1167_DEFAULT_RADIO_TRASMISSION,0);
+}
 
 /**************************************************************************
 /*!
 	Set LYT values
 */	
 /**************************************************************************/
-void SetLYT(U8 index, U8 mode, U8 addr_a, U8 addr_b, U8 slot)
+void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot)
 {
 	if(index < LYT_MAXNUM)
 	{
-		LYT[index].mode = mode;
 		LYT[index].addr_a = addr_a;
 		LYT[index].addr_b = addr_b;
 		LYT[index].slot;	
 	}
+	
+	// Set the LYT
+	myLYTWiFi.vfSetSyncWord(addr_a, addr_b, C_MSBYTE_SYNCWORD0, C_LSBYTE_SYNCWORD0);	
+	
 }
 
 /**************************************************************************
@@ -79,54 +96,8 @@ void LYTOn(U8 slot)
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
 
-	// Set transmission parameters
-    Iotuino.setRadioTransmission(118);
-       
-    if(LYT[index].mode == 0)								//Mode LYT RGB
-      Iotuino.rgbOn(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 1)							//Mode LYT WHITYE 
-      Iotuino.whiteOn(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwOn(LYT[index].addr_a,LYT[index].addr_b);  
-		
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(18);	
-}
-
-/**************************************************************************
-/*!
-	Set the address for the LYT Bulb
-*/	
-/**************************************************************************/
-void LYTSetAddress(U8 slot)
-{
-	// Get the index of the LYT logic typicals
-	uint8_t index =	FindLYT(slot);
-       
-    if(LYT[index].mode == 0)								//Mode LYT RGB
-      Iotuino.rgbSetAddress(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 1)							//Mode LYT WHITYE 
-      Iotuino.whiteSetAddress(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwSetAddress(LYT[index].addr_a,LYT[index].addr_b);  
-}
-
-/**************************************************************************
-/*!
-	Clear the address for the LYT Bulb
-*/	
-/**************************************************************************/
-void LYTClearAddress(U8 slot)
-{
-	// Get the index of the LYT logic typicals
-	uint8_t index =	FindLYT(slot);
-       
-    if(LYT[index].mode == 0)								//Mode LYT RGB
-      Iotuino.rgbClearAddress(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 1)							//Mode LYT WHITYE 
-      Iotuino.whiteClearAddress(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwClearAddress(LYT[index].addr_a,LYT[index].addr_b);  
+	// Send turn ON command
+	myLYTWiFi.ui8fSwitchOnAndCheck(LYT[index].addr_a,LYT[index].addr_b, 1, BRIGHT_STEP);      	
 }
 
 /**************************************************************************
@@ -139,36 +110,9 @@ void LYTOff(U8 slot)
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
 	
-	// Set transmission parameters
-    Iotuino.setRadioTransmission(118);
-       
-    if(LYT[index].mode == 0)								//Mode LYT RGB
-      Iotuino.rgbOff(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 1)							//Mode LYT WHITYE 
-      Iotuino.whiteOff(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwOff(LYT[index].addr_a,LYT[index].addr_b);  
-		
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(18);
+	// Send turn OFF command
+	myLYTWiFi.ui8fSwitchOffAndCheck(LYT[index].addr_a,LYT[index].addr_b, 1, BRIGHT_STEP);  
 }
-
-/**************************************************************************
-/*!
-	Set the color
-*/	
-/**************************************************************************/
-void LYTSetColor(U8 color, U8 slot)
-{
-	// Get the index of the LYT logic typicals
-	uint8_t index =	FindLYT(slot);
-	
-	if(LYT[index].mode == 0)								//Mode LYT RGB 
-      Iotuino.rgbRgb(LYT[index].addr_a,LYT[index].addr_b, color);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwRgb(LYT[index].addr_a,LYT[index].addr_b, color);  
-}
-
 
 /**************************************************************************
 /*!
@@ -180,18 +124,8 @@ void LYTSetWhite(U8 slot)
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
 	
-	// Set transmission parameters
-    Iotuino.setRadioTransmission(118);
-       
-    if(LYT[index].mode == 0)								//Mode LYT RGB
-      Iotuino.rgbMaxWhite(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 1)							//Mode LYT WHITYE 
-      Iotuino.whiteMaxWhite(LYT[index].addr_a,LYT[index].addr_b);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwMaxWhite(LYT[index].addr_a,LYT[index].addr_b);  
-		
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(18);
+	// Send turn OFF command
+	myLYTWiFi.ui8fSetBrightnessValueAndCheck(LYT[index].addr_a,LYT[index].addr_b, 255, 1, BRIGHT_STEP);  
 }
 
 /**************************************************************************
@@ -203,11 +137,9 @@ void LYTSetBright(U8 bright, U8 slot)
 {
 	// Get the index of the LYT logic typicals
 	uint8_t index =	FindLYT(slot);
-       
-	if(LYT[index].mode == 1)								//Mode LYT WHITYE 
-      Iotuino.whiteSetBrightness(LYT[index].addr_a,LYT[index].addr_b, bright);
-    else if(LYT[index].mode == 2)							//Mode New LYT RGBW
-      Iotuino.rgbwSetBrightness(LYT[index].addr_a,LYT[index].addr_b, bright);  
+	
+	// Send turn OFF command
+	myLYTWiFi.ui8fSetBrightnessValueAndCheck(LYT[index].addr_a,LYT[index].addr_b, bright, 1, BRIGHT_STEP);  
 }
 
 /**************************************************************************
@@ -217,34 +149,60 @@ void LYTSetBright(U8 bright, U8 slot)
 /**************************************************************************/
 void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 {
-	U16 s1, s2, s3;
-	float r, g, b, lum;
-	s1 = R+B;												// Sector 1
-	s2 = R+G;												// Sector 2
-	s3 = B+G;												// Sector 3
-	r = (float)R;
-	g = (float)G;
-	b = (float)B;
-
-	// Identify the prevalent sector
-	if((s1 >= s2) && (s1 >= s3))
-		lum=s1*0.034;
-	else if((s2 >= s1) && (s2 >= s3))
-		lum=s2*0.034;		
-	else if((s3 >= s1) && (s3 >= s2))
-		lum=s3*0.034;		
-
-	int color = ConverColorRgbToColorVal((int)R, (int)G, (int)B);
+	// Get the index of the LYT logic typicals
+	uint8_t index =	FindLYT(slot);
 	
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(5);
-
-	LYTSetColor((U8)color, slot);
-	LYTSetBright((U8)lum, slot);
-	
-	// Reset transmission parameters
-	Iotuino.setRadioTransmission(18);	
+	// Send turn OFF command
+	myLYTWiFi.ui8fSetRGBValuesAndCheck(LYT[index].addr_a,LYT[index].addr_b, R, G, B, 1, BRIGHT_STEP);  	
 }	
+
+/**************************************************************************
+/*!
+	Check the actual state, the code stops until an answer has been received
+*/	
+/**************************************************************************/
+void Souliss_LYTStateRequest(U8 slot)
+{
+	// Get the index of the LYT logic typicals
+	uint8_t index =	FindLYT(slot);
+	
+	// Request data update
+	myLYTWiFi.vfAskLampInfoStatus(LYT[index].addr_a,LYT[index].addr_b);	
+}
+
+/**************************************************************************
+/*!
+	Look for the actual state answer
+*/	
+/**************************************************************************/
+void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
+{
+	// Process data coming from the bulbs
+	myLYTWiFi.vfProtocolTask();
+	
+	if(myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS)
+	{
+		// Verify the actual ON/OFF state
+		if((memory_map[MaCaco_OUT_s + slot] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0]))
+		{
+			memory_map[MaCaco_OUT_s + slot] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0];
+			*trigger = MaCaco_DATACHANGED;
+		}	
+		
+		// Verify the actual color
+		if(((myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[4] == 0) && 
+		  ((memory_map[MaCaco_OUT_s + slot + 1] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1])) ||
+		  ((memory_map[MaCaco_OUT_s + slot + 2] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2])) ||
+		  ((memory_map[MaCaco_OUT_s + slot + 3] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3]))))
+		 {
+			memory_map[MaCaco_OUT_s + slot + 1] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1];
+			memory_map[MaCaco_OUT_s + slot + 2] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2];
+			memory_map[MaCaco_OUT_s + slot + 3] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3];
+			*trigger = MaCaco_DATACHANGED;		
+		 }
+	}	 
+}	
+
 
 /**************************************************************************
 /*!
@@ -348,10 +306,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
-		
-		// Trig the change
-		i_trigger = Souliss_TRIGGED;	
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
@@ -398,37 +353,82 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			(memory_map[MaCaco_OUT_s + slot + 2]  >= 0xF0) &&
 			(memory_map[MaCaco_OUT_s + slot + 3]  >= 0xF0)) )			
 		{
-			LYTSetWhite(slot);
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
 		}		
 		else // Set the color
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
-		
-		// Set bright
-		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);		
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
 	{
-		// Increase the light value
-		if(memory_map[MaCaco_AUXIN_s + slot] < LYT_MaxBright) 
-			memory_map[MaCaco_AUXIN_s + slot]++;
+		// Lower the command repetition value
+		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION/5);
+
+		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
+		{	
+			for(U8 i=0;i<BRIGHT_STEP;i++)
+			{	
+				LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]++, memory_map[MaCaco_OUT_s + slot + 2]++, memory_map[MaCaco_OUT_s + slot + 3]++, slot);				
+				delay(5);
+			}
+		}
+		else
+		{
+			// Increase the light value
+			if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))
+			{
+				for(U8 i=0;i<BRIGHT_STEP;i++)
+				{	
+					LYTSetBright(memory_map[MaCaco_AUXIN_s + slot]++, slot);
+					delay(5);
+				}	
+			}	
+		}
 		
-		// Set bright
-		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
-		
+		// Save the new color
+		for(U8 i=1;i<4;i++)
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		
+		// Reset previous value
+		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION);
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
-		// Decrease the light value
-		if(memory_map[MaCaco_AUXIN_s + slot] > LYT_MinBright) 
-			memory_map[MaCaco_AUXIN_s + slot]--;
-			
-		// Set bright
-		LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
+		// Lower the command repetition value
+		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION/5);
+	
+		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
+		{	
+			for(U8 i=0;i<BRIGHT_STEP;i++)
+			{	
+				LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]--, memory_map[MaCaco_OUT_s + slot + 2]--, memory_map[MaCaco_OUT_s + slot + 3]--, slot);				
+				delay(5);
+			}
+		}
+		else
+		{		
+			// Decrease the light value
+			if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP)) 
+			{
+				for(U8 i=0;i<BRIGHT_STEP;i++)
+				{	
+					LYTSetBright(memory_map[MaCaco_AUXIN_s + slot]++, slot);
+					delay(5);
+				}	
+			}					
+		}
+
+		// Save the new color
+		for(U8 i=1;i<4;i++)
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		
+		// Restore previous value
+		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION);
+
 	}	
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
@@ -452,11 +452,13 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)
 	{	
+		// Lower the command repetition
+		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION/5);
+
 		// Set the new color
 		for(U8 i=1;i<4;i++)
 		{
 			memory_map[MaCaco_OUT_s + slot + i] = memory_map[MaCaco_IN_s + slot + i];
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 			memory_map[MaCaco_IN_s + slot + i] = Souliss_T1n_RstCmd;
 		}
 
@@ -468,10 +470,21 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			LYTSetWhite(slot);
 		}		
 		else // Set the color
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], 
+							memory_map[MaCaco_OUT_s + slot + 2], 
+							memory_map[MaCaco_OUT_s + slot + 3], 
+								slot);					
+
+		// Save the new color
+		for(U8 i=1;i<4;i++)
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		
+		
+		// Set back to previous value
+		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION);
+
 	}
 
 	// Update the trigger
@@ -495,23 +508,11 @@ void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot)
 		{
 			// Set the good night mode
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
-			
-			// Notify with a quick bright change
-			uint8_t actualbright = memory_map[MaCaco_AUXIN_s + slot];
-			while(actualbright)
-				LYTSetBright(actualbright--, slot);
-			
-			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);	
 		}
 		
 		// Decrease timer and check the expiration
 		if((--memory_map[MaCaco_IN_s + slot]) == Souliss_T1n_Timed)		
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		
-		// Bright down the light
-		if(memory_map[MaCaco_AUXIN_s + slot])
-			LYTSetBright(--memory_map[MaCaco_AUXIN_s + slot], slot);
-		else
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;	// Lamp off
 	}	
 }
