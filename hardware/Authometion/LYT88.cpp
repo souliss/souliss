@@ -38,11 +38,15 @@
 #include <WiFiInterrupt.h>
 
 #define PL1167_CS_PIN	10
-
 #define	BRIGHT_STEP		20
 
 LYT_struct LYT[LYT_MAXNUM];								// Each RGB light use 
 LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
+
+#define	ANSWER_WAIT		20
+#define	ANSWER_SET		10
+#define ANSWER_TIMEOUT	0
+uint8_t answer_timeout=ANSWER_WAIT;						// Timeout while waiting for an answer from the lamp bulb
 
 void InitLYT()
 {
@@ -168,6 +172,9 @@ void Souliss_LYTStateRequest(U8 slot)
 	
 	// Request data update
 	myLYTWiFi.vfAskLampInfoStatus(LYT[index].addr_a,LYT[index].addr_b);	
+	
+	// Set the countdown timeout
+	answer_timeout=ANSWER_SET;
 }
 
 /**************************************************************************
@@ -194,13 +201,23 @@ void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 		  ((memory_map[MaCaco_OUT_s + slot + 1] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1])) ||
 		  ((memory_map[MaCaco_OUT_s + slot + 2] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2])) ||
 		  ((memory_map[MaCaco_OUT_s + slot + 3] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3]))))
-		 {
+		{
 			memory_map[MaCaco_OUT_s + slot + 1] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[1];
 			memory_map[MaCaco_OUT_s + slot + 2] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[2];
 			memory_map[MaCaco_OUT_s + slot + 3] = myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[3];
 			*trigger = MaCaco_DATACHANGED;		
-		 }
-	}	 
+		}
+		 
+		// We do longer need a timer timeout
+		answer_timeout=ANSWER_WAIT;
+	}
+	else if(answer_timeout > ANSWER_TIMEOUT)
+		answer_timeout--;
+	else if(answer_timeout == ANSWER_TIMEOUT)
+	{
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;
+		*trigger = MaCaco_DATACHANGED;		
+	}
 }	
 
 
@@ -344,9 +361,6 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 				memory_map[MaCaco_OUT_s + slot + i] = (memory_map[MaCaco_AUXIN_s + slot + i]);
 							
 		}
-
-		// Turn the lamp on
-		LYTOn(slot);
 		
 		// If the color is set as white
 		if( ((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) &&
@@ -357,7 +371,10 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		}		
 		else // Set the color
 			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);		
-		
+
+		// Turn the lamp on
+		LYTOn(slot);
+			
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 

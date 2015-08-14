@@ -1,7 +1,7 @@
 Souliss
 Copyright (C) 2011-2015
 
-Release note for revision v7.0.6
+Release note for revision v7.0.6, on dd/08/2015
 
 	Introduce the support for the new LYT88 light bulbs from Authometion and include
 	several bugfix and enanchments.

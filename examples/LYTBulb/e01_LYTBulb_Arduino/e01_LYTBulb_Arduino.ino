@@ -30,11 +30,6 @@
 #include <EEPROM.h>
 #include <SoftwareSerial.h>
 
-// Define network parameters
-#define PEER_USART          0xCE02
-#define GATEWAY_USART       0xCE01
-#define SUBNETMASK          0xFF00
-
 // Define logic slots, multicolor lights use four slots
 #define LYTLIGHT1           0                   
 
@@ -43,7 +38,7 @@ void setup()
     Initialize();
     
     // Set network parameters
-    SetAddress(PEER_USART, SUBNETMASK, GATEWAY_USART);
+    SetAddress(0xCE02, 0xFF00, 0xCE01);
     
     // Se the LYT bulbs (index, bulb type, addr_a, addr_b, logic slot), here we have
     // the first lamp (index 0) with default addresses (0, 0). Change these based on
