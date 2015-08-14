@@ -89,8 +89,8 @@ void loop()
             if(DigIn(INPUT_PIN, Souliss_T2n_ToggleCmd, GARAGEDOOR_NODE1))
             {
                 // Send data
-                Souliss_RemoteInput(Peer_RS485, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));
-                Souliss_ResetInput(memory_map, GARAGEDOOR_NODE1);
+                Send(Peer_RS485, GARAGEDOOR_NODE2, mInput(GARAGEDOOR_NODE1));
+                ResetInput(GARAGEDOOR_NODE1);
             }
         } 
         

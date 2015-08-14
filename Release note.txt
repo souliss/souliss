@@ -3,6 +3,15 @@ Copyright (C) 2011-2015
 
 Release note for revision v7.0.6
 
+	Introduce the support for the new LYT88 light bulbs from Authometion and include
+	several bugfix and enanchments.
+	
+		- Support for Authometion LYT88 LED RGB+W Light Bulbs
+		- Introduced Remote I/O
+		- Introduced vNet Hard Reset to force a reset via Watchdog
+		- Debug message are now located in the programming memory and no longer in RAM (TODO)
+		- Minor bugfix for T12 and T22
+		- Standard deadband for analog value at 1.5% (was at 5%)
         - Added example for standard Arduino with USART / RS485
         - Added example for ESP8266 with USART / RS485
         - Bugfix for battery operated devices (TODO)

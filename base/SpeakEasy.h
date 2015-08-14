@@ -252,6 +252,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
 #define	RemoteInput												Souliss_RemoteInput
 #define	RemoteInputs											Souliss_RemoteInputs
+#define	Send													Souliss_RemoteInput
+#define	SendData												Souliss_RemoteInputs
+#define	ResetInput(slot)										Souliss_ResetInput(memory_map, slot)
 #define	RoutingTable											vNet_SetRoutingTable
 #define	Init_XMLServer()										XMLSERVERInit(memory_map)
 #define	Run_XMLServer()											XMLSERVERInterface(memory_map)

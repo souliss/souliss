@@ -105,7 +105,7 @@ void loop()
                         cmd[i]=Souliss_T1n_OffCmd;
                 
                 // Sync the remote node with the actual status of this node
-                RemoteInputs(Gateway_address, i, cmd, LIGHT_NO);
+                SendData(Gateway_address, i, cmd, LIGHT_NO);
             
                 // Reset    
                 button_pressed=0;                       

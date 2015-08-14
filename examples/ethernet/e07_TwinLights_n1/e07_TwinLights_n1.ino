@@ -66,7 +66,7 @@ void loop()
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
             if(DigIn(2, Souliss_T1n_ToggleCmd, MYLIGHT))                                                // Use the pin2 as ON/OFF toggle command
-                RemoteInput(Peer_address, PEERLIGHT, Souliss_T1n_ToggleCmd);                // and replicate the command on the peer node
+                Send(Peer_address, PEERLIGHT, Souliss_T1n_ToggleCmd);                // and replicate the command on the peer node
             
             Logic_SimpleLight(MYLIGHT);                         // Drive the relay coil as per command
             DigOut(9, Souliss_T1n_Coil, MYLIGHT);               // Use the pin9 to give power to the coil according to the logic        
