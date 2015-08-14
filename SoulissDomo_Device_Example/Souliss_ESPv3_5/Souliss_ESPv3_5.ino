@@ -664,6 +664,12 @@ void loop()
                 
             } //SLOW_x10s(2) 
            
+            SLOW_x10s(6) {
+		if (WiFi.status() != WL_CONNECTED);{
+			LOG.println("Reconnecting to the WIFI");
+			ConfigureWifi(); 
+		}
+            }
             if (config.NodeMode){
                 //nothing here
             }
