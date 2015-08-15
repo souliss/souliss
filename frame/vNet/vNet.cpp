@@ -180,6 +180,18 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	U8 media, *frame_pnt;
 	U16 routed_addr;
 	
+	// If the data lenght is longer than expected
+	if(len>VNET_MAX_PAYLOAD)
+	{
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<LEN_FAIL>\r\n"));
+		#endif
+		
+		// Free the frame and return
+		oFrame_Reset();
+		return VNET_DATA_FAIL;
+	}
+
 	// If the destination is the NULL address, discard it
 	if(addr==VNET_ADDR_NULL)
 	{
@@ -485,7 +497,19 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 */
 /**************************************************************************/
 U8 vNet_SendData(U16 addr, U8 *data, U8 len, U8 port)
-{	
+{
+	// If the data lenght is longer than expected
+	if(len>VNET_MAX_PAYLOAD)
+	{
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<LEN_FAIL>\r\n"));
+		#endif
+		
+		// Free the frame and return
+		oFrame_Reset();
+		return VNET_DATA_FAIL;
+	}
+	
 	// Define the output frame
 	oFrame_Define(&message);
 	oFrame_Set(0, data, 0, len, 0);
