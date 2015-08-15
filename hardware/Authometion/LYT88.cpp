@@ -377,76 +377,54 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value 
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)				// Increase the light value 
 	{
-		// Lower the command repetition value
-		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION/5);
-
-		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
-		{	
-			for(U8 i=0;i<BRIGHT_STEP;i++)
-			{	
-				LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]++, memory_map[MaCaco_OUT_s + slot + 2]++, memory_map[MaCaco_OUT_s + slot + 3]++, slot);				
-				delay(5);
-			}
-		}
-		else
+		// If is white
+		if((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 3] >= 0xF0))
 		{
-			// Increase the light value
-			if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))
-			{
-				for(U8 i=0;i<BRIGHT_STEP;i++)
-				{	
-					LYTSetBright(memory_map[MaCaco_AUXIN_s + slot]++, slot);
-					delay(5);
-				}	
-			}	
-		}
+			if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot]+=BRIGHT_STEP;	// Increase the light value
+			
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
+		}	
+		else	// Otherwise
+		{
+			if(memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP -1)) memory_map[MaCaco_OUT_s + slot + 1]+=BRIGHT_STEP;
+			if(memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP -1)) memory_map[MaCaco_OUT_s + slot + 2]+=BRIGHT_STEP;
+			if(memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP -1)) memory_map[MaCaco_OUT_s + slot + 3]+=BRIGHT_STEP;
+			
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);				
 		
-		// Save the new color
-		for(U8 i=1;i<4;i++)
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-		
-		// Reset previous value
-		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION);
+			// Save the new color
+			for(U8 i=1;i<4;i++)
+				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];		
+		}				
+
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
-		// Lower the command repetition value
-		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION/5);
-	
-		if((memory_map[MaCaco_OUT_s + slot + 1] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 2] < (0xF0 - BRIGHT_STEP)) || (memory_map[MaCaco_OUT_s + slot + 3] < (0xF0 - BRIGHT_STEP)))
-		{	
-			for(U8 i=0;i<BRIGHT_STEP;i++)
-			{	
-				LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1]--, memory_map[MaCaco_OUT_s + slot + 2]--, memory_map[MaCaco_OUT_s + slot + 3]--, slot);				
-				delay(5);
-			}
-		}
-		else
-		{		
-			// Decrease the light value
-			if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP)) 
-			{
-				for(U8 i=0;i<BRIGHT_STEP;i++)
-				{	
-					LYTSetBright(memory_map[MaCaco_AUXIN_s + slot]++, slot);
-					delay(5);
-				}	
-			}					
-		}
-
-		// Save the new color
-		for(U8 i=1;i<4;i++)
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
+		// If is white		
+		if((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 3] >= 0xF0))
+		{
+			if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot]-=BRIGHT_STEP;		// Decrease the light value
+			
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
+		}		
+		else	// Otherwise
+		{
+			if(memory_map[MaCaco_OUT_s + slot + 1] > BRIGHT_STEP) memory_map[MaCaco_OUT_s + slot + 1]-=BRIGHT_STEP;
+			if(memory_map[MaCaco_OUT_s + slot + 2] > BRIGHT_STEP) memory_map[MaCaco_OUT_s + slot + 2]-=BRIGHT_STEP;
+			if(memory_map[MaCaco_OUT_s + slot + 3] > BRIGHT_STEP) memory_map[MaCaco_OUT_s + slot + 3]-=BRIGHT_STEP;
+			
+			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);				
 		
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-		
-		// Restore previous value
-		myLYTWiFi.vfCSetNumberFastCommandRepetition(PROTOCOL_COMMAND_REPETITION);
+			// Save the new color
+			for(U8 i=1;i<4;i++)
+				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];		
+		}				
 
-	}	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
+	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
 		// If the light was on
@@ -487,7 +465,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			LYTSetWhite(slot);
 		}		
 		else // Set the color
-			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], 
+			LYTSetColorRGB( memory_map[MaCaco_OUT_s + slot + 1], 
 							memory_map[MaCaco_OUT_s + slot + 2], 
 							memory_map[MaCaco_OUT_s + slot + 3], 
 								slot);					
