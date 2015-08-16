@@ -1211,32 +1211,35 @@ U8 vNet_RoutingBridging(U8 media)
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
 		U8 skip_mymedia = 1;		// If set, we don't rebroadcast over the same media
-		
+
 		// Modify the destination address as subnet broadcast, this will avoid broadcast loops	
 		if(vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)
 		{
 			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_wBRDC);
-			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_wBRDC);
-			
+			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_wBRDC);	
 
 			// Rebroadcast over wireless media is allowed
 			if((media-1)==VNET_MEDIA2_ID)
-				skip_mymedia = 0;		
+				skip_mymedia = 0;	
 		}
 		#if(VNET_LOOPS)
-		else
-			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_nBRDC);		// Prevent broadcast loops
+		else	// Prevent broadcast loops
+		{
+			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_nBRDC);		
 			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_nBRDC);
-		
-		#endif
-		
+		}
+		#endif	
+
 		// If the source address isn't null, rebroadcast the message over the active media
 		if(vNet_Media_Data[media-1].o_src_addr)
 			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
 				if(vnet_media_en[i] && (!skip_mymedia || (i != media-1)) 
 					&& !((i == VNET_MEDIA1_ID) && (media-1 == VNET_MEDIA3_ID)) && !((i == VNET_MEDIA3_ID) && (media-1 == VNET_MEDIA1_ID)))
 				{
-					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
+					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);	// The broadcast behavior doesn't
+																												// depend on this 0xFFFF it just cares 
+																												// the address in the frame
+
 					#if(VNET_BRDDELAY_ENABLE)
 					delay(VNET_BRDDELAY);
 					#endif
