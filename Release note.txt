@@ -1,7 +1,7 @@
 Souliss
 Copyright (C) 2011-2015
 
-Release note for revision v7.0.6, on dd/08/2015
+Release note for revision v7.0.6, on 16/08/2015
 
 	Introduce the support for the new LYT88 light bulbs from Authometion and include
 	several bugfix and enanchments.
@@ -14,7 +14,6 @@ Release note for revision v7.0.6, on dd/08/2015
 		- Standard deadband for analog value at 1.5% (was at 5%)
         - Added example for standard Arduino with USART / RS485
         - Added example for ESP8266 with USART / RS485
-        - Bugfix for battery operated devices (TODO)
         
 Release note for revision v7.0.5, on 27/05/2014
 
