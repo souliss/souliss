@@ -174,7 +174,7 @@ void Souliss_LYTStateRequest(U8 slot)
 	myLYTWiFi.vfAskLampInfoStatus(LYT[index].addr_a,LYT[index].addr_b);	
 	
 	// Set the countdown timeout
-	answer_timeout=ANSWER_SET;
+	if((answer_timeout == ANSWER_WAIT) || (answer_timeout == ANSWER_TIMEOUT)) answer_timeout=ANSWER_SET;
 }
 
 /**************************************************************************
@@ -208,10 +208,10 @@ void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 			*trigger = MaCaco_DATACHANGED;		
 		}
 		 
-		// We do longer need a timer timeout
+		// We do no longer need a timer timeout
 		answer_timeout=ANSWER_WAIT;
 	}
-	else if(answer_timeout > ANSWER_TIMEOUT)
+	else if((answer_timeout != ANSWER_WAIT) && (answer_timeout > ANSWER_TIMEOUT))
 		answer_timeout--;
 	else if(answer_timeout == ANSWER_TIMEOUT)
 	{
@@ -362,6 +362,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 							
 		}
 		
+		// Turn the lamp on
+		LYTOn(slot);
+
 		// If the color is set as white
 		if( ((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) &&
 			(memory_map[MaCaco_OUT_s + slot + 2]  >= 0xF0) &&
@@ -371,9 +374,6 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		}		
 		else // Set the color
 			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);		
-
-		// Turn the lamp on
-		LYTOn(slot);
 			
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
 	}
