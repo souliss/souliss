@@ -329,6 +329,13 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
 		i_trigger = Souliss_TRIGGED;								// Trig the change
+
+		// Save the actual color
+		for(U8 i=1;i<4;i++)
+		{
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
+			memory_map[MaCaco_OUT_s + slot + i] = 0;
+		}
 		
 		// Send the off command
 		LYTOff(slot);
@@ -463,6 +470,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			(memory_map[MaCaco_OUT_s + slot + 3]  >= 0xF0)) )			
 		{
 			LYTSetWhite(slot);
+			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
 		}		
 		else // Set the color
 			LYTSetColorRGB( memory_map[MaCaco_OUT_s + slot + 1], 
