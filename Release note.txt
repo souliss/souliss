@@ -1,6 +1,10 @@
 Souliss
 Copyright (C) 2011-2015
 
+Release note for revision v7.0.7, on dd/mm/yyyy
+
+        - Bugfix for battery operated devices (TODO)
+
 Release note for revision v7.0.6, on 16/08/2015
 
 	Introduce the support for the new LYT88 light bulbs from Authometion and include
