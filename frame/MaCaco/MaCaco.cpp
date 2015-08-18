@@ -583,7 +583,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	}
 	
 	// answer to a discover request
-	if (rx->funcode == MaCaco_DISCOVERREQ)
+	if ((rx->funcode == MaCaco_DISCOVERREQ) && (C8TO16(memory_map + MaCaco_ADDRESSES_s)))
 	{		
 		// in the answer we include the IP address
 		eth_GetIP(ipaddrs);
