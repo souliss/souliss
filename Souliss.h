@@ -57,6 +57,8 @@
 
 void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode);
 void Souliss_SetLocalAddress(U8 *memory_map, U16 addr);
+void Souliss_ResetLocalAddress(U8 *memory_map);
+U16 Souliss_GetLocalAddress(U8 *memory_map);
 void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node);
 U8 Souliss_GetTypicals(U8 *memory_map);
 U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 output_slot, U8 numof_slot, U8 subscr_chnl);

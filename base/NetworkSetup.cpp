@@ -107,6 +107,31 @@ void Souliss_SetLocalAddress(U8 *memory_map, U16 addr)
 
 /**************************************************************************
 /*!
+	Reset the addresses of local nodes into the memory map, shall be used
+	to have the node acting not as a gateway
+*/	
+/**************************************************************************/
+void Souliss_ResetLocalAddress(U8 *memory_map)
+{
+	// Set the remote address of a node into the vNet
+	*(memory_map+MaCaco_ADDRESSES_s)   = 0;
+	*(memory_map+MaCaco_ADDRESSES_s+1) = 0;
+	
+}
+
+/**************************************************************************
+/*!
+	Get the addresses of local nodes from the memory map, identify if a node
+	has been set as gateway at runtime
+*/	
+/**************************************************************************/
+U16 Souliss_GetLocalAddress(U8 *memory_map)
+{
+	return C8TO16(memory_map);
+}
+
+/**************************************************************************
+/*!
 	Set the addresses of other nodes into the network
 */	
 /**************************************************************************/
