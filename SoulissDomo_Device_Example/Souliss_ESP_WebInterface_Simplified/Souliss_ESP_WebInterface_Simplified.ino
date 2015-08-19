@@ -38,7 +38,7 @@
     #include "Page_Style.css.h"
     //#include "Page_NTPsettings.h"
     //#include "Page_Information.h"
-    #include "Page_General.h"
+    //#include "Page_General.h"
     #include "PAGE_NetworkConfiguration.h"
     #include "main.h"
     
@@ -83,8 +83,6 @@ void setup()
 	}
     
     ConfigureWifi();
-     
-    //EEPROM_CONFIG();
     
 /***************** INITIALIZE NETWORK AND SENSORS *********************/
     Initialize();
