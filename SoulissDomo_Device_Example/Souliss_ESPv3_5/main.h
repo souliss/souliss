@@ -6,7 +6,7 @@
 const char PAGE_main[] PROGMEM = R"=====(
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <h2>Welcome to SerbaAuto </h2>     
+  <h2>Welcome to Souliss </h2>     
       <form action="" method="get">
 
       <div id="mydynamicdata">Souliss Node </div>   <!-- added a DIV, where the dynamic data goes to -->
