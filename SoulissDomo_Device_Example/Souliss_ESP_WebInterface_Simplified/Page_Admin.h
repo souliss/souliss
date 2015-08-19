@@ -7,12 +7,8 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <h2>Souliss Node Administration </h2>
 <hr>
-<a href="general.html" style="width:250px" class="btn btn--m btn--blue" >General Configuration</a><br>
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
-<a href="info.html"   style="width:250px"  class="btn btn--m btn--blue" >Network Information</a><br>
-<a href="ntp.html"   style="width:250px"  class="btn btn--m btn--blue" >NTP Settings</a><br>
 <a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Main Interface</a><br>
-
 <hr>
 <strong>Clicking Main Interface Button will leaving Access Point Mode, </strong>
 <strong>Please make a note of your IP Address Node in Network Information </strong>
