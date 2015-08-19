@@ -6,7 +6,7 @@
 const char PAGE_main[] PROGMEM = R"=====(
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <h2>Welcome to SerbaAuto </h2>     
+  <h2>Welcome to Souliss </h2>     
       <form action="" method="get">
 
       <div id="mydynamicdata">Souliss Node </div>   <!-- added a DIV, where the dynamic data goes to -->
@@ -19,7 +19,7 @@ const char PAGE_main[] PROGMEM = R"=====(
       </table>
       </form>
       <hr>
-      <p>Contact us at juanpintom@gmail.com</p>
+      <p>Contact us at http://www.souliss.net/</p>
       <p>Install SoulissApp in Google Play Store to control this node</p>
       
       <hr>
@@ -76,7 +76,6 @@ void processMain()
   	{	EEPROM.write(i, 255);   }
 	EEPROM.commit();
       }
-      //WriteConfig();
       
       ESP.restart();
 
