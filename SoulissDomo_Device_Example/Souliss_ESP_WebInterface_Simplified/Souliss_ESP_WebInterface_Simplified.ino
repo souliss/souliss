@@ -8,7 +8,11 @@
     for this platform.
         
 ***************************************************************************/
-
+    #define MaCaco_DEBUG_INSKETCH
+    #define MaCaco_DEBUG          1
+    
+    #define VNET_DEBUG_INSKETCH
+    #define VNET_DEBUG  	  1
 //Changed Webinterface with the new one
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -45,6 +49,8 @@
     #define ACCESS_POINT_NAME  "Souliss"				
     //#define ACCESS_POINT_PASSWORD  "12345678" 
     #define AdminTimeOut 300  // Defines the Time in Seconds, when the Admin-Mode will be diabled
+    
+    #define MYLED 0
 
 void setup()
 {
@@ -117,6 +123,8 @@ void setup()
     
     Souliss_Node_Start();
     
+    Set_DimmableLight(MYLED);
+    
 }
 
 void loop()
@@ -139,7 +147,8 @@ void loop()
         UPDATEFAST();   
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
-         
+             Logic_DimmableLight(MYLED);                        
+             analogWrite(15, mOutput(MYLED+1)*4);
         }
       
         if (config.NodeMode){
@@ -155,7 +164,7 @@ void loop()
 	UPDATESLOW();
 
             SLOW_10s() {  // Read temperature and humidity from DHT every 110 seconds  
-               
+                Timer_DimmableLight(MYLED);   
             }
             if (config.NodeMode){
                 //nothing here

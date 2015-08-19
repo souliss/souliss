@@ -68,10 +68,10 @@
  //   #define LOG Serial1  //PASAR A INSKETCH en Souliss.h
     
     #define MaCaco_DEBUG_INSKETCH
-    #define MaCaco_DEBUG          1
+    #define MaCaco_DEBUG          0
     
     #define VNET_DEBUG_INSKETCH
-    #define VNET_DEBUG  	  1
+    #define VNET_DEBUG  	  0
     
     #define DEBUG_PRESSURE        1
     
@@ -79,6 +79,8 @@
     boolean DEBUG_CAPSENSE = 0;
     
     #define DEBUG_GETLUX          0
+    
+    int DEBUG_RECONNECTS = 0;
 
 //*********************************************************************************    
     //Autocalibrate Capacitive Sensors ON
@@ -131,7 +133,7 @@
 
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
-#include "conf/usart.h"
+//#include "conf/usart.h"
 
 
 //#if GATEWAY == 1
@@ -458,12 +460,14 @@ void loop()
 	if (Refresh)  
 	{
 		Refresh = false;
-		 //LOG.println("Refreshing...");
-		 LOG.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
-                 LOG.print(EEPROM.read(51)); LOG.print("\t");
+		 //LOG.print("Status: ");
+                 //LOG.println(WiFi.status());
+                 //LOG.print(DEBUG_RECONNECTS);
+		 //LOG.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
+                 /*LOG.print(EEPROM.read(51)); LOG.print("\t");
                  LOG.print(EEPROM.read(52)); LOG.print("\t");
                  LOG.print(EEPROM.read(53)); LOG.print("\t");
-                 LOG.println(STORE__SIZE);                 
+                 LOG.println(STORE__SIZE);                 */
 	}
 
     //**************************************************************************************************
@@ -477,6 +481,12 @@ void loop()
             
                 Logic_SimpleLight(RELAY1);
                 DigOut(RELAY1P, Souliss_T1n_Coil,RELAY1);
+                if (WiFi.status() != 3)
+  		{ 
+                  LOG.printf(" FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
+                  LOG.print("FAIL: ");
+                  LOG.println(WiFi.status());
+                }
             }
 
             if(PWM_MODE || PIR_MODE){
@@ -665,8 +675,11 @@ void loop()
             } //SLOW_x10s(2) 
            
             SLOW_x10s(6) {
-		if (WiFi.status() != WL_CONNECTED);{
-			LOG.println("Reconnecting to the WIFI");
+		if (WiFi.status() != WL_CONNECTED){
+			LOG.print("Reconnecting to the WIFI: ");
+                        LOG.println(DEBUG_RECONNECTS);
+      		        LOG.printf(" FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
+                        DEBUG_RECONNECTS++;
 			ConfigureWifi(); 
 		}
             }

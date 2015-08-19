@@ -412,8 +412,9 @@ void NTPRefresh()
 		IPAddress timeServerIP; 
 		WiFi.hostByName(config.ntpServerName.c_str(), timeServerIP); 
 		//sendNTPpacket(timeServerIP); // send an NTP packet to a time server
-
-
+                LOG.print("Reconnections: ");
+                LOG.print(DEBUG_RECONNECTS);
+		LOG.printf(" FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
 		LOG.println("sending NTP packet...");
 		memset(packetBuffer, 0, NTP_PACKET_SIZE);
 		packetBuffer[0] = 0b11100011;   // LI, Version, Mode
