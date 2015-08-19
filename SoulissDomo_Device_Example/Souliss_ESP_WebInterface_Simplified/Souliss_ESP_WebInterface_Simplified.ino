@@ -37,7 +37,7 @@
     #include "Page_Script.js.h"
     #include "Page_Style.css.h"
     //#include "Page_NTPsettings.h"
-    #include "Page_Information.h"
+    //#include "Page_Information.h"
     #include "Page_General.h"
     #include "PAGE_NetworkConfiguration.h"
     #include "main.h"
@@ -136,12 +136,6 @@ void loop()
 	}
 	server.handleClient();
         
-	if (Refresh)  
-	{
-		Refresh = false;
-		 LOG.printf("FreeMem:%d %d:%d:%d %d.%d.%d \n",ESP.getFreeHeap() , DateTime.hour,DateTime.minute, DateTime.second, DateTime.year, DateTime.month, DateTime.day);
-        }
-
     //**************************************************************************************************
     EXECUTEFAST() {                     
         UPDATEFAST();   
