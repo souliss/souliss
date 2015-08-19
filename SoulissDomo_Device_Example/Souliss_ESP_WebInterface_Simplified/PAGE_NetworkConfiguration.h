@@ -9,6 +9,8 @@ const char PAGE_NetworkConfiguration[] PROGMEM = R"=====(
 Connect to Router with these settings:<br>
 <form action="" method="get">
 <table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
+<tr><td align="left"> Enabled this Node as Gateway?:</td></tr>
+<tr><td><input type="checkbox" id="mnenabled" name="mnenabled"></td></tr>
 <tr><td align="right">SSID:</td><td><input type="text" id="ssid" name="ssid" value=""></td></tr>
 <tr><td align="right">Password:</td><td><input type="text" id="password" name="password" value=""></td></tr>
 <tr><td align="right">DHCP:</td><td><input type="checkbox" id="dhcp" name="dhcp"></td></tr>
@@ -19,6 +21,7 @@ Connect to Router with these settings:<br>
 </table>
 </form>
 <hr>
+<strong>You will need only ONE Gateway Node, If this is your First Node you must enabled it as Gateway..</strong>
 <strong>Connection State:</strong><div id="connectionstate">N/A</div>
 <hr>
 <strong>Networks:</strong><br>
@@ -78,6 +81,7 @@ void send_network_configuration_html()
 	{
 		String temp = "";
 		config.dhcp = false;
+		config.NodeMode = false;
 		for ( uint8_t i = 0; i < server.args(); i++ ) {
 			if (server.argName(i) == "ssid") config.ssid =   urldecode(server.arg(i));
 			if (server.argName(i) == "password") config.password =    urldecode(server.arg(i)); 
@@ -94,6 +98,7 @@ void send_network_configuration_html()
 			if (server.argName(i) == "gw_2") if (checkRange(server.arg(i))) 	config.Gateway[2] =  server.arg(i).toInt();
 			if (server.argName(i) == "gw_3") if (checkRange(server.arg(i))) 	config.Gateway[3] =  server.arg(i).toInt();
 			if (server.argName(i) == "dhcp") config.dhcp = true;
+			if (server.argName(i) == "mnenabled") config.NodeMode = true;
 		}
 		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
 		LOG.println("Write Config"); 
@@ -134,6 +139,7 @@ void send_network_configuration_values_html()
 	values += "gw_2|" +  (String) config.Gateway[2] + "|input\n";
 	values += "gw_3|" +  (String) config.Gateway[3] + "|input\n";
 	values += "dhcp|" +  (String) (config.dhcp ? "checked" : "") + "|chk\n";
+	values += "mnenabled|" +  (String) (config.NodeMode ? "checked" : "") + "|chk\n";
 	server.send ( 200, "text/plain", values);
 	LOG.println(__FUNCTION__); 
 	
