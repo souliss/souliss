@@ -40,9 +40,6 @@
     #include "Page_Admin.h"
     #include "Page_Script.js.h"
     #include "Page_Style.css.h"
-    //#include "Page_NTPsettings.h"
-    //#include "Page_Information.h"
-    //#include "Page_General.h"
     #include "PAGE_NetworkConfiguration.h"
     #include "main.h"
     
@@ -100,27 +97,17 @@ void setup()
               	server.on ( "/favicon.ico",   []() { LOG.println("favicon.ico"); server.send ( 200, "text/html", "" );   }  );
               	server.on ( "/admin.html", []() { LOG.println("admin.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
          	server.on ( "/config.html", send_network_configuration_html );
-              	//server.on ( "/info.html", []() { LOG.println("info.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_Information ));   }  );
-              	//server.on ( "/ntp.html", send_NTP_configuration_html  );
-              	//server.on ( "/general.html", send_general_html  );
                 server.on ( "/main.html", processMain  );
               	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_main );  } );
               	server.on ( "/style.css", []() { LOG.println("style.css"); server.send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
               	server.on ( "/microajax.js", []() { LOG.println("microajax.js"); server.send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
               	server.on ( "/admin/values", send_network_configuration_values_html );
               	server.on ( "/admin/connectionstate", send_connection_state_values_html );
-              	//server.on ( "/admin/infovalues", send_information_values_html );
-              	//server.on ( "/admin/ntpvalues", send_NTP_configuration_values_html );
-              	//server.on ( "/admin/generalvalues", send_general_configuration_values_html);
               	server.on ( "/admin/rstvalues", send_reset_values_html);
-                //server.on ( "/admin/devicename",     send_devicename_value_html);
                 server.onNotFound ( []() { LOG.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
               	server.begin();
               	LOG.println( "HTTP server started" );
-              	//tkSecond.attach(1,Second_Tick);
-              	//UDPNTPClient.begin(2390);  // Port for NTP receive
 
-    
     Souliss_Node_Start();
     
     Set_DimmableLight(MYLED);
