@@ -115,7 +115,11 @@ void setup()
               	server.on ( "/admin/values", send_network_configuration_values_html );
               	server.on ( "/admin/connectionstate", send_connection_state_values_html );
               	server.on ( "/admin/rstvalues", send_reset_values_html);
+<<<<<<< HEAD
                 //server.onNotFound ( []() { LOG.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
+=======
+                server.onNotFound ( []() { LOG.println("Page Not Found"); server.send ( 400, "text/html", "Page not Found" );   }  );
+>>>>>>> origin/master
               	server.begin();
               	LOG.println( "HTTP server started" );
 
