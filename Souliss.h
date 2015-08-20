@@ -178,6 +178,7 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "base/T3n.cpp"
 #include "base/T4n.cpp"
 #include "base/T5n.cpp"
+#include "base/T6n.cpp"
 
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
