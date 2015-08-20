@@ -93,8 +93,11 @@ void check_ESPMode()
 	else
 	{
 		LOG.println( "AP mode started coz' No WiFi or No Config" );
-		WiFi.mode(WIFI_AP);
-		WiFi.softAP("Souliss");
+                WiFi.mode(WIFI_AP);
+                WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+                WiFi.softAP(ACCESS_POINT_NAME);
+                LOG.println(WiFi.softAPIP());
+                dnsServer.start(DNS_PORT, "*", apIP);
                 LOG.println(WiFi.softAPIP());
             	nowifi = true;	
 	}
