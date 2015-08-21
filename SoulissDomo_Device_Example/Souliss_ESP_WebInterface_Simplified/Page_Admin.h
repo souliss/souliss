@@ -10,7 +10,7 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
 <a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Main Interface</a><br>
 <hr>
-<div id="mydynamicdata"> </div>  <!-- added a DIV, where the dynamic data goes to -->
+<strong> <div id="mydynamicdata"> </div> </strong> <!-- added a DIV, where the dynamic data goes to -->
 <strong>Clicking Main Interface Button will leaving Access Point Mode, </strong>
 <strong>Please make a note of your IP Address Node in Network Information </strong>
 <p><strong>You can enter this Web Interface again by your NEW IP Address Node given from Network Information. </strong></p>
