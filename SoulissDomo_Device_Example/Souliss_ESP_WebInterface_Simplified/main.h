@@ -9,7 +9,6 @@ const char PAGE_main[] PROGMEM = R"=====(
   <h2>Welcome to Souliss </h2>     
       <form action="" method="get">
 
-      <div id="mydynamicdata">Souliss Node </div>   <!-- added a DIV, where the dynamic data goes to -->
       <hr>
       <a href="admin.html" align="center" style="width:250px" class="btn btn--m btn--blue" >Click Here to Begin</a><br>
       <hr>
@@ -36,7 +35,7 @@ const char PAGE_main[] PROGMEM = R"=====(
 			{
 				load("microajax.js","js", function() 
 				{
-				    setValues("/admin/filldynamicdata");  //-- this function calls the function on the ESP      
+//				    setValues("/admin/filldynamicdata");  //-- this function calls the function on the ESP      
 				    setValues("/admin/rstvalues");
         });
 			});
@@ -50,15 +49,6 @@ const char PAGE_main[] PROGMEM = R"=====(
 )=====";
 #endif
 
-
-void filldynamicdata()
-{        
-    //Serial.println("Dynamic Data Run");
-    String values ="";
-    values += "mydynamicdata|" + (String) + "Souliss Node, Millis since start: " + (String) millis() + "|div\n";   // Build a string, like this:  ID|VALUE|TYPE
-    server.send ( 200, "text/plain", values);   
-
-}
 
 void processMain()
 {

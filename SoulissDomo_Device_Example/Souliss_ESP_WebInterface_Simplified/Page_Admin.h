@@ -10,6 +10,7 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
 <a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Main Interface</a><br>
 <hr>
+<div id="mydynamicdata"> </div>  <!-- added a DIV, where the dynamic data goes to -->
 <strong>Clicking Main Interface Button will leaving Access Point Mode, </strong>
 <strong>Please make a note of your IP Address Node in Network Information </strong>
 <p><strong>You can enter this Web Interface again by your NEW IP Address Node given from Network Information. </strong></p>
@@ -21,7 +22,7 @@ window.onload = function ()
 	{
 		load("microajax.js","js", function() 
 		{
-		
+		    setValues("/admin/filldynamicdata");  //-- this function calls the function on the ESP 
 		
 
 		});
@@ -32,3 +33,12 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 </script>
 
 )=====";
+
+void filldynamicdata()
+{        
+    //Serial.println("Dynamic Data Run");
+    String values ="";
+    values += "mydynamicdata|" + (String) + "Souliss Node, Millis since start: " + (String) millis() + "|div\n";   // Build a string, like this:  ID|VALUE|TYPE
+    server.send ( 200, "text/plain", values);   
+
+}
