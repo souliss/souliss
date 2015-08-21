@@ -60,8 +60,12 @@ void setup()
 {
     EEPROM.begin(STORE__SIZE);
     LOG.begin(115200);
-    delay(500);    
-
+    delay(500);   
+   
+/*    for(int i=0;i<STORE__SIZE;i++)
+    {	EEPROM.write(i, 255);   }
+    EEPROM.commit(); 
+*/
     LOG.println("Starting Souliss Node");
 	if (!ReadConfig())
 	{
@@ -77,7 +81,7 @@ void setup()
 	}
 	
 	
-	/*if (AdminEnabled)
+	if (AdminEnabled)
 	{
                 LOG.println( "Admin Enabled" );
 		LOG.println( "AP mode started" );
@@ -93,7 +97,7 @@ void setup()
 		LOG.println( "STA mode started" );
                 WiFi.mode(WIFI_STA);
                 LOG.println(WiFi.localIP());
-	}*/
+	}
     
     ConfigureWifi();
     
@@ -137,7 +141,8 @@ void loop()
                         LOG.println(WiFi.localIP());
 		}
 	}
-	if(nowifi) dnsServer.processNextRequest();
+	//if(nowifi) 
+        dnsServer.processNextRequest();
         server.handleClient();
         
     //**************************************************************************************************
