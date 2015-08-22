@@ -99,7 +99,7 @@ U8 Souliss_Logic_T61(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 		All code for T52 up to T59 is defined using macro in Typicals.h			
 */	
 /**************************************************************************/
-void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ)
+void Souliss_SetT6n(U8 *memory_map, U8 slot, U8 typ)
 {
 	memory_map[MaCaco_TYP_s + slot] = typ;
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
