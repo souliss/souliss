@@ -33,6 +33,7 @@
 #define	Souliss_T3n						0x30			// Typicals Group 0x30
 #define	Souliss_T4n						0x40			// Typicals Group 0x40
 #define	Souliss_T5n						0x50			// Typicals Group 0x50
+#define	Souliss_T6n						0x60			// Typicals Group 0x60
 
 #define Souliss_T11						0x11			// ON/OFF Digital Output with Timer Option
 #define Souliss_T12						0x12			// ON/OFF Digital Output with AUTO mode
@@ -50,12 +51,25 @@
 #define Souliss_T32						0x32			// Air Conditioner
 #define Souliss_T41						0x41			// Anti-theft integration (Main)
 #define Souliss_T42						0x42			// Anti-theft integration (Peer)
-#define Souliss_T51						0x51			
-#define Souliss_T52						0x52
-#define Souliss_T53						0x53
-#define Souliss_T54						0x54
-#define Souliss_TRL						0xFF			// Related association, indentify a slot related to a previous one
-
+#define Souliss_T51						0x51			// Generic
+#define Souliss_T52						0x52            // Temperature measure (-20, +50) °C
+#define Souliss_T53						0x53            // Humidity measure (0, 100) %
+#define Souliss_T54						0x54            // Light Sensor (0, 40) kLux
+#define Souliss_T55						0x55			// Voltage (0, 400) V
+#define Souliss_T56						0x56            // Current (0, 25)  A
+#define Souliss_T57						0x57            // Power (0, 6500)  W
+#define Souliss_T58						0x58            // Pressure measure (0, 1500) hPa 
+#define Souliss_T59						0x59
+#define Souliss_T61						0x61			// Generic
+#define Souliss_T62						0x62            // Temperature measure (-20, +50) °C
+#define Souliss_T63						0x63            // Humidity measure (0, 100) %
+#define Souliss_T64						0x64            // Light Sensor (0, 40) kLux
+#define Souliss_T65						0x65			// Voltage (0, 400) V
+#define Souliss_T66						0x66            // Current (0, 25)  A
+#define Souliss_T67						0x67            // Power (0, 6500)  W
+#define Souliss_T68						0x68            // Pressure measure (0, 1500) hPa 
+#define Souliss_T69						0x69
+#define Souliss_TRL						0xFF			// Related association, i
 // General defines for T1n
 #define Souliss_T1n_ToggleCmd			0x01		// Toggle Command
 #define Souliss_T1n_OnCmd				0x02		// ON Command
@@ -306,5 +320,24 @@ void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ);
 #define Souliss_Logic_T57 Souliss_Logic_T51
 #define Souliss_Logic_T58 Souliss_Logic_T51
 #define Souliss_Logic_T59 Souliss_Logic_T51
+
+#define Souliss_SetT61(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x61)
+#define Souliss_SetT62(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x62)
+#define Souliss_SetT63(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x63)
+#define Souliss_SetT64(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x64)
+#define Souliss_SetT66(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x66)
+#define Souliss_SetT66(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x66)
+#define Souliss_SetT67(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x67)
+#define Souliss_SetT68(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x68)
+#define Souliss_SetT69(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x69)
+
+#define Souliss_Logic_T62 Souliss_Logic_T61
+#define Souliss_Logic_T63 Souliss_Logic_T61
+#define Souliss_Logic_T64 Souliss_Logic_T61
+#define Souliss_Logic_T66 Souliss_Logic_T61
+#define Souliss_Logic_T66 Souliss_Logic_T61
+#define Souliss_Logic_T67 Souliss_Logic_T61
+#define Souliss_Logic_T68 Souliss_Logic_T61
+#define Souliss_Logic_T69 Souliss_Logic_T61
 
 #endif
