@@ -35,6 +35,8 @@
 #define	PINSET		0x1
 #define	PINACTIVE	0x2
 #define	PINRELEASED	0x3
+#define	PIN_2STATE_RESET	0x4
+#define	PIN_2STATE_SET		0x5
 
 U8 InPin[MAXINPIN];
 static unsigned long time;
@@ -195,18 +197,18 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive
 U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot)
 {
 	// If pin is on, set the "value"
-	if(digitalRead(pin) && !InPin[pin])
+	if(digitalRead(pin) && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_RESET)))
 	{	
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_on;
 		
-		InPin[pin] = PINSET;
+		InPin[pin] = PIN_2STATE_SET;
 		return value_state_on;
 	}
-	else if(!digitalRead(pin) && InPin[pin])
+	else if(!digitalRead(pin) && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_SET)))
 	{
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_off;
 		
-		InPin[pin] = PINRESET;
+		InPin[pin] = PIN_2STATE_RESET;
 		return value_state_off;
 	}
 	
@@ -276,18 +278,18 @@ U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memo
 U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot)
 {
 	// If pin is off, set the "value"
-	if(digitalRead(pin)==0 && !InPin[pin])
+	if(!digitalRead(pin) && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_RESET)))
 	{
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_on;
 	 
-		InPin[pin] = PINSET;
+		InPin[pin] = PIN_2STATE_SET;
 		return value_state_on;
 	}
-	else if(digitalRead(pin) && InPin[pin])
+	else if(digitalRead(pin) && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_SET)))
 	{
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_off;
 	 
-		InPin[pin] = PINRESET;
+		InPin[pin] = PIN_2STATE_RESET;
 		return value_state_off;
 	}
 	 
