@@ -38,7 +38,7 @@
 #define Souliss_T12						0x12			// ON/OFF Digital Output with AUTO mode
 #define Souliss_T13						0x13			// Digital Input Value
 #define Souliss_T14						0x14			// Pulse Digital Output
-#define Souliss_T16						0x16			// RGB Light (IR)
+#define Souliss_T15						0x15			// RGB Light (IR)
 #define Souliss_T16						0x16			// RGB Light
 #define Souliss_T18						0x18			// ON/OFF Digital Output with pulse output with Timer Option
 #define Souliss_T19						0x19			// LED Light

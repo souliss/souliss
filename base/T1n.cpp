@@ -877,40 +877,56 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 	
 	if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffFeedback))	// If the pulse is expired then
 	{                                                                   // set the State Feedback as OFF
-		if(memory_map[MaCaco_AUXIN_s + slot] != Souliss_T1n_OffFeedback)  
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffFeedback)  
 			*trigger = Souliss_TRIGGED;
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffFeedback;		// State Feedback as OFF
-		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OffFeedback;	// Store the actual State Feedback	
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnFeedback))	// If the pulse is expired then
 	{                                                                   // set the State Feedback as OFF
-		if(memory_map[MaCaco_AUXIN_s + slot] != Souliss_T1n_OnFeedback)  
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnFeedback)  
 			*trigger = Souliss_TRIGGED;	
 	
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnFeedback;		// State Feedback as OFF
-		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OnFeedback;		// Store the actual State Feedback	
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd))			
 	{
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_PulseCoil;		// Change output state
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Change output state
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_PulseCoil;	// Start timer
 	}
 	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd))			
 	{
-		if (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_OffFeedback)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_PulseCoil;	// Change output state if previously at OFF
+		if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffFeedback)
+		{
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Change output state
+			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_PulseCoil;	// Start timer
+		}
 	}
 	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd))			
 	{
 		if (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_OnFeedback)
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_PulseCoil;	// Change output state if previously at ON
-	}	
-	else if (memory_map[MaCaco_OUT_s + slot] > Souliss_T1n_ResetCoil)
-		memory_map[MaCaco_OUT_s + slot]--;
+		{
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Change output state
+			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_PulseCoil;	// Start timer
+		}
+	}
+	else if (memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T1n_ResetCoil)
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Change output state
+
+	memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;				// Reset		
 	
 	return *trigger;
+}
+
+/**************************************************************************
+/*!
+	Timer associated to T19
+*/	
+/**************************************************************************/
+void Souliss_T18_Timer(U8 *memory_map, U8 input_slot)
+{
+	if(memory_map[MaCaco_AUXIN_s + input_slot] > Souliss_T1n_ResetCoil)				// Memory value is used as timer
+		memory_map[MaCaco_AUXIN_s + input_slot]--;									// Decrease timer
 }
 
 /**************************************************************************
