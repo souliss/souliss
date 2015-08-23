@@ -910,7 +910,7 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_PulseCoil;	// Start timer
 		}
 	}
-	else if (memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T1n_ResetCoil)
+	else if ((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil) && (memory_map[MaCaco_AUXIN_s + slot] <= Souliss_T1n_ResetCoil))
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Change output state
 
 	memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;				// Reset		
