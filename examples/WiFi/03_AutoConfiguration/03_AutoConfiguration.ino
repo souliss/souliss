@@ -122,7 +122,21 @@ void setup()
               	server.begin();
               	LOG.println( "HTTP server started" );
 
-    Souliss_Node_Start();
+        if (config.NodeMode){
+            LOG.println("Gateway Mode");
+            // Connect to the WiFi network and get an address from DHCP                      
+            SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
+            SetAddressingServer();
+	
+        }
+        else {
+
+            LOG.println("Peer Mode");
+            // This board request an address to the gateway at runtime, no need
+            // to configure any parameter here.
+            SetDynamicAddressing();  
+            GetAddress();
+        }
     
     Set_DimmableLight(MYLED);
     
@@ -141,7 +155,6 @@ void loop()
                         LOG.println(WiFi.localIP());
 		}
 	}
-	//if(nowifi) 
         dnsServer.processNextRequest();
         server.handleClient();
         

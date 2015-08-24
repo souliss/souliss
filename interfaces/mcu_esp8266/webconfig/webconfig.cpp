@@ -1,70 +1,45 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+/* 
+  ESP_WebConfig 
 
-ESP8266WebServer server(80);									// The Webserver
-boolean firstStart = true;										// On firststart = true, NTP will try to get a valid time
-int AdminTimeOutCounter = 0;									// Counter for Disabling the AdminMode
-//strDateTime DateTime;											// Global DateTime structure, will be refreshed every Second
-//WiFiUDP UDPNTPClient;											// NTP Client
-//unsigned long UnixTimestamp = 0;								// GLOBALTIME  ( Will be set by NTP)
-boolean Refresh = false; // For Main Loop, to refresh things like GPIO / WS2812
-//int cNTP_Update = 0;											// Counter for Updating the time via NTP
-Ticker tkSecond;												// Second - Timer for Updating Datetime Structure
-boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
-//byte Minute_Old = 100;				// Helpvariable for checking, when a new Minute comes up (for Auto Turn On / Off)
-boolean nowifi = false;
+  Copyright (c) 2015 John Lassen. All rights reserved.
+  This is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+  Latest version: 1.1.3  - 2015-07-20
+  Changed the loading of the Javascript and CCS Files, so that they will successively loaded and that only one request goes to the ESP.
 
+  -----------------------------------------------------------------------------------------------
+  History
 
-struct strConfig {
-	String ssid;
-	String password;
-	byte  IP[4];
-	byte  Netmask[4];
-	byte  Gateway[4];
-	boolean dhcp;
-	boolean NodeMode; //test node mode as gateway or peer
-	boolean rst;
-        
-}   config;
+  Version: 1.1.2  - 2015-07-17
+  Added URLDECODE for some input-fields (SSID, PASSWORD...)
 
-
-/*
-**
-** CONFIGURATION HANDLING
-**
+  Version  1.1.1 - 2015-07-12
+  First initial version to the public
 */
-void Souliss_Node_Start()
-{
 
-	// Read Node Mode..
-        if (config.NodeMode){
-          if(nowifi != 1) {
-            LOG.println("Gateway Mode");
-            // Connect to the WiFi network and get an address from DHCP                      
-            SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
-            SetAddressingServer();
-          }
-          else {
-        	LOG.println("No Gateway Mode coz No Wifi");		
-          }
+/***
 	
-        }
-        else {
-            LOG.println(nowifi);
-          if(nowifi != 1) {
-            LOG.println("Peer Mode");
-            // This board request an address to the gateway at runtime, no need
-            // to configure any parameter here.
-            SetDynamicAddressing();  
-            GetAddress();
-          }
-          else {
-            LOG.println("No Peer Mode coz No Wifi");	
-          }
-        }
+	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
 
-}
+***/
+
+ESP8266WebServer server(80);		// The Webserver
+int AdminTimeOutCounter = 0;		// Counter for Disabling the AdminMode
+boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
+
+
+
+
 
 void check_ESPMode()
 {
@@ -87,7 +62,6 @@ void check_ESPMode()
 		LOG.println("Souliss update IP Address");
 		GetIPAddress(); 
 		delay(500);
-		nowifi = false;
 
 	}
 	else
@@ -99,7 +73,6 @@ void check_ESPMode()
                 LOG.println(WiFi.softAPIP());
                 dnsServer.start(DNS_PORT, "*", apIP);
                 LOG.println(WiFi.softAPIP());
-            	nowifi = true;	
 	}
 
 }
@@ -192,7 +165,3 @@ boolean ReadConfig()
 		return false;
 	}
 }
-
-#endif
-
-
