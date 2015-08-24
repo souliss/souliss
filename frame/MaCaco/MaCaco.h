@@ -30,6 +30,9 @@
 #include "tools/types.h"
 #include "GetConfig.h"			// need : MaCaco_Config.h
 
+#define	SET	  0x01
+#define	RESET 0x00
+
 typedef struct
 {
 	U8  datain;			// Number of communication media with incoming data
@@ -67,4 +70,5 @@ void MaCaco_InternalSubcription();
 U8 MaCaco_isLastIn(U8 *memory_map);
 U8 MaCaco_GetLastIn(U8 *memory_map);
 U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber);
+U8 MaCaco_IsRuntimeGateway();
 #endif

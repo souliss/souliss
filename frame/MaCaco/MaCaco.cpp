@@ -70,6 +70,7 @@ U16 proposedaddress = 0;
 // buffer for temporary use
 U8 ipaddrs[4], cmd[7] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR, MaCaco_IN_s, MaCaco_TYP_s, MaCaco_OUT_s};
 
+uint8_t runtimegateway=RESET;
 extern bool addrsrv;
 #endif
 
@@ -109,6 +110,10 @@ void MaCaco_init(U8* memory_map)
 	// Init the EEPROM
 	#if(USEEEPROM)
 	Store_Init();	
+
+	// Check if the runtime Gateway option has been selected before
+	if(Return_ID()==STORE__DEFAULTID)	runtimegateway=SET;
+
 	#endif		
 }
 
@@ -1661,4 +1666,14 @@ U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber)
 	
 	// Return the index
 	return i;
+}
+
+/**************************************************************************/
+/*!
+    Return if the node is set as runtime gateway
+*/
+/**************************************************************************/
+U8 MaCaco_IsRuntimeGateway()
+{
+	return runtimegateway;
 }

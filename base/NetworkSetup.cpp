@@ -236,8 +236,45 @@ void Souliss_GetIPAddress()
 	// Set the address
 	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);	
 #endif	
-}						
+}												
 
+/**************************************************************************
+/*!
+	Read IP Configuration from EEPROM or equivalent
+*/	
+/**************************************************************************/ 
+#if(USEEEPROM)
+uint8_t Souliss_ReadIPConfiguration()
+{
+	// If a valid configuration hasn't been found
+	if(Return_ID()!=STORE__DEFAULTID)
+		return 0;
+
+	#if(MCU_TYPE == 0x02)
+	// Setup the SSID and Password
+	WiFi.begin(Read_SSID(), Read_Password());
+	#endif
+
+	// If the DHCP Mode is set
+	if(Return_DHCPMode())
+		Souliss_GetIPAddress();
+	else					
+	{
+		// Static IP Address
+		uint8_t _ip_address[4];
+		uint8_t _subnet_mask[4];
+		uint8_t _ip_gateway[4];
+
+		// Read from EEPROM
+		Return_StaticIPAddress(_ip_address);
+		Return_StaticIPSubnet(_subnet_mask);
+		Return_StaticIPGateway(_ip_gateway);
+
+		// Set IP Address
+		Souliss_SetIPAddress(_ip_address, _subnet_mask, _ip_gateway);
+	}
+}
+#endif
 
 /**************************************************************************
 /*!
@@ -321,7 +358,6 @@ void Souliss_SetDynamicAddressing()
 /*!
 	Before proceed to request and address, at first boot, look for a previously
 	assigned address.
-
 */	
 /**************************************************************************/
 U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)

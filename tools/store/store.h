@@ -20,10 +20,16 @@
 #define STORE__PADDR_f		(STORE__PADDR_s+2*MaCaco_NODES-1)				// Last peer address  (for gateway)
 #define	STORE__GATEWAY_s	(STORE__PADDR_f+1)								// Gateway/Peer mode
 #define	STORE__GATEWAY_f	(STORE__GATEWAY_s+1)
-#define	STORE__IPADDR_s		(STORE__GATEWAY_f+1)							// IPv4 Address, Subnet mask and IPv4 Gateway
-#define	STORE__IPADDR_f		(STORE__IPADDR_s+3*4)
+#define	STORE__DHCPEN_s		(STORE__GATEWAY_f+1)							// DHCP Enabled / Disabled
+#define	STORE__DHCPEN_f		(STORE__DHCPEN_s+1)
+#define	STORE__IPADDR_s		(STORE__DHCPEN_f+1)								// IPv4 Address, Subnet mask and IPv4 Gateway
+#define	STORE__IPADDR_f		(STORE__IPADDR_s+4)
+#define	STORE__IPSUBN_s		(STORE__IPADDR_f+1)								// IPv4 Address, Subnet mask and IPv4 Gateway
+#define	STORE__IPSUBN_f		(STORE__IPSUBN_s+4)
+#define	STORE__IPGTWY_s		(STORE__IPSUBN_f+1)								// IPv4 Address, Subnet mask and IPv4 Gateway
+#define	STORE__IPGTWY_f		(STORE__IPGTWY_s+4)
 #define	STORE__WIFISSID_s	(STORE__IPADDR_f+1)								// WiFi SSID
-#define	STORE__WIFISSID_f	(STORE__WIFISSID_s+24)
+#define	STORE__WIFISSID_f	(STORE__WIFISSID_s+32)
 #define	STORE__WIFIPSW_s	(STORE__WIFISSID_f+1)							// WiFi Password
 #define	STORE__WIFIPSW_f	(STORE__WIFIPSW_s+64)
 #define	STORE__USABLESIZE	(STORE__WIFIPSW_f)
@@ -52,6 +58,20 @@ uint16_t Return_Addresses(uint8_t media);
 void Store_PeerAddresses(uint8_t *addresses, uint8_t n_addresses);
 void Return_PeerAddresses(uint8_t *addresses, uint8_t n_addresses);
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr);
+void Store_GatewayMode(uint8_t mode);
+uint8_t Return_GatewayMode();
+void Store_DHCPMode(uint8_t mode);
+uint8_t Return_DHCPMode();
+void Store_StaticIPAddress(uint8_t *ipaddr);
+void Return_StaticIPAddress(uint8_t *ipaddr);
+void Store_StaticIPSubnet(uint8_t *subnetmask);
+void Return_StaticIPSubnet(uint8_t *subnetmask);
+void Store_StaticIPGateway(uint8_t *gateway);
+void Return_StaticIPGateway(uint8_t *gateway);
+void Store_SSID(String string);
+String Read_SSID();
+void Store_Password(String string);
+String Read_Password();
 void Store_Commit();
 
 #endif

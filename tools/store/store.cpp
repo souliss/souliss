@@ -83,6 +83,38 @@ uint16_t Return_16bit(uint8_t addr)
 	return ((U16)(val_H << 8) | (U16)(val_L));
 }
 
+void Store_String(uint8_t addr, String string)
+{
+	char  charBuf[string.length()+1];
+	string.toCharArray(charBuf, string.length()+1);
+
+	for (int t=  0; t<sizeof(charBuf);t++)
+	{
+		EEPROM.write(addr + t,charBuf[t]);
+	}
+}
+
+String Return_String(uint8_t addr, uint8_t maxlenght)
+{
+	byte counter=0;
+	char rChar;
+	String retString = "";
+
+	while (counter < maxlenght)
+	{
+		rChar = EEPROM.read(addr + counter);
+		if (rChar == 0) break;
+		if (counter > 31) break;
+		counter++;
+		retString.concat(rChar);
+
+	}
+	return retString;
+}
+
+/***** User Space *****/
+
+
 // Store the node ID, a valid node ID identify an EEPROM with proper values
 void Store_ID(uint16_t id)
 {
@@ -129,6 +161,96 @@ void Return_PeerAddresses(uint8_t *addresses, uint8_t n_addresses)
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
 {
 	return Return_16bit(STORE__PADDR_s+2*n_addr);
+}
+
+// Store the Gateway mode (Gateway if true, otherwise Peer)
+void Store_GatewayMode(uint8_t mode)
+{
+	Store_8bit(STORE__GATEWAY_s, mode);
+}
+
+// Read the Gateway mode (Gateway if true, otherwise Peer)
+uint8_t Return_GatewayMode()
+{
+	return Return_8bit(STORE__GATEWAY_s);
+}
+
+// Store the DHCP mode (DHCP if true, otherwise static address)
+void Store_DHCPMode(uint8_t mode)
+{
+	Store_8bit(STORE__DHCPEN_s, mode);
+}
+
+// Read the DHCP mode (DHCP if true, otherwise static address)
+uint8_t Return_DHCPMode()
+{
+	return Return_8bit(STORE__DHCPEN_s);
+}
+
+// Store the static IP address
+void Store_StaticIPAddress(uint8_t *ipaddr)
+{
+	for(uint8_t i=0; i<4; i++)
+		Store_8bit(STORE__IPADDR_s+i, *(ipaddr+i));
+}
+
+// Return the static IP address
+void Return_StaticIPAddress(uint8_t *ipaddr)
+{
+	for(uint8_t i=0; i<4; i++)
+		ipaddr[i]   = Return_8bit(STORE__IPADDR_s+i);
+}
+
+// Store the static IP subnet
+void Store_StaticIPSubnet(uint8_t *subnetmask)
+{
+	for(uint8_t i=0; i<4; i++)
+		Store_8bit(STORE__IPSUBN_s+i, *(subnetmask+i));
+}
+
+// Return the static IP subnet
+void Return_StaticIPSubnet(uint8_t *subnetmask)
+{
+	for(uint8_t i=0; i<4; i++)
+		subnetmask[i]   = Return_8bit(STORE__IPSUBN_s+i);
+}
+
+// Store the static IP gateway
+void Store_StaticIPGateway(uint8_t *gateway)
+{
+	for(uint8_t i=0; i<4; i++)
+		Store_8bit(STORE__IPGTWY_s+i, *(gateway+i));
+}
+
+// Return the static IP gateway
+void Return_StaticIPGateway(uint8_t *gateway)
+{
+	for(uint8_t i=0; i<4; i++)
+		gateway[i]   = Return_8bit(STORE__IPGTWY_s+i);
+}
+
+// Store the SSID
+void Store_SSID(String string)
+{
+	Store_String(STORE__WIFISSID_s, String string);
+}
+
+// Return the SSID
+String Read_SSID()
+{
+	return Return_String(STORE__WIFISSID_s, 32);
+}
+
+// Store the Password
+void Store_Password(String string)
+{
+	Store_String(STORE__WIFIPSW_s, String string);
+}
+
+// Return the Password
+String Read_Password()
+{
+	return Return_String(STORE__WIFIPSW_s, 64);
 }
 
 // Commit to EEPROM
