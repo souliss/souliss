@@ -280,6 +280,11 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 		i_trigger = Souliss_TRIGGED;
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_RstCmd && memory_map[MaCaco_OUT_s + slot] == (Souliss_T1n_AutoState | Souliss_T1n_Coil))	// reset cmd in AutoOn State
+	{
+	  memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_AutoState; // go back to auto state
+	  i_trigger = Souliss_TRIGGED;
+	}
 	else
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// No recognized command, reset
 
