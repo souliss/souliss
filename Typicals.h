@@ -1,4 +1,4 @@
-/**************************************************************************
+﻿/**************************************************************************
 	Souliss
     Copyright (C) 2011  Veseo
 
@@ -52,7 +52,7 @@
 #define Souliss_T41						0x41			// Anti-theft integration (Main)
 #define Souliss_T42						0x42			// Anti-theft integration (Peer)
 #define Souliss_T51						0x51			// Generic
-#define Souliss_T52						0x52            // Temperature measure (-20, +50) �C
+#define Souliss_T52						0x52            // Temperature measure (-20, +50) °C
 #define Souliss_T53						0x53            // Humidity measure (0, 100) %
 #define Souliss_T54						0x54            // Light Sensor (0, 40) kLux
 #define Souliss_T55						0x55			// Voltage (0, 400) V
@@ -61,7 +61,7 @@
 #define Souliss_T58						0x58            // Pressure measure (0, 1500) hPa 
 #define Souliss_T59						0x59
 #define Souliss_T61						0x61			// Generic
-#define Souliss_T62						0x62            // Temperature measure (-20, +50) �C
+#define Souliss_T62						0x62            // Temperature measure (-20, +50) °C
 #define Souliss_T63						0x63            // Humidity measure (0, 100) %
 #define Souliss_T64						0x64            // Light Sensor (0, 40) kLux
 #define Souliss_T65						0x65			// Voltage (0, 400) V
