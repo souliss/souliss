@@ -119,16 +119,15 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	i_trigger = Souliss_TRIGGED;
 	
 	// Store actual value as difference with requested setpoint
-	if(C8TO16(memory_map + MaCaco_IN_s + slot) != Souliss_T3n_RstCmd)
+	if(*(memory_map + MaCaco_IN_s + slot) != Souliss_T3n_RstCmd)
 	{		
-		// If there is a too small change in the new temperature
-			if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
-				actual_temp = in_temp;									// Set the new temperature value
+		// If there is a change in the new temperature
+		if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
+			actual_temp = in_temp;									// Set the new temperature value
 	}
 		
 	// Check the actual operational mode (Cooling / Heating)
-	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_SystemOn)
-	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode)
+	if ((memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_SystemOn) && (memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
 	{
 		// Heating Mode
 		if(((actual_temp-actual_setpnt)) < (-1 * Souliss_T3n_DeadBand * actual_temp))
@@ -147,8 +146,9 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
 		} else
 			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig
-		} else if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingMode)
-		{
+		} 
+	else if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingMode)
+	{
 		// Cooling Mode
 		if((actual_temp-actual_setpnt) > (Souliss_T3n_DeadBand*actual_temp))
 		{
@@ -166,7 +166,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
 		} else
 			i_trigger = Souliss_NOTTRIGGED;								// No action, no need for trig			
-		}
+	}
 
 	// Check the fan mode (Manual / Auto)
 	if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_FanAutoState)
@@ -242,12 +242,13 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 			return Souliss_TRIGGED;				
 		}
 		
-		memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_SystemOn;					// Set System On
+		memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_SystemOn;				// Set System On
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
 		i_trigger = Souliss_TRIGGED;		
 	}		
 	
 	memory_map[MaCaco_IN_s + slot] = Souliss_T3n_RstCmd;					// Reset
+	
 	// Convert the processed values in half precision floating points
 	Souliss_HalfPrecisionFloating((memory_map + MaCaco_OUT_s + slot + 1), &actual_temp);
 	Souliss_HalfPrecisionFloating((memory_map + MaCaco_OUT_s + slot + 3), &actual_setpnt);
