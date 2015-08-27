@@ -86,7 +86,7 @@ void Souliss_SetT31(U8 *memory_map, U8 slot)
 		measured value and setpoint in next four slots (as per inputs).
 		
 		The control state bit meaning follow as:
-			BIT 0	Not used 
+			BIT 0	(0 System  OFF,  1 System  ON)
 			BIT 1	(0 Heating OFF , 1 Heating ON)
 			BIT 2	(0 Cooling OFF , 1 Cooling ON)
 			BIT 3	(0 Fan 1 OFF   , 1 Fan 1 ON)
