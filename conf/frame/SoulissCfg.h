@@ -36,6 +36,8 @@
         Value       
         0x0         Disable (Default)
         0x1         Enable
+
+	This is supported on AVR only.
 */
 /**************************************************************************/
 #ifndef HTTPSERVER_INSKETCH
@@ -61,6 +63,8 @@
         0x0         Disable (Default)
         0x1         Enable in TCP (Polling)
 		0x2			Enable in UDP (Event-driven)
+
+	This is supported on AVR only.
 */
 /**************************************************************************/
 #ifndef XMLSERVER_INSKETCH
@@ -84,6 +88,8 @@
 	
 	This code implement only partially the Modbus protocol and doesn't allow
 	multidrop configuration and/or bridging in RTU mode.
+
+	This is supported on AVR only.
 */
 /**************************************************************************/
 #ifndef MODBUS_INSKETCH
@@ -97,7 +103,23 @@
 #define	MODBUS_ID					1	
 #define	MODBUS_RTU_BAUD				115200
 #define MODBUS_TCP_PORT				502
-			
+		
+/**************************************************************************/
+/*!
+	Enable the WebConfiguration HTTP server on port number 80.
+	
+        Value       
+        0x0         Disable (Default)
+        0x1         Enable
+
+	This is supported on ESP8266 only.
+*/
+/**************************************************************************/
+#ifndef WEBCONFIGSERVER_INSKETCH
+#	define WEBCONFIGSERVER			0
+#endif
+
+	
 /**************************************************************************/
 /*!
 	The dynamic addressing node act as server for Souliss addresses over

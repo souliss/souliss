@@ -33,12 +33,19 @@
 
 ***/
 
-ESP8266WebServer server(HTTP_PORT);		// The Webserver
+#include "webconfig.h"
+
+ESP8266WebServer server(HTTP_PORT);	// The Webserver
 int AdminTimeOutCounter = 0;		// Counter for Disabling the AdminMode
 boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
-
-const byte DNS_PORT = DNS_PORT;
 DNSServer dnsServer;
+
+#include "src/root.h"
+#include "src/admin.h"
+#include "src/script.js.h"
+#include "src/style.css.h"
+#include "src/main.h"
+#include "src/netconfig.h"
 
 // Apply default configuration
 void defaultWebConfig()
@@ -52,6 +59,15 @@ void defaultWebConfig()
 	config.Gateway[0] = 192;config.Gateway[1] = 168;config.Gateway[2] = 1;config.Gateway[3] = 1;
 }
 
+// Start the node as access point
+void startAccessPoint()
+{
+	WiFi.mode(WIFI_AP);
+	WiFi.softAPConfig(IPADDR_DEFAULT, IPSUBN_DEFAULT, IPADDR_DEFAULT);
+	WiFi.softAP(ACCESS_POINT_NAME);
+	dnsServer.start(DNS_PORT, "*", IPADDR_DEFAULT);	
+}
+
 // Start the webserver
 void startWebServer()
 {
@@ -59,8 +75,8 @@ void startWebServer()
 	ReadConfig();
 	
 	// Setup the webserver
-	server.onNotFound ( []() { LOG.println("admin.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
-	server.on ( "/", []() { LOG.println("admin.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );	
+	server.onNotFound ( []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+	server.on ( "/", []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );	
 	server.on ( "/admin/processMain", processMain);
 	server.on ( "/admin/filldynamicdata", filldynamicdata );	
 	server.on ( "/favicon.ico",   []() { server.send ( 200, "text/html", "" );   }  );
@@ -81,7 +97,7 @@ void startWebServer()
 // Disable the webserver
 void disableWebServer()
 {
-	server.end();
+	// How to stop the webserver?
 }
 
 // Write actual configuration in the EEPROM

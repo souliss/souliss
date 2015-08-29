@@ -226,7 +226,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
 #define	SetIPAddress											Souliss_SetIPAddress
 #define GetIPAddress											Souliss_GetIPAddress
-#define ReadIPConfiguration										Souliss_ReadIPConfiguration()
+#define ReadIPConfiguration										Souliss_ReadIPConfiguration
 #define	IsRuntimeGateway										MaCaco_IsRuntimeGateway
 #define	JoinNetwork()											Souliss_JoinNetwork()
 #define	JoinAndReset()											Souliss_JoinAndReset()

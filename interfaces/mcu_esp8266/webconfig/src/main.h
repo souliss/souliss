@@ -27,6 +27,7 @@
   First initial version to the public
 */
 
+
 //
 //   The MAIN PAGE
 //
@@ -74,8 +75,6 @@ const char PAGE_main[] PROGMEM = R"=====(
    </script>
 
 )=====";
-#endif
-
 
 void processMain()
 {

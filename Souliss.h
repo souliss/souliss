@@ -120,7 +120,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
 uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
-#if(MCU_TYPE == 0x01) // Atmel AVR Atmega
+#if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
 #	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 #		include "interfaces/mcu_avr/HTTP.h"
 #	elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
@@ -131,6 +131,10 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #		include "interfaces/mcu_avr/XMLServer.h"
 #	elif(MODBUS)
 #		include "interfaces/mcu_avr/Modbus.h"
+#	endif
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#	if(WEBCONFIGSERVER)
+#		include "interfaces/mcu_esp8266/webconfig/webconfig.h"
 #	endif
 #endif
 
@@ -144,29 +148,37 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #	include "tools/store/store.cpp"
 #endif
 
+// Inlcude framework code
 #include "frame/MaCaco/MaCaco.cpp"
 #include "frame/vNet/vNet.cpp"
 
-#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
-	#include "interfaces/mcu_avr/HTTP.cpp"
-#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
-	#include "interfaces/mcu_avr/HTTP_uIP.cpp"
-#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-#	include "interfaces/mcu_avr/XMLServer_HTTP.cpp"
-#elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-#	include "interfaces/mcu_avr/XMLServer_UDP.cpp"
-#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
-#	include "interfaces/mcu_avr/XMLServer_HTTP_uIP.cpp"
-#elif(MODBUS)
-#	include "interfaces/mcu_avr/Modbus.cpp"
-#endif
-	
 // Include IO definitions and other tools
 #include "hardware/IOdef.cpp"
+
+// Include methods for half-precision floating points and strings
+#include "tools/IEEE754/float16.c"
 #include "tools/strings/strings.c"
 
-// Include methods for half-precision floating points
-#include "tools/IEEE754/float16.c"
+#if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
+	#if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
+		#include "interfaces/mcu_avr/HTTP.cpp"
+	#elif(HTTPSERVER && VNET_MEDIA1_ENABLE && ETH_ENC28J60)
+		#include "interfaces/mcu_avr/HTTP_uIP.cpp"
+	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
+	#	include "interfaces/mcu_avr/XMLServer_HTTP.cpp"
+	#elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
+	#	include "interfaces/mcu_avr/XMLServer_UDP.cpp"
+	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
+	#	include "interfaces/mcu_avr/XMLServer_HTTP_uIP.cpp"
+	#elif(MODBUS)
+	#	include "interfaces/mcu_avr/Modbus.cpp"
+	#	endif
+#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	#if(WEBCONFIGSERVER)
+	#	include "interfaces/mcu_esp8266/webconfig/webconfig.cpp"
+	#endif
+#endif
+	
 
 #if(MCU_TYPE == 0x01)	// ATmega AVR
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266

@@ -32,19 +32,19 @@
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
 
 ***/
-
-#include "src/admin.h"
-#include "src/main.h"
-#include "src/netconfig.h"
-#include "src/root.h"
-#include "src/script.js.h"
-#include "src/style.css.h"
+#ifndef WEBCONFIG_H
+#define WEBCONFIG_H
 
 #define	HTTP_PORT			80
 #define	DNS_PORT			53
 
 #define SET_TRUE			1
 #define SET_FALSE			0
+
+#define ACCESS_POINT_NAME  	"Souliss"		
+
+#define IPADDR_DEFAULT		IPAddress(192, 168, 127, 111)
+#define IPSUBN_DEFAULT		IPAddress(255, 255, 255, 0)
 
 struct strConfig {
 	String ssid;
@@ -58,6 +58,11 @@ struct strConfig {
 }   config;
 
 
+void defaultWebConfig();
+void startAccessPoint();
+void startWebServer();
+void disableWebServer();
+void WriteConfig();
+boolean ReadConfig();
 
-
-
+#endif

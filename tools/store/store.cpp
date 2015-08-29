@@ -232,7 +232,7 @@ void Return_StaticIPGateway(uint8_t *gateway)
 // Store the SSID
 void Store_SSID(String string)
 {
-	Store_String(STORE__WIFISSID_s, String string);
+	Store_String(STORE__WIFISSID_s, string);
 }
 
 // Return the SSID
@@ -244,7 +244,7 @@ String Read_SSID()
 // Store the Password
 void Store_Password(String string)
 {
-	Store_String(STORE__WIFIPSW_s, String string);
+	Store_String(STORE__WIFIPSW_s, string);
 }
 
 // Return the Password

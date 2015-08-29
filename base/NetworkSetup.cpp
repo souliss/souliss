@@ -260,7 +260,9 @@ uint8_t Souliss_ReadIPConfiguration()
 
 	#if(MCU_TYPE == 0x02)
 	// Setup the SSID and Password
-	WiFi.begin(Read_SSID(), Read_Password());
+	String SSID = Read_SSID();
+	String PSW  = Read_Password();
+	WiFi.begin(SSID.c_str(), PSW.c_str());
 	#endif
 
 	// If the DHCP Mode is set
