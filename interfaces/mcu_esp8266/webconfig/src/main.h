@@ -79,35 +79,25 @@ const char PAGE_main[] PROGMEM = R"=====(
 
 void processMain()
 {
-    
-    if (server.args() > 0 )  // Reboot Settings
-    {
-      config.rst = true;
-      String temp = "";
-      for ( uint8_t i = 0; i < server.args(); i++ ) {
-        if (server.argName(i) == "rst") config.rst = false; 
-        LOG.println(F("EEPROM Clear, Size: "));
-        LOG.println(STORE__SIZE);
-        //Store_Clear();
-        for(int i=0;i<STORE__SIZE;i++)
-  	{	EEPROM.write(i, 255);   }
-	EEPROM.commit();
-      }
-      
-      ESP.restart();
+	if (server.args() > 0 )  // Reboot Settings
+	{
+		config.rst = true;
+		String temp = "";
+		for ( uint8_t i = 0; i < server.args(); i++ ) {
+			if (server.argName(i) == "rst") config.rst = false; 
+			Store_Clear();
+			Store_Commit();
+		}
 
+	ESP.restart();
     }
 
-    server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_main)); 
-    Serial.println(__FUNCTION__);
-    
+	server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_main)); 
 }
 
 void send_reset_values_html()
 {
-  String values ="";
-  values += "rst|" +  (String) (config.rst ? "checked" : "") + "|chk\n";
-  server.send ( 200, "text/plain", values);
-  Serial.println(__FUNCTION__); 
+	String values ="";
+	values += "rst|" +  (String) (config.rst ? "checked" : "") + "|chk\n";
+	server.send ( 200, "text/plain", values);
 }
-

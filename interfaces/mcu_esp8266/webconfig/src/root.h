@@ -45,12 +45,11 @@ const char PAGE_Root[] PROGMEM = R"=====(
 )=====";
 
 void sendRootPage()
-{        
-    if (server.args() > 0 )  // Are there any POST/GET Fields ? 
-    {
-       for ( uint8_t i = 0; i < server.args(); i++ ) {  // Iterate through the fields
-            
-        }
-    }
-    server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_Root) );  
+{
+	if (server.args() > 0 )  // Are there any POST/GET Fields ? 
+	{
+		for ( uint8_t i = 0; i < server.args(); i++ ) {  // Iterate through the fields
+		}
+	}
+	server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_Root) );  
 }

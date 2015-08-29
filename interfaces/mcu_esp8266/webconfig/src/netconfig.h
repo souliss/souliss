@@ -105,12 +105,11 @@ Please Wait....Configuring and Restarting.
 
 void send_network_configuration_html()
 {
-	
 	if (server.args() > 0 )  // Save Settings
 	{
 		String temp = "";
 		config.dhcp = false;
-		config.NodeMode = false;
+		config.RuntimeGateway = false;
 		for ( uint8_t i = 0; i < server.args(); i++ ) {
 			if (server.argName(i) == "ssid") config.ssid =   urldecode(server.arg(i));
 			if (server.argName(i) == "password") config.password =    urldecode(server.arg(i)); 
@@ -127,22 +126,18 @@ void send_network_configuration_html()
 			if (server.argName(i) == "gw_2") if (checkRange(server.arg(i))) 	config.Gateway[2] =  server.arg(i).toInt();
 			if (server.argName(i) == "gw_3") if (checkRange(server.arg(i))) 	config.Gateway[3] =  server.arg(i).toInt();
 			if (server.argName(i) == "dhcp") config.dhcp = true;
-			if (server.argName(i) == "mnenabled") config.NodeMode = true;
+			if (server.argName(i) == "mnenabled") config.RuntimeGateway = true;
 		}
 		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
-		LOG.println("Write Config"); 
 		WriteConfig();
-		ConfigureWifi();
+		ESP.restart();
 	}
 	else
 	{
             server.send ( 200, "text/html", PAGE_NetworkConfiguration ); 
 
 	}
-	LOG.println(__FUNCTION__); 
 }
-
-
 
 //
 //   FILL THE PAGE WITH VALUES
@@ -168,9 +163,8 @@ void send_network_configuration_values_html()
 	values += "gw_2|" +  (String) config.Gateway[2] + "|input\n";
 	values += "gw_3|" +  (String) config.Gateway[3] + "|input\n";
 	values += "dhcp|" +  (String) (config.dhcp ? "checked" : "") + "|chk\n";
-	values += "mnenabled|" +  (String) (config.NodeMode ? "checked" : "") + "|chk\n";
+	values += "mnenabled|" +  (String) (config.RuntimeGateway ? "checked" : "") + "|chk\n";
 	server.send ( 200, "text/plain", values);
-	LOG.println(__FUNCTION__); 
 	
 }
 
@@ -194,16 +188,14 @@ void send_connection_state_values_html()
 
 
 
-	 int n = WiFi.scanNetworks();
+	int n = WiFi.scanNetworks();
  
-	 if (n == 0)
-	 {
-		 Networks = "<font color='#FF0000'>No networks found!</font>";
-	 }
+	if (n == 0)
+	{
+		Networks = "<font color='#FF0000'>No networks found!</font>";
+	}
 	else
-    {
-	 
-		
+	{
 		Networks = "Found " +String(n) + " Networks<br>";
 		Networks += "<table border='0' cellspacing='0' cellpadding='3'>";
 		Networks += "<tr bgcolor='#DDDDDD' ><td><strong>Name</strong></td><td><strong>Quality</strong></td><td><strong>Enc</strong></td><tr>";
@@ -233,7 +225,6 @@ void send_connection_state_values_html()
 	values += "connectionstate|" +  state + "|div\n";
 	values += "networks|" +  Networks + "|div\n";
 	server.send ( 200, "text/plain", values);
-	LOG.println(__FUNCTION__); 
 	
 }
 

@@ -71,7 +71,10 @@ void loop()
 
             // Just process communication as fast as the logics
             ProcessCommunication();
-        }           
+        } 
+
+        // Process the other Gateway stuffs
+        FAST_GatewayComms();          
     }
     EXECUTESLOW()
     {   

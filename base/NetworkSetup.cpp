@@ -151,7 +151,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 {	
 	// Starting from IP configuration define the vNet ones
-	U8 i=0;
+	U8 i=0, timeout=20;
 	for(i=0; i<4; i++)
 	{
 		if(DEFAULT_BASEIPADDRESS) 	DEFAULT_BASEIPADDRESS[i]=ip_address[i];
@@ -167,9 +167,12 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	WiFi.begin(WiFi_SSID, WiFi_Password);
 	
 	// Connect
-	while (WiFi.status() != WL_CONNECTED) 	
+	while ((WiFi.status() != WL_CONNECTED) && timeout)
+	{
+		timeout--;
 		delay(500);
-	
+	}
+
 	// Set manually an IP address
 	WiFi.config(ip_address, ip_gateway, subnet_mask);
 	#endif
@@ -185,6 +188,8 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 /**************************************************************************/ 
 void Souliss_GetIPAddress()
 {
+	U8 timeout=20;
+
 #if((MCU_TYPE == 0x01) && ARDUINO_DHCP)	// Atmel AVR Atmega
 
 	// Use software based DHCP client
@@ -199,8 +204,11 @@ void Souliss_GetIPAddress()
 	WiFi.begin(WiFi_SSID, WiFi_Password);
 	
 	// Connect
-	while (WiFi.status() != WL_CONNECTED) 	
+	while ((WiFi.status() != WL_CONNECTED) && timeout)
+	{
+		timeout--;
 		delay(500);
+	}
 	
 	// Get the IP network parameters
 	IPAddress lIP  = WiFi.localIP();
@@ -273,6 +281,9 @@ uint8_t Souliss_ReadIPConfiguration()
 		// Set IP Address
 		Souliss_SetIPAddress(_ip_address, _subnet_mask, _ip_gateway);
 	}
+
+	if(WiFi.status() != WL_CONNECTED) return 0;
+	else return 1;
 }
 #endif
 

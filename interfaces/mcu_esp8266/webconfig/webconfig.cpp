@@ -33,135 +33,122 @@
 
 ***/
 
-ESP8266WebServer server(80);		// The Webserver
+ESP8266WebServer server(HTTP_PORT);		// The Webserver
 int AdminTimeOutCounter = 0;		// Counter for Disabling the AdminMode
 boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
 
+const byte DNS_PORT = DNS_PORT;
+DNSServer dnsServer;
 
-
-
-
-void check_ESPMode()
+// Apply default configuration
+void defaultWebConfig()
 {
-	if (WiFi.status() != WL_CONNECTED);{
-	  Serial.print("Connecting to AP");
-	  for (int i=0; i < 10; i++){
-		(WiFi.status() != WL_CONNECTED);
-		delay(1000);
-		LOG.println(".");
-	  }
-	}
-	if (WiFi.status() == WL_CONNECTED) {
-		LOG.print("Already connect to : ");
-		LOG.println(WiFi.SSID());
-		LOG.println("Admin Time Out");
-		AdminTimeOutCounter=0;
-		WiFi.mode(WIFI_STA);
-		LOG.println( "STA mode started" );
-		LOG.println(WiFi.localIP());
-		LOG.println("Souliss update IP Address");
-		GetIPAddress(); 
-		delay(500);
-
-	}
-	else
-	{
-		LOG.println( "AP mode started coz' No WiFi or No Config" );
-                WiFi.mode(WIFI_AP);
-                WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-                WiFi.softAP(ACCESS_POINT_NAME);
-                LOG.println(WiFi.softAPIP());
-                dnsServer.start(DNS_PORT, "*", apIP);
-                LOG.println(WiFi.softAPIP());
-	}
-
+	config.ssid = "MYSSID";
+	config.password = "MYPASSWORD";
+	config.dhcp = true;
+	config.RuntimeGateway = true;
+	config.IP[0] = 192;config.IP[1] = 168;config.IP[2] = 1;config.IP[3] = 222;
+	config.Netmask[0] = 255;config.Netmask[1] = 255;config.Netmask[2] = 255;config.Netmask[3] = 0;
+	config.Gateway[0] = 192;config.Gateway[1] = 168;config.Gateway[2] = 1;config.Gateway[3] = 1;
 }
 
-void ConfigureWifi()
+// Start the webserver
+void startWebServer()
 {
-	LOG.println("Configuring Wifi");
-	WiFi.begin (config.ssid.c_str(), config.password.c_str());
-	check_ESPMode();
-
-	if (!config.dhcp)
-	{
-		WiFi.config(IPAddress(config.IP[0],config.IP[1],config.IP[2],config.IP[3] ),  IPAddress(config.Gateway[0],config.Gateway[1],config.Gateway[2],config.Gateway[3] ) , IPAddress(config.Netmask[0],config.Netmask[1],config.Netmask[2],config.Netmask[3] ));
-		LOG.println("Souliss update IP Address for STATIC");
-		GetIPAddress();
-		LOG.println(WiFi.localIP());
-	}
-       	check_ESPMode();
+	// Read the configuration
+	ReadConfig();
+	
+	// Setup the webserver
+	server.onNotFound ( []() { LOG.println("admin.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+	server.on ( "/", []() { LOG.println("admin.html"); server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );	
+	server.on ( "/admin/processMain", processMain);
+	server.on ( "/admin/filldynamicdata", filldynamicdata );	
+	server.on ( "/favicon.ico",   []() { server.send ( 200, "text/html", "" );   }  );
+	server.on ( "/admin.html", []() { server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+	server.on ( "/config.html", send_network_configuration_html );
+	server.on ( "/main.html", processMain  );
+	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_main );  } );
+	server.on ( "/style.css", []() { server.send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
+	server.on ( "/microajax.js", []() { server.send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
+	server.on ( "/admin/values", send_network_configuration_values_html );
+	server.on ( "/admin/connectionstate", send_connection_state_values_html );
+	server.on ( "/admin/rstvalues", send_reset_values_html);
+	
+	// Start the webserver
+	server.begin();
 }
 
+// Disable the webserver
+void disableWebServer()
+{
+	server.end();
+}
+
+// Write actual configuration in the EEPROM
 void WriteConfig()
 {
 
-	LOG.println("Writing Config");
-	EEPROM.write(0,'C');
-	EEPROM.write(1,'F');
-	EEPROM.write(2,'G');
-	EEPROM.write(3,config.rst);
-        
-	EEPROM.write(16,config.dhcp);
+	// Store the node ID
+	Store_ID(STORE__DEFAULTID);
+    
+	// Store DHCP mode (Enabled or Disabled)
+	if(config.dhcp)	Store_DHCPMode(SET_TRUE);
+	else			Store_DHCPMode(SET_FALSE);
+
+	// Store IP Address
+	Store_StaticIPAddress(config.IP);
+
+	// Store IP Subnet
+	Store_StaticIPSubnet(config.Netmask);
+
+	// Store IP Gateway
+	Store_StaticIPGateway(config.Gateway);
+
+	// Store Gateway/Peer mode
+	if(config.RuntimeGateway)	Store_GatewayMode(SET_TRUE);
+	else						Store_GatewayMode(SET_FALSE);
 	
-	EEPROM.write(32,config.IP[0]);
-	EEPROM.write(33,config.IP[1]);
-	EEPROM.write(34,config.IP[2]);
-	EEPROM.write(35,config.IP[3]);
+	// Store WiFi SSID and Password
+	Store_SSID(config.ssid);
+	Store_Password(config.password);
 
-	EEPROM.write(36,config.Netmask[0]);
-	EEPROM.write(37,config.Netmask[1]);
-	EEPROM.write(38,config.Netmask[2]);
-	EEPROM.write(39,config.Netmask[3]);
-
-	EEPROM.write(40,config.Gateway[0]);
-	EEPROM.write(41,config.Gateway[1]);
-	EEPROM.write(42,config.Gateway[2]);
-	EEPROM.write(43,config.Gateway[3]);
-	
-	EEPROM.write(50,config.NodeMode);
-
-	WriteStringToEEPROM(100,config.ssid);
-	WriteStringToEEPROM(132,config.password);
-
-	EEPROM.commit();
-	
+	// Commit changes
+	Store_Commit();
 }
+
+// Read actual configuration from EEPROM
 boolean ReadConfig()
 {
-
-	LOG.println("Reading Configuration");
-	if (EEPROM.read(0) == 'C' && EEPROM.read(1) == 'F'  && EEPROM.read(2) == 'G' )
+	// If no configuration has been stored, use default values
+	if(Return_ID()!=STORE__DEFAULTID)
 	{
-  		LOG.println("Configuration Found!");
-		config.rst = EEPROM.read(3);
-                
-		config.dhcp = 	EEPROM.read(16);
-
-		config.IP[0] = EEPROM.read(32);
-		config.IP[1] = EEPROM.read(33);
-		config.IP[2] = EEPROM.read(34);
-		config.IP[3] = EEPROM.read(35);
-		config.Netmask[0] = EEPROM.read(36);
-		config.Netmask[1] = EEPROM.read(37);
-		config.Netmask[2] = EEPROM.read(38);
-		config.Netmask[3] = EEPROM.read(39);
-		config.Gateway[0] = EEPROM.read(40);
-		config.Gateway[1] = EEPROM.read(41);
-		config.Gateway[2] = EEPROM.read(42);
-		config.Gateway[3] = EEPROM.read(43);
-		
-		config.NodeMode = EEPROM.read(50);
-		
-		config.ssid = ReadStringFromEEPROM(100);
-		config.password = ReadStringFromEEPROM(132);
-		
-		return true;
-	
-	}
-	else
-	{
-		LOG.println("Configuration NOT FOUND!!!!");
+		defaultWebConfig();
 		return false;
 	}
+
+	// By default reset it OFF
+	config.rst = 0;
+	
+	// Read DHCP Mode 
+	if(Return_DHCPMode()) 	config.dhcp = true;
+	else					config.dhcp = false;
+	
+	// Read IP Address
+	Return_StaticIPAddress(config.IP);
+
+	// Read IP Subnet
+	Return_StaticIPSubnet(config.Netmask);
+
+	// Read IP Gateway
+	Return_StaticIPGateway(config.Gateway);
+
+	// Read Gateway/Peer Mode 
+	if(Return_GatewayMode()) config.RuntimeGateway = true;
+	else					 config.RuntimeGateway = false;
+
+	// Read WiFi SSID and Password
+	config.ssid = Read_SSID();
+	config.password = Read_Password();
+
+	return true;
 }

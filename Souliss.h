@@ -134,7 +134,7 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #	endif
 #endif
 
-// Include IO definitions and drivers for supported hardware
+// Include IO definitions and other tools
 #include "hardware/IOdef.h"
 #include "tools/IEEE754/float16.h"
 
@@ -161,8 +161,9 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #	include "interfaces/mcu_avr/Modbus.cpp"
 #endif
 	
-// Include IO definitions and drivers for supported hardware
+// Include IO definitions and other tools
 #include "hardware/IOdef.cpp"
+#include "tools/strings/strings.c"
 
 // Include methods for half-precision floating points
 #include "tools/IEEE754/float16.c"
@@ -191,10 +192,6 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
-
-// Include IO definitions and drivers for supported hardware
-#include "hardware/IOdef.h"
-#include "tools/IEEE754/float16.h"	
 
 #include "base/SpeakEasy.h"
 #include "user/user_config.h"

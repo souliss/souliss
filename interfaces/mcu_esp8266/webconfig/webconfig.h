@@ -33,6 +33,19 @@
 
 ***/
 
+#include "src/admin.h"
+#include "src/main.h"
+#include "src/netconfig.h"
+#include "src/root.h"
+#include "src/script.js.h"
+#include "src/style.css.h"
+
+#define	HTTP_PORT			80
+#define	DNS_PORT			53
+
+#define SET_TRUE			1
+#define SET_FALSE			0
+
 struct strConfig {
 	String ssid;
 	String password;
@@ -40,16 +53,9 @@ struct strConfig {
 	byte  Netmask[4];
 	byte  Gateway[4];
 	boolean dhcp;
-	boolean NodeMode; //test node mode as gateway or peer
 	boolean rst;
+	boolean RuntimeGateway; //test node mode as gateway or peer
 }   config;
-
-
-/*
-**
-** CONFIGURATION HANDLING
-**
-*/
 
 
 
