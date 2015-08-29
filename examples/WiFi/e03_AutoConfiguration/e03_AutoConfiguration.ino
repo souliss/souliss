@@ -24,10 +24,12 @@ void setup()
     
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point
-    if(!ReadIPConfiguration())  startAccessPoint();
-
-    // Start the configuration WebServer
-    startWebServer();
+    if(!ReadIPConfiguration()) 
+	{	
+		// Start the node as access point with a configuration WebServer
+		startAccessPoint();
+		startWebServer();
+	}
 
     if (IsRuntimeGateway())
     {
@@ -57,10 +59,9 @@ void loop()
              analogWrite(15, mOutput(MYLED+1)*4);
         }
 
-        // Process the WebConfig and DNS servers
+        // Process the WebConfig server
         FAST_510ms() {
-            dnsServer.processNextRequest();
-            server.handleClient();      
+            runWebServer(); 
         }
       
         // Run communication as Gateway or Peer

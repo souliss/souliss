@@ -43,8 +43,18 @@
 
 #define ACCESS_POINT_NAME  	"Souliss"		
 
-#define IPADDR_DEFAULT		IPAddress(192, 168, 127, 111)
-#define IPSUBN_DEFAULT		IPAddress(255, 255, 255, 0)
+#define	IPABYTE_1			192
+#define	IPABYTE_2			168
+#define	IPABYTE_3			127
+#define	IPABYTE_4			111
+
+#define SUBBYTE_1			255
+#define SUBBYTE_2			255
+#define SUBBYTE_3			255
+#define SUBBYTE_4			0
+
+#define IPADDR_DEFAULT		IPAddress(IPABYTE_1, IPABYTE_2, IPABYTE_3, IPABYTE_4)
+#define IPSUBN_DEFAULT		IPAddress(SUBBYTE_1, SUBBYTE_2, SUBBYTE_3, SUBBYTE_4)
 
 struct strConfig {
 	String ssid;
@@ -62,6 +72,7 @@ void defaultWebConfig();
 void startAccessPoint();
 void startWebServer();
 void disableWebServer();
+void runWebServer();
 void WriteConfig();
 boolean ReadConfig();
 

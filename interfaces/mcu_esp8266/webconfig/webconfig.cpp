@@ -54,9 +54,9 @@ void defaultWebConfig()
 	config.password = "MYPASSWORD";
 	config.dhcp = true;
 	config.RuntimeGateway = true;
-	config.IP[0] = 192;config.IP[1] = 168;config.IP[2] = 1;config.IP[3] = 222;
-	config.Netmask[0] = 255;config.Netmask[1] = 255;config.Netmask[2] = 255;config.Netmask[3] = 0;
-	config.Gateway[0] = 192;config.Gateway[1] = 168;config.Gateway[2] = 1;config.Gateway[3] = 1;
+	config.IP[0] = IPABYTE_1;config.IP[1] = IPABYTE_2;config.IP[2] = IPABYTE_3;config.IP[3] = IPABYTE_4;
+	config.Netmask[0] = SUBBYTE_1;config.Netmask[1] = SUBBYTE_2;config.Netmask[2] = SUBBYTE_3;config.Netmask[3] = SUBBYTE_4;
+	config.Gateway[0] = IPABYTE_1;config.Gateway[1] = IPABYTE_2;config.Gateway[2] = IPABYTE_3;config.Gateway[3] = IPABYTE_4;
 }
 
 // Start the node as access point
@@ -66,6 +66,9 @@ void startAccessPoint()
 	WiFi.softAPConfig(IPADDR_DEFAULT, IPSUBN_DEFAULT, IPADDR_DEFAULT);
 	WiFi.softAP(ACCESS_POINT_NAME);
 	dnsServer.start(DNS_PORT, "*", IPADDR_DEFAULT);	
+
+	// Setup the Souliss framework
+	Souliss_GetIPAddress();
 }
 
 // Start the webserver
@@ -98,6 +101,13 @@ void startWebServer()
 void disableWebServer()
 {
 	// How to stop the webserver?
+}
+
+// Process the communication for the webserver
+void runWebServer()
+{
+	dnsServer.processNextRequest();	
+	server.handleClient();      
 }
 
 // Write actual configuration in the EEPROM
