@@ -41,8 +41,8 @@ const char PAGE_main[] PROGMEM = R"=====(
       <a href="admin.html" align="center" style="width:250px" class="btn btn--m btn--blue" >Click Here to Begin</a><br>
       <hr>
       <table border="0"  cellspacing="0" cellpadding="3" style="width:310px" ></td></tr>
-      <tr><td align="left">Click the check button to Reboot:</td><td><input type="checkbox" id="rst" name="rst"></td></tr>
-      <tr><td colspan="2" align="center"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Reboot">
+      <tr><td align="left">Click the check button to Reset:</td><td><input type="checkbox" id="rst" name="rst"></td></tr>
+      <tr><td colspan="2" align="center"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Reset">
       </table>
       </form>
       <hr>
