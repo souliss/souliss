@@ -47,10 +47,9 @@ const char PAGE_main[] PROGMEM = R"=====(
       </form>
       <hr>
       <p>Contact us at http://www.souliss.net/</p>
-      <p>Install SoulissApp in Google Play Store to control this node</p>
+      <p>Install SoulissApp for Android from the Google Play Store to control this node</p>
       
       <hr>
-      <p>Present to You by Juan Pinto - Thanks to Dario, Lesjaw, Dom and others..</p>
 
 
 

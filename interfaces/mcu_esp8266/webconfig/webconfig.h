@@ -39,9 +39,7 @@
 #define	DNS_PORT			53
 
 #define SET_TRUE			1
-#define SET_FALSE			0
-
-#define ACCESS_POINT_NAME  	"Souliss"		
+#define SET_FALSE			0	
 
 #define	IPABYTE_1			192
 #define	IPABYTE_2			168

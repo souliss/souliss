@@ -8,6 +8,7 @@
 ***************************************************************************/
 #include "bconf/StandardArduino.h"
 #include "conf/DynamicAddressing.h"                 // Use dynamic address
+#include "conf/Gateway.h"
 #define VNET_MEDIA_INSKETCH
 
 // Include framework code and libraries
