@@ -69,7 +69,6 @@ struct strConfig {
 
 
 void defaultWebConfig();
-void startAccessPoint();
 void startWebServer();
 void disableWebServer();
 void runWebServer();

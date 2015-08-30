@@ -248,6 +248,48 @@ void Souliss_GetIPAddress()
 
 /**************************************************************************
 /*!
+	Start the node as an access point
+*/	
+/**************************************************************************/ 
+#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+void Souliss_SetAccessPoint()
+{
+	WiFi.mode(WIFI_AP);
+	WiFi.softAP(ACCESS_POINT_NAME);
+
+	// Setup the Souliss framework, get the IP network parameters
+	IPAddress lIP  = WiFi.softAPIP();
+
+	uint8_t i;
+	uint8_t ipaddr[4];
+	uint8_t gateway[4];
+	
+	for(i=0;i<4;i++)
+	{
+		ipaddr[i]  = lIP[i];
+		gateway[i] = lIP[i];
+	}	
+
+	// The last byte of the IP address is used as vNet address
+	myvNet_dhcp = ipaddr[3];
+	
+	// Starting from IP configuration define the vNet ones
+	for(i=0; i<4; i++)
+	{
+		if(DEFAULT_BASEIPADDRESS) 	DEFAULT_BASEIPADDRESS[i]=ipaddr[i];
+		if(DEFAULT_GATEWAY) 		DEFAULT_GATEWAY[i] = gateway[i];
+	}
+	
+	U16 vNet_address = (U16)ipaddr[i-1];			// The last byte of the IP address is the vNet one
+	DEFAULT_BASEIPADDRESS[i-1]=0;					// The BASEIPADDRESS has last byte always zero
+	
+	// Set the address
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);	
+}
+#endif
+
+/**************************************************************************
+/*!
 	Read IP Configuration from EEPROM or equivalent
 */	
 /**************************************************************************/ 

@@ -3,7 +3,6 @@
 ***************************************************************************/
 
 #include <ESP8266WiFi.h>
-#include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
 #include <WiFiUdp.h>
@@ -27,7 +26,7 @@ void setup()
     if(!ReadIPConfiguration()) 
 	{	
 		// Start the node as access point with a configuration WebServer
-		startAccessPoint();
+		SetAccessPoint();
 		startWebServer();
 	}
 
