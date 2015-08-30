@@ -28,7 +28,7 @@
 #define	STORE__IPSUBN_f		(STORE__IPSUBN_s+4)
 #define	STORE__IPGTWY_s		(STORE__IPSUBN_f+1)								// IPv4 Address, Subnet mask and IPv4 Gateway
 #define	STORE__IPGTWY_f		(STORE__IPGTWY_s+4)
-#define	STORE__WIFISSID_s	(STORE__IPADDR_f+1)								// WiFi SSID
+#define	STORE__WIFISSID_s	(STORE__IPGTWY_f+1)								// WiFi SSID
 #define	STORE__WIFISSID_f	(STORE__WIFISSID_s+32)
 #define	STORE__WIFIPSW_s	(STORE__WIFISSID_f+1)							// WiFi Password
 #define	STORE__WIFIPSW_f	(STORE__WIFIPSW_s+64)
@@ -36,7 +36,7 @@
 #define	STORE__SIZE			(STORE__INDEX+STORE__WIFIPSW_f)
 
 #if(DYNAMICADDRESSING)
-#	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__PADDR_f+1)
+#	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__SIZE+1)
 #else
 #	define	FIRST_EEPROM_BYTE	(STORE__INDEX+1)	
 #endif

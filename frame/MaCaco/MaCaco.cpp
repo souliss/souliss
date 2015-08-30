@@ -482,7 +482,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// store the new values	
 			#if(USEEEPROM)
 			Store_ID(STORE__DEFAULTID);
-			Store_PeerAddresses((memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+			Store_PeerAddresses((memory_map + MaCaco_ADDRESSES_s + 2), MaCaco_NODES - 1);	// The first two bytes
+																							// is the Local (Gateway)
+																							// address, that's why we skip
 			Store_Commit();
 			
 			#if (SOULISS_DEBUG)

@@ -406,7 +406,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 		if(*(memory_map+i) !=0)
 			break;
 	
-	if((*trigger) || (i<MaCaco_WRITE_f))
+	if((*trigger) && (i<MaCaco_WRITE_f))
 	{
 		// Print debug messages
 		SOULISS_LOG(F("(ss)<MAP>"));

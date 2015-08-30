@@ -514,7 +514,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	// If previously we got the network addresses, recover them from EEPROM
 	#if(USEEEPROM)
 	if(Return_ID()==STORE__DEFAULTID)
-		Return_PeerAddresses((memory_map + MaCaco_ADDRESSES_s), MaCaco_NODES);
+		Return_PeerAddresses((memory_map + MaCaco_ADDRESSES_s + 2), MaCaco_NODES - 1);
 	
 		#if (SOULISS_DEBUG)
 		// Print debug messages

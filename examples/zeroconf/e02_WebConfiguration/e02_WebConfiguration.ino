@@ -1,5 +1,12 @@
 /**************************************************************************
-        
+   Souliss - Web Configuration
+    
+    This example demonstrate a complete web configuration of ESP8266 based
+	nodes, the node starts as access point and allow though a web interface
+	the configuration of IP and Souliss parameters.
+
+	This example is only supported on ESP8266.
+ 
 ***************************************************************************/
 
 #include <ESP8266WiFi.h>
@@ -12,26 +19,32 @@
 #include "conf/RuntimeGateway.h"            // This node is a Peer and can became a Gateway at runtime
 #include "conf/DynamicAddressing.h"         // Use dynamically assigned addresses
 #include "conf/WEBCONFinterface.h"          // Enable the WebConfig interface
-#define  SOULISS_DEBUG_INSKETCH
-# define SOULISS_DEBUG      1
+
 #include "Souliss.h"
    
 #define MYLED               0
 
 void setup()
 {
-
-  Serial.begin(115200);
     Initialize();
     
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point
     if(!ReadIPConfiguration()) 
-  { 
-    // Start the node as access point with a configuration WebServer
-    SetAccessPoint();
-    startWebServer();
-  }
+	{	
+		// Start the node as access point with a configuration WebServer
+		SetAccessPoint();
+		startWebServer();
+
+		// We have nothing more than the WebServer for the configuration
+		// to run, once configured the node will quit this.
+		while(1)
+		{
+			yield();
+			runWebServer(); 
+		}
+
+	}
 
     if (IsRuntimeGateway())
     {
@@ -60,11 +73,6 @@ void loop()
              Logic_DimmableLight(MYLED);                        
              analogWrite(15, mOutput(MYLED+1)*4);
         }
-
-        // Process the WebConfig server
-        FAST_510ms() {
-            runWebServer(); 
-        }
       
         // Run communication as Gateway or Peer
         if (IsRuntimeGateway())
@@ -85,4 +93,3 @@ void loop()
             SLOW_PeerJoin();
     } 
 }    
-
