@@ -23,9 +23,11 @@
 #include "Souliss.h"
    
 #define MYLED               0
+uint8_t GPIO_POUT = 15;  //GPIO15
 
 void setup()
 {
+ // Serial.begin(115200);
     Initialize();
     
     // Read the IP configuration from the EEPROM, if not available start
@@ -71,7 +73,7 @@ void loop()
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
              Logic_DimmableLight(MYLED);                        
-             analogWrite(15, mOutput(MYLED+1)*4);
+             analogWrite(GPIO_POUT, mOutput(MYLED+1)*4);
         }
       
         // Run communication as Gateway or Peer
