@@ -28,8 +28,8 @@
 #include "src/RF24.cpp"
 #include "SPI.h"
 
-#define	PIPE_BRD	1	// Broadcast pipe
-#define	PIPE_UNC	2	// Unicast pipe
+#define	PIPE_BRD	0	// Broadcast pipe
+#define	PIPE_UNC	1	// Unicast pipe
 
 RF24 radio(NRF24_RADIOEN, NRF24_SPICS);
 
