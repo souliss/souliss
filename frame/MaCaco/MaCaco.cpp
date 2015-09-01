@@ -108,10 +108,10 @@ void MaCaco_init(U8* memory_map)
 	}	
 	
 	// Init the EEPROM
-	#if(USEEEPROM)
+	#if(USEEEPROM && MaCaco_USERMODE)
 	Store_Init();	
 
-	// Check if the runtime Gateway option has been selected before
+	// Enable the Runtime Gateway option
 	if(Return_ID()==STORE__DEFAULTID)	runtimegateway=SET;
 
 	#endif		
@@ -1675,7 +1675,9 @@ U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber)
     Return if the node is set as runtime gateway
 */
 /**************************************************************************/
+#if(MaCaco_USERMODE)
 U8 MaCaco_IsRuntimeGateway()
 {
 	return runtimegateway;
 }
+#endif
