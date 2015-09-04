@@ -123,7 +123,7 @@ void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 		in_vNet_Addresses[i] = addr;
 		
 		#if(USEEEPROM)
-		Store_UserModeAddresses(in_vNet_Addressess, UMODE_USERS);
+		Store_UserModeAddresses(in_vNet_Addresses, UMODE_USERS);
 		Store_Commit();
 		#endif
 	}
