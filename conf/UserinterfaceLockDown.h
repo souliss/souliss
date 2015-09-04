@@ -22,13 +22,14 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DISABLEEEPROM_H
-#define bconf_DISABLEEEPROM_H
+#ifndef conf_ssLOCKDOWN_H
+#define conf_ssLOCKDOWN_H
 
-// Disable the use of EEPROM
-
+#define	VNET_USERLOCKDOWN_INSKETCH
 #define USEEEPROM_INSKETCH
-#define USEEEPROM							0
+
+#define VNET_USERLOCKDOWN		1
+#define USEEEPROM				1
 
 
 #endif

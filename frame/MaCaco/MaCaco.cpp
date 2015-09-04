@@ -106,14 +106,24 @@ void MaCaco_init(U8* memory_map)
 		subscr_battery[i] = 0;		
 		subscr_count[i] = 0;	
 	}	
-	
+
+	// Init the UserMode
+	UserMode_Init();	
+
 	// Init the EEPROM
-	#if(USEEEPROM && MaCaco_USERMODE)
+	#if(USEEEPROM)
 	Store_Init();	
 
 	// Enable the Runtime Gateway option
-	if(Return_ID()==STORE__DEFAULTID)	runtimegateway=SET;
-
+	if(Return_ID()==STORE__DEFAULTID)	
+	{
+		if(MaCaco_USERMODE) runtimegateway=SET;
+	}
+	else
+	{
+		Store_Clear();
+		Store_Commit();
+	}
 	#endif		
 }
 

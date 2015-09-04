@@ -10,7 +10,8 @@
 
 #include "tools/types.h"
 
-#define	STORE__DEFAULTID	0xABBA											
+#define	STORE__DEFAULTID	0xABCD
+						
 #define STORE__INDEX		0												// The first byte allocated in the EEPROM
 
 #define STORE__ID_s			0												// Identifier (2 bytes)
@@ -32,8 +33,10 @@
 #define	STORE__WIFISSID_f	(STORE__WIFISSID_s+32)
 #define	STORE__WIFIPSW_s	(STORE__WIFISSID_f+1)							// WiFi Password
 #define	STORE__WIFIPSW_f	(STORE__WIFIPSW_s+64)
-#define	STORE__USABLESIZE	(STORE__WIFIPSW_f)
-#define	STORE__SIZE			(STORE__INDEX+STORE__WIFIPSW_f)
+#define STORE__USERMODE_s	(STORE__WIFIPSW_f+1)							// User Mode Addresses
+#define STORE__USERMODE_f	(STORE__USERMODE_s+UMODE_USERS*2)
+#define	STORE__USABLESIZE	(STORE__USERMODE_f)
+#define	STORE__SIZE			(STORE__INDEX+STORE__USERMODE_f)
 
 #if(DYNAMICADDRESSING)
 #	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__SIZE+1)
@@ -51,12 +54,14 @@ void Store_8bit(uint8_t addr, uint8_t store_val);
 uint16_t Return_8bit(uint8_t addr);
 void Store_16bit(uint8_t addr, uint16_t store_val);
 uint16_t Return_16bit(uint8_t addr);
-void Store_ID(uint16_t id);
-uint16_t Return_ID();
+void Store_ID();
+uint16_t Return_ID(uint16_t id);
 void Store_Address(uint16_t address, uint8_t media);
 uint16_t Return_Addresses(uint8_t media);
 void Store_PeerAddresses(uint8_t *addresses, uint8_t n_addresses);
 void Return_PeerAddresses(uint8_t *addresses, uint8_t n_addresses);
+void Store_UserModeAddresses(uint8_t *addresses, uint8_t n_addresses);
+void Return_UserModeAddresses(uint8_t *addresses, uint8_t n_addresses);
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr);
 void Store_GatewayMode(uint8_t mode);
 uint8_t Return_GatewayMode();

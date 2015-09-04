@@ -34,9 +34,12 @@ U8 data_changed = 1;						// flag
 #define time_base_fast		10				// Time cycle in milliseconds
 #define time_base_slow		10000			// Time cycle in milliseconds
 #define num_phases			1000			// Number of phases
+#define time_justbooted		300000			// Five minutes in milliseconds
 
 U16 phase_speedy=0, phase_fast=0, phase_slow=0;
 unsigned long tmr_fast=0, tmr_slow=0;  
+
+#define JustBooted()	(millis() < time_justbooted)
 
 #define EXECUTEFAST()	if(abs(millis()-tmr_fast) > time_base_fast)
 #define UPDATEFAST()	tmr_fast = millis();	\

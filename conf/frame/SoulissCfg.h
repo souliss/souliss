@@ -122,10 +122,8 @@
 	
 /**************************************************************************/
 /*!
-	The dynamic addressing node act as server for Souliss addresses over
-	the network.
-	Once enabled, node addresses are stored in the EEPROM, use the constant
-	FIRST_EEPROM_BYTE to identify the first usable byte in your EEPROM.
+	If dynamic addressing is enabled, nodes get address from the Gateway
+	that acts as addressing server
 	
         Value       
         0x0         Disable (Default)
@@ -134,6 +132,19 @@
 /**************************************************************************/
 #ifndef DYNAMICADDRESSING_INSKETCH
 #	define DYNAMICADDRESSING  	0
+#endif
+
+/**************************************************************************/
+/*!
+	Once enabled, node configuration is stored in the EEPROM, use the constant
+	FIRST_EEPROM_BYTE to identify the first usable byte in your EEPROM.
+	
+        Value       
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#ifndef USEEEPROM_INSKETCH
 #	define USEEEPROM			0
 #endif
 

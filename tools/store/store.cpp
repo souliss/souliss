@@ -157,6 +157,24 @@ void Return_PeerAddresses(uint8_t *addresses, uint8_t n_addresses)
 		
 }
 
+// Store all the UserMode addresses
+void Store_UserModeAddresses(uint8_t *addresses, uint8_t n_addresses)
+{
+	for(uint8_t i=0; i<n_addresses; i++)
+		Store_16bit(STORE__USERMODE_s+2*i, C8TO16(addresses+i));
+}
+
+// Return all the UserMode addresses
+void Return_UserModeAddresses(uint8_t *addresses, uint8_t n_addresses)
+{
+	for(uint8_t i=0; i<n_addresses; i++)
+	{
+		addresses[i]   = C16TO8L(Return_16bit(STORE__USERMODE_s+2*i));
+		addresses[i+1] = C16TO8H(Return_16bit(STORE__USERMODE_s+2*i));
+	}
+		
+}
+
 // Return single the peer addresses
 uint16_t Return_SinglePeerAddresses(uint8_t n_addr)
 {

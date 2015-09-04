@@ -101,6 +101,16 @@
 
 /**************************************************************************/
 /*!
+    If this option is enabled the Gateway doesn't accept new incoming 
+	connection from user interfaces after an elapsed time (from boot)
+*/
+/**************************************************************************/
+#ifndef	VNET_USERLOCKDOWN_INSKETCH
+#	define VNET_USERLOCKDOWN		0
+#endif
+
+/**************************************************************************/
+/*!
     Useful definition   
 */
 /**************************************************************************/

@@ -41,13 +41,32 @@
 
 #if(UMODE_ENABLE)
 
-#define UMODE_LOG 			Serial.print
 #define	IPADDRESS_BYTES		4
 #define PPORT_BYTES			2
 
 U16 in_vNet_Addresses[UMODE_USERS];
-U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES], 
-	in_P_Port[UMODE_USERS*PPORT_BYTES];
+U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES],
+	blacklist_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES], in_P_Port[UMODE_USERS*PPORT_BYTES];
+
+/**************************************************************************/
+/*!
+    Initialization
+*/
+/**************************************************************************/
+void UserMode_Init()
+{
+	for(U8 i=0;i<(UMODE_USERS*IPADDRESS_BYTES);i++)
+	{
+		in_IP_Addresses[i]=0;
+		blacklist_IP_Addresses[i]=0;
+	}
+
+	// If there were previous saved vNet address from User Interfaces
+	#if(USEEEPROM)
+	if(Return_ID()==STORE__DEFAULTID)
+		Return_UserModeAddresses(in_vNet_Addresses, UMODE_USERS);
+	#endif
+}
 
 /**************************************************************************/
 /*!
@@ -57,6 +76,32 @@ U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES],
 void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 {
 	U8 i=0;
+
+	// If the IP address is in black list skip
+	#if(VNET_USERLOCKDOWN)
+	for(i=0;i<UMODE_USERS;i++)
+	{
+		if((*(ip_addr) == *(blacklist_IP_Addresses+i)) && (*(ip_addr+1) == *(blacklist_IP_Addresses+i+1)) &&
+			(*(ip_addr+2) == *(blacklist_IP_Addresses+i+2)) && (*(ip_addr+3) == *(blacklist_IP_Addresses+i+3)))
+		{
+			#if(VNET_DEBUG)
+			VNET_LOG(F("(vNet)<Lockdwn>"));
+			#endif			
+
+			return;
+		}
+	}
+
+	// Accept new incoming connection only just after the boot
+	if(!JustBooted())
+	{
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<Lockdwn>"));
+		#endif			
+
+		return;
+	}
+	#endif
 
 	// Verify that the entry was not yet saved or find the first available index
 	for(i=0;i<UMODE_USERS;i++)
@@ -72,8 +117,18 @@ void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 	// Record the last entry index
 	last_entry = i;
 	
-	// Store the IP address
-	in_vNet_Addresses[i] = addr;
+	// If is a new vNet address, record it
+	if(in_vNet_Addresses[i]!=addr)
+	{
+		in_vNet_Addresses[i] = addr;
+		
+		#if(USEEEPROM)
+		Store_UserModeAddresses(in_vNet_Addressess, UMODE_USERS);
+		Store_Commit();
+		#endif
+	}
+
+	// Refresh the IP address
 	memmove(in_IP_Addresses + i*(IPADDRESS_BYTES), ip_addr, IPADDRESS_BYTES);	// Store the IP address
 	memmove(in_P_Port + i*(PPORT_BYTES), p_port, PPORT_BYTES);					// Store the IP port
 }
@@ -118,7 +173,7 @@ void UserMode_Reset()
     Get an IP address from the table starting from the vNet one
 */
 /**************************************************************************/
-void UserMode_Get(U16 addr, U8* ip_addr, U8* p_port)
+uint8_t UserMode_Get(U16 addr, U8* ip_addr, U8* p_port)
 {
 	U8 i=0;
 
@@ -129,11 +184,13 @@ void UserMode_Get(U16 addr, U8* ip_addr, U8* p_port)
 
 	// If the vNet address wasn't found, return
 	if(i==UMODE_USERS)
-		return;			
+		return 0;			
 	
 	// Return the IP address pointer
 	memmove(ip_addr, in_IP_Addresses + i*(IPADDRESS_BYTES), IPADDRESS_BYTES);
 	memmove(p_port, in_P_Port + i*(PPORT_BYTES), PPORT_BYTES);	
+
+	return 1;
 }
 
 #endif

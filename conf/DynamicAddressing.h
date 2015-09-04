@@ -30,6 +30,7 @@
 
 #define	DYNAMICADDRESSING_INSKETCH
 #define	IPBROADCAST_INSKETCH
+#define USEEEPROM_INSKETCH
 
 // In case of DYNAMICADDRESSING and Ethernet, the IPBROADCAST is enabled. This use over Media3 broadcast IP
 // frames instead of unicast ones, so that no bind between IP address and vNet address is requested.
