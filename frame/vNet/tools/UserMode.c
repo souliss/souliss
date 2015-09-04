@@ -45,7 +45,8 @@
 #define PPORT_BYTES			2
 
 U16 in_vNet_Addresses[UMODE_USERS];
-U8  last_entry, in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES],
+U8  last_entry, last_entry_blacklist,
+	in_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES],
 	blacklist_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES], in_P_Port[UMODE_USERS*PPORT_BYTES];
 
 #if (VNET_DEBUG)
@@ -97,28 +98,28 @@ void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 			// Refresh the IP address
 			memmove(in_IP_Addresses + i*(IPADDRESS_BYTES), ip_addr, IPADDRESS_BYTES);	// Store the IP address
 			memmove(in_P_Port + i*(PPORT_BYTES), p_port, PPORT_BYTES);					// Store the IP port
-
-			return;
 		}
 		else
 		{
 			//Record the IP address in the black list
 			for(i=0;i<(UMODE_USERS);i++)
-				if(blacklist_IP_Addresses[i*4] == 0)
+				if((blacklist_IP_Addresses[i*4] == 0) || 
+					((*(ip_addr) == *(blacklist_IP_Addresses+i)) && (*(ip_addr+1) == *(blacklist_IP_Addresses+i+1)) &&
+					(*(ip_addr+2) == *(blacklist_IP_Addresses+i+2)) && (*(ip_addr+3) == *(blacklist_IP_Addresses+i+3))))
+
 					break;
 			
 			// If the table is full start from the first entry
 			if(i==UMODE_USERS)
-				i=0;	
+				i=(last_entry_blacklist+1)%UMODE_USERS;
 			
+			last_entry_blacklist=i;
+
 			// Store the IP address in the blacklist
 			blacklist_IP_Addresses[i]	= ip_addr[0];
 			blacklist_IP_Addresses[i+1] = ip_addr[1];
 			blacklist_IP_Addresses[i+2] = ip_addr[2];
 			blacklist_IP_Addresses[i+3] = ip_addr[3];
-
-			return;
-			
 		}
 
 		#if(VNET_DEBUG)
