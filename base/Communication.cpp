@@ -403,10 +403,10 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 	// Look for input values
 	U8 i=0;
 	for(i=0;i<MaCaco_WRITE_f;i++)
-		if(*(memory_map+i) !=0)
+		if(*(memory_map+MaCaco_WRITE_s+i) !=0)
 			break;
 	
-	if((*trigger) && (i<MaCaco_WRITE_f))
+	if((*trigger) && (i<(MaCaco_WRITE_f-MaCaco_WRITE_s)))
 	{
 		// Print debug messages
 		SOULISS_LOG(F("(ss)<MAP>"));

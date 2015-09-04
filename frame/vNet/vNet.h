@@ -88,6 +88,9 @@
 	#include "drivers/generic/usart/vNetDriver_usart.h"	
 #endif	
 
+#define time_justbooted		300000			// Five minutes in milliseconds
+#define JustBooted()	(millis() < time_justbooted)
+
 typedef struct
 {
     U16 src_addr;		// Source Address

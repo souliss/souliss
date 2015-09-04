@@ -65,7 +65,7 @@ void startWebServer()
 	ReadConfig();
 	
 	// Setup the webserver
-	server.onNotFound ( []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+	server.onNotFound ( []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_main));   }  );
 	server.on ( "/", []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );	
 	server.on ( "/admin/processMain", processMain);
 	server.on ( "/admin/filldynamicdata", filldynamicdata );	
