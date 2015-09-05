@@ -70,7 +70,7 @@ U16 proposedaddress = 0;
 // buffer for temporary use
 U8 ipaddrs[4], cmd[7] = {0, MaCaco_NODES, MaCaco_SLOT, MaCaco_INMAXSUBSCR, MaCaco_IN_s, MaCaco_TYP_s, MaCaco_OUT_s};
 
-uint8_t runtimegateway=RESET;
+uint8_t runtimegateway=RuntimeGateway_RESET;
 extern bool addrsrv;
 #endif
 
@@ -114,7 +114,7 @@ void MaCaco_init(U8* memory_map)
 	// Enable the Runtime Gateway option
 	if(Return_ID()==STORE__DEFAULTID)	
 	{
-		if(MaCaco_USERMODE) runtimegateway=SET;
+		if(MaCaco_USERMODE) runtimegateway=RuntimeGateway_SET;
 	}
 	else
 	{
@@ -123,8 +123,10 @@ void MaCaco_init(U8* memory_map)
 	}
 	#endif		
 
+	#if(MaCaco_USERMODE)
 	// Init the UserMode
-	UserMode_Init();	
+	UserMode_Init();
+	#endif	
 }
 
 /**************************************************************************/

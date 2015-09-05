@@ -150,8 +150,8 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #endif
 
 // Inlcude framework code
-#include "frame/MaCaco/MaCaco.cpp"
 #include "frame/vNet/vNet.cpp"
+#include "frame/MaCaco/MaCaco.cpp"
 
 // Include IO definitions and other tools
 #include "hardware/IOdef.cpp"

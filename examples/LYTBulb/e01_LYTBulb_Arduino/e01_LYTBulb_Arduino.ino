@@ -26,7 +26,7 @@
 #include <Lytwifi.h>
 #include <WiFiInterrupt.h>
 
-// There are not used in this sketch, keep it just to pat the compiler
+// These are not used in this sketch, keep it just to pat the compiler
 #include <EEPROM.h>
 #include <SoftwareSerial.h>
 

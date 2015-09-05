@@ -30,8 +30,8 @@
 #include "tools/types.h"
 #include "GetConfig.h"			// need : MaCaco_Config.h
 
-#define	SET	  0x01
-#define	RESET 0x00
+#define	RuntimeGateway_SET	  	0x01
+#define	RuntimeGateway_RESET 	0x00
 
 typedef struct
 {
