@@ -26,33 +26,33 @@
 #define WEBHOOK_H
 
 #if(ARDUINO_ETHLIB)
-#	include "EthernetUdp.h"
-#	include "EthernetServer.h"
-#	include "EthernetClient.h"
-#	include "Ethernet.h"
+#	include "ethW5x00/EthernetUdp.h"
+#	include "ethW5x00/EthernetServer.h"
+#	include "ethW5x00/EthernetClient.h"
+#	include "ethW5x00/Ethernet.h"
 #endif
 
 #if(ARDUINO_DHCP)
-#	include "Dhcp.h"
+#	include "ethW5x00/Dhcp.h"
 #endif
 
 #if(ARDUINO_DNS)
-#	include "Dns.h"
+#	include "ethW5x00/Dns.h"
 #endif
 
 #if(ARDUINO_ETHLIB)
-#	include "EthernetUdp.cpp"
-#	include "EthernetServer.cpp"
-#	include "EthernetClient.cpp"
-#	include "Ethernet.cpp"
+#	include "ethW5x00/EthernetUdp.cpp"
+#	include "ethW5x00/EthernetServer.cpp"
+#	include "ethW5x00/EthernetClient.cpp"
+#	include "ethW5x00/Ethernet.cpp"
 #endif
 
 #if(ARDUINO_DHCP)
-#	include "Dns.cpp"
+#	include "ethW5x00/Dns.cpp"
 #endif
 
 #if(ARDUINO_DNS)
-#	include "Dhcp.cpp"
+#	include "ethW5x00/Dhcp.cpp"
 #endif
 
 #endif

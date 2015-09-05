@@ -29,7 +29,7 @@
 // and slots for nodes using the INSKETCH parameters and using values that are smaller
 // than standard.
 
-// Reduce the number of nodes in the network reduce the RAM usage in case of PERSISTANCE
+// Reduce the number of nodes in the network reduce the RAM usage in case of PERSISTENCE
 // mode active, as when using the HTTP/XML polling interface (or similar).
 // All nodes in the same network must share the same number of NODES and SLOT in their
 // configuration.

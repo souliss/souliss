@@ -78,62 +78,10 @@ bool backfromSleep = false;
 uint8_t sleepmode = 0, wakeupscycles = 0;
 uint16_t sleepcounter = 0;
 
-ISR(WDT_vect)
-{
-	// if the timer is expired wakeup
-	if(!sleepcounter)	
-	{
-		backfromSleep = true;
-		sleepcounter  = wakeupTime;
-		wakeupscycles = wakeupCycles;
-	}
-	else sleepcounter--;
-}
-
 void wakeUpNow()        // here the interrupt is handled after wakeup
 {
 	backfromSleep = true;
 	wakeupscycles = wakeupCycles;
-}
- 
-bool wasSleeping()
-{
-	return backfromSleep;
-} 
-
-bool isTimeToSleep()
-{
-	if(wakeupscycles)
-	{
-		wakeupscycles--;
-		return 0;
-	}	
-	else
-		return 1;
-}
-
-void sleepInit(uint8_t mode=SLEEPMODE_INPUT)
-{
-	if(mode & SLEEPMODE_INPUT)				// Wakeup on input change
-	{
-		// Record the sleep mode that has been selected
-		sleepmode = SLEEPMODE_INPUT;
-		
-		pinMode(wakePin, INPUT);
-	}
-	
-	if(mode & SLEEPMODE_TIMER)		// Wakeup every 8 seconds
-	{
-		// Record the sleep mode that has been selected
-		sleepmode = SLEEPMODE_TIMER;
-		
-		// Setup the watchdog timer at 8 seconds
-		set_sleep_timer();
-	}
-	
-	// This is the first run, trigger this flag to execute a first run
-	// at first boot
-	backfromSleep = true;
 }
 
 /**************************************************************************
@@ -223,6 +171,66 @@ void sleepNow()         // here we put the arduino to sleep
 	delay(10);
 #	endif
 }
+
+ISR(WDT_vect)
+{
+	// if the timer is expired wakeup
+	if(!sleepcounter)	
+	{
+		backfromSleep = true;
+		sleepcounter  = wakeupTime;
+		wakeupscycles = wakeupCycles;
+	}
+	else 
+	{
+		// is not yet time to wakeup
+		sleepcounter--;
+		sleepNow();
+	}
+}
+
+
+bool wasSleeping()
+{
+	return backfromSleep;
+} 
+
+bool isTimeToSleep()
+{
+	if(wakeupscycles)
+	{
+		wakeupscycles--;
+		return 0;
+	}	
+	else
+		return 1;
+}
+
+void sleepInit(uint8_t mode=SLEEPMODE_INPUT)
+{
+	if(mode & SLEEPMODE_INPUT)				// Wakeup on input change
+	{
+		// Record the sleep mode that has been selected
+		sleepmode = SLEEPMODE_INPUT;
+		
+		pinMode(wakePin, INPUT);
+	}
+	
+	if(mode & SLEEPMODE_TIMER)		// Wakeup every 8 seconds
+	{
+		// Record the sleep mode that has been selected
+		sleepmode = SLEEPMODE_TIMER;
+		
+		// Setup the watchdog timer at 8 seconds
+		set_sleep_timer();
+	}
+	
+	// This is the first run, trigger this flag to execute a first run
+	// at first boot
+	backfromSleep = true;
+}
+
+
 
 #endif
 

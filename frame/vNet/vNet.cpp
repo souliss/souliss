@@ -36,60 +36,61 @@
 #if (VNET_MEDIA1_ENABLE)
 	// Driver for Wiznet W5100 / W5200
 	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
-		#include "drivers/ethW5x00/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.cpp"	
 	#endif
 	
 	// Driver for Microchip EN28J60
 	#if (ETH_ENC28J60)
-		#include "drivers/ethENC28J60/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.cpp"	
 	#endif
 
 	// Driver for Microchip MRF2WB0MA
 	#if (WIFI_MRF24)
-		#include "drivers/ethMRF24/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.cpp"	
 	#endif	
-
-	// Driver for MAuthometion HF-LPT200
-	#if (WIFI_LPT200)
-		#include "drivers/ethLPT200/vNetDriver_eth.cpp"	
+	
+	// Driver for Expressif ESP8266 WiFi
+	#if (WIFI_ESP8266)
+		#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.cpp"	
 	#endif		
+	
 #endif
 	
 #if (VNET_MEDIA2_ENABLE)
 	#if(CHIBI_AT86RF230)
-		#include "drivers/chibi/vNetDriver_chibi.c"	
+		#include "drivers/mcu_avr/chibi/vNetDriver_chibi.c"	
 	#endif	
 	
 	#if(NRF24)
-		#include "drivers/nRF24/vNetDriver_nrf24.cpp"
+		#include "drivers/mcu_avr/nRF24/vNetDriver_nrf24.cpp"
 	#endif	
 	
 	#if(HOPERF_RFM69)
-		#include "drivers/RFM69/vNetDriver_rfm69.cpp"
+		#include "drivers/mcu_avr/RFM69/vNetDriver_rfm69.cpp"
 	#endif		
 #endif
 	
 #if (VNET_MEDIA3_ENABLE)
 	// Driver for Wiznet W5100 / W5200 / W5500 (broadcast only)
 	#if ((ETH_W5100 || ETH_W5200 || ETH_W5500) && (!VNET_MEDIA1_ENABLE))
-		#include "drivers/ethW5x00/vNetDriver_eth.cpp"	
-		#include "drivers/ethW5x00/vNetDriver_brd.h"
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.cpp"	
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_brd.h"
 	#elif((ETH_W5100 || ETH_W5200 || ETH_W5500))
-		#include "drivers/ethW5x00/vNetDriver_brd.h"
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_brd.h"
 	#endif
 	
 	// Driver for Microchip EN28J60 (broadcast only)
 	#if ((ETH_ENC28J60) && (!VNET_MEDIA1_ENABLE))
-		#include "drivers/ethENC28J60/vNetDriver_eth.cpp"
-		#include "drivers/ethENC28J60/vNetDriver_brd.h"	
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.cpp"
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_brd.h"	
 	#elif(ETH_ENC28J60)
-		#include "drivers/ethENC28J60/vNetDriver_brd.h"		
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_brd.h"		
 	#endif	
 	
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)
-	#include "drivers/usart/vNetDriver_usart.cpp"
+	#include "drivers/generic/usart/vNetDriver_usart.cpp"
 #endif	
 
 #if (VNET_DEBUG)
@@ -99,6 +100,7 @@
 // Routing and bridging tables
 static U16 route_table[VNET_ROUTING_TABLE] 		 = {0x0000};
 static U16 dest_route_table[VNET_ROUTING_TABLE]  = {0x0000};
+static U16 donot_route_table[VNET_ROUTING_TABLE] = {0x0000};
 static U16 multicast_groups[VNET_MULTICAST_SIZE] = {0x0000};
 
 static U8 last_media = 0;
@@ -141,6 +143,7 @@ void vNet_Init()
 	{
 		route_table[i] = 0x0000;
 		dest_route_table[i] = 0x0000;
+		donot_route_table[i] = 0x0000;
 	}
 	
 	// Set to zero
@@ -179,11 +182,23 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	U8 media, *frame_pnt;
 	U16 routed_addr;
 	
+	// If the data lenght is longer than expected
+	if(len>VNET_MAX_PAYLOAD)
+	{
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<LEN_FAIL>\r\n"));
+		#endif
+		
+		// Free the frame and return
+		oFrame_Reset();
+		return VNET_DATA_FAIL;
+	}
+
 	// If the destination is the NULL address, discard it
 	if(addr==VNET_ADDR_NULL)
 	{
 		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<ADDR_NULL>\r\n");
+		VNET_LOG(F("(vNet)<ADDR_NULL>\r\n"));
 		#endif
 		
 		// Free the frame and return
@@ -200,7 +215,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 		vNet_OutPath(addr, &routed_addr, &media);			// Look for outpath message
 
 	#if(VNET_DEBUG)
-    VNET_LOG("(vNet)<MEDIA><|0x");
+    VNET_LOG(F("(vNet)<MEDIA><|0x"));
 	VNET_LOG(media,HEX);
 	VNET_LOG(">\r\n");
 	#endif
@@ -210,10 +225,12 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	// Prepare header
 	*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 	*frame_pnt++ = port;									// Frame Port
-	*(U16 *)frame_pnt = addr;								// Final Destination Address
-	frame_pnt += sizeof(U16);
-	*(U16 *)frame_pnt = vNet_Media[media-1].src_addr;		// Original Source Address
-	frame_pnt += sizeof(U16);
+	
+	*frame_pnt++ = C16TO8L(addr);							// Final Destination Address
+	*frame_pnt++ = C16TO8H(addr);	
+
+	*frame_pnt++ = C16TO8L(vNet_Media[media-1].src_addr);	// Original Source Address
+	*frame_pnt++ = C16TO8H(vNet_Media[media-1].src_addr);	
 	
 	// Build the complete frame
 	oFrame_Define(&vNet_oFrame);
@@ -222,15 +239,15 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<OUT><DADDR><|0x");
+    VNET_LOG(F("(vNet)<OUT><DADDR><|0x"));
 	VNET_LOG(routed_addr,HEX);
-	VNET_LOG("><|0x");
+	VNET_LOG(F("><|0x"));
 	VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(port,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(addr,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(vNet_Media[media-1].src_addr,HEX);
 	
 	VNET_LOG(">\r\n");
@@ -272,7 +289,7 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 	}
 	
 	#if(VNET_DEBUG) 
-    VNET_LOG("(vNet)<OUT>-FAIL\r\n");
+    VNET_LOG(F("(vNet)<OUT>-FAIL\r\n"));
 	#endif
 	
 	return VNET_DATA_FAIL;
@@ -302,11 +319,12 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 			// Prepare header
 			*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
 			*frame_pnt++ = port;									// Frame Port
-			*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
-			frame_pnt += sizeof(U16);
-			*(U16 *)frame_pnt = vNet_Media[media].src_addr;			// Original Source Address
-			frame_pnt += sizeof(U16);
+			*frame_pnt++ = C16TO8L(broadcast_addr);					// Final Destination Address
+			*frame_pnt++ = C16TO8H(broadcast_addr);				
 			
+			*frame_pnt++ = C16TO8L(vNet_Media[media].src_addr);		// Original Source Address
+			*frame_pnt++ = C16TO8H(vNet_Media[media].src_addr);				
+					
 			// Build the complete frame
 			oFrame_Define(&vNet_oFrame);
 			oFrame_Set(vNet_header, 0, VNET_HEADER_SIZE, 0, &message);
@@ -314,15 +332,15 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 			// Include debug functionalities, if required
 			#if(VNET_DEBUG)
 			// Print address  
-			VNET_LOG("(vNet)<BRD><Media><|0x");
+			VNET_LOG(F("(vNet)<BRD><Media><|0x"));
 			VNET_LOG(media+1,HEX);
-			VNET_LOG("><|0x");
+			VNET_LOG(F("><|0x"));
 			VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-			VNET_LOG("|0x");
+			VNET_LOG(F("|0x"));
 			VNET_LOG(port,HEX);
-			VNET_LOG("|0x");
+			VNET_LOG(F("|0x"));
 			VNET_LOG(broadcast_addr,HEX);
-			VNET_LOG("|0x");
+			VNET_LOG(F("|0x"));
 			VNET_LOG(vNet_Media[media].src_addr,HEX);
 			
 			VNET_LOG(">\r\n");
@@ -386,7 +404,7 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 	if((multicastgroup <= VNET_ADDR_L_MLC) || (multicastgroup == VNET_ADDR_BRDC)) 
 	{
 		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<MLT><FAIL>\r\n");
+		VNET_LOG(F("(vNet)<MLT><FAIL>\r\n"));
 		#endif	
 		
 		// Free the frame and return
@@ -403,13 +421,13 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		frame_pnt = &vNet_header[0];							// Get header pointer
 
 		// Prepare header
-		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Lenght
-		*frame_pnt++ = port;									// Frame Port
-		*(U16 *)frame_pnt = broadcast_addr;						// Final Destination Address
-		frame_pnt += sizeof(U16);
-		*(U16 *)frame_pnt = multicastgroup;						// Original Source Address
-		frame_pnt += sizeof(U16);
-		
+		*frame_pnt++ = len+VNET_HEADER_SIZE;					// Frame Length
+		*frame_pnt++ = port;									// Frame Port		
+		*frame_pnt++ = C16TO8L(broadcast_addr);					// Final Destination Address
+		*frame_pnt++ = C16TO8H(broadcast_addr);				
+		*frame_pnt++ = C16TO8L(multicastgroup);					// Original Source Address
+		*frame_pnt++ = C16TO8H(multicastgroup);				
+				
 		// Build the complete frame
 		oFrame_Define(&vNet_oFrame);
 		oFrame_Set(vNet_header, 0, VNET_HEADER_SIZE, 0, &message);
@@ -417,15 +435,15 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 		// Include debug functionalities, if required
 		#if(VNET_DEBUG)
 		// Print address  
-		VNET_LOG("(vNet)<MLT><Media><|0x");
+		VNET_LOG(F("(vNet)<MLT><Media><|0x"));
 		VNET_LOG(media+1,HEX);
-		VNET_LOG("><|0x");
+		VNET_LOG(F("><|0x"));
 		VNET_LOG(len+VNET_HEADER_SIZE,HEX);
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(port,HEX);
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(broadcast_addr,HEX);
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(vNet_Media[media].src_addr,HEX);
 		
 		VNET_LOG(">\r\n");
@@ -481,7 +499,19 @@ U8 vNet_SendMulticast(oFrame *frame, U8 len, U8 port, U16 multicastgroup)
 */
 /**************************************************************************/
 U8 vNet_SendData(U16 addr, U8 *data, U8 len, U8 port)
-{	
+{
+	// If the data lenght is longer than expected
+	if(len>VNET_MAX_PAYLOAD)
+	{
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<LEN_FAIL>\r\n"));
+		#endif
+		
+		// Free the frame and return
+		oFrame_Reset();
+		return VNET_DATA_FAIL;
+	}
+	
 	// Define the output frame
 	oFrame_Define(&message);
 	oFrame_Set(0, data, 0, len, 0);
@@ -502,20 +532,20 @@ U8 vNet_SendRoute(U16 routed_addr, U8 media, U8 *data, U8 len)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<OUT><ROUT><|0x");
+    VNET_LOG(F("(vNet)<OUT><ROUT><|0x"));
 	VNET_LOG(routed_addr,HEX);
-	VNET_LOG("><|0x");
+	VNET_LOG(F("><|0x"));
 	VNET_LOG(data[0],HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(data[1],HEX);
-	VNET_LOG("|0x");
-	VNET_LOG(*(U16*)(data+2),HEX);
-	VNET_LOG("|0x");
-	VNET_LOG(*(U16*)(data+4),HEX);
+	VNET_LOG(F("|0x"));
+	VNET_LOG(C8TO16(data+2),HEX);
+	VNET_LOG(F("|0x"));
+	VNET_LOG(C8TO16(data+4),HEX);
 		
 	for(U8 i=VNET_HEADER_SIZE;i<len;i++)
 	{
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(data[i],HEX);
 	}
 	VNET_LOG(">\r\n");
@@ -623,6 +653,10 @@ U8 vNet_DataAvailable()
 		
 		// Reset all the communication interfaces
 		vNet_Reset();
+		
+		#ifdef VNET_HARDRESET
+		VNET_HARDRESET;
+		#endif
 	}
 		
 	return i;
@@ -630,7 +664,7 @@ U8 vNet_DataAvailable()
 
 /**************************************************************************/
 /*!
-    Retrieve the vNet port for thenext pending frame
+    Retrieve the vNet port for the next pending frame
 */
 /**************************************************************************/
 U8 vNet_GetPort()
@@ -731,7 +765,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(1);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[0].data_available = 0;
 			return VNET_DATA_FAIL;
 		}	
@@ -750,7 +784,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(3);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[2].data_available = 0;
 			return VNET_DATA_FAIL;			
 		}			
@@ -771,7 +805,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(2);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[1].data_available = 0;
 			return VNET_DATA_FAIL;
 			
@@ -794,7 +828,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(4);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[3].data_available = 0;
 			return VNET_DATA_FAIL;				
 		}	
@@ -816,7 +850,7 @@ U8 vNet_RetrieveData(U8 *data)
 				// Route data and remove header, if necessary
 				return vNet_RoutingBridging(5);
 			}
-			// If retreive failed, return error
+			// If retrieve failed, return error
 			vNet_Media_Data[4].data_available = 0;
 			return VNET_DATA_FAIL;	
 		}	
@@ -838,7 +872,7 @@ void vNet_SetAddress(U16 addr, U8 media)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<SETADDR><|0x");
+    VNET_LOG(F("(vNet)<SETADDR><|0x"));
 	VNET_LOG(vNet_Media[media-1].src_addr,HEX);
 	VNET_LOG(">\r\n");
 	#endif	
@@ -885,7 +919,8 @@ void vNet_SetAddress(U16 addr, U8 media)
 /**************************************************************************/
 U16 vNet_GetAddress(U8 media)
 {
-	return vNet_Media[media-1].src_addr;
+	if(vnet_media_en[media-1])		return vNet_Media[media-1].src_addr;
+	else 							return 0;
 }
 
 /**************************************************************************/
@@ -945,7 +980,7 @@ U8 vNet_GetPortNumber(U8 media)
 /**************************************************************************/
 void vNet_SetSubnetMask(U16 subnetmask, U8 media)
 {
-	// If the selected media is not ethernet (ethernet media is equal to 1)
+	// If the selected media is not Ethernet (Ethernet media is equal to 1)
 	// assign the subnetmask, otherwise place the subnet mask to 0.
 	// In this way we cannot create any subnet on the Ethernet side and all
 	// data in Media 1 addresses range are shared over the same Ethernet media.
@@ -996,6 +1031,21 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index)
 	{
 		route_table[index] = src_path;
 		dest_route_table[index] = dest_path;
+	}	
+	else
+		return VNET_FAIL;
+}
+
+/**************************************************************************/
+/*!
+    Set the entries for the routing tables
+*/
+/**************************************************************************/
+U8 vNet_SetDoNotRoutingTable(U16 addr, U8 index)
+{
+	if(index < VNET_ROUTING_TABLE)
+	{
+		donot_route_table[index] = addr;
 	}	
 	else
 		return VNET_FAIL;
@@ -1077,7 +1127,7 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 	*media = vNet_GetMedia(addr);
 
 	#if(VNET_DEBUG)
-    VNET_LOG("(vNet)<OUTPATH><|0x");
+    VNET_LOG(F("(vNet)<OUTPATH><|0x"));
 	VNET_LOG(*media,HEX);
 	VNET_LOG(">\r\n");
 	#endif
@@ -1096,15 +1146,9 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		}
 		else
 			subn = addr & DYNAMICADDR_SUBNETMASK;				// Use a standard subnetmask if the media isn't configured
-		
-		#if(VNET_DEBUG)
-		VNET_LOG("(vNet)<NHBOR><|0x");
-		VNET_LOG(*media,HEX);
-		VNET_LOG(">\r\n");
-		#endif
-		
+
 		// Look into the routing table
-		while ((route_table[route_index] != subn) && (route_index < VNET_ROUTING_TABLE))	
+		while ((route_index < VNET_ROUTING_TABLE) && (route_table[route_index] != subn))	
 			route_index++;														   	
 			
 		// Apply the routing path found in route table, if any
@@ -1113,6 +1157,25 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 			*routed_addr = dest_route_table[route_index];
 			*media = vNet_GetMedia(*routed_addr);	
 		}	
+		
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<NHBOR><|0x"));
+		VNET_LOG(*media,HEX);
+		VNET_LOG(">\r\n");
+		#endif		
+		
+		// Search for devices that shall be reached
+		while ((route_index < VNET_ROUTING_TABLE) && (donot_route_table[route_index] != *routed_addr))	
+			route_index++;														   	
+		
+		// If the address is in the list, drop it
+		if(donot_route_table[route_index] != *routed_addr)
+			*routed_addr = 0x0000;
+
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<DONTROUTE>\r\n"));
+		#endif
+
 		#else	
 		// Route to my supernode
 			
@@ -1171,7 +1234,8 @@ U8 vNet_RoutingBridging(U8 media)
 	// If is a broadcast message that needs to be spread over the network
 	else if ((vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)  || (vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_wBRDC))
 	{
-	#if (VNET_SUPERNODE)
+	// The MEDIA1 and MEDIA3 use the same broadcast domain, so re-broadcast isn't required	
+	#if ((VNET_SUPERNODE) && (VNET_MEDIA2_ID || VNET_MEDIA4_ID || VNET_MEDIA5_ID))
 		// Generally there is no need to rebroadcast a frame over the same media from where has been received,
 		// this isn't true for wireless network, where rebroadcasting over the same media is used to extend
 		// the listening range
@@ -1180,23 +1244,36 @@ U8 vNet_RoutingBridging(U8 media)
 		// Modify the destination address as subnet broadcast, this will avoid broadcast loops	
 		if(vNet_Media_Data[media-1].f_dest_addr == VNET_ADDR_BRDC)
 		{
-			*(U16*)(vNet_Media_Data[media-1].data+2) = VNET_ADDR_wBRDC;
+			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_wBRDC);
+			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_wBRDC);	
 
 			// Rebroadcast over wireless media is allowed
 			if((media-1)==VNET_MEDIA2_ID)
-				skip_mymedia = 0;		
+				skip_mymedia = 0;	
 		}
 		#if(VNET_LOOPS)
-		else
-			*(U16*)(vNet_Media_Data[media-1].data+2) = VNET_ADDR_nBRDC;		// Prevent broadcast loops
-		#endif
-		
+		else	// Prevent broadcast loops
+		{
+			*(vNet_Media_Data[media-1].data+2) = C16TO8L(VNET_ADDR_nBRDC);		
+			*(vNet_Media_Data[media-1].data+3) = C16TO8H(VNET_ADDR_nBRDC);
+		}
+		#endif	
+
 		// If the source address isn't null, rebroadcast the message over the active media
 		if(vNet_Media_Data[media-1].o_src_addr)
 			for(U8 i=0;i<VNET_MEDIA_NUMBER;i++)
-				if(vnet_media_en[i] && (!skip_mymedia || (i != (media-1))))
-					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);
+				if(vnet_media_en[i] && (!skip_mymedia || (i != media-1)) 
+					&& !((i == VNET_MEDIA1_ID) && (media-1 == VNET_MEDIA3_ID)) && !((i == VNET_MEDIA3_ID) && (media-1 == VNET_MEDIA1_ID)))
+				{
+					vNet_SendRoute(0xFFFF, i+1, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len);	// The broadcast behavior doesn't
+																												// depend on this 0xFFFF it just cares 
+																												// the address in the frame
 
+					#if(VNET_BRDDELAY_ENABLE)
+					delay(VNET_BRDDELAY);
+					#endif
+				}	
+		
 		// If is a multicast
 		if(((vNet_Media_Data[media-1].o_src_addr) > VNET_ADDR_L_MLC) && ((vNet_Media_Data[media-1].o_src_addr) <= VNET_ADDR_H_MLC))
 		{
@@ -1216,7 +1293,7 @@ U8 vNet_RoutingBridging(U8 media)
 		vNet_Media_Data[media-1].len-=VNET_HEADER_SIZE;
 		return vNet_Media_Data[media-1].len;	// Process the message	
 		
-	#else	// Only supernodes can spread a broadcast message across the network
+	#else	// A standard node cannot re-broadcast frames
 
 		// If is a multicast
 		if(((vNet_Media_Data[media-1].o_src_addr) > VNET_ADDR_L_MLC) && ((vNet_Media_Data[media-1].o_src_addr) <= VNET_ADDR_H_MLC))
@@ -1245,6 +1322,14 @@ U8 vNet_RoutingBridging(U8 media)
 		U8 out_media;
 		vNet_OutPath(vNet_Media_Data[media-1].f_dest_addr, &routed_addr, &out_media);
 		
+		// Prevent routing on the same media (out of wireless radio, for range extender function)
+		if(((out_media-1)!=VNET_MEDIA2_ID) && ((media-1) == (out_media-1)))
+			return VNET_DATA_FAIL;											// Broadcasting media, like M3 and M5
+																			// may have SuperNode to resend frames
+																			// across the network into the same
+																			// broadcasting domain. This just flood
+																			// the network.
+		
 		// Move out the message on the path
 		if(vNet_SendRoute(routed_addr, out_media, vNet_Media_Data[media-1].data, vNet_Media_Data[media-1].len))
 			return VNET_DATA_ROUTED;
@@ -1255,8 +1340,6 @@ U8 vNet_RoutingBridging(U8 media)
 	#endif
 	}
 }
-
-
 
 /**************************************************************************/
 /*!
@@ -1272,10 +1355,10 @@ void vNet_ParseFrame(U8 media)
 				
 	vNet_Media_Data[media-1].port = *data_pnt++;					// Retrieve Port
 				
-	vNet_Media_Data[media-1].f_dest_addr = (U16)*(U16 *)data_pnt;	// Retrieve Final Destination Address
+	vNet_Media_Data[media-1].f_dest_addr = C8TO16(data_pnt);		// Retrieve Final Destination Address
 	data_pnt += sizeof(U16);
 				
-	vNet_Media_Data[media-1].o_src_addr = (U16)*(U16 *)data_pnt;	// Retrieve Original Source Address
+	vNet_Media_Data[media-1].o_src_addr = C8TO16(data_pnt);			// Retrieve Original Source Address
 	data_pnt += sizeof(U16);
 
 	switch(media)
@@ -1315,20 +1398,20 @@ void vNet_ParseFrame(U8 media)
 	// Include debug functionalities, if required
 	#if(VNET_DEBUG)
 	// Print address  
-    VNET_LOG("(vNet)<IN>(0x");
+    VNET_LOG(F("(vNet)<IN>(0x"));
 	VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
-	VNET_LOG(")<|0x");
+	VNET_LOG(F(")<|0x"));
 	VNET_LOG(vNet_Media_Data[media-1].len,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG(vNet_Media_Data[media-1].port,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG((U16)vNet_Media_Data[media-1].f_dest_addr,HEX);
-	VNET_LOG("|0x");
+	VNET_LOG(F("|0x"));
 	VNET_LOG((U16)vNet_Media_Data[media-1].o_src_addr,HEX);
 		
 	for(U8 i=VNET_HEADER_SIZE;i<vNet_Media_Data[media-1].len;i++)
 	{
-		VNET_LOG("|0x");
+		VNET_LOG(F("|0x"));
 		VNET_LOG(*(vNet_Media_Data[media-1].data+i),HEX);
 	}
 	VNET_LOG(">\r\n");
@@ -1381,9 +1464,9 @@ void vNet_ParseFrame(U8 media)
 				dest_route_table[i] = vNet_Media_Data[media-1].src_addr;
 				
 				#if(VNET_DEBUG)
-				VNET_LOG("(vNet)<ROUTEUPDATE><|0x");
+				VNET_LOG(F("(vNet)<ROUTEUPDATE><|0x"));
 				VNET_LOG(vNet_Media_Data[media-1].o_src_addr & submask,HEX);
-				VNET_LOG("|0x");
+				VNET_LOG(F("|0x"));
 				VNET_LOG(vNet_Media_Data[media-1].src_addr,HEX);
 				VNET_LOG(">\r\n");
 				#endif
@@ -1478,11 +1561,10 @@ void vNet_Reset()
     Set all radio interface in sleep mode, this doesn't work for WiFi radio
 */
 /**************************************************************************/
+#if (SLEEP_ENABLE && VNET_MEDIA2_ENABLE)
 void vNet_RadioSleep()
 {
-#if (VNET_MEDIA2_ENABLE)
 	vNet_RadioSleep_M2();
-#endif	
 }
 
 /**************************************************************************/
@@ -1492,8 +1574,6 @@ void vNet_RadioSleep()
 /**************************************************************************/
 void vNet_RadioWakeUp()
 {
-#if (VNET_MEDIA2_ENABLE)
 	vNet_RadioWakeUp_M2();
-#endif
 }
-
+#endif

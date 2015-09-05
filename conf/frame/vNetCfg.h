@@ -54,14 +54,14 @@
 
 /**************************************************************************/
 /*!
-    Number of mutilcast groups that can be subscribed   
+    Number of multicast groups that can be subscribed   
 */
 /**************************************************************************/
 #define VNET_MULTICAST_SIZE	5
 
 /**************************************************************************/
 /*!
-    Max frame lenght  
+    Max frame length  
 */
 /**************************************************************************/
 #define VNET_MAX_FRAME   (VNET_MAX_PAYLOAD+VNET_HEADER_SIZE+VNET_OVERHEAD_SIZE)
@@ -87,7 +87,26 @@
 */
 /**************************************************************************/
 #ifndef	VNET_RESETTIME_INSKETCH
-#define VNET_RESETTIME		   0x000AFC80
+#define VNET_RESETTIME			0x000AFC80
+
+// Force a node reset using the MCU watchdog, shall be configured as 
+// #define VNET_HARDRESET  while(1)
+// this will prevent the MCU to reset the watchdog and will force a reboot.
+//
+// By default this is empty and does nothing, please note that if you haven't
+// a watchdog enabled, this will hang your node and you will need to manually
+// reebot it.
+#define VNET_HARDRESET	
+#endif
+
+/**************************************************************************/
+/*!
+    If this option is enabled the Gateway doesn't accept new incoming 
+	connection from user interfaces after an elapsed time (from boot)
+*/
+/**************************************************************************/
+#ifndef	VNET_USERLOCKDOWN_INSKETCH
+#	define VNET_USERLOCKDOWN		0
 #endif
 
 /**************************************************************************/
@@ -138,6 +157,22 @@
 */
 /**************************************************************************/
 #define VNET_LOOPS  		0								
+
+/**************************************************************************/
+/*!
+	If enabled hold the code just after the re-broadcast, this result in a
+	delay before the frame is passed to the upper layers.
+	
+        Value       Status
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#ifndef VNET_BRDDELAY_INSKETCH
+#	define VNET_BRDDELAY_ENABLE		0
+#endif
+
+#define	VNET_BRDDELAY				1000
 								
 /**************************************************************************/
 /*!
@@ -202,7 +237,7 @@
 		In order to find out the relationship for media and address, the
 		following assignment should be followed.
 
-		*/
+*/
 /**************************************************************************/
 #define VNET_ADDR_L_M1	   	0x0000			// vNet Low Address for Media 1,  size 4 byte
 #define VNET_ADDR_H_M1	   	0x64FF			// vNet High Address for Media 1, size 4 byte

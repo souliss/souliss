@@ -63,9 +63,7 @@
 
 // Include drivers for Authometion IoTuino with LYT RGBW Led Bulb
 #if(IOBOARD_MODEL == 0x04)						
-#	include "hardware/Authometion/IotuinoUSB.h"
-#	include "hardware/Authometion/Iotuino.h"
-#	include "hardware/Authometion/LYT.h"
+#	include "hardware/Authometion/LYT88.h"
 #endif
 
 #endif

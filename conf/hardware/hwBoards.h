@@ -28,6 +28,22 @@
 
 /**************************************************************************/
 /*!
+	Select the microcontroller where Souliss for which Souliss have to be
+	compiled. This assume that your IDE contains the relevant cores.
+	        
+		Value       Media
+        0x00        No selection (Default)
+		0x01		Atmel AVR ATmega
+        0x02        Expressif ESP8266
+ 
+*/
+/**************************************************************************/
+#ifndef MCU_TYPE_INSKETCH
+#	define	MCU_TYPE		0x00
+#endif
+
+/**************************************************************************/
+/*!
 	Select the used board type, this selection define the layout of the
 	auxiliary pins for the used microcontroller board.
 	        
@@ -41,7 +57,7 @@
 		0x06		Olimex OLIMEXINO-328
 		0x07		DFRobots XBoard Relay
 		0x08		KMP Electronics DINo v2
-		0x09		Authometion IoTuino
+		0x09		ExpressIf ESP8266
 		0x0A		Moteino RFM69
  
 */
@@ -64,7 +80,7 @@
 		0x04		Olimex MOD-ENC28J60 (UEXT) with Microchip ENC28J60
 		0x05		Olimex MOD-WIFI (UEXT) with Microchip MRF24WB0MA
 		0x06		Nordic nRF24L01 and nRF24L01+
-		0x07		HF-LPT200 with Authometion Souliss firmware
+		0x07		ExpressIf ESP8266
 		0x08		HopeRF RFM69CW/RFM69HCW
 */
 /**************************************************************************/
@@ -83,7 +99,7 @@
 		0x01		Olimex MOD-IO  (UEXT)
 		0x02		Olimex MOD-IO2 (UEXT)		
 		0x03		Olimex MOD-RGB (UEXT)
-		0x04		Authometion IoTuino with LYT RGBW Led Bulb
+		0x04		Authometion LYT RGBW Led Bulb
 		
 */
 /**************************************************************************/

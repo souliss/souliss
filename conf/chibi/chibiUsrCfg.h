@@ -96,7 +96,7 @@
 /**************************************************************************/
 /*!
     Enable the chibiArduino stack to run in promiscuous mode. This should
-    only be used to analyze raw packet frames, like for wireshark. 
+    only be used to analyse raw packet frames, like for wireshark. 
 */
 /**************************************************************************/
 #define CHIBI_PROMISCUOUS 0
@@ -184,7 +184,7 @@
             {                           \
                 PCMSK0 |= _BV(PCINT6);  \
                 PCICR |= _BV(PCIE0);    \
-            }                           \ 
+            }                           \
             while(0)
 
 /**************************************************************************/

@@ -91,7 +91,9 @@
 	Insert the encryption key, length must be 16 characters
 */
 /**************************************************************************/
+#ifndef RFM69_ENCRYPTKEY_INSKETCH
 #define RFM69_ENCRYPTKEY    "sampleEncryptKey" 
+#endif
 
 #define RFM69_SUCC			1
 #define RFM69_FAIL			0

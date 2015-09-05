@@ -43,8 +43,8 @@
 		ETH_W5200		-  Wiznet    W5200 			(Wired Ethernet)
 		ETH_W5500		-  Wiznet    W5500 			(Wired Ethernet)		
 		ETH_ENC28J60	-  Microchip ENC28J60		(Wired Ethernet)
-		WIFI_MRF24		-  Microchip MRF24WB0MA 	(WiFi  Ethernet) 
-		WIFI_LPT200		-  Authometion HF-LPT200	(WiFi  Ethernet)
+		WIFI_MRF24		-  Microchip MRF24WB0MA 	(WiFi) 
+		WIFI_ESP8266	-  Expressif ESP8266		(SoC with WiFi)
 */
 /**************************************************************************/
 #ifndef ETH_INSKETCH				
@@ -53,7 +53,7 @@
 #	define ETH_W5500		0
 #	define ETH_ENC28J60  	0
 #	define WIFI_MRF24		0
-#	define WIFI_LPT200		0
+#	define WIFI_ESP8266		0
 #endif
 /**************************************************************************/
 /*!
@@ -87,11 +87,11 @@
 /*!
     User Interface Mode
 	
-	User Interface Mode is an embeed functionality in vNet over IP that allow
+	User Interface Mode is an embed functionality in vNet over IP that allow
 	communication with devices that are out of the LAN and/or use two different 
 	port (ETH_PORT, USR_PORT) while writing and receiving vNet frames.
 		
-	Using the User Mode, the entiere IP address is stored to allow
+	Using the User Mode, the entire IP address is stored to allow
 	communication over NAT.
 	
 	This functionality must be enabled if is required the communication with
@@ -107,7 +107,7 @@
 
 /**************************************************************************/
 /*!
-    Define the maximum waiting time while a TCP connection is estabilished
+    Define the maximum waiting time while a TCP connection is established
 */
 /**************************************************************************/
 #define ETH_WAIT   1000
@@ -133,7 +133,7 @@
 	
 	This option include class as per official Arduino Ethernet Library, this
 	allow user to customize their Souliss boards using external code developed
-	for standard Arduinos.
+	for standard Arduino.
 	You can enable this option only for Wiznet W5100/W5200 (this include the 
 	official Arduino Ethernet Shield) and not for controller based on others,
 	even if supported in Souliss.
@@ -230,7 +230,7 @@ uint8_t DEFAULT_GATEWAY[] 	  = {192, 168, 1, 1};
 	in the MAC_ADDRESS[] field.
 	
 	If a MAC address is not available, is suggested the use of a locally MAC
-	administred address, that can be inserted manually or automatically.
+	administered address, that can be inserted manually or automatically.
 	
 	The MAC address can be automatically assigned to the board if the AUTO_MAC
 	option is set. In that case the MAC address will be sum of the MAC_ADDRESS[]
@@ -279,7 +279,7 @@ uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
         0x1         Enable
 	
 		Mode						Description
-		Infrastracture				WiFi module connect to a router
+		Infrastructure				WiFi module connect to a router
 		AdHoc						Peer-to-peer connection between two modules
 		
 	The network protection type suggested is WPA2, if connecting to a router
@@ -288,7 +288,7 @@ uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
 	peer to perform the connection.
 	
 	The network name and password shall be the one configured into the router
-	if using an Infrastracture connection, otherwise can be freely defined
+	if using an Infrastructure connection, otherwise can be freely defined
 	and then used by the other peer in case of AdHoc connection.
 	
 */

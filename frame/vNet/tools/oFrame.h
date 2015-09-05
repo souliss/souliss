@@ -31,15 +31,15 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "src/types.h"
+#include "tools/types.h"
 
 // Data structure to handle multiple headers and payload
 typedef struct 
 {
 	U8*	header;				// Pointer to header data area
 	U8*	payload;			// Pointer to payload data area
-	U8	header_len;			// Lenght of header
-	U8 	payload_len;		// Lenght of payload
+	U8	header_len;			// Length of header
+	U8 	payload_len;		// Length of payload
 	U8* next;				// Pointer to next oFrame struct
 	
 } oFrame;					// Output frame

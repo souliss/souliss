@@ -41,7 +41,7 @@ void Souliss_SetT41(U8 *memory_map, U8 slot)
 		It active an output when an input from a sensor or a chain of nodes
 		detect an intrusion or any other anti-theft cause.
 		
-		The chain can be build usign the anti-theft peers (typical 42) that
+		The chain can be build using the anti-theft peers (typical 42) that
 		write an alarm condition into the anti-theft main node. Is mandatory
 		that main and peer nodes in the anti-theft chain use the same slot.
 		
@@ -61,7 +61,7 @@ void Souliss_SetT41(U8 *memory_map, U8 slot)
 /**************************************************************************/
 U8 Souliss_Logic_T41(U8 *memory_map, U8 slot, U8 *trigger)
 {
-	// Active or deactive the anti-theft
+	// Active or de-active the anti-theft
 	if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Armed) || (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm))
 	{
 		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;			
@@ -116,7 +116,7 @@ void Souliss_SetT42(U8 *memory_map, U8 slot)
 		It active an output when an input from a sensor or a chain of nodes
 		detect an intrusion or any other anti-theft cause.
 		
-		The chain can be build usign the anti-theft peers (typical 42) that
+		The chain can be build using the anti-theft peers (typical 42) that
 		write an alarm condition into the anti-theft main node. Is mandatory
 		that main and peer nodes in the anti-theft chain use the same slot.
 		

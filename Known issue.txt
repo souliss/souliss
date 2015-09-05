@@ -25,3 +25,8 @@ Copyright (C) 2012  Veseo
 		The drivers used are modified for oFrame usage, and while transferring multiple bytes are opening
 		and closing the SPI communication (CS low and then high) for each byte. The W5200 and W5500 support
 		transfer of multiple bytes, this feature is not used in the actual driver.
+		
+	Drivers for Microchip ENC28J60
+
+		The drivers are working fine with static addressing, but works in dynamic addressing mode only
+		using small payload setup.

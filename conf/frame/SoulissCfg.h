@@ -36,6 +36,8 @@
         Value       
         0x0         Disable (Default)
         0x1         Enable
+
+	This is supported on AVR only.
 */
 /**************************************************************************/
 #ifndef HTTPSERVER_INSKETCH
@@ -61,6 +63,8 @@
         0x0         Disable (Default)
         0x1         Enable in TCP (Polling)
 		0x2			Enable in UDP (Event-driven)
+
+	This is supported on AVR only.
 */
 /**************************************************************************/
 #ifndef XMLSERVER_INSKETCH
@@ -84,6 +88,8 @@
 	
 	This code implement only partially the Modbus protocol and doesn't allow
 	multidrop configuration and/or bridging in RTU mode.
+
+	This is supported on AVR only.
 */
 /**************************************************************************/
 #ifndef MODBUS_INSKETCH
@@ -97,12 +103,27 @@
 #define	MODBUS_ID					1	
 #define	MODBUS_RTU_BAUD				115200
 #define MODBUS_TCP_PORT				502
-			
+		
 /**************************************************************************/
 /*!
-	The dynamic addressing node act as server for Souliss addresses over
-	the network. It works for single media and bridged networks with a single
-	bridge acting as addressing server.
+	Enable the WebConfiguration HTTP server on port number 80.
+	
+        Value       
+        0x0         Disable (Default)
+        0x1         Enable
+
+	This is supported on ESP8266 only.
+*/
+/**************************************************************************/
+#ifndef WEBCONFIGSERVER_INSKETCH
+#	define WEBCONFIGSERVER			0
+#endif
+
+	
+/**************************************************************************/
+/*!
+	If dynamic addressing is enabled, nodes get address from the Gateway
+	that acts as addressing server
 	
         Value       
         0x0         Disable (Default)
@@ -111,6 +132,20 @@
 /**************************************************************************/
 #ifndef DYNAMICADDRESSING_INSKETCH
 #	define DYNAMICADDRESSING  	0
+#endif
+
+/**************************************************************************/
+/*!
+	Once enabled, node configuration is stored in the EEPROM, use the constant
+	FIRST_EEPROM_BYTE to identify the first usable byte in your EEPROM.
+	
+        Value       
+        0x0         Disable (Default)
+        0x1         Enable
+*/
+/**************************************************************************/
+#ifndef USEEEPROM_INSKETCH
+#	define USEEEPROM			0
 #endif
 
 #define	DYNAMICADDR_IPVNETNODE	0x004D
@@ -190,6 +225,8 @@
 #ifndef	SOULISS_DEBUG_INSKETCH
 #	define SOULISS_DEBUG  		0
 #endif
-	
+
+#define SOULISS_LOG 			Serial.print	// Define the output peripheral for the debug
+
 #endif
 							  

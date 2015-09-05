@@ -29,40 +29,42 @@
 
 #include "tools/oFrame.h"
 #include "GetConfig.h"		// need : vNet_Config.h, ethUsrCfg.h
+#include "tools/store/store.h"
 
 #if (VNET_MEDIA1_ENABLE)
 	// Driver for Wiznet W5100
 	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
-		#include "drivers/ethW5x00/vNetDriver_eth.h"	
+		#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.h"	
 	#endif
 	
 	// Driver for Microchip ENC28J60
 	#if (ETH_ENC28J60)
-		#include "drivers/ethENC28J60/vNetDriver_eth.h"	
+		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.h"	
 	#endif
 	
 	// Driver for Microchip MRF2WB0MA
 	#if (WIFI_MRF24)
-		#include "drivers/ethMRF24/vNetDriver_eth.h"	
+		#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.h"	
 	#endif
+
+	// Driver for Expressif ESP8266 WiFi
+	#if (WIFI_ESP8266)
+		#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.h"	
+	#endif	
 	
-	// Driver for MAuthometion HF-LPT200
-	#if (WIFI_LPT200)
-		#include "drivers/ethLPT200/vNetDriver_eth.h"	
-	#endif		
 #endif
 
 #if (VNET_MEDIA2_ENABLE)
 	#if(CHIBI_AT86RF230)
-		#include "drivers/chibi/vNetDriver_chibi.h"	
+		#include "drivers/mcu_avr/chibi/vNetDriver_chibi.h"	
 	#endif	
 	
 	#if(NRF24)
-		#include "drivers/nRF24/vNetDriver_nrf24.h"
+		#include "drivers/mcu_avr/nRF24/vNetDriver_nrf24.h"
 	#endif	
 	
 	#if(HOPERF_RFM69)
-		#include "drivers/RFM69/vNetDriver_rfm69.h"
+		#include "drivers/mcu_avr/RFM69/vNetDriver_rfm69.h"
 	#endif	
 #endif
 	
@@ -70,21 +72,24 @@
 	// Driver for Wiznet W5100 / W5200 / W5500 (broadcast only)
 	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
 		#if(!VNET_MEDIA1_ENABLE)
-			#include "drivers/ethW5x00/vNetDriver_eth.h"	
+			#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.h"	
 		#endif			
 	#endif
 	
 	// Driver for Microchip EN28J60 (broadcast only)
 	#if (ETH_ENC28J60)		
 		#if(!VNET_MEDIA1_ENABLE)
-			#include "drivers/ethENC28J60/vNetDriver_eth.h"	
+			#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.h"	
 		#endif
 	#endif	
 #endif
 	
 #if (VNET_MEDIA5_ENABLE)
-	#include "drivers/usart/vNetDriver_usart.h"	
+	#include "drivers/generic/usart/vNetDriver_usart.h"	
 #endif	
+
+#define time_justbooted		300000			// Five minutes in milliseconds
+#define JustBooted()	(millis() < time_justbooted)
 
 typedef struct
 {
@@ -96,7 +101,7 @@ typedef struct
 typedef struct
 {
 	U8 data_available;		// Data Available
-    U8 len;					// Message Lenght
+    U8 len;					// Message Length
 	U8 port;				// Message Port
 	U16 src_addr;			// Source Address
 	U16 o_src_addr;			// Original Source Address
@@ -124,6 +129,7 @@ U16 vNet_GetSubnetMask(U8 media);
 void vNet_SetMySuperNode(U16 mySuperNode, U8 media);
 U16 vNet_GetMySuperNode(U8 media);
 U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index);
+U8 vNet_SetDoNotRoutingTable(U16 addr, U8 index);
 U8 vNet_MyMedia();
 U8 vNet_GetMedia(U16 addr);
 U8 vNet_MyMediasWithoutAddress(U8* media);

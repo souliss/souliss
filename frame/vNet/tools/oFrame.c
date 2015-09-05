@@ -125,7 +125,7 @@ U8 oFrame_Available()
 
 /**************************************************************************/
 /*!
-    Get the total lenght
+    Get the total length
 */
 /**************************************************************************/
 U8 oFrame_GetLenght()
@@ -136,7 +136,7 @@ U8 oFrame_GetLenght()
 	// While the frame pointer is not null
 	while(frame)
 	{
-		len+=frame->header_len+frame->payload_len;		// Get the frame lenght
+		len+=frame->header_len+frame->payload_len;		// Get the frame length
 		frame = (oFrame*)frame->next;					// Move to next frame
 	}
 	
@@ -233,15 +233,15 @@ void oFrame_Debug()
 	while(frame)
 	{
 		oFRAME_LOG("\nheader ");
-		oFRAME_LOG((U16)frame->header,HEX);
+		oFRAME_LOG((U32)frame->header,HEX);
 		oFRAME_LOG("\npayload ");
-		oFRAME_LOG((U16)frame->payload,HEX);		
+		oFRAME_LOG((U32)frame->payload,HEX);		
 		oFRAME_LOG("\nheader_len ");
-		oFRAME_LOG((U16)frame->header_len,HEX);
+		oFRAME_LOG((U32)frame->header_len,HEX);
 		oFRAME_LOG("\npayload_len ");
-		oFRAME_LOG((U16)frame->payload_len,HEX);			
+		oFRAME_LOG((U32)frame->payload_len,HEX);			
 		oFRAME_LOG("\nnext ");
-		oFRAME_LOG((U16)frame->next,HEX);		
+		oFRAME_LOG((U32)frame->next,HEX);		
 		oFRAME_LOG("\r\n");
 		frame = (oFrame*)frame->next;					// Move to next frame
 	}	

@@ -24,7 +24,7 @@
 */
 
 #include "MODIO2.h"
-#include "src/I2C/I2C.c"
+#include "tools/I2C/mcu_avr/I2C.c"
 
 // Define the I2C data buffer
 uint8_t	mIO_cmd[7] = {OLIMEX, 0, ADDRESS, 0, 0, 0};
@@ -74,7 +74,7 @@ void mIO_PinMode(uint8_t gpio_register)
 /*!
 	Set GPIO pullups for MOD-IO2
 	
-		Pins associated to a 0 has no pullps rather 1 set has it.
+		Pins associated to a 0 has no pullups rather 1 set has it.
 	
 		Is not allowed to read the register value, so configuration have to 
 		be done for all pins in one shot, use GPIO0...GPIO7 defines to get 
