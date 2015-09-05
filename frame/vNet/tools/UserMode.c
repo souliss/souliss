@@ -75,6 +75,27 @@ void UserMode_Init()
 
 /**************************************************************************/
 /*!
+    Record a vNet address manually, this allow a bypass of the USERLOCKDOWN
+	at compile time
+*/
+/**************************************************************************/
+void UserMode_ManualRecord(U16 addr)
+{
+	U8 i=0;
+
+	// Verify that the entry was not yet saved or find the first available index
+	for(i=0;i<UMODE_USERS;i++)
+		if((in_vNet_Addresses[i]==addr) || (in_vNet_Addresses[i]==0x0000))
+			break;
+
+	if(i==UMODE_USERS)
+		return;
+	
+	in_vNet_Addresses[i] = addr;
+}
+
+/**************************************************************************/
+/*!
     Record the incoming IP address and link it with a vNet address
 */
 /**************************************************************************/

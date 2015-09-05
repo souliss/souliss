@@ -232,6 +232,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	IsRuntimeGateway										MaCaco_IsRuntimeGateway
 #define	JoinNetwork()											Souliss_JoinNetwork()
 #define	JoinAndReset()											Souliss_JoinAndReset()
+#define SetUserInterface										UserMode_ManualRecord
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
 #define RemoveAsGateway()										Souliss_ResetLocalAddress(memory_map)
 #define GetAsGateway()											Souliss_GetLocalAddress(memory_map)
