@@ -263,6 +263,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SendData												Souliss_RemoteInputs
 #define	ResetInput(slot)										Souliss_ResetInput(memory_map, slot)
 #define	RoutingTable											vNet_SetRoutingTable
+#define	DonotRouteTable											vNet_SetDoNotRoutingTable
 #define	Init_XMLServer()										XMLSERVERInit(memory_map)
 #define	Run_XMLServer()											XMLSERVERInterface(memory_map)
 #define	Init_Modbus()											ModbusInit(memory_map)

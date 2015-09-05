@@ -100,6 +100,7 @@
 // Routing and bridging tables
 static U16 route_table[VNET_ROUTING_TABLE] 		 = {0x0000};
 static U16 dest_route_table[VNET_ROUTING_TABLE]  = {0x0000};
+static U16 donot_route_table[VNET_ROUTING_TABLE] = {0x0000};
 static U16 multicast_groups[VNET_MULTICAST_SIZE] = {0x0000};
 
 static U8 last_media = 0;
@@ -142,6 +143,7 @@ void vNet_Init()
 	{
 		route_table[i] = 0x0000;
 		dest_route_table[i] = 0x0000;
+		donot_route_table[i] = 0x0000;
 	}
 	
 	// Set to zero
@@ -1033,6 +1035,21 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index)
 	else
 		return VNET_FAIL;
 }
+
+/**************************************************************************/
+/*!
+    Set the entries for the routing tables
+*/
+/**************************************************************************/
+U8 vNet_SetDoNotRoutingTable(U16 addr, U8 index)
+{
+	if(index < VNET_ROUTING_TABLE)
+	{
+		donot_route_table[index] = addr;
+	}	
+	else
+		return VNET_FAIL;
+}
  
 /**************************************************************************/
 /*!
@@ -1147,6 +1164,18 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		VNET_LOG(">\r\n");
 		#endif		
 		
+		// Search for devices that shall be reached
+		while ((route_index < VNET_ROUTING_TABLE) && (donot_route_table[route_index] != *routed_addr))	
+			route_index++;														   	
+		
+		// If the address is in the list, drop it
+		if(donot_route_table[route_index] != *routed_addr)
+			*routed_addr = 0x0000;
+
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<DONTROUTE>\r\n"));
+		#endif
+
 		#else	
 		// Route to my supernode
 			
@@ -1311,8 +1340,6 @@ U8 vNet_RoutingBridging(U8 media)
 	#endif
 	}
 }
-
-
 
 /**************************************************************************/
 /*!
