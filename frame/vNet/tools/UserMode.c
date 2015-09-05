@@ -71,6 +71,16 @@ void UserMode_Init()
 	if(Return_ID()==STORE__DEFAULTID)
 		Return_UserModeAddresses(in_vNet_Addresses, UMODE_USERS);
 	#endif
+
+	#if(VNET_DEBUG)
+	VNET_LOG(F("(vNet)<USERMODE><0x"));
+	for(U8 i=0;i<(UMODE_USERS);i++)
+	{
+		VNET_LOG(in_vNet_Addresses[i],HEX);
+		VNET_LOG(F("|0x"));
+	}
+	VNET_LOG(F(">\r\n"));
+	#endif	
 }
 
 /**************************************************************************/
@@ -166,6 +176,16 @@ void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port)
 		#if(USEEEPROM)
 		Store_UserModeAddresses(in_vNet_Addresses, UMODE_USERS);
 		Store_Commit();
+		#endif	
+
+		#if(VNET_DEBUG)
+		VNET_LOG(F("(vNet)<USERMODE><0x"));
+		for(U8 i=0;i<(UMODE_USERS);i++)
+		{
+			VNET_LOG(in_vNet_Addresses[i],HEX);
+			VNET_LOG(F("|0x"));
+		}
+		VNET_LOG(F(">\r\n"));
 		#endif		
 	}
 

@@ -27,7 +27,6 @@ uint8_t GPIO_POUT = 15;  //GPIO15
 
 void setup()
 {
- // Serial.begin(115200);
     Initialize();
     
     // Read the IP configuration from the EEPROM, if not available start

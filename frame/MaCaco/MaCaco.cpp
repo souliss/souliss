@@ -107,9 +107,6 @@ void MaCaco_init(U8* memory_map)
 		subscr_count[i] = 0;	
 	}	
 
-	// Init the UserMode
-	UserMode_Init();	
-
 	// Init the EEPROM
 	#if(USEEEPROM)
 	Store_Init();	
@@ -125,6 +122,9 @@ void MaCaco_init(U8* memory_map)
 		Store_Commit();
 	}
 	#endif		
+
+	// Init the UserMode
+	UserMode_Init();	
 }
 
 /**************************************************************************/
