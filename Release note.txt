@@ -8,6 +8,7 @@ Release note for revision v7.1, on dd/mm/yyyy
 
 		- Gateway behaviour can now be set at runtime
 		- Added WebConfiguration for ESP8266
+		- Introduced a Lock-down for User Interfaces
 		- Added T6n Typicals, Analog Setpoint
 		- Bugfix for T18 Step Relay Logic
         - Bugfix for battery operated devices (TODO)
