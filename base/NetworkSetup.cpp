@@ -437,7 +437,7 @@ uint8_t Souliss_ReadIPConfiguration()
 			if(DEFAULT_GATEWAY) 		DEFAULT_GATEWAY[i] = _ip_gateway[i];
 		}
 		
-		U16 vNet_address = (U16)_ip_address[i-1];			// The last byte of the IP address is the vNet one
+		myvNet_dhcp = (U16)_ip_address[i-1];			// The last byte of the IP address is the vNet one
 		DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 		#if(MCU_TYPE == 0x02)	// Expressif ESP8266
@@ -456,7 +456,7 @@ uint8_t Souliss_ReadIPConfiguration()
 		#endif
 		
 		// Set the address
-		Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
+		Souliss_SetAddress(myvNet_dhcp, DYNAMICADDR_SUBNETMASK, 0);
 	}
 
 	#if(MCU_TYPE == 0x02)

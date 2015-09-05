@@ -26,6 +26,8 @@
 #define conf_ssWEBCONFinterface_H
 
 #define WEBCONFIGSERVER_INSKETCH
-#define WEBCONFIGSERVER				1
+#define USEEEPROM_INSKETCH
 
+#define WEBCONFIGSERVER			1
+#define USEEEPROM				1
 #endif
