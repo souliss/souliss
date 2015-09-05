@@ -38,6 +38,7 @@ U8 data_changed = 1;						// flag
 U16 phase_speedy=0, phase_fast=0, phase_slow=0;
 unsigned long tmr_fast=0, tmr_slow=0;  
 
+
 #define EXECUTEFAST()	if(abs(millis()-tmr_fast) > time_base_fast)
 #define UPDATEFAST()	tmr_fast = millis();	\
 						phase_fast = (phase_fast + 1) % num_phases
@@ -233,9 +234,15 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SetDynamicAddressing()									Souliss_SetDynamicAddressing()
 #define	SetIPAddress											Souliss_SetIPAddress
 #define GetIPAddress											Souliss_GetIPAddress
+#define SetAccessPoint											Souliss_SetAccessPoint
+#define ReadIPConfiguration										Souliss_ReadIPConfiguration
+#define	IsRuntimeGateway										MaCaco_IsRuntimeGateway
 #define	JoinNetwork()											Souliss_JoinNetwork()
 #define	JoinAndReset()											Souliss_JoinAndReset()
+#define SetUserInterface										UserMode_ManualRecord
 #define SetAsGateway(address)									Souliss_SetLocalAddress(memory_map, address)
+#define RemoveAsGateway()										Souliss_ResetLocalAddress(memory_map)
+#define GetAsGateway()											Souliss_GetLocalAddress(memory_map)
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
 #define	SetAsBatteryNode(address, index)						Souliss_SetRemoteAddress(memory_map, address, index);	\
 																Souliss_BatteryChannels(memory_map, address)
@@ -263,6 +270,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SendData												Souliss_RemoteInputs
 #define	ResetInput(slot)										Souliss_ResetInput(memory_map, slot)
 #define	RoutingTable											vNet_SetRoutingTable
+#define	DonotRouteTable											vNet_SetDoNotRoutingTable
 #define	Init_XMLServer()										XMLSERVERInit(memory_map)
 #define	Run_XMLServer()											XMLSERVERInterface(memory_map)
 #define	Init_Modbus()											ModbusInit(memory_map)

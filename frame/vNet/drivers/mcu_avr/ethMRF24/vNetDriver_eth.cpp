@@ -164,7 +164,13 @@ uint8_t vNet_Send_M1(uint16_t addr, oFrame *frame, uint8_t len)
 			// The first byte is the User Mode Index, if in range 0x01 - 0x64
 			// a standard client/server connection is used with the user interface
 			// this give routing and NATting passthrough
-			UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port));
+			if(!UserMode_Get(addr, &ip_addr[0], (uint8_t*)(&vNet_port)))
+			{		
+				// Flag the error
+				oFrame_Reset();
+				
+				return ETH_FAIL;
+			}	
 		}
 		else
 		#endif

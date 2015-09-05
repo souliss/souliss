@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss - User Mode
-    Copyright (C) 2012  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,27 +21,15 @@
 /*!
     \file 
     \ingroup
-
 */
-/**************************************************************************/
-#ifndef UMODE_H
-#define UMODE_H
+#ifndef conf_ssLOCKDOWN_H
+#define conf_ssLOCKDOWN_H
 
-#include "GetConfig.h"				// need : ethUsrCfg.h
+#define	VNET_USERLOCKDOWN_INSKETCH
+#define USEEEPROM_INSKETCH
 
-#if(UMODE_ENABLE)
+#define VNET_USERLOCKDOWN		1
+#define USEEEPROM				1
 
-#include <stdbool.h>
-#include <stdint.h>
 
-#include "tools/types.h"
-
-void UserMode_Init();
-void UserMode_ManualRecord(U16 addr);
-void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port);
-void UserMode_Remove(U16 addr);
-void UserMode_Reset();
-uint8_t UserMode_Get(U16 addr, U8* ip_addr, U8* p_port);
-
-#endif
 #endif

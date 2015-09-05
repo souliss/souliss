@@ -27,7 +27,7 @@
 
 // Disable the use of EEPROM
 
-#define	DYNAMICADDRESSING_INSKETCH
+#define USEEEPROM_INSKETCH
 #define USEEEPROM							0
 
 

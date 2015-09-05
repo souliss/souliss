@@ -88,6 +88,9 @@
 	#include "drivers/generic/usart/vNetDriver_usart.h"	
 #endif	
 
+#define time_justbooted		300000			// Five minutes in milliseconds
+#define JustBooted()	(millis() < time_justbooted)
+
 typedef struct
 {
     U16 src_addr;		// Source Address
@@ -126,6 +129,7 @@ U16 vNet_GetSubnetMask(U8 media);
 void vNet_SetMySuperNode(U16 mySuperNode, U8 media);
 U16 vNet_GetMySuperNode(U8 media);
 U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index);
+U8 vNet_SetDoNotRoutingTable(U16 addr, U8 index);
 U8 vNet_MyMedia();
 U8 vNet_GetMedia(U16 addr);
 U8 vNet_MyMediasWithoutAddress(U8* media);

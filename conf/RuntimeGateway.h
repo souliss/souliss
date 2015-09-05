@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss - User Mode
-    Copyright (C) 2012  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,27 +21,24 @@
 /*!
     \file 
     \ingroup
-
 */
-/**************************************************************************/
-#ifndef UMODE_H
-#define UMODE_H
+#ifndef bconf_ssGATEWAY_H
+#define bconf_ssGATEWAY_H
 
-#include "GetConfig.h"				// need : ethUsrCfg.h
+#define	MaCacoCONF_INSKETCH
 
-#if(UMODE_ENABLE)
+#define	MaCaco_USERMODE				1
+#define MaCaco_SUBSCRIBERS			1	
+#define MaCaco_PERSISTANCE			0
+#define	MaCaco_LASTIN				0
 
-#include <stdbool.h>
-#include <stdint.h>
+/* Compared to a standard Gateway at compile time, in this case is not set by default the VNET_SUPERNODE
+   this prevent nodes to route frames and process multi-hop broadcast messages.
+ 
+   A node is considered a Runtime Gateway only if C8TO16(memory_map + MaCaco_ADDRESSES_s) returns a non zero
+   value, this is set by the upper layer to define a node as Gateway.
+*/
 
-#include "tools/types.h"
 
-void UserMode_Init();
-void UserMode_ManualRecord(U16 addr);
-void UserMode_Record(U16 addr, U8* ip_addr, U8* p_port);
-void UserMode_Remove(U16 addr);
-void UserMode_Reset();
-uint8_t UserMode_Get(U16 addr, U8* ip_addr, U8* p_port);
 
-#endif
 #endif

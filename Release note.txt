@@ -3,14 +3,18 @@ Copyright (C) 2011-2015
 
 Release note for revision v7.0.7, on dd/mm/yyyy
 
+<<<<<<< HEAD
 		- Added T6n Typicals, Analog Setpoint
 		- Bugfix for T18 Step Relay Logic
+=======
+		- Gateway behaviour can now be set at runtime
+>>>>>>> runtimegateway
         - Bugfix for battery operated devices (TODO)
 
 Release note for revision v7.0.6, on 16/08/2015
 
 	Introduce the support for the new LYT88 light bulbs from Authometion and include
-	several bugfix and enanchments.
+	several bugfix and enhancements.
 	
 		- Support for Authometion LYT88 LED RGB+W Light Bulbs
 		- Introduced Remote I/O

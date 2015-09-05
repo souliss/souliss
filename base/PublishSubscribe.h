@@ -57,7 +57,7 @@
 #define	Sunny											0x0004,0x01
 #define	Raining											0x0004,0x02
 #define	Cloudy											0x0004,0x03
-
+#define Notify_GatewayAlive								0x0005,0x01
 
 // General macros for publish/subscribe method
 #define	publish(topic)								Souliss_BroadcastAction(memory_map, topic)
