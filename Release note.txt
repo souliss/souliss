@@ -1,14 +1,15 @@
 Souliss
 Copyright (C) 2011-2015
 
-Release note for revision v7.0.7, on dd/mm/yyyy
+Release note for revision v7.1, on dd/mm/yyyy
 
-<<<<<<< HEAD
+	Introduce the runtime switch between Gateway and Node and an HTTP based WebConfig
+	interface for ESP8266.
+
+		- Gateway behaviour can now be set at runtime
+		- Added WebConfiguration for ESP8266
 		- Added T6n Typicals, Analog Setpoint
 		- Bugfix for T18 Step Relay Logic
-=======
-		- Gateway behaviour can now be set at runtime
->>>>>>> runtimegateway
         - Bugfix for battery operated devices (TODO)
 
 Release note for revision v7.0.6, on 16/08/2015
