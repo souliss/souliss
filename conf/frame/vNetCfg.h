@@ -119,6 +119,23 @@
 #define VNET_DATA_SUCCESS		   	1
 #define VNET_SUCCESS				1
 #define VNET_DATA_ROUTED		   	255
+
+
+
+/**************************************************************************/
+/*!
+    To avoid network flood on gateway with multiple network interfaces a
+	delay time of VNET_BROADCAST_DELAY milliseconds is used.
+	
+        Value       VNET_BROADCAST_DEFAULT
+        0x0         Disable
+        0x1         Enable (Default)
+*/
+/**************************************************************************/
+#define VNET_BROADCAST_DEFAULT		1
+
+#define	VNET_BROADCAST_ENABLE		1
+#define	VNET_BROADCAST_DISABLE		0
 #define	VNET_BROADCAST_DELAY		300		// Delay in milliseconds
 
 /**************************************************************************/
