@@ -30,11 +30,9 @@
 
 // Define logic slots, multicolor lights use four slots
 #define LYTLIGHT1			0	
-#define LYTLIGHT2			4	
-#define LYTLIGHT3			8	
-#define	LIGHTINTESITY		9
-#define	TEMPERATURE			11
-#define	HUMIDITY			13
+#define	LIGHTINTESITY		4
+#define	TEMPERATURE			6
+#define	HUMIDITY			8
 
 uint8_t toggleswitch = 0;
 
@@ -57,15 +55,10 @@ void setup()
     // the first lamp (index 0) with default addresses (0, 0). Change these based on
     // the configuration of your lamps.
     InitLYT();
-    SetLYT(0, 0, 1, LYTLIGHT1);
-    SetLYT(1, 0, 2, LYTLIGHT2);
-    SetLYT(2, 0, 3, LYTLIGHT3);
+    SetLYT(0, 0, 0, LYTLIGHT1);
 
     // Define a logic to handle the bulb(s)
     SetLYTLamps(LYTLIGHT1); 
-    SetLYTLamps(LYTLIGHT2); 
-    SetLYTLamps(LYTLIGHT3); 
-
 	Set_Light(LIGHTINTESITY);
 	Set_Temperature(TEMPERATURE);
 	Set_Humidity(HUMIDITY);
@@ -80,15 +73,11 @@ void loop()
         // Is an unsual approach, but to get fast response to color change we run the LYT logic and
         // basic communication processing at maximum speed.
         LogicLYTLamps(LYTLIGHT1);       
-        LogicLYTLamps(LYTLIGHT2);  
-        LogicLYTLamps(LYTLIGHT3);  
         ProcessCommunication();
         
         // Here we process all communication with other nodes
         FAST_1110ms() {
             LYTState(LYTLIGHT1);
-            LYTState(LYTLIGHT2);
-            LYTState(LYTLIGHT3);
         }
 		
 		FAST_510ms() {	
@@ -119,6 +108,8 @@ void loop()
 				}	
 			}	
 
+		}
+
 		// Process analogue values
 		FAST_9110ms() {
 			
@@ -128,7 +119,7 @@ void loop()
 			
 		}
 	
-}
+
 		// Here we process all communication with other nodes
 		FAST_PeerComms();	
 	}	
@@ -152,16 +143,6 @@ void loop()
 		}
 
         SLOW_x10s(9) {
-            LYTStateRequest(LYTLIGHT1);     // Request the lamp state
-            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
-        }
-
-        SLOW_x10s(11) {
-            LYTStateRequest(LYTLIGHT1);     // Request the lamp state
-            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
-        }
-
-        SLOW_x10s(13) {
             LYTStateRequest(LYTLIGHT1);     // Request the lamp state
             LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
