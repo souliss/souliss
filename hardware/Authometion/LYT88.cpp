@@ -48,10 +48,16 @@ LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
 #define ANSWER_TIMEOUT	0
 uint8_t answer_timeout=ANSWER_WAIT;						// Timeout while waiting for an answer from the lamp bulb
 
+/**************************************************************************
+/*!
+	Init LYT
+*/	
+/**************************************************************************/
 void InitLYT()
 {
 	myLYTWiFi.vfInitialize(PL1167_CS_PIN);
 	myLYTWiFi.vfSetLocalChannel(PL1167_DEFAULT_RADIO_TRASMISSION,0);
+	myLYTWiFi.vfSetLocalSyncWord(C_MSBYTE_SYNCWORD0, C_LSBYTE_SYNCWORD0);	
 }
 
 /**************************************************************************
@@ -67,10 +73,6 @@ void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot)
 		LYT[index].addr_b = addr_b;
 		LYT[index].slot;	
 	}
-	
-	// Set the LYT
-	myLYTWiFi.vfSetSyncWord(addr_a, addr_b, C_MSBYTE_SYNCWORD0, C_LSBYTE_SYNCWORD0);	
-	
 }
 
 /**************************************************************************
