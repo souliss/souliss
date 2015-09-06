@@ -5,11 +5,11 @@
     shield.
     
     Load this sketch on an ESP8266 WiFi module used to bridge via USART the
-	Arduino AVR microcontroller that handle the radio.
+    Arduino AVR microcontroller that handle the radio.
 
     Verify shield's jumpers and select Hardware Usart while using this sketch, 
     remember to remove the jumpers before programming the Arduino. Use pin 10 as
-	chip select for the radio.
+    chip select for the radio.
         
 ***************************************************************************/
 
@@ -32,23 +32,28 @@ void setup()
 {   
     Initialize();
 
-    // Read the IP configuration from the EEPROM, if not available start
-    // the node as access point
-    if(!ReadIPConfiguration()) 
-	{	
-		// Start the node as access point with a configuration WebServer
-		SetAccessPoint();
-		startWebServer();
+    // Read the IP configuration from the EEPROM and wait for a connection
+    while(!ReadIPConfiguration() && (millis() < 60000)) 
+    {   
+        delay(3000);
+    }
 
-		// We have nothing more than the WebServer for the configuration
-		// to run, once configured the node will quit this.
-		while(1)
-		{
-			yield();
-			runWebServer(); 
-		}
+    // If the access point is not available, start itself as access point and
+    // wait for a configuration
+    if(!ReadIPConfiguration())
+    {
+        // Start the node as access point with a configuration WebServer
+        SetAccessPoint();
+        startWebServer();
 
-	}
+        // We have nothing more than the WebServer for the configuration
+        // to run, once configured the node will quit this.
+        while(1)
+        {
+            yield();
+            runWebServer(); 
+        }
+    }
 
     // Set as Gateway
     SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  

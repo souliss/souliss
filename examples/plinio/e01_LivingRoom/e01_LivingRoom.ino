@@ -128,7 +128,7 @@ void loop()
 		UPDATESLOW();
 		
 		// Slowly shut down the lamp
-		SLOW_x10s(15) {
+		SLOW_10s() {
 			
 			// Read the light intensity
 			AnalogIn(A0, LIGHTINTESITY, 0.1, 0);
@@ -140,9 +140,7 @@ void loop()
 			// Read the temperature
 			th = dht.readTemperature();
 			ImportAnalog(TEMPERATURE, &th);			
-		}
 
-        SLOW_x10s(9) {
             LYTStateRequest(LYTLIGHT1);     // Request the lamp state
             LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
