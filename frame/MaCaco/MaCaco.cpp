@@ -842,6 +842,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 		// force by typical logic number
 		if((rx->funcode == MaCaco_TYP) || (rx->funcode == MaCaco_FORCETYP))
 		{
+			// Disable the broadcast delay
+			if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_DISABLE);
+
 			// identify if the command is issued for a typical or a typical class
 			if((rx->startoffset & 0x0F) == 0x00)
 				typ_mask = 0xF0;	// we look only to the typical class value
@@ -859,6 +862,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			if((rx->funcode == MaCaco_TYP) && (C8TO16(memory_map + MaCaco_ADDRESSES_s)))
 				MaCaco_send(0xFFFF, MaCaco_TYP, 0, rx->startoffset, rx->numberof, rx->data);
 			#endif
+
+			// Enable the broadcast delay
+			if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_ENABLE);
 									
 			return MaCaco_FUNCODE_OK;
 		}	

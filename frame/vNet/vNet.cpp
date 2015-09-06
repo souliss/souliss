@@ -103,7 +103,7 @@ static U16 dest_route_table[VNET_ROUTING_TABLE]  = {0x0000};
 static U16 donot_route_table[VNET_ROUTING_TABLE] = {0x0000};
 static U16 multicast_groups[VNET_MULTICAST_SIZE] = {0x0000};
 
-static U8 last_media = 0;
+static U8 last_media = 0, broadcast_delay = VNET_BROADCAST_ENABLE;
 static U32 resettime = 0;
 
 U8 vNet_header[VNET_HEADER_SIZE] = {0x00};						// Header for output frame
@@ -297,6 +297,20 @@ U8 vNet_Send(U16 addr, oFrame *frame, U8 len, U8 port)
 
 /**************************************************************************/
 /*!
+    Set the broadcast delay mode as per below table:
+
+		VNET_BROADCAST_DEFAULT
+		VNET_BROADCAST_ENABLE
+		VNET_BROADCAST_DISABLE
+*/
+/**************************************************************************/
+void vNet_BroadcastDelay(uint8_t mode)
+{
+	broadcast_delay = mode;
+}
+
+/**************************************************************************/
+/*!
     Send data to other devices over the Virtual Network
 */
 /**************************************************************************/
@@ -307,7 +321,7 @@ U8 vNet_SendBroadcast(oFrame *frame, U8 len, U8 port, U16 broadcast_addr)
 	for(U8 media=0;media<VNET_MEDIA_NUMBER;media++)
 	{		
 		// Avoid to flood the network
-		delay(VNET_BROADCAST_DELAY);
+		if(broadcast_delay==VNET_BROADCAST_ENABLE) delay(VNET_BROADCAST_DELAY);
 		
 		if(vnet_media_en[media])
 		{
