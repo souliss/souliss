@@ -28,6 +28,11 @@
 
 #include "Souliss.h"
 
+#define	PUSH1	0
+#define	PUSH2	1
+#define	LowMood									0xFF01,0x01
+#define	FullLight								0xFF01,0x02
+
 void setup()
 {   
     Initialize();
@@ -63,6 +68,9 @@ void setup()
     SetAddress(0xCE01, 0xFF00, 0x0000);
     SetAddress(0xAB01, 0xFF00, 0x0000);
     SetAsPeerNode(0xCE02, 1);
+
+	Set_T14(PUSH1);
+	Set_T14(PUSH2);
 }
 
 void loop()
@@ -73,8 +81,21 @@ void loop()
              
         // Process the communication basic at max speed, this allow smooth handling of color and music synch                                
         ProcessCommunication(); 
+
+		FAST_110ms() {
+
+			// LowMood Command
+			if(Logic_T14(PUSH1))
+				if(mOutput(PUSH1))	publish(LowMood);
+
+			// Full Light Command
+			if(Logic_T14(PUSH2))
+				if(mOutput(PUSH2))	publish(FullLight);
+		}
             
         // Complete the communication tasks at normal rate
         FAST_GatewayComms();
+
+
     }
 }   
