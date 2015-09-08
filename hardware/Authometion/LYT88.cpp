@@ -43,8 +43,8 @@
 LYT_struct LYT[LYT_MAXNUM];								// Each RGB light use 
 LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
 
-#define	ANSWER_WAIT		20
-#define	ANSWER_SET		10
+#define	ANSWER_WAIT		50
+#define	ANSWER_SET		40
 #define ANSWER_TIMEOUT	0
 uint8_t answer_timeout=ANSWER_WAIT;						// Timeout while waiting for an answer from the lamp bulb
 
