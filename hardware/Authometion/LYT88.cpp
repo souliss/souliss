@@ -46,7 +46,7 @@ LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
 #define	ANSWER_WAIT		50
 #define	ANSWER_SET		40
 #define ANSWER_TIMEOUT	0
-uint8_t answer_timeout=ANSWER_WAIT;						// Timeout while waiting for an answer from the lamp bulb
+uint8_t last_state=0, answer_timeout=ANSWER_WAIT;		// Timeout while waiting for an answer from the lamp bulb
 
 /**************************************************************************
 /*!
@@ -58,6 +58,9 @@ void InitLYT()
 	myLYTWiFi.vfInitialize(PL1167_CS_PIN);
 	myLYTWiFi.vfSetLocalChannel(PL1167_DEFAULT_RADIO_TRASMISSION,0);
 	myLYTWiFi.vfSetLocalSyncWord(C_MSBYTE_SYNCWORD0, C_LSBYTE_SYNCWORD0);	
+
+	for(U8 i=0;i<LYT_MAXNUM;i++)
+		LYT[i].set = 0;
 }
 
 /**************************************************************************
@@ -71,7 +74,8 @@ void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot)
 	{
 		LYT[index].addr_a = addr_a;
 		LYT[index].addr_b = addr_b;
-		LYT[index].slot;	
+		LYT[index].slot   = slot;	
+		LYT[index].set    = 1;	
 	}
 }
 
@@ -167,16 +171,16 @@ void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 	Check the actual state, the code stops until an answer has been received
 */	
 /**************************************************************************/
-void Souliss_LYTStateRequest(U8 slot)
+void Souliss_LYTStateRequest()
 {
-	// Get the index of the LYT logic typicals
-	uint8_t index =	FindLYT(slot);
+	if(!LYT[last_state++].set)
+		last_state = 0;
 	
 	// Request data update
-	myLYTWiFi.vfAskLampInfoStatus(LYT[index].addr_a,LYT[index].addr_b);	
+	myLYTWiFi.vfAskLampInfoStatus(LYT[last_state].addr_a,LYT[last_state].addr_b);	
 	
 	// Set the countdown timeout
-	if((answer_timeout == ANSWER_WAIT) || (answer_timeout == ANSWER_TIMEOUT)) answer_timeout=ANSWER_SET;
+	if((LYT[last_state].answer_timeout == ANSWER_WAIT) || (LYT[last_state].answer_timeout == ANSWER_TIMEOUT)) LYT[last_state].answer_timeout=ANSWER_SET;
 }
 
 /**************************************************************************
@@ -193,8 +197,8 @@ void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 	myLYTWiFi.vfProtocolTask();
 	
 	// Look for an answer
-	if((myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS) && (ReceivedAnswer.AnswerStruct.ui8SourceAddress1=LYT[index].addr_a) &&
-		(ReceivedAnswer.AnswerStruct.ui8SourceAddress2==LYT[index].addr_b))
+	if((myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS) && (myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8SourceAddress1=LYT[index].addr_a) &&
+		(myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8SourceAddress2==LYT[index].addr_b))
 	{
 		// Verify the actual ON/OFF state
 		if((memory_map[MaCaco_OUT_s + slot] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0]))
@@ -218,9 +222,9 @@ void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 		// We do no longer need a timer timeout
 		answer_timeout=ANSWER_WAIT;
 	}
-	else if((answer_timeout != ANSWER_WAIT) && (answer_timeout > ANSWER_TIMEOUT))
-		answer_timeout--;
-	else if(answer_timeout == ANSWER_TIMEOUT)
+	else if((LYT[index].answer_timeout != ANSWER_WAIT) && (LYT[index].answer_timeout > ANSWER_TIMEOUT))
+		LYT[index].answer_timeout--;
+	else if(LYT[index].answer_timeout == ANSWER_TIMEOUT)
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;
 		*trigger = MaCaco_DATACHANGED;		
@@ -322,6 +326,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 	
+	if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_RstCmd)
+		return 0;
+
 	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
 	{
 		// Toggle the actual status of the light
@@ -438,26 +445,6 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		}				
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
-	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
-	{
-		// If the light was on
-		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
-		{
-			// Set the output state
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;
-			
-			// Send the command
-			LYTOn(slot);
-		}
-		else
-		{
-			// Set the output state
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;
-			
-			// Send the command
-			LYTOff(slot);
-		}		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)
 	{	

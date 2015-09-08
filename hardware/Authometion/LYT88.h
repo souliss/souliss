@@ -43,6 +43,8 @@ typedef struct
 	U8	addr_a;
 	U8	addr_b;
 	U8	slot;
+	U8	set;
+	U8	answer_timeout;
 } LYT_struct;
 					
 void Souliss_SetLYTLamps(U8 *memory_map, U8 slot);

@@ -60,7 +60,7 @@
 #define Notify_GatewayAlive								0x0005,0x01
 
 // General macros for publish/subscribe method
-#define	publish(topic)								Souliss_BroadcastAction(memory_map, topic)
+#define	publish(topic)								Souliss_Publish(memory_map, topic)
 #define	m_publish(maddress, topic)					Souliss_MulticastPublish(maddress, memory_map, topic)
 #define	publishdata(topic, data, len)				Souliss_PublishData(memory_map, topic, data, len)
 #define	m_publishdata(maddress, topic, data, len)	Souliss_MulticastPublishData(maddress, memory_map, topic, data, len)
