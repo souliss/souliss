@@ -186,10 +186,15 @@ void Souliss_LYTStateRequest(U8 slot)
 /**************************************************************************/
 void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 {
+	// Get the index of the LYT logic typicals
+	uint8_t index =	FindLYT(slot);
+	
 	// Process data coming from the bulbs
 	myLYTWiFi.vfProtocolTask();
 	
-	if(myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS)
+	// Look for an answer
+	if((myLYTWiFi.ReceivedAnswer.AnswerStruct.AnswerToCommandType==INFO_STATUS) && (ReceivedAnswer.AnswerStruct.ui8SourceAddress1=LYT[index].addr_a) &&
+		(ReceivedAnswer.AnswerStruct.ui8SourceAddress2==LYT[index].addr_b))
 	{
 		// Verify the actual ON/OFF state
 		if((memory_map[MaCaco_OUT_s + slot] != myLYTWiFi.ReceivedAnswer.AnswerStruct.ui8Answer[0]))
