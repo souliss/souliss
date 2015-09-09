@@ -46,7 +46,7 @@ LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
 #define	ANSWER_WAIT		50
 #define	ANSWER_SET		40
 #define ANSWER_TIMEOUT	0
-uint8_t last_state=0, answer_timeout=ANSWER_WAIT;		// Timeout while waiting for an answer from the lamp bulb
+uint8_t last_state=0;					// Timeout while waiting for an answer from the lamp bulb
 
 /**************************************************************************
 /*!
@@ -60,7 +60,10 @@ void InitLYT()
 	myLYTWiFi.vfSetLocalSyncWord(C_MSBYTE_SYNCWORD0, C_LSBYTE_SYNCWORD0);	
 
 	for(U8 i=0;i<LYT_MAXNUM;i++)
+	{
 		LYT[i].set = 0;
+		LYT[i].answer_timeout=ANSWER_WAIT;
+	}	
 }
 
 /**************************************************************************
@@ -220,7 +223,7 @@ void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 		}
 		 
 		// We do no longer need a timer timeout
-		answer_timeout=ANSWER_WAIT;
+		LYT[index].answer_timeout=ANSWER_WAIT;
 	}
 	else if((LYT[index].answer_timeout != ANSWER_WAIT) && (LYT[index].answer_timeout > ANSWER_TIMEOUT))
 		LYT[index].answer_timeout--;
