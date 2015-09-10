@@ -114,7 +114,9 @@ void MaCaco_init(U8* memory_map)
 	// Enable the Runtime Gateway option
 	if(Return_ID()==STORE__DEFAULTID)	
 	{
-		if(MaCaco_USERMODE) runtimegateway=RuntimeGateway_SET;
+		#if(MaCaco_USERMODE)
+		if(Return_GatewayMode()) runtimegateway=RuntimeGateway_SET;
+		#endif
 	}
 	else
 	{

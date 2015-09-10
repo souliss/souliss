@@ -269,7 +269,15 @@ U8 Souliss_BroadcastMassiveCommand(U8 typ, U8 command)
 /**************************************************************************/
 U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 {
-	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, 0, 0);
+	// Disable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_DISABLE);
+	
+	U8 ret = MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, 0, 0);
+
+	// Enable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_ENABLE);
+			
+	return ret;
 }
 
 /**************************************************************************/
@@ -279,7 +287,15 @@ U8 Souliss_Publish(U8 *memory_map, U16 message, U8 action)
 /**************************************************************************/
 U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 action)
 {
-	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, 0, 0);
+	// Disable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_DISABLE);
+	
+	U8 ret =  MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, 0, 0);
+	
+	// Enable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_ENABLE);
+			
+	return ret;	
 }
 
 /**************************************************************************/
@@ -289,7 +305,15 @@ U8 Souliss_MulticastPublish(U16 multicast_addr, U8 *memory_map, U16 message, U8 
 /**************************************************************************/
 U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
-	return MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, message_len, data);
+	// Disable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_DISABLE);
+	
+	U8 ret =   MaCaco_send(0xFFFF, MaCaco_ACTIONMSG, message, action, message_len, data);
+	
+	// Enable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_ENABLE);
+			
+	return ret;		
 }
 
 /**************************************************************************/
@@ -299,7 +323,15 @@ U8 Souliss_PublishData(U8 *memory_map, U16 message, U8 action, U8* data, U8 mess
 /**************************************************************************/
 U8 Souliss_MulticastPublishData(U16 multicast_addr, U8 *memory_map, U16 message, U8 action, U8* data, U8 message_len)
 {
-	return MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, message_len, data);
+	// Disable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_DISABLE);
+	
+	U8 ret =    MaCaco_send(multicast_addr, MaCaco_ACTIONMSG, message, action, message_len, data);
+	
+	// Enable the broadcast delay
+	if(VNET_BROADCAST_DEFAULT) vNet_BroadcastDelay(VNET_BROADCAST_ENABLE);
+			
+	return ret;	
 }
 
 /**************************************************************************/
