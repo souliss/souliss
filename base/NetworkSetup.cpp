@@ -254,15 +254,25 @@ void Souliss_GetIPAddress()
 #if(MCU_TYPE == 0x02)	// Expressif ESP8266
 void Souliss_SetAccessPoint()
 {
+	uint8_t i;
+	uint8_t ipaddr[4];
+	uint8_t gateway[4];		
+	
+	// Use a static access point name with a dynamic number
+	char _time[9] = __TIME__;
+	char _apname[18]= "Souliss_000000000");
+	
+	// Build the access point name
+	for(i=0;i<8;i++)
+		_apname[i+9] = _time[i];
+	
 	WiFi.mode(WIFI_AP);
 	WiFi.softAP("Souliss");
 
 	// Setup the Souliss framework, get the IP network parameters
 	IPAddress lIP  = WiFi.softAPIP();
 
-	uint8_t i;
-	uint8_t ipaddr[4];
-	uint8_t gateway[4];
+
 	
 	for(i=0;i<4;i++)
 	{
