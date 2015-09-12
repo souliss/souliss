@@ -260,7 +260,7 @@ void Souliss_SetAccessPoint()
 	
 	// Use a static access point name with a dynamic number
 	char _time[9] = __TIME__;
-	char _apname[18]= "Souliss_000000000");
+	char _apname[18]= "Souliss_000000000";
 	
 	// Build the access point name
 	for(i=0;i<8;i++)
