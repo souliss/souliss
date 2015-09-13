@@ -42,10 +42,10 @@ void Store_Init()
 void Store_Clear()
 {
 #if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
-	for(uint8_t i=0;i<EEPROM.length();i++)
+	for(uint16_t i=0;i<EEPROM.length();i++)
 		EEPROM.update(i, 0);
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-	for(uint8_t i=0;i<STORE__USABLESIZE;i++)
+	for(uint16_t i=0;i<STORE__USABLESIZE;i++)
 		EEPROM.write(i, 0);
 #endif	
 }

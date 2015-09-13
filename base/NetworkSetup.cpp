@@ -198,7 +198,9 @@ void Souliss_GetIPAddress()
 	
 	// The last byte of the IP address is used as vNet address
 	myvNet_dhcp = ip[3];	
-	
+
+	/*** This calls Souliss_SetIPAddress directly	***/
+
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 	// Setup the SSID and Password
 	WiFi.begin(WiFi_SSID, WiFi_Password);
@@ -267,7 +269,7 @@ void Souliss_SetAccessPoint()
 		_apname[i+9] = _time[i];
 	
 	WiFi.mode(WIFI_AP);
-	WiFi.softAP("Souliss");
+	WiFi.softAP(_apname);
 
 	// Setup the Souliss framework, get the IP network parameters
 	IPAddress lIP  = WiFi.softAPIP();
