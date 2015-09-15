@@ -32,8 +32,12 @@
 #define LYT_H
 
 #define	LYT_MaxBright					0xFF
-#define	LYT_MedBright					0x10
+#define	LYT_MedBright					0x50
 #define	LYT_MinBright					0x00
+
+#define	BRIGHT_STEP						20
+#define	BRIGHT_DEFAULT					LYT_MedBright
+
 #define	LYT_MAXNUM						0x0A			// Maximum number of LYT groups
 #define	LYT_LoweredCommandRepetition	0x06
 #define	LYT_StandardCommandRepetition	PROTOCOL_COMMAND_REPETITION
