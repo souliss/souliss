@@ -38,8 +38,6 @@
 #include <WiFiInterrupt.h>
 
 #define PL1167_CS_PIN	10
-#define	BRIGHT_STEP		20
-#define	BRIGHT_DEFAULT	0x50
 
 LYT_struct LYT[LYT_MAXNUM];								// Each RGB light use 
 LYTWiFi myLYTWiFi;										// Define a class to control LYT bulbs
@@ -348,9 +346,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		}
 		
 		// If the color is set as white
-		if( ((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) &&
-			(memory_map[MaCaco_OUT_s + slot + 2]  >= 0xF0) &&
-			(memory_map[MaCaco_OUT_s + slot + 3]  >= 0xF0)) )			
+		if( ((memory_map[MaCaco_OUT_s + slot + 1]  >= 0xF0) &&
+			( memory_map[MaCaco_OUT_s + slot + 2]  >= 0xF0) &&
+			( memory_map[MaCaco_OUT_s + slot + 3]  >= 0xF0)) )			
 		{
 			// Set middle brightness
 			memory_map[MaCaco_AUXIN_s + slot] = BRIGHT_DEFAULT;
@@ -371,7 +369,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			LYTSetColorRGB( memory_map[MaCaco_OUT_s + slot + 1], 
 							memory_map[MaCaco_OUT_s + slot + 2], 
 							memory_map[MaCaco_OUT_s + slot + 3], 
-								slot);					
+							slot);					
 		}
 		
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
@@ -425,9 +423,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		LYTOn(slot);
 
 		// If the color is set as white
-		if( ((memory_map[MaCaco_AUXIN_s + slot + 1] >= 0xF0) &&
-			(memory_map[MaCaco_AUXIN_s + slot + 2]  >= 0xF0) &&
-			(memory_map[MaCaco_AUXIN_s + slot + 3]  >= 0xF0)) )			
+		if( ((memory_map[MaCaco_AUXIN_s + slot + 1]  >= 0xF0) &&
+			( memory_map[MaCaco_AUXIN_s + slot + 2]  >= 0xF0) &&
+			( memory_map[MaCaco_AUXIN_s + slot + 3]  >= 0xF0))  )			
 		{
 			// Set the output
 			for(U8 i=1;i<4;i++)
@@ -438,24 +436,27 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 		else // Set the color
 		{	
 			// Get the base brightness
-			uint8_t base_bright =  memory_map[MaCaco_OUT_s + slot + 1];
-			if(memory_map[MaCaco_OUT_s + slot + 2] > base_bright)
-				base_bright =  memory_map[MaCaco_OUT_s + slot + 2];
-			if(memory_map[MaCaco_OUT_s + slot + 3] > base_bright)
-				base_bright =  memory_map[MaCaco_OUT_s + slot + 3];
+			uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
+			if(memory_map[MaCaco_AUXIN_s + slot + 2] > base_bright)
+				base_bright =  memory_map[MaCaco_AUXIN_s + slot + 2];
+			if(memory_map[MaCaco_AUXIN_s + slot + 3] > base_bright)
+				base_bright =  memory_map[MaCaco_AUXIN_s + slot + 3];
 
 			float r = memory_map[MaCaco_AUXIN_s + slot + 1] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 			float g = memory_map[MaCaco_AUXIN_s + slot + 2] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 			float b = memory_map[MaCaco_AUXIN_s + slot + 3] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 
 			if(r > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 1] = (0xF0 - BRIGHT_STEP -1);
-			else							memory_map[MaCaco_OUT_s + slot + 1] = (uint8_t)r;
+			else if(r < 0)					memory_map[MaCaco_OUT_s + slot + 1] = 0;
+			else							memory_map[MaCaco_OUT_s + slot + 1] = r;
 
 			if(g > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 2] = (0xF0 - BRIGHT_STEP -1);
-			else							memory_map[MaCaco_OUT_s + slot + 2] = (uint8_t)g;
+			else if(g < 0)					memory_map[MaCaco_OUT_s + slot + 2] = 0;
+			else							memory_map[MaCaco_OUT_s + slot + 2] = g;
 
 			if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
-			else							memory_map[MaCaco_OUT_s + slot + 3] = (uint8_t)b;
+			else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
+			else							memory_map[MaCaco_OUT_s + slot + 3] = b;
 			
 			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);					
 		}
@@ -465,19 +466,19 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)				// Increase the light value 
 	{
 		// Increase the brightness
-		if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot]+=BRIGHT_STEP;	// Increase the light value
+		if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot] + BRIGHT_STEP;	// Increase the light value
 
 		// If is white
-		if((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 3] >= 0xF0))
+		if((memory_map[MaCaco_AUXIN_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 3] >= 0xF0))
 			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);
 		else	// Otherwise
 		{
 			// Get the base brightness
-			uint8_t base_bright =  memory_map[MaCaco_OUT_s + slot + 1];
-			if(memory_map[MaCaco_OUT_s + slot + 2] > base_bright)
-				base_bright =  memory_map[MaCaco_OUT_s + slot + 2];
-			if(memory_map[MaCaco_OUT_s + slot + 3] > base_bright)
-				base_bright =  memory_map[MaCaco_OUT_s + slot + 3];
+			uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
+			if(memory_map[MaCaco_AUXIN_s + slot + 2] > base_bright)
+				base_bright =  memory_map[MaCaco_AUXIN_s + slot + 2];
+			if(memory_map[MaCaco_AUXIN_s + slot + 3] > base_bright)
+				base_bright =  memory_map[MaCaco_AUXIN_s + slot + 3];
 
 			float r = memory_map[MaCaco_AUXIN_s + slot + 1] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 			float g = memory_map[MaCaco_AUXIN_s + slot + 2] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
@@ -485,15 +486,15 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 
 			if(r > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 1] = (0xF0 - BRIGHT_STEP -1);
 			else if(r < 0)					memory_map[MaCaco_OUT_s + slot + 1] = 0;
-			else							memory_map[MaCaco_OUT_s + slot + 1] = (uint8_t)r;
+			else							memory_map[MaCaco_OUT_s + slot + 1] = r;
 
 			if(g > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 2] = (0xF0 - BRIGHT_STEP -1);
 			else if(g < 0)					memory_map[MaCaco_OUT_s + slot + 2] = 0;
-			else							memory_map[MaCaco_OUT_s + slot + 2] = (uint8_t)g;
+			else							memory_map[MaCaco_OUT_s + slot + 2] = g;
 
 			if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
 			else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
-			else							memory_map[MaCaco_OUT_s + slot + 3] = (uint8_t)b;
+			else							memory_map[MaCaco_OUT_s + slot + 3] = b;
 			
 			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);					
 		}				
@@ -503,32 +504,35 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
 		// Decrease the brightness
-		if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot]-=BRIGHT_STEP;		// Decrease the light value
+		if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot] - BRIGHT_STEP;		// Decrease the light value
 
 		// If is white		
-		if((memory_map[MaCaco_OUT_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_OUT_s + slot + 3] >= 0xF0))
+		if((memory_map[MaCaco_AUXIN_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 3] >= 0xF0))
 			LYTSetBright(memory_map[MaCaco_AUXIN_s + slot], slot);		
 		else	// Otherwise
 		{
 			// Get the base brightness
-			uint8_t base_bright =  memory_map[MaCaco_OUT_s + slot + 1];
-			if(memory_map[MaCaco_OUT_s + slot + 2] > base_bright)
-				base_bright =  memory_map[MaCaco_OUT_s + slot + 2];
-			if(memory_map[MaCaco_OUT_s + slot + 3] > base_bright)
-				base_bright =  memory_map[MaCaco_OUT_s + slot + 3];
+			uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
+			if(memory_map[MaCaco_AUXIN_s + slot + 2] > base_bright)
+				base_bright =  memory_map[MaCaco_AUXIN_s + slot + 2];
+			if(memory_map[MaCaco_AUXIN_s + slot + 3] > base_bright)
+				base_bright =  memory_map[MaCaco_AUXIN_s + slot + 3];
 
 			float r = memory_map[MaCaco_AUXIN_s + slot + 1] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 			float g = memory_map[MaCaco_AUXIN_s + slot + 2] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 			float b = memory_map[MaCaco_AUXIN_s + slot + 3] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 
-			if(r < 0)	memory_map[MaCaco_OUT_s + slot + 1] = 0;
-			else		memory_map[MaCaco_OUT_s + slot + 1] = (uint8_t)r;
+			if(r > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 1] = (0xF0 - BRIGHT_STEP -1);
+			else if(r < 0)					memory_map[MaCaco_OUT_s + slot + 1] = 0;
+			else							memory_map[MaCaco_OUT_s + slot + 1] = r;
 
-			if(g < 0)	memory_map[MaCaco_OUT_s + slot + 2] = 0;
-			else		memory_map[MaCaco_OUT_s + slot + 2] = (uint8_t)g;
+			if(g > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 2] = (0xF0 - BRIGHT_STEP -1);
+			else if(g < 0)					memory_map[MaCaco_OUT_s + slot + 2] = 0;
+			else							memory_map[MaCaco_OUT_s + slot + 2] = g;
 
-			if(b < 0)	memory_map[MaCaco_OUT_s + slot + 3] = 0;
-			else		memory_map[MaCaco_OUT_s + slot + 3] = (uint8_t)b;
+			if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
+			else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
+			else							memory_map[MaCaco_OUT_s + slot + 3] = b;
 			
 			LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);					
 		}				
