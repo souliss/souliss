@@ -48,7 +48,7 @@ const char PAGE_main[] PROGMEM = R"=====(
       <hr>
       <p>Contact us at http://www.souliss.net/</p>
       <p>Install SoulissApp for Android from the Google Play Store to control this node</p>
-      
+      <a href="https://play.google.com/store/apps/details?id=it.angelic.soulissclient">Souliss App Download</a><br>
       <hr>
 
 

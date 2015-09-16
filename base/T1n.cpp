@@ -921,7 +921,7 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 
 /**************************************************************************
 /*!
-	Timer associated to T19
+	Timer associated to T18
 */
 /**************************************************************************/
 void Souliss_T18_Timer(U8 *memory_map, U8 input_slot)
@@ -1024,13 +1024,14 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
+	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd) || (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_OffCmd))		// Off Command
 	{
 		// Trigger the change and save the actual color
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)
 		{
+			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OffCmd;		// Save the actual command
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
-			i_trigger = Souliss_TRIGGED;									// Trig the change
+			i_trigger = Souliss_TRIGGED;								// Trig the change
 		}
 
 		// Fade out and turn off the light step wise
@@ -1039,7 +1040,10 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 
 		// Once is off, reset
 		if((memory_map[MaCaco_OUT_s + slot + 1] == 0))
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;		// Reset
+		{
+			memory_map[MaCaco_IN_s + slot]    = Souliss_T1n_RstCmd;		// Reset
+			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_RstCmd;
+		}
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{

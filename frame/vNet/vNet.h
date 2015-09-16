@@ -28,8 +28,10 @@
 #define VNET_H
 
 #include "tools/oFrame.h"
-#include "GetConfig.h"		// need : vNet_Config.h, ethUsrCfg.h
+#include "tools/UserMode.h"
 #include "tools/store/store.h"
+
+#include "GetConfig.h"		// need : vNet_Config.h, ethUsrCfg.h
 
 #if (VNET_MEDIA1_ENABLE)
 	// Driver for Wiznet W5100

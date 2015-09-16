@@ -49,7 +49,7 @@
 #define VNET_MEDIA3_ENABLE  		1
 
 #define USARTDRIVER_INSKETCH
-#define USART_TXENABLE				1
+#define USART_TXENABLE				0
 #define USART_TXENPIN				2
 #define	USARTDRIVER					Serial
 
