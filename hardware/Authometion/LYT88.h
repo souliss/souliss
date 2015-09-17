@@ -35,7 +35,7 @@
 #define	LYT_MedBright					0x50
 #define	LYT_MinBright					0x00
 
-#define	BRIGHT_STEP						20
+#define	BRIGHT_STEP						5
 #define	BRIGHT_DEFAULT					LYT_MedBright
 
 #define	LYT_MAXNUM						0x0A			// Maximum number of LYT groups
