@@ -65,6 +65,10 @@ void loop()
         FAST_1110ms() {
             LYTState(LYTLIGHT1);
         }
+
+        FAST_9110ms() {
+			LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
+        }
         
     }   
     
@@ -73,7 +77,6 @@ void loop()
         
         SLOW_10s() {
             LYTStateRequest(LYTLIGHT1);     // Request the lamp state
-            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
     }
 } 
