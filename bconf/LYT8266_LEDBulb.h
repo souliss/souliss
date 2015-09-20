@@ -27,17 +27,16 @@
 
 // Expressif ESP8266 Board
 #define MCU_TYPE_INSKETCH
-#define	MCU_TYPE					0x2
 #define BOARD_MODEL_INSKETCH
-#define	BOARD_MODEL					0xB
 #define	IOBOARD_MODEL_INSKETCH
-#define	IOBOARD_MODEL				0x5
 
 #define VNET_MEDIA_INSKETCH
 #define ETH_INSKETCH	
 
-#define	BOARD_MODEL					9		
-#define	COMMS_MODEL					7
+#define	MCU_TYPE					0x2
+#define	BOARD_MODEL					0xB		
+#define	COMMS_MODEL					0x7
+#define	IOBOARD_MODEL				0x5
 #define ETH_W5100  					0
 #define ETH_W5200  					0
 #define ETH_W5500					0

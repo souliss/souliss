@@ -90,9 +90,9 @@ void LYTColor(U8 red, U8 green, U8 blue)
 	digitalWrite(PIN_WHITE, LOW);
 	
 	// Set the output
-	analogWrite(PIN_RED, 	brightness*4);
-	analogWrite(PIN_GREEN,	brightness*4);
-	analogWrite(PIN_BLUE, 	brightness*4);
+	analogWrite(PIN_RED, 	red*4);
+	analogWrite(PIN_GREEN,	green*4);
+	analogWrite(PIN_BLUE, 	blue*4);
 }
 
 /**************************************************************************
