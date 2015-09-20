@@ -56,7 +56,7 @@ void loop()
     EXECUTEFAST() {                     
         UPDATEFAST();   
         
-        // Is an unsual approach, but to get fast response to color change we run the LYT logic and
+        // Is an unusual approach, but to get fast response to color change we run the LYT logic and
         // basic communication processing at maximum speed.
         LogicLYTLamps(LYTLIGHT1);       
         ProcessCommunication();

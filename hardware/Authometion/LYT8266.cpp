@@ -158,10 +158,6 @@ void Souliss_SetLYTLamps(U8 *memory_map, U8 slot)
 			in case of hardware commands is usually associated to a long press
 			of a monostable wall switch.
 			
-			If INPUTVAL is the input value the output will be timed for nCYCLES
-			of the associated timer.
-				nCYCLES = INPUTVAL - Souliss_T1n_Timed
-			
 		Command recap, using: 
 		-  1(hex) as command, toggle the output 
 		-  2(hex) as command, the output move to ON
@@ -405,17 +401,22 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot)
 {
-	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)		// Memory value is used as timer
+	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)	
 	{
+		// Set the good night mode
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_GoodNight)
-		{
-			// Set the good night mode
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
-		}
 		
-		// Decrease timer and check the expiration
-		if((--memory_map[MaCaco_IN_s + slot]) == Souliss_T1n_Timed)		
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
-		
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
+		memory_map[MaCaco_IN_s + slot + 1] = Souliss_T1n_RstCmd;
+		memory_map[MaCaco_IN_s + slot + 2] = Souliss_T1n_RstCmd;
+		memory_map[MaCaco_IN_s + slot + 3] = Souliss_T1n_RstCmd;
 	}	
+
+	// Decrease brightness and check the expiration
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight) && (memory_map[MaCaco_AUXIN_s + slot] <= (LYT_MinBright+BRIGHT_STEP)))	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;	
+	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight))	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
+	
 }

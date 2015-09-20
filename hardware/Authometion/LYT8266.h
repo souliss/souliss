@@ -35,26 +35,23 @@
 #define	LYT_MedBright					0x50
 #define	LYT_MinBright					0x00
 
-#define	BRIGHT_STEP						20
+#define	BRIGHT_STEP						5
 #define	BRIGHT_DEFAULT					LYT_MedBright
 
 #define	LYT_MAXNUM						0x0A			// Maximum number of LYT groups
-#define	LYT_LoweredCommandRepetition	0x06
-#define	LYT_StandardCommandRepetition	PROTOCOL_COMMAND_REPETITION
 					
+void InitLYT();
+void LYTOff();
+void LYTWhite(U8 brightness);
+void LYTColor(U8 red, U8 green, U8 blue);
 void Souliss_SetLYTLamps(U8 *memory_map, U8 slot);
-U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger);					
-void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger);
-void Souliss_LYTStateRequest(U8 slot);
-void SetLYT(U8 index, U8 addr_a, U8 addr_b, U8 slot);
-U8 FindLYT(U8 slot);
+U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger);
+void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot);
 			
 // Define short cuts for often used variables, for more info read about SpeakEasy	
 #define	SetLYTLamps(slot)			Souliss_SetLYTLamps(memory_map, slot)
 #define LogicLYTLamps(slot)			Souliss_Logic_LYTLamps(memory_map, slot, &data_changed)
-#define	LYTSleepTimer(slot)			Souliss_LYTLamps_Timer(memory_map, slot)			
-#define LYTState(slot)				Souliss_LYTState(memory_map, slot, &data_changed)
-#define LYTStateRequest				Souliss_LYTStateRequest
+#define	LYTSleepTimer(slot)			Souliss_LYTLamps_Timer(memory_map, slot)
 
 
 #endif
