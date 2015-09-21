@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss 
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2014  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,33 +22,36 @@
     \file 
     \ingroup
 */
+#ifndef bconf_ssMCUESP8266_H
+#define bconf_ssMCUESP8266_H
 
-#include "IOdef.h"
-#include "GetConfig.h"			// need : hwBoards.h
+// Expressif ESP8266 Board
+#define MCU_TYPE_INSKETCH
+#define BOARD_MODEL_INSKETCH
+#define	IOBOARD_MODEL_INSKETCH
 
-// Include drivers for Olimex MOD-IO
-#if(IOBOARD_MODEL == 0x01)						
-#	include "hardware/Olimex/MODIO.cpp"
-#	include "hardware/Olimex/Souliss_MODIO.cpp"
-#endif
+#define VNET_MEDIA_INSKETCH
+#define ETH_INSKETCH	
 
-// Include drivers for Olimex MOD-IO2
-#if(IOBOARD_MODEL == 0x02)						
-#	include "hardware/Olimex/MODIO2.cpp"
-#	include "hardware/Olimex/Souliss_MODIO.cpp"
-#endif
+#define	MCU_TYPE					0x2
+#define	BOARD_MODEL					0xB		
+#define	COMMS_MODEL					0x7
+#define	IOBOARD_MODEL				0x5
+#define ETH_W5100  					0
+#define ETH_W5200  					0
+#define ETH_W5500					0
+#define ETH_ENC28J60  				0
+#define WIFI_MRF24					0
+#define WIFI_ESP8266				1
 
-// Include drivers for Olimex MOD-RGB
-#if(IOBOARD_MODEL == 0x03)						
-#	include "hardware/Olimex/MODRGB.cpp"
-#endif
+// The ESP8266 works always with two media, it use Media 3 to
+// remove dependence between vNet address and IP address from DHCP
+#define VNET_MEDIA1_ENABLE  		1
+#define VNET_MEDIA3_ENABLE  		1
 
-// Include drivers for Authometion LYT88 RGBW Led Bulb
-#if(IOBOARD_MODEL == 0x04)						
-#	include "hardware/Authometion/LYT88.cpp"
-#endif
+#define USARTDRIVER_INSKETCH
+#define USART_TXENABLE				0
+#define USART_TXENPIN				2
+#define	USARTDRIVER					Serial
 
-// Include drivers for Authometion LYT8266 RGBW Led Bulb
-#if(IOBOARD_MODEL == 0x05)						
-#	include "hardware/Authometion/LYT8266.cpp"
 #endif

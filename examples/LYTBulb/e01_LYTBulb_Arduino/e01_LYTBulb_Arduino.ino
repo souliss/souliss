@@ -56,7 +56,7 @@ void loop()
     EXECUTEFAST() {                     
         UPDATEFAST();   
         
-        // Is an unsual approach, but to get fast response to color change we run the LYT logic and
+        // Is an unusual approach, but to get fast response to color change we run the LYT logic and
         // basic communication processing at maximum speed.
         LogicLYTLamps(LYTLIGHT1);       
         ProcessCommunication();
@@ -64,6 +64,10 @@ void loop()
         // Here we process all communication with other nodes
         FAST_1110ms() {
             LYTState(LYTLIGHT1);
+        }
+
+        FAST_9110ms() {
+			LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
         
     }   
@@ -73,7 +77,6 @@ void loop()
         
         SLOW_10s() {
             LYTStateRequest(LYTLIGHT1);     // Request the lamp state
-            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
     }
 } 

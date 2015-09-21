@@ -59,6 +59,7 @@
 		0x08		KMP Electronics DINo v2
 		0x09		ExpressIf ESP8266
 		0x0A		Moteino RFM69
+		0x0B		Authometion LYT8266 Led Bulb
  
 */
 /**************************************************************************/
@@ -99,7 +100,8 @@
 		0x01		Olimex MOD-IO  (UEXT)
 		0x02		Olimex MOD-IO2 (UEXT)		
 		0x03		Olimex MOD-RGB (UEXT)
-		0x04		Authometion LYT RGBW Led Bulb
+		0x04		Authometion LYT88 RGBW Led Bulb
+		0x05		Authometion LYT8266 RGBW Led Bulb
 		
 */
 /**************************************************************************/
