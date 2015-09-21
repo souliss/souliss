@@ -209,7 +209,6 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "frame/MaCaco/MaCaco.h"
 #include "frame/vNet/vNet.h"
 
-#include "base/SpeakEasy.h"
 #include "user/user_config.h"
 
 #endif
