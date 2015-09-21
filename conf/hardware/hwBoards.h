@@ -102,6 +102,7 @@
 		0x03		Olimex MOD-RGB (UEXT)
 		0x04		Authometion LYT88 RGBW Led Bulb
 		0x05		Authometion LYT8266 RGBW Led Bulb
+		0x06		Iono I/O Board
 		
 */
 /**************************************************************************/
