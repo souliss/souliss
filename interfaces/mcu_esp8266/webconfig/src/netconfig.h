@@ -97,7 +97,9 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 const char PAGE_WaitAndReload[] PROGMEM = R"=====(
 <meta http-equiv="refresh" content="5; URL=config.html">
-Please Wait....Configuring and Restarting.
+<tr><br><td align="left"><strong>Please Wait....Configuring and Restarting</strong></td></tr>
+<br>
+<tr><br><td align="left">You will soon lose connection to this page because the node is connecting to your router. Start SoulissApp and have fun!</td></tr>
 )=====";
 
 
@@ -130,8 +132,9 @@ void send_network_configuration_html()
 			if (server.argName(i) == "dhcp") config.dhcp = true;
 			if (server.argName(i) == "mnenabled") config.RuntimeGateway = true;
 		}
-		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
 		WriteConfig();
+		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
+		delay(10000);
 		ESP.restart();
 	}
 	else

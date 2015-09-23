@@ -36,6 +36,7 @@
 #define	PIN_GREEN	12
 #define	PIN_BLUE	14
 #define	PIN_WHITE	2
+#define	PIN_ENABLE	15
 
 /**************************************************************************
 /*!
@@ -48,6 +49,13 @@ void InitLYT()
 	pinMode(PIN_GREEN	,OUTPUT);
 	pinMode(PIN_BLUE	,OUTPUT);
 	pinMode(PIN_WHITE	,OUTPUT);	
+	pinMode(PIN_ENABLE	,OUTPUT);	
+
+	analogWrite(PIN_RED, 	0);
+	analogWrite(PIN_GREEN, 	0);
+	analogWrite(PIN_BLUE, 	0);	
+	analogWrite(PIN_WHITE, 	0);	
+	digitalWrite(PIN_WHITE, HIGH);	
 }
 
 /**************************************************************************
@@ -57,10 +65,10 @@ void InitLYT()
 /**************************************************************************/
 void LYTOff()
 {
-	digitalWrite(PIN_RED, 	LOW);
-	digitalWrite(PIN_GREEN, LOW);
-	digitalWrite(PIN_BLUE, 	LOW);	
-	digitalWrite(PIN_WHITE, LOW);	
+	analogWrite(PIN_RED,  0);
+	analogWrite(PIN_GREEN,0); 
+	analogWrite(PIN_BLUE, 0);
+	analogWrite(PIN_WHITE,0); 
 }
 
 /**************************************************************************
@@ -71,9 +79,9 @@ void LYTOff()
 void LYTWhite(U8 brightness)
 {
 	// The RGB and W LED cannot be ON at same time
-	digitalWrite(PIN_RED, 	LOW);
-	digitalWrite(PIN_GREEN, LOW);
-	digitalWrite(PIN_BLUE, 	LOW);	
+	analogWrite(PIN_RED,  0);
+	analogWrite(PIN_GREEN,0); 
+	analogWrite(PIN_BLUE, 0);	
 	
 	// Set the output
 	analogWrite(PIN_WHITE, brightness*4);
@@ -87,7 +95,7 @@ void LYTWhite(U8 brightness)
 void LYTColor(U8 red, U8 green, U8 blue)
 {
 	// The RGB and W LED cannot be ON at same time
-	digitalWrite(PIN_WHITE, LOW);
+	analogWrite(PIN_WHITE,0); 
 	
 	// Set the output
 	analogWrite(PIN_RED, 	red*4);
