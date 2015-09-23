@@ -10,8 +10,8 @@ Release note for revision v7.1, on dd/mm/yyyy
 		- Added WebConfiguration for ESP8266
 		- Introduced a Lock-down for User Interfaces
 		- Added T6n Typicals, Analog Setpoint
-		- Bugfix for T18 Step Relay Logic
-        - Bugfix for battery operated devices (TODO)
+		- Bugfix for T18, T19 and T31
+		- Bugfix for Moteino support
 
 Release note for revision v7.0.6, on 16/08/2015
 
