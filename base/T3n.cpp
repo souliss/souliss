@@ -119,12 +119,11 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	i_trigger = Souliss_TRIGGED;
 	
 	// Store actual value as difference with requested setpoint
-	if(*(memory_map + MaCaco_IN_s + slot) != Souliss_T3n_RstCmd)
-	{		
+
 		// If there is a change in the new temperature
 		if(abs((in_temp-actual_temp)) > (Souliss_T3n_DeadBand * actual_temp))
 			actual_temp = in_temp;									// Set the new temperature value
-	}
+
 		
 	// Check the actual operational mode (Cooling / Heating)
 	if ((memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_SystemOn) && (memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode))
