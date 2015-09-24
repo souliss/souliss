@@ -38,6 +38,14 @@
 #define	PIN_WHITE	2
 #define	PIN_ENABLE	15
 
+// Store the old value 
+U8 _red=0, _green=0, _blue=0, _white=0;
+
+// These are used only while waiting for a connection
+#define SLIPTIME	100
+#define MAXCOLOR	50
+unsigned long _time=0; 
+
 /**************************************************************************
 /*!
 	Init LYT
@@ -45,35 +53,56 @@
 /**************************************************************************/
 void InitLYT()
 {
+	// Switch pins as outputs
 	pinMode(PIN_RED		,OUTPUT);
 	pinMode(PIN_GREEN	,OUTPUT);
 	pinMode(PIN_BLUE	,OUTPUT);
 	pinMode(PIN_WHITE	,OUTPUT);	
 	pinMode(PIN_ENABLE	,OUTPUT);	
 
+	// Set the PWM frequency
+	analogWriteFreq(500);
+
+	// Switch all outputs off	
 	analogWrite(PIN_RED, 	0);
 	analogWrite(PIN_GREEN, 	0);
 	analogWrite(PIN_BLUE, 	0);	
 	analogWrite(PIN_WHITE, 	0);	
 	digitalWrite(PIN_WHITE, HIGH);	
+
+	// Set the actual time
+	_time=millis();
 }
 
 /**************************************************************************
 /*!
-	Turn OFF all the LEDs
+	Turn OFF all the LEDs (this goes directly to the I/O, don't use in your 
+	sketch)
 */	
 /**************************************************************************/
 void LYTOff()
 {
-	analogWrite(PIN_RED,  0);
-	analogWrite(PIN_GREEN,0); 
-	analogWrite(PIN_BLUE, 0);
-	analogWrite(PIN_WHITE,0); 
+	// Fade off and turn off the LEDs
+	while((_red > 0) || (_green > 0) || (_blue > 0) || (_white > 0))
+	{
+		// Reduce the values till zero
+		if(_red) 	_red--;
+		if(_green) 	_green--;
+		if(_blue) 	_blue--;
+		if(_white) 	_white--;		
+
+		analogWrite(PIN_RED,  _red);
+		analogWrite(PIN_GREEN,_green); 
+		analogWrite(PIN_BLUE, _blue);
+		analogWrite(PIN_WHITE,_white); 
+	}
+
 }
 
 /**************************************************************************
 /*!
-	Turn ON the White LED and set the brightness
+	Turn ON the White LED and set the brightness (this goes directly to the 
+	I/O, don't use in your sketch)
 */	
 /**************************************************************************/
 void LYTWhite(U8 brightness)
@@ -84,12 +113,19 @@ void LYTWhite(U8 brightness)
 	analogWrite(PIN_BLUE, 0);	
 	
 	// Set the output
-	analogWrite(PIN_WHITE, brightness*4);
+	while(_white != brightness)
+	{
+		if(_white < brightness)			_white++;	// Increase the brightness
+		else if(_white > brightness)	_white--;	// Decrease the brightness
+
+		analogWrite(PIN_WHITE, _white*4);
+	}
 }
 
 /**************************************************************************
 /*!
-	Turn ON the R,G,B LEDs and set the brightness
+	Turn ON the R,G,B LEDs and set the brightness (this goes directly to the 
+	I/O, don't use in your sketch)
 */	
 /**************************************************************************/
 void LYTColor(U8 red, U8 green, U8 blue)
@@ -98,9 +134,35 @@ void LYTColor(U8 red, U8 green, U8 blue)
 	analogWrite(PIN_WHITE,0); 
 	
 	// Set the output
-	analogWrite(PIN_RED, 	red*4);
-	analogWrite(PIN_GREEN,	green*4);
-	analogWrite(PIN_BLUE, 	blue*4);
+	while((_red != red) || (_green != green) || (_blue != blue))
+	{
+		if(_red < red)			_red++;		// Increase the brightness
+		else if(_red > red)		_red--;     // Decrease the brightness
+
+		if(_green < green)		_green++;	// Increase the brightness
+		else if(_green > green)	_green--;   // Decrease the brightness
+
+		if(_blue < blue)		_blue++;	// Increase the brightness
+		else if(_blue > blue)	_blue--;    // Decrease the brightness
+
+		analogWrite(PIN_RED, 	_red*4);
+		analogWrite(PIN_GREEN,	_green*4);
+		analogWrite(PIN_BLUE, 	_blue*4);
+	}
+}
+
+/**************************************************************************
+/*!
+	Slowly move between different color
+*/	
+/**************************************************************************/
+void LYTSlipColor()
+{
+	if(millis()>_time+SLIPTIME)
+	{
+		LYTColor((_red++)%MAXCOLOR, (_green--)%MAXCOLOR, (_blue++)%MAXCOLOR);
+		_time=millis();
+	}
 }
 
 /**************************************************************************
@@ -427,4 +489,68 @@ void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot)
 	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight))	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
 	
+}
+
+/**************************************************************************
+/*!
+	Switch the typical OFF
+*/	
+/**************************************************************************/
+void Souliss_SetOff(U8 *memory_map, U8 slot, U8 *trigger)
+{
+	memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
+	Souliss_Logic_LYTLamps(memory_map, slot, trigger);
+}
+
+/**************************************************************************
+/*!
+	Increase the brightness
+*/	
+/**************************************************************************/
+void Souliss_IncreaseBrightness(U8 *memory_map, U8 slot, U8 *trigger)
+{
+	memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightUp;
+	Souliss_Logic_LYTLamps(memory_map, slot, trigger);
+}
+
+/**************************************************************************
+/*!
+	Decrease the brightness
+*/	
+/**************************************************************************/
+void Souliss_DecreaseBrightness(U8 *memory_map, U8 slot, U8 *trigger)
+{
+	memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
+	Souliss_Logic_LYTLamps(memory_map, slot, trigger);
+}
+
+/**************************************************************************
+/*!
+	Set White and its brightness
+*/	
+/**************************************************************************/
+void Souliss_SetWhite(U8 *memory_map, U8 slot, U8 *trigger, U8 brightness)
+{
+	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_Set;
+	memory_map[MaCaco_IN_s + slot + 1] = 0xFF;
+	memory_map[MaCaco_IN_s + slot + 2] = 0xFF;
+	memory_map[MaCaco_IN_s + slot + 3] = 0xFF;
+	memory_map[MaCaco_AUXIN_s + slot]  = brightness;
+
+	Souliss_Logic_LYTLamps(memory_map, slot, trigger);	
+}
+
+/**************************************************************************
+/*!
+	Set Color
+*/	
+/**************************************************************************/
+void Souliss_SetColor(U8 *memory_map, U8 slot, U8 *trigger, U8 red, U8 green, U8 blue)
+{
+	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_Set;
+	memory_map[MaCaco_IN_s + slot + 1] = red;
+	memory_map[MaCaco_IN_s + slot + 2] = green;
+	memory_map[MaCaco_IN_s + slot + 3] = blue;
+
+	Souliss_Logic_LYTLamps(memory_map, slot, trigger);	
 }

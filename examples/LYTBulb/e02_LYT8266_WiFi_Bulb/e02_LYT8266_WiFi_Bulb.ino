@@ -46,6 +46,9 @@ void setup()
 		{
 			yield();
 			runWebServer(); 
+
+			// Slowly move between colors while completing the configuration
+			LYTSlipColor();
 		}
 
 	}
@@ -69,7 +72,9 @@ void setup()
 
     // Define a logic to handle the bulb(s)
     SetLYTLamps(LYTLIGHT1); 
-    
+
+	// Set startup color
+	SetColor(LYTLIGHT1, 0x50, 0x10, 0x00);
 }
 
 void loop()
