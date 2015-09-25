@@ -38,7 +38,7 @@
 #define	PIN_WHITE	2
 #define	PIN_ENABLE	15
 
-#define FADETIME	25
+#define FADETIME	5
 #define	FADEENABLE	1
 
 // Store the old value 
@@ -116,9 +116,12 @@ void LYTOff()
 void LYTWhite(U8 brightness, U8 fade_on=0)
 {
 	// The RGB and W LED cannot be ON at same time
-	analogWrite(PIN_RED,  0);
-	analogWrite(PIN_GREEN,0); 
-	analogWrite(PIN_BLUE, 0);	
+	_red 	= 0;
+	_green 	= 0;
+	_blue 	= 0;
+	analogWrite(PIN_RED,  	_red);
+	analogWrite(PIN_GREEN,	_green); 
+	analogWrite(PIN_BLUE, 	_blue);	
 	
 	// Set the output
 	while(_white != brightness)
@@ -142,7 +145,8 @@ void LYTWhite(U8 brightness, U8 fade_on=0)
 void LYTColor(U8 red, U8 green, U8 blue, U8 fade_on=0)
 {
 	// The RGB and W LED cannot be ON at same time
-	analogWrite(PIN_WHITE,0); 
+	_white = 0;
+	analogWrite(PIN_WHITE,	_white); 
 	
 	// Set the output
 	while((_red != red) || (_green != green) || (_blue != blue))
