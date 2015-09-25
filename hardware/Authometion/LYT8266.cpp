@@ -38,7 +38,8 @@
 #define	PIN_WHITE	2
 #define	PIN_ENABLE	15
 
-#delay FADETIME		25
+#define FADETIME	25
+#define	FADEENABLE	1
 
 // Store the old value 
 U8 _red=0, _green=0, _blue=0, _white=0;
@@ -173,7 +174,7 @@ void LYTSlipColor()
 {
 	if(millis()>(_time+SLIPTIME))
 	{
-		LYTColor((_red++)%MAXCOLOR, (_green--)%MAXCOLOR, (_blue++)%MAXCOLOR, TRUE);
+		LYTColor((_red++)%MAXCOLOR, (_green--)%MAXCOLOR, (_blue++)%MAXCOLOR, FADEENABLE);
 		_time=millis();
 	}
 }
@@ -360,7 +361,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			for(U8 i=1;i<4;i++)
 				memory_map[MaCaco_OUT_s + slot + i] = memory_map[MaCaco_AUXIN_s + slot + i];
 
-			LYTWhite(memory_map[MaCaco_AUXIN_s + slot], TRUE);		
+			LYTWhite(memory_map[MaCaco_AUXIN_s + slot], FADEENABLE);		
 		}		
 		else // Set the color
 		{	
@@ -387,7 +388,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
 			else							memory_map[MaCaco_OUT_s + slot + 3] = b;
 			
-			LYTColor(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], TRUE);					
+			LYTColor(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], FADEENABLE);					
 		}
 	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset	
@@ -399,7 +400,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 
 		// If is white
 		if((memory_map[MaCaco_AUXIN_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 3] >= 0xF0))
-			LYTWhite(memory_map[MaCaco_AUXIN_s + slot], TRUE);
+			LYTWhite(memory_map[MaCaco_AUXIN_s + slot], FADEENABLE);
 		else	// Otherwise
 		{
 			// Get the base brightness
@@ -425,7 +426,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
 			else							memory_map[MaCaco_OUT_s + slot + 3] = b;
 			
-			LYTColor(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], TRUE);					
+			LYTColor(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], FADEENABLE);					
 		}				
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
@@ -437,7 +438,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 
 		// If is white		
 		if((memory_map[MaCaco_AUXIN_s + slot + 1] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 2] >= 0xF0) && (memory_map[MaCaco_AUXIN_s + slot + 3] >= 0xF0))
-			LYTWhite(memory_map[MaCaco_AUXIN_s + slot], TRUE);		
+			LYTWhite(memory_map[MaCaco_AUXIN_s + slot], FADEENABLE);		
 		else	// Otherwise
 		{
 			// Get the base brightness
@@ -463,7 +464,7 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 			else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
 			else							memory_map[MaCaco_OUT_s + slot + 3] = b;
 			
-			LYTColor(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], TRUE);					
+			LYTColor(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], FADEENABLE);					
 		}				
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
