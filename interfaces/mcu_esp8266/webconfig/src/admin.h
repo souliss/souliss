@@ -68,7 +68,7 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void filldynamicdata()
 {        
-	//Serial.println("Dynamic Data Run");
+	yield();
 	String values ="";
 	values += "mydynamicdata|" + (String) + "Souliss Node, Millis since start: " + (String) millis() + "|div\n";   // Build a string, like this:  ID|VALUE|TYPE
 	server.send ( 200, "text/plain", values);   
