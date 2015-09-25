@@ -30,7 +30,9 @@
 
 void setup()
 {
+    // Init the network stack and the bulb
     Initialize();
+    InitLYT();
     
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point
@@ -66,9 +68,6 @@ void setup()
         SetDynamicAddressing();  
         GetAddress();
     }
-    
-    // Init the bulb
-    InitLYT();
 
     // Define a logic to handle the bulb(s)
     SetLYTLamps(LYTLIGHT1); 
