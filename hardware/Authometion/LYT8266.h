@@ -42,7 +42,7 @@ void InitLYT();
 void LYTOff();
 void LYTWhite(U8 brightness, U8 fade_on);
 void LYTColor(U8 red, U8 green, U8 blue, U8 fade_on);
-void LYTSlipColor();
+void LYTPulse();
 void Souliss_SetLYTLamps(U8 *memory_map, U8 slot);
 U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger);
 void Souliss_LYTLamps_Timer(U8 *memory_map, U8 slot);

@@ -109,6 +109,7 @@ const char PAGE_WaitAndReload[] PROGMEM = R"=====(
 
 void send_network_configuration_html()
 {
+	yield();
 	if (server.args() > 0 )  // Save Settings
 	{
 		String temp = "";
@@ -150,7 +151,7 @@ void send_network_configuration_html()
 
 void send_network_configuration_values_html()
 {
-
+	yield();
 	String values ="";
 
 	values += "ssid|" + (String) config.ssid + "|input\n";
@@ -180,7 +181,7 @@ void send_network_configuration_values_html()
 
 void send_connection_state_values_html()
 {
-
+	yield();
 	String state = "N/A";
 	String Networks = "";
 	if (WiFi.status() == 0) state = "Idle";

@@ -44,11 +44,6 @@
 // Store the old value 
 U8 _red=0, _green=0, _blue=0, _white=0;
 
-// These are used only while waiting for a connection
-#define SLIPTIME	100
-#define MAXCOLOR	50
-unsigned long _time=0; 
-
 /**************************************************************************
 /*!
 	Init LYT
@@ -74,9 +69,6 @@ void InitLYT()
 
 	// Enable outputs
 	digitalWrite(PIN_ENABLE, HIGH);	
-
-	// Set the actual time
-	_time=millis();
 }
 
 /**************************************************************************
@@ -171,16 +163,19 @@ void LYTColor(U8 red, U8 green, U8 blue, U8 fade_on=0)
 
 /**************************************************************************
 /*!
-	Slowly move between different color
+	Pulse a bit
 */	
 /**************************************************************************/
-void LYTSlipColor()
+void LYTPulse()
 {
-	if(millis()>(_time+SLIPTIME))
+	for(U8 i=0;i<3;i++)
 	{
-		LYTColor((_red++)%MAXCOLOR, (_green--)%MAXCOLOR, (_blue++)%MAXCOLOR, FADEENABLE);
-		_time=millis();
+		LYTColor(0x50, 0x10, 0x00, FADEENABLE);
+		delay(50);
+		LYTColor(0x00, 0x00, 0x00, FADEENABLE);		
 	}
+
+	delay(3000);
 }
 
 /**************************************************************************

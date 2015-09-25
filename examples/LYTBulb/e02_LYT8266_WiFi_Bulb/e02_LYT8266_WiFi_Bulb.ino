@@ -2,13 +2,15 @@
    Souliss - LYT8266 WiFi RGBW LED Bulb
     
     This is the basic sketch for an LYT8266 a WiFi LED Bulb based on ESP8266,
-	at first boot it starts as access point with a basic web interface to 
-	allow WiFi and Souliss configuration.
-	Info are stored in the module and used at next boot.
-	
-	Configure one module as Gateway for your network and all the other as Peer.
+    at first boot it starts as access point with a basic web interface to 
+    allow WiFi and Souliss configuration.
+    Info are stored in the module and used at next boot.
+    
+    Configure one module as Gateway for your network and all the other as 
+    Peer. Before load this sketch, run the e02_LYT8266_WiFi_Erase to erase
+    the memory.
 
-	Once configured, can be accessed via SoulissApp or openHAB.
+    Once configured, can be accessed via SoulissApp or openHAB.
  
 ***************************************************************************/
 
@@ -37,23 +39,23 @@ void setup()
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point
     if(!ReadIPConfiguration()) 
-	{	
-		// Start the node as access point with a configuration WebServer
-		SetAccessPoint();
-		startWebServer();
+    {   
+        // Pulse a bit
+        LYTPulse();
 
-		// We have nothing more than the WebServer for the configuration
-		// to run, once configured the node will quit this.
-		while(1)
-		{
-			yield();
-			runWebServer(); 
+        // Start the node as access point with a configuration WebServer
+        SetAccessPoint();
+        startWebServer();
 
-			// Slowly move between colors while completing the configuration
-			LYTSlipColor();
-		}
+        // We have nothing more than the WebServer for the configuration
+        // to run, once configured the node will quit this.
+        while(1)
+        {
+            yield();
+            runWebServer(); 
+        }
 
-	}
+    }
 
     if (IsRuntimeGateway())
     {
@@ -72,8 +74,8 @@ void setup()
     // Define a logic to handle the bulb(s)
     SetLYTLamps(LYTLIGHT1); 
 
-	// Set startup color
-	SetColor(LYTLIGHT1, 0x50, 0x10, 0x00);
+    // Set startup color
+    SetColor(LYTLIGHT1, 0x50, 0x10, 0x00);
 }
 
 void loop()
@@ -87,7 +89,7 @@ void loop()
         ProcessCommunication();
 
         FAST_9110ms() {
-			LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
+            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
         }
       
         // Run communication as Gateway or Peer
