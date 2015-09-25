@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss 
-    Copyright (C) 2013  Veseo
+	Souliss Home Automation
+    Copyright (C) 2015  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,33 +22,29 @@
     \file 
     \ingroup
 */
+#ifndef bconf_IONOETHERNET_H
+#define bconf_IONOETHERNET_H
 
-#include "IOdef.h"
-#include "GetConfig.h"			// need : hwBoards.h
+// Arduino AVR Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE			0x01
 
-// Include drivers for Olimex MOD-IO
-#if(IOBOARD_MODEL == 0x01)						
-#	include "hardware/Olimex/MODIO.cpp"
-#	include "hardware/Olimex/Souliss_MODIO.cpp"
-#endif
+#define	ETH_INSKETCH
+#define VNET_MEDIA_INSKETCH
+#define	BOARD_MODEL_INSKETCH
+#define	COMMS_MODEL_INSKETCH
+#define IOBOARD_MODEL_INSKETCH
 
-// Include drivers for Olimex MOD-IO2
-#if(IOBOARD_MODEL == 0x02)						
-#	include "hardware/Olimex/MODIO2.cpp"
-#	include "hardware/Olimex/Souliss_MODIO.cpp"
-#endif
+// Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
+#define ETH_W5100  					1
+#define ETH_W5200  					0
+#define ETH_W5500					0
+#define ETH_ENC28J60  				0
+#define WIFI_MRF24					0
+#define WIFI_LPT200					0	
+#define	COMMS_MODEL					0x01
+#define	BOARD_MODEL					0x02
+#define	IOBOARD_MODEL				0x06
+#define VNET_MEDIA1_ENABLE  		1
 
-// Include drivers for Olimex MOD-RGB
-#if(IOBOARD_MODEL == 0x03)						
-#	include "hardware/Olimex/MODRGB.cpp"
-#endif
-
-// Include drivers for Authometion LYT88 RGBW Led Bulb
-#if(IOBOARD_MODEL == 0x04)						
-#	include "hardware/Authometion/LYT88.cpp"
-#endif
-
-// Include drivers for Authometion LYT8266 RGBW Led Bulb
-#if(BOARD_MODEL == 0x0B)						
-#	include "hardware/Authometion/LYT8266.cpp"
 #endif
