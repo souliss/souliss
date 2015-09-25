@@ -68,7 +68,9 @@ void InitLYT()
 	analogWrite(PIN_GREEN, 	0);
 	analogWrite(PIN_BLUE, 	0);	
 	analogWrite(PIN_WHITE, 	0);	
-	digitalWrite(PIN_WHITE, HIGH);	
+
+	// Enable outputs
+	digitalWrite(PIN_ENABLE, HIGH);	
 
 	// Set the actual time
 	_time=millis();
