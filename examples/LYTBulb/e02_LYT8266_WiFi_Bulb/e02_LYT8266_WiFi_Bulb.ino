@@ -30,11 +30,16 @@
 // Define logic slots, multicolor lights use four slots
 #define LYTLIGHT1           0    
 
+#define	RED_STARTUP			0x50
+#define GREEN_STARTUP		0x10
+#define BLUE_STARTUP		0x00
+
 void setup()
 {
-    // Init the network stack and the bulb
+    // Init the network stack and the bulb, turn on with a warm amber
     Initialize();
     InitLYT();
+    SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
     
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point
@@ -71,11 +76,8 @@ void setup()
         GetAddress();
     }
 
-    // Define a logic to handle the bulb(s)
+    // Define a logic to handle the bulb
     SetLYTLamps(LYTLIGHT1); 
-
-    // Set startup color
-    SetColor(LYTLIGHT1, 0x50, 0x10, 0x00);
 }
 
 void loop()
@@ -87,10 +89,6 @@ void loop()
         // basic communication processing at maximum speed.
         LogicLYTLamps(LYTLIGHT1);       
         ProcessCommunication();
-
-        FAST_9110ms() {
-            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
-        }
       
         // Run communication as Gateway or Peer
         if (IsRuntimeGateway())
@@ -101,6 +99,11 @@ void loop()
 
     EXECUTESLOW() {
         UPDATESLOW();
+		
+		// Slowly shut down the lamp
+        SLOW_10s() {
+            LYTSleepTimer(LYTLIGHT1);      
+        }		
         
         // If running as Peer
         if (!IsRuntimeGateway())
