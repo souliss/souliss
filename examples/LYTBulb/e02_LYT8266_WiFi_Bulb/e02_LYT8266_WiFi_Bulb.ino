@@ -39,7 +39,6 @@ void setup()
     // Init the network stack and the bulb, turn on with a warm amber
     Initialize();
     InitLYT();
-    SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
     
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point
@@ -74,10 +73,12 @@ void setup()
         // to configure any parameter here.
         SetDynamicAddressing();  
         GetAddress();
-    }
+    } 
 
     // Define a logic to handle the bulb
-    SetLYTLamps(LYTLIGHT1); 
+    SetLYTLamps(LYTLIGHT1);
+    SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
+
 }
 
 void loop()
