@@ -51,6 +51,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	FAST_70ms()		if (!(phase_fast % 7))
 #define	FAST_90ms()		if (!(phase_fast % 9))
 #define	FAST_110ms()	if (!(phase_fast % 11))
+#define FAST_210ms()	if (!(phase_fast % 21))
 #define	FAST_510ms()	if (!(phase_fast % 51))
 #define	FAST_710ms()	if (!(phase_fast % 71))
 #define	FAST_910ms()	if (!(phase_fast % 91))
