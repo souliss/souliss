@@ -544,10 +544,10 @@ void Souliss_DecreaseBrightness(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_SetWhite(U8 *memory_map, U8 slot, U8 *trigger, U8 brightness)
 {
-	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_Set;
-	memory_map[MaCaco_IN_s + slot + 1] = 0xFF;
-	memory_map[MaCaco_IN_s + slot + 2] = 0xFF;
-	memory_map[MaCaco_IN_s + slot + 3] = 0xFF;
+	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_OnCmd;
+	memory_map[MaCaco_AUXIN_s + slot + 1] = 0xFF;
+	memory_map[MaCaco_AUXIN_s + slot + 2] = 0xFF;
+	memory_map[MaCaco_AUXIN_s + slot + 3] = 0xFF;
 	memory_map[MaCaco_AUXIN_s + slot]  = brightness;
 
 	Souliss_Logic_LYTLamps(memory_map, slot, trigger);	
@@ -560,10 +560,10 @@ void Souliss_SetWhite(U8 *memory_map, U8 slot, U8 *trigger, U8 brightness)
 /**************************************************************************/
 void Souliss_SetColor(U8 *memory_map, U8 slot, U8 *trigger, U8 red, U8 green, U8 blue)
 {
-	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_Set;
-	memory_map[MaCaco_IN_s + slot + 1] = red;
-	memory_map[MaCaco_IN_s + slot + 2] = green;
-	memory_map[MaCaco_IN_s + slot + 3] = blue;
+	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_OnCmd;
+	memory_map[MaCaco_AUXIN_s + slot + 1] = red;
+	memory_map[MaCaco_AUXIN_s + slot + 2] = green;
+	memory_map[MaCaco_AUXIN_s + slot + 3] = blue;
 
 	Souliss_Logic_LYTLamps(memory_map, slot, trigger);	
 }
