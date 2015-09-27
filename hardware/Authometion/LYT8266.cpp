@@ -73,6 +73,19 @@ void InitLYT()
 
 /**************************************************************************
 /*!
+	Turn ON the LEDs
+*/	
+/**************************************************************************/
+void LYTOn()
+{
+	// Enable outputs
+	digitalWrite(PIN_RED, HIGH);	
+	digitalWrite(PIN_GREEN, HIGH);
+	digitalWrite(PIN_BLUE, HIGH);	
+}
+
+/**************************************************************************
+/*!
 	Turn OFF all the LEDs (this goes directly to the I/O, don't use in your 
 	sketch)
 */	

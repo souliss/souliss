@@ -39,6 +39,7 @@
 #define	BRIGHT_DEFAULT					LYT_MedBright
 					
 void InitLYT();
+void LYTOn();
 void LYTOff();
 void LYTWhite(U8 brightness, U8 fade_on);
 void LYTColor(U8 red, U8 green, U8 blue, U8 fade_on);
