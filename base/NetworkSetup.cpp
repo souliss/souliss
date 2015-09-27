@@ -186,9 +186,8 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	Get IP Address from DHCP
 */	
 /**************************************************************************/ 
-void Souliss_GetIPAddress()
+void Souliss_GetIPAddress(U8 timeout=20)
 {
-	U8 timeout=20;
 
 #if((MCU_TYPE == 0x01) && ARDUINO_DHCP)	// Atmel AVR Atmega
 
