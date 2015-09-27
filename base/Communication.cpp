@@ -419,9 +419,9 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
     Request data from another node at every run
 */
 /**************************************************************************/
-U8 Souliss_PullData(U8 addr, U8 *memory_map, U8 slot, U8 remote_slot, U8 remote_numbof)
+U8 Souliss_PullData(U16 addr, U8 slot, U8 remote_slot, U8 remote_numbof)
 {
-	return MaCaco_send(addr, MaCaco_READREQDIG, slot, MaCaco_OUT_s + remote_slot, remote_numbof, 0);
+	return MaCaco_send(addr, MaCaco_READREQDIG, (U16)slot, MaCaco_OUT_s + remote_slot, remote_numbof, 0);
 }
 
 /**************************************************************************
