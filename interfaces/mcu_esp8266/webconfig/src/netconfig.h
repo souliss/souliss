@@ -97,7 +97,9 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 const char PAGE_WaitAndReload[] PROGMEM = R"=====(
 <meta http-equiv="refresh" content="5; URL=config.html">
-Please Wait....Configuring and Restarting.
+<tr><br><td align="left"><strong>Please Wait....Configuring and Restarting</strong></td></tr>
+<br>
+<tr><br><td align="left">You will soon lose connection to this page because the node is connecting to your router. Start SoulissApp and have fun!</td></tr>
 )=====";
 
 
@@ -107,6 +109,7 @@ Please Wait....Configuring and Restarting.
 
 void send_network_configuration_html()
 {
+	yield();
 	if (server.args() > 0 )  // Save Settings
 	{
 		String temp = "";
@@ -130,8 +133,9 @@ void send_network_configuration_html()
 			if (server.argName(i) == "dhcp") config.dhcp = true;
 			if (server.argName(i) == "mnenabled") config.RuntimeGateway = true;
 		}
-		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
 		WriteConfig();
+		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
+		delay(10000);
 		ESP.restart();
 	}
 	else
@@ -147,7 +151,7 @@ void send_network_configuration_html()
 
 void send_network_configuration_values_html()
 {
-
+	yield();
 	String values ="";
 
 	values += "ssid|" + (String) config.ssid + "|input\n";
@@ -177,7 +181,7 @@ void send_network_configuration_values_html()
 
 void send_connection_state_values_html()
 {
-
+	yield();
 	String state = "N/A";
 	String Networks = "";
 	if (WiFi.status() == 0) state = "Idle";

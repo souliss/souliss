@@ -42,6 +42,7 @@
 #	include "hardware/DFRobots/XBoardRelay.h"
 #endif
 
+
 // Include drivers for Olimex MOD-IO
 #if(IOBOARD_MODEL == 0x01)						
 #	include "hardware/Olimex/MODIO.h"
@@ -60,10 +61,19 @@
 #	include "hardware/Olimex/Souliss_MODRGB.h"
 #endif
 
-
-// Include drivers for Authometion IoTuino with LYT RGBW Led Bulb
+// Include drivers for Authometion LYT88 RGBW Led Bulb
 #if(IOBOARD_MODEL == 0x04)						
 #	include "hardware/Authometion/LYT88.h"
+#endif
+
+// Include drivers for Authometion LYT8266 RGBW Led Bulb
+#if(BOARD_MODEL == 0x0B)						
+#	include "hardware/Authometion/LYT8266.h"
+#endif
+
+// Include drivers for Iono I/O Board
+#if(IOBOARD_MODEL == 0x06)						
+#	include "hardware/Iono/IonoBoard.h"
 #endif
 
 #endif

@@ -1,17 +1,19 @@
 Souliss
 Copyright (C) 2011-2015
 
-Release note for revision v7.1, on dd/mm/yyyy
+Release note for revision v7.1, on dd/mm/yyyy (Maker Faire 2015 Edition)
 
 	Introduce the runtime switch between Gateway and Node and an HTTP based WebConfig
-	interface for ESP8266.
+	interface for ESP8266. 
 
+		- Support for Authometion LYT8266 WiFi Multicolor Bulb
+		- Support for IONO Relay Board
 		- Gateway behaviour can now be set at runtime
 		- Added WebConfiguration for ESP8266
 		- Introduced a Lock-down for User Interfaces
 		- Added T6n Typicals, Analog Setpoint
-		- Bugfix for T18 Step Relay Logic
-        - Bugfix for battery operated devices (TODO)
+		- Bugfix for T18, T19 and T31
+		- Bugfix for Moteino support
 
 Release note for revision v7.0.6, on 16/08/2015
 

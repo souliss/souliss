@@ -374,6 +374,84 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 
 /**************************************************************************
 /*!
+	Link an hardware pin to the shared memory map, active on rising edge
+	Identify two states, press and hold.
+*/	
+/**************************************************************************/
+U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+{
+	// If pin is on, set the "value"
+	if(digitalRead(pin) && (InPin[pin]==PINRESET))
+	{
+		time = millis();								// Record time
+		InPin[pin] = PINSET;
+		
+		return MaCaco_NODATACHANGED;
+	}
+	else if(digitalRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
+	{
+		time = millis();
+		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
+		
+		// Write timer value in memory map
+		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
+
+		return value_hold;
+	}
+	else if(!digitalRead(pin) && (InPin[pin]==PINSET))
+	{
+		// Write input value in memory map
+		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
+	
+		InPin[pin] = PINRESET;
+		return value;
+	}
+	else if(!digitalRead(pin) && (InPin[pin]==PINACTIVE))
+		InPin[pin] = PINRESET;		
+	
+	return MaCaco_NODATACHANGED;
+}
+
+/**************************************************************************
+/*!
+	Link an hardware pin to the shared memory map, active on falling edge
+	Identify two states, press and hold.
+*/	
+/**************************************************************************/
+U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+{
+	// If pin is on, set the "value"
+	if(!digitalRead(pin) && !InPin[pin])
+	{
+		time = millis();								// Record time
+		
+		InPin[pin] = PINSET;
+		return MaCaco_NODATACHANGED;
+	}
+	else if(!digitalRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
+	{
+		time = millis();
+		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
+		
+		// Write timer value in memory map
+		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
+		
+		return value_hold;
+	}
+	else if(digitalRead(pin) && (InPin[pin]==PINSET))
+	{
+		// Write input value in memory map
+		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
+	
+		InPin[pin] = PINRESET;
+		return value;
+	}
+	
+	return MaCaco_NODATACHANGED;
+}
+
+/**************************************************************************
+/*!
 	Read a single precision floating point and store it into the memory_map 
 	as half-precision floating point
 */	

@@ -95,6 +95,7 @@ void processMain()
 
 void send_reset_values_html()
 {
+	yield();
 	String values ="";
 	values += "rst|" +  (String) (config.rst ? "checked" : "") + "|chk\n";
 	server.send ( 200, "text/plain", values);

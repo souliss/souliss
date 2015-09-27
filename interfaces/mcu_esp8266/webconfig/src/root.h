@@ -46,6 +46,7 @@ const char PAGE_Root[] PROGMEM = R"=====(
 
 void sendRootPage()
 {
+	yield();
 	if (server.args() > 0 )  // Are there any POST/GET Fields ? 
 	{
 		for ( uint8_t i = 0; i < server.args(); i++ ) {  // Iterate through the fields
