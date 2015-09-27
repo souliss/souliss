@@ -81,7 +81,9 @@ void loop()
 	// Here we start to play
 	EXECUTEFAST() {						
 		UPDATEFAST();	
-		
+
+        ProcessCommunication();	
+	
 		// Handle bubls color and brightness
         if(LogicLYTLamps(LYTLIGHT0))
 		{
@@ -99,8 +101,6 @@ void loop()
 				mInput(LYTLIGHT3) = Souliss_T1n_OffCmd; 				
 			}
 		}
-        
-        ProcessCommunication();
 
 		// Turn ON/OFF the bulbs
         FAST_710ms() {
@@ -117,9 +117,9 @@ void loop()
 				else					LYTOff(LYTLIGHT3);
 
 			// If all are ON or all are OFF, align the RGB typical
-			if(mOutput(LYTLIGHT1) && mOutput(LYTLIGHT2) && mOutput(LYTLIGHT3))
+			if(mOutput(LYTLIGHT1) && mOutput(LYTLIGHT2) && mOutput(LYTLIGHT3) && (mOutput(LYTLIGHT0) == Souliss_T1n_OffCoil))
 				mOutput(LYTLIGHT0) = Souliss_T1n_OnCoil;
-			else if(!mOutput(LYTLIGHT1) && !mOutput(LYTLIGHT2) && !mOutput(LYTLIGHT3))
+			else if(!mOutput(LYTLIGHT1) && !mOutput(LYTLIGHT2) && !mOutput(LYTLIGHT3) && (mOutput(LYTLIGHT0) == Souliss_T1n_OnCoil))
 				mOutput(LYTLIGHT0) = Souliss_T1n_OffCoil;
          }
 		
@@ -162,7 +162,6 @@ void loop()
 
 		}
 
-
 		FAST_510ms() {	
 	  
 			// If the capacitive button has been press
@@ -199,6 +198,8 @@ void loop()
 			Logic_Light(LIGHTINTESITY);
 			Logic_Humidity(HUMIDITY);
 			Logic_Temperature(TEMPERATURE);
+
+			LYTSleepTimer(LYTLIGHT0);       // Slowly shut down the lamp
 		}
 	}	
 	
@@ -217,11 +218,7 @@ void loop()
 			
 			// Read the temperature
 			th = dht.readTemperature();
-			ImportAnalog(TEMPERATURE, &th);			
-
-            LYTSleepTimer(LYTLIGHT1);       // Slowly shut down the lamp
-            LYTSleepTimer(LYTLIGHT2);       // Slowly shut down the lamp
-            LYTSleepTimer(LYTLIGHT3);       // Slowly shut down the lamp
+			ImportAnalog(TEMPERATURE, &th);	
         }
 	}
 } 
