@@ -1184,12 +1184,13 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		
 		// If the address is in the list, drop it
 		if(donot_route_table[route_index] != *routed_addr)
+		{
 			*routed_addr = 0x0000;
 
-		#if(VNET_DEBUG)
-		VNET_LOG(F("(vNet)<DONTROUTE>\r\n"));
-		#endif
-
+			#if(VNET_DEBUG)
+			VNET_LOG(F("(vNet)<DONTROUTE>\r\n"));
+			#endif
+		}
 		#else	
 		// Route to my supernode
 			
