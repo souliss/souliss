@@ -1079,6 +1079,13 @@ U8 vNet_MyMedia()
 	while(!vnet_media_en[i] && i < VNET_MEDIA_NUMBER - 1)
 		i++;
 	
+	// The VNET_MEDIA3 is always used together with VNET_MEDIA1 to 
+	// decouple the vNet address from the IP address. In this case 
+	// all the vNet traffic between nodes shall be transferred over
+	// VNET_MEDIA3
+	if((i==VNET_MEDIA1_ID) && vnet_media_en[VNET_MEDIA3_ID])
+		return VNET_MEDIA3_ID+1;
+
 	if(vnet_media_en[i])
 		return i+1;
 	else
@@ -1184,12 +1191,13 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		
 		// If the address is in the list, drop it
 		if(donot_route_table[route_index] != *routed_addr)
+		{
 			*routed_addr = 0x0000;
 
-		#if(VNET_DEBUG)
-		VNET_LOG(F("(vNet)<DONTROUTE>\r\n"));
-		#endif
-
+			#if(VNET_DEBUG)
+			VNET_LOG(F("(vNet)<DONTROUTE>\r\n"));
+			#endif
+		}
 		#else	
 		// Route to my supernode
 			
