@@ -87,8 +87,8 @@ void loop()
             else if(DigInHold(IN3, Souliss_T1n_ToggleCmd, ONTIME, LIGHT3))    // Read inputs from IN3
             else if(DigInHold(IN4, Souliss_T1n_ToggleCmd, ONTIME, LIGHT4))    // Read inputs from IN4
             else
-			   button_pressed=0;
-			   
+               button_pressed=0;
+               
             Logic_SimpleLight(LIGHT1);                          // Execute the logic for Relay 1
             Logic_SimpleLight(LIGHT2);                          // Execute the logic for Relay 2
             Logic_SimpleLight(LIGHT3);                          // Execute the logic for Relay 3
@@ -112,7 +112,7 @@ void loop()
                         cmd[i]=Souliss_T1n_OffCmd;
                 
                 // Sync the remote node with the actual status of this node
-                SendData(Peer_address, i, cmd, LIGHT_NO);
+                SendData(Peer_address, LIGHT1, cmd, LIGHT_NO);
             
                 // Reset    
                 button_pressed=0;                       
