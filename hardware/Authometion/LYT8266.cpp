@@ -573,10 +573,21 @@ void Souliss_SetWhite(U8 *memory_map, U8 slot, U8 *trigger, U8 brightness)
 /**************************************************************************/
 void Souliss_SetColor(U8 *memory_map, U8 slot, U8 *trigger, U8 red, U8 green, U8 blue)
 {
+	// Set ON command
 	memory_map[MaCaco_IN_s + slot]     = Souliss_T1n_OnCmd;
+
+	// Set color
 	memory_map[MaCaco_AUXIN_s + slot + 1] = red;
 	memory_map[MaCaco_AUXIN_s + slot + 2] = green;
 	memory_map[MaCaco_AUXIN_s + slot + 3] = blue;
 
+	// Get bright value from color that has been set
+	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 1];
+	if(memory_map[MaCaco_AUXIN_s + slot + 2] > memory_map[MaCaco_AUXIN_s + slot])
+		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 2];
+	if(memory_map[MaCaco_AUXIN_s + slot + 3] > memory_map[MaCaco_AUXIN_s + slot])
+		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 3];
+
+	// Execute the logic
 	Souliss_Logic_LYTLamps(memory_map, slot, trigger);	
 }

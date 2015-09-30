@@ -201,9 +201,12 @@ void Souliss_GetIPAddress(U8 timeout=20)
 	/*** This calls Souliss_SetIPAddress directly	***/
 
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-	// Setup the SSID and Password
-	WiFi.begin(WiFi_SSID, WiFi_Password);
 	
+// Setup the SSID and Password
+	#if(WiFi_NEWNETWORK)
+	WiFi.begin(WiFi_SSID, WiFi_Password);
+	#endif
+
 	// Connect
 	while ((WiFi.status() != WL_CONNECTED) && timeout)
 	{
