@@ -1,5 +1,6 @@
 # souliss
-*Arduino based Distributed Networking Framework for Smart Homes and IoT*
+
+[![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orgs/souliss/rooms#)
 
 
 Souliss is a framework to manage interconnected Things, smart homes and automated appliances. It includes a network layer that gives virtualization over the communication media, an event based protocol and datastructure and an Android user interface.
