@@ -41,11 +41,14 @@ void setup()
     InitLYT();
     
 	/****
-		Actually the ESP8266 cores doesn't allow the use of PWM while connecting
-		to the router, so the only way to quickly turn on the bulb is without PWM
-		(full bright).
+		Generally set a PWM output before the connection will lead the 
+		ESP8266 to reboot for a conflict on the FLASH write access.
+
+		Here we do the configuration during the WebConfig and so we don't
+		need to write anything in the FLASH, and the module can connect
+		to the last used network.
 	****/
-	LYTOn();
+	SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point.
@@ -88,12 +91,6 @@ void setup()
 
     // Define a logic to handle the bulb
     SetLYTLamps(LYTLIGHT1);
-
-	/****
-		Here the lamp is connected, so we can select a color via PWM
-		and get any color or dimming effect
-    ****/
-	SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 }
 
 void loop()
