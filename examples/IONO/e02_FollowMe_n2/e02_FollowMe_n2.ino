@@ -29,8 +29,11 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 #define LIGHT4                  3           
 #define LIGHT5                  4   
 #define LIGHT6                  5
+#define LIGHT_NO                6
 #define PWMLOGIC                6
 #define PWMOUT                  7   
+
+U8 button_pressed=1;
 
 void setup()
 {   
@@ -62,12 +65,12 @@ void loop()
             // Check if a button has been pressed
             button_pressed=1;
         
-            if(DigIn(DI1, Souliss_T1n_ToggleCmd, LIGHT1))          // Read inputs from DI1
-            else if(DigIn(DI2, Souliss_T1n_ToggleCmd, LIGHT2))     // Read inputs from DI2
-            else if(DigIn(DI3, Souliss_T1n_ToggleCmd, LIGHT3))     // Read inputs from DI3
-            else if(DigIn(DI4, Souliss_T1n_ToggleCmd, LIGHT4))     // Read inputs from DI4
-            else if(DigIn(DI5, Souliss_T1n_ToggleCmd, LIGHT5))     // Read inputs from DI5
-            else if(DigIn(DI6, Souliss_T1n_ToggleCmd, LIGHT6))     // Read inputs from DI6
+            if(DigIn(DI1, Souliss_T1n_ToggleCmd, LIGHT1));          // Read inputs from DI1
+            else if(DigIn(DI2, Souliss_T1n_ToggleCmd, LIGHT2));     // Read inputs from DI2
+            else if(DigIn(DI3, Souliss_T1n_ToggleCmd, LIGHT3));     // Read inputs from DI3
+            else if(DigIn(DI4, Souliss_T1n_ToggleCmd, LIGHT4));     // Read inputs from DI4
+            else if(DigIn(DI5, Souliss_T1n_ToggleCmd, LIGHT5));     // Read inputs from DI5
+            else if(DigIn(DI6, Souliss_T1n_ToggleCmd, LIGHT6));     // Read inputs from DI6
             else button_pressed=0;
         }
 
@@ -102,12 +105,29 @@ void loop()
                         cmd[i]=Souliss_T1n_OffCmd;
                 
                 // Sync the remote node with the actual status of this node
-                SendData(Peer_address, LIGHT1, cmd, LIGHT_NO);
+                SendData(77, LIGHT1, cmd, LIGHT_NO);
             
                 // Reset    
                 button_pressed=0;                       
             }  
-        } 
+        }
+        
+        // Here we process all communication with other nodes
+        // and user interface
+        FAST_PeerComms();    
+    
+        FAST_21110ms() {    // Process the timers in about 2 seconds 
+
+            // Timed values are based on number of execution of the timers, as example 
+            // if the timer is set at 20 cycle it will need 40 seconds to exipre.
+            Timer_T11(LIGHT1);
+            Timer_T11(LIGHT2);  
+            Timer_T11(LIGHT3);
+            Timer_T11(LIGHT4);
+            Timer_T11(LIGHT5);
+            Timer_T11(LIGHT6);  
+            Timer_T19(PWMOUT);
+        }		
     }
     
     // Scheduler for lower execution rates

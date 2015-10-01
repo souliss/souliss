@@ -82,10 +82,10 @@ void loop()
 
             U8 button_pressed=1;
                     
-            if(DigInHold(IN1, Souliss_T1n_ToggleCmd, ONTIME, LIGHT1))         // Read inputs from IN1
-            else if(DigInHold(IN2, Souliss_T1n_ToggleCmd, ONTIME, LIGHT2))    // Read inputs from IN2
-            else if(DigInHold(IN3, Souliss_T1n_ToggleCmd, ONTIME, LIGHT3))    // Read inputs from IN3
-            else if(DigInHold(IN4, Souliss_T1n_ToggleCmd, ONTIME, LIGHT4))    // Read inputs from IN4
+            if(DigInHold(IN1, Souliss_T1n_ToggleCmd, ONTIME, LIGHT1));         // Read inputs from IN1
+            else if(DigInHold(IN2, Souliss_T1n_ToggleCmd, ONTIME, LIGHT2));    // Read inputs from IN2
+            else if(DigInHold(IN3, Souliss_T1n_ToggleCmd, ONTIME, LIGHT3));    // Read inputs from IN3
+            else if(DigInHold(IN4, Souliss_T1n_ToggleCmd, ONTIME, LIGHT4));    // Read inputs from IN4
             else
                button_pressed=0;
                

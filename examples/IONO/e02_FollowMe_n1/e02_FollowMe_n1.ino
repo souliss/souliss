@@ -67,12 +67,12 @@ void loop()
             // Check if a button has been pressed
             button_pressed=1;
         
-            if(DigIn(DI1, Souliss_T1n_ToggleCmd, LIGHT1))          // Read inputs from DI1
-            else if(DigIn(DI2, Souliss_T1n_ToggleCmd, LIGHT2))     // Read inputs from DI2
-            else if(DigIn(DI3, Souliss_T1n_ToggleCmd, LIGHT3))     // Read inputs from DI3
-            else if(DigIn(DI4, Souliss_T1n_ToggleCmd, LIGHT4))     // Read inputs from DI4
-            else if(DigIn(DI5, Souliss_T1n_ToggleCmd, LIGHT5))     // Read inputs from DI5
-            else if(DigIn(DI6, Souliss_T1n_ToggleCmd, LIGHT6))     // Read inputs from DI6
+            if(DigIn(DI1, Souliss_T1n_ToggleCmd, LIGHT1));          // Read inputs from DI1
+            else if(DigIn(DI2, Souliss_T1n_ToggleCmd, LIGHT2));     // Read inputs from DI2
+            else if(DigIn(DI3, Souliss_T1n_ToggleCmd, LIGHT3));     // Read inputs from DI3
+            else if(DigIn(DI4, Souliss_T1n_ToggleCmd, LIGHT4));     // Read inputs from DI4
+            else if(DigIn(DI5, Souliss_T1n_ToggleCmd, LIGHT5));     // Read inputs from DI5
+            else if(DigIn(DI6, Souliss_T1n_ToggleCmd, LIGHT6));     // Read inputs from DI6
             else button_pressed=0;
         }
 
@@ -107,7 +107,7 @@ void loop()
                         cmd[i]=Souliss_T1n_OffCmd;
                 
                 // Sync the remote node with the actual status of this node
-                SendData(Peer_address, LIGHT1, cmd, LIGHT_NO);
+                SendData(78, LIGHT1, cmd, LIGHT_NO);
             
                 // Reset    
                 button_pressed=0;                       
