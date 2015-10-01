@@ -133,9 +133,24 @@ void send_network_configuration_html()
 			if (server.argName(i) == "dhcp") config.dhcp = true;
 			if (server.argName(i) == "mnenabled") config.RuntimeGateway = true;
 		}
+		
+		// Save the configuration
 		WriteConfig();
 		server.send (200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_WaitAndReload ));
 		delay(10000);
+		
+		// Connect a first time, and write into the ESP8266 own FLASH sector the SSID and Password
+		WiFi.begin(config.ssid, config.password);
+		
+		// Wait for a connection
+		uint8_t timeout=20;
+		while ((WiFi.status() != WL_CONNECTED) && timeout)
+		{
+			timeout--;
+			delay(500);
+		}
+		
+		// Time to restart and enter in the user application
 		ESP.restart();
 	}
 	else
