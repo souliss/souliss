@@ -165,7 +165,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	#if(MCU_TYPE == 0x02)	// Expressif ESP8266
 	
 	// If is the first time that we connect to WiFi.SSID
-	if(WiFi.SSID() != WiFi_SSID || WiFi.psk() != WiFi_Password) 
+	if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password)) 
 		WiFi.begin(WiFi_SSID, WiFi_Password);
 	else
 		WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
@@ -208,7 +208,7 @@ void Souliss_GetIPAddress(U8 timeout=20)
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 	
 	// If is the first time that we connect to WiFi.SSID
-	if(WiFi.SSID() != WiFi_SSID || WiFi.psk() != WiFi_Password) 
+	if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password))  
 		WiFi.begin(WiFi_SSID, WiFi_Password);
 	else
 		WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
@@ -366,7 +366,7 @@ uint8_t Souliss_ReadIPConfiguration()
 			
 		#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 			// If is the first time that we connect to WiFi.SSID
-			if(WiFi.SSID() != SSID.c_str() || WiFi.psk() != PSW.c_str()) 
+			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			else
 				WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
@@ -464,8 +464,12 @@ uint8_t Souliss_ReadIPConfiguration()
 		DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 		#if(MCU_TYPE == 0x02)	// Expressif ESP8266
-		// Setup the SSID and Password
-		WiFi.begin(SSID.c_str(), PSW.c_str());
+		
+		// If is the first time that we connect to WiFi.SSID
+		if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
+			WiFi.begin(SSID.c_str(), PSW.c_str());
+		else
+			WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
 		
 		// Connect
 		while ((WiFi.status() != WL_CONNECTED) && timeout)
@@ -473,7 +477,7 @@ uint8_t Souliss_ReadIPConfiguration()
 			timeout--;
 			delay(500);
 		}
-
+	
 		// Set manually an IP address
 		WiFi.config(_ip_address, _ip_gateway, _subnet_mask);
 		#endif

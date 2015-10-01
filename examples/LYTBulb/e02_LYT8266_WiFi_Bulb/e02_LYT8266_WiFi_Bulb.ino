@@ -41,7 +41,12 @@ void setup()
     InitLYT();
     
 	/****
-		If the ESP8266 is writing on the FLASH the PWM cannot be used
+		Generally set a PWM output before the connection will lead the 
+		ESP8266 to reboot for a conflict on the FLASH write access.
+
+		Here we do the configuration during the WebConfig and so we don't
+		need to write anything in the FLASH, and the module can connect
+		to the last used network.
 	****/
 	SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 
