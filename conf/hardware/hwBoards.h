@@ -60,6 +60,7 @@
 		0x09		ExpressIf ESP8266
 		0x0A		Moteino RFM69
 		0x0B		Authometion LYT8266 Led Bulb
+		0x0C		Controllino Maxi (custom CS for W5100 only)
  
 */
 /**************************************************************************/
