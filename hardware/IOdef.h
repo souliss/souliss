@@ -76,4 +76,9 @@
 #	include "hardware/Iono/IonoBoard.h"
 #endif
 
+// Include pins definition for Controllino Maxi
+#if(BOARD_MODEL == 0x0C)						
+#	include "hardware/SGTronic/ControllinoMaxi.h"
+#endif
+
 #endif

@@ -56,6 +56,41 @@ uint16_t myaddress=0, caindex=0, in_crc=0;
 #	endif			
 #endif
 
+// Init the TX RS485 Enable 
+void vNet_InitRS485_TXEnable()
+{
+	#if(BOARD_MODEL == 0x0C)	// Controllino
+	
+	//set PORTJ pin 5,6 direction (RE,DE)
+	DDRJ |= B01100000;
+	//set RE,DE on LOW
+	PORTJ &= B10011111;
+	
+	#else	// All the others
+	
+	pinMode(USART_TXENPIN, OUTPUT);
+	digitalWrite(USART_TXENPIN, LOW);
+	
+	#endif
+}
+
+// Set the TX RS485 Enable
+void vNet_SetRS485_TXEnable(uint8_t mode)
+{
+	#if(BOARD_MODEL == 0x0C)	// Controllino
+	
+	if (mode) // set RE on HIGH
+		PORTJ |= B00100000;
+	else	// set RE on LOW
+		PORTJ &= B11011111;
+		
+	#else	// All the others
+	
+	digitalWrite(USART_TXENPIN, mode);
+	
+	#endif
+}
+
 /**************************************************************************/
 /*!
     Init the uIP stack
@@ -68,8 +103,7 @@ void vNet_Init_M5()
 	
 	// Set the write mode pin of the RS485
 	#if(USART_TXENABLE)
-	pinMode(USART_TXENPIN, OUTPUT);
-	digitalWrite(USART_TXENPIN, LOW);
+	vNet_InitRS485_TXEnable();
 	#endif
 	
 	// Hold here for a couple of seconds, this avoid that all nodes startup
@@ -141,7 +175,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 			{	
 				// Set the write mode pin of the RS485
 				#if(USART_TXENABLE)
-				digitalWrite(USART_TXENPIN, HIGH);
+				vNet_SetRS485_TXEnable(HIGH);
 				#endif
 		
 				// Send a token to notify that we are willing to use the bus
@@ -151,7 +185,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 				
 				// Set the write mode pin of the RS485
 				#if(USART_TXENABLE)
-				digitalWrite(USART_TXENPIN, LOW);
+				vNet_SetRS485_TXEnable(LOW);
 				#endif
 					
 				// Wait for a given number of token times before proceed,
@@ -208,7 +242,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	
 	// Set the write mode pin of the RS485
 	#if(USART_TXENABLE)
-	digitalWrite(USART_TXENPIN, HIGH);
+	vNet_SetRS485_TXEnable(HIGH);
 	#endif
 	
 	// Send the preamble
@@ -266,7 +300,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 
 	// Reset the write mode pin of the RS485
 	#if(USART_TXENABLE)
-	digitalWrite(USART_TXENPIN, LOW);
+	vNet_SetRS485_TXEnable(LOW);
 	#endif
 	
 	// Remove non processed bytes [if(oFrame_GetLenght() > USART_MAXPAYLOAD)]
