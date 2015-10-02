@@ -309,19 +309,5 @@ uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
 #	define	WiFi_Password			"mypassword"	
 #endif
 
-/**************************************************************************/
-/*!
-    This option, if disabled, allow the module to reconnect on a "known network" 
-	and skip the WiFi_SSID and WiFi_Password settings.
-
-	Depends on the transceiver features.
-		
-		Value       WiFi_NEWNETWORK
-        0x0         Disable 
-        0x1         Enable	(Default)		
-*/
-/**************************************************************************/
-#define WiFi_NEWNETWORK			1
-
 #endif
 							  
