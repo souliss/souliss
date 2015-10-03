@@ -2,13 +2,16 @@
   Add disclaimer
 
 	This isn't a replacement for the original controllino.h
+	Supported:
+	- Controllino Maxi
+	- Controllino Mega
 	
 Version History
 1.0 - 03.10.2015 - First version based on controllino.h ver. 0.4
 */
 
-#ifndef souliss_controllinomega_h
-#define souliss_controllinomega_h
+#ifndef souliss_controllino_h
+#define souliss_controllino_h
 
 #include "SPI.h"
 
@@ -19,10 +22,7 @@ Version History
 	#include "WProgram.h"
 #endif
 
-#ifdef CONTROLLINO_MEGA
-
-//Controllino MEGA visual aliases
-
+//Controllino MAXI-MEGA visual aliases
 #define CONTROLLINO_D0 2
 #define CONTROLLINO_D1 3
 #define CONTROLLINO_D2 4
@@ -85,5 +85,3 @@ Version History
 #define CONTROLLINO_R13 35
 #define CONTROLLINO_R14 36
 #define CONTROLLINO_R15 37
-
-#endif
