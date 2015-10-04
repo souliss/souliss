@@ -164,12 +164,15 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 
 	#if(MCU_TYPE == 0x02)	// Expressif ESP8266
 	
+	#if(ESP8266_GEF26cCF)
 	// If is the first time that we connect to WiFi.SSID
 	if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password)) 
 		WiFi.begin(WiFi_SSID, WiFi_Password);
 	else
 		WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
-	
+	#elif(ESP8266_G39819F0)
+		WiFi.begin(WiFi_SSID, WiFi_Password);
+	#endif
 	
 	// Connect
 	while ((WiFi.status() != WL_CONNECTED) && timeout)
@@ -207,12 +210,16 @@ void Souliss_GetIPAddress(U8 timeout=20)
 
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 	
+	#if(ESP8266_GEF26cCF)
 	// If is the first time that we connect to WiFi.SSID
 	if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password))  
 		WiFi.begin(WiFi_SSID, WiFi_Password);
 	else
 		WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
-	
+	#elif(ESP8266_G39819F0)
+		WiFi.begin(WiFi_SSID, WiFi_Password);
+	#endif
+
 	// Connect
 	while ((WiFi.status() != WL_CONNECTED) && timeout)
 	{
@@ -365,12 +372,17 @@ uint8_t Souliss_ReadIPConfiguration()
 			myvNet_dhcp = ip[3];	
 			
 		#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+			
+			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
 			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			else
 				WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
-			
+			#elif(ESP8266_G39819F0)
+				WiFi.begin(SSID.c_str(), PSW.c_str());
+			#endif
+
 			// Connect
 			while ((WiFi.status() != WL_CONNECTED) && timeout)
 			{
@@ -465,12 +477,16 @@ uint8_t Souliss_ReadIPConfiguration()
 
 		#if(MCU_TYPE == 0x02)	// Expressif ESP8266
 		
+		#if(ESP8266_GEF26cCF)
 		// If is the first time that we connect to WiFi.SSID
 		if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 			WiFi.begin(SSID.c_str(), PSW.c_str());
 		else
 			WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
-		
+		#elif(ESP8266_G39819F0)
+			WiFi.begin(SSID.c_str(), PSW.c_str());				
+		#endif
+
 		// Connect
 		while ((WiFi.status() != WL_CONNECTED) && timeout)
 		{
