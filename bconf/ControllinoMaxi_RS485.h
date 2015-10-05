@@ -37,7 +37,7 @@
 
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
 #define ETH_W5100  					0
-#define ETH_W5200  					1
+#define ETH_W5200  					0
 #define ETH_W5500					0
 #define ETH_ENC28J60  				0
 #define WIFI_MRF24					0
