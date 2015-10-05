@@ -25,52 +25,71 @@
 #ifndef CONTROLLINOMAXI
 #define CONTROLLINOMAXI
 
-//
-// TODO
-// This are KMP ones, change it as per Controllino Maxi pinout
-// http://controllino.cc/wp-content/uploads/2015/07/CONTROLLINO-MAXI-PINOUT-14-07-15.pdf
-//
+#define D0 		2
+#define D1 		3
+#define D2 		4
+#define D3 		5
+#define D4 		6
+#define D5 		7
+#define D6 		8
+#define D7 		9
+#define D8 		10
+#define D9 		11
+#define D10 	12
+#define D11 	13
 
-#define IN1				A2
-#define IN2				A3
-#define IN3				A4
-#define IN4				A5
+#define A0 		54
+#define A1 		55
+#define A2 		56
+#define A3 		57
+#define A4 		58
+#define A5 		59
+#define A6 		60
+#define A7 		61
+#define A8 		62
+#define A9 		63
+#define IN0 	18
+#define IN1 	19
 
-#define RELAY1			4
-#define RELAY2			12
-#define RELAY3			11
-#define RELAY4			7		
-#define	STATLED			13
+#define MINUS 	14
+#define PLUS 	15
 
-#define	SetInput1()			pinMode(IN1, INPUT)
-#define	SetInput2()			pinMode(IN2, INPUT)
-#define	SetInput3()			pinMode(IN3, INPUT)
-#define	SetInput4()			pinMode(IN4, INPUT)
-
-#define	SetRelay1()			pinMode(RELAY1, OUTPUT)
-#define	SetRelay2()			pinMode(RELAY2, OUTPUT)
-#define	SetRelay3()			pinMode(RELAY3, OUTPUT)
-#define	SetRelay4()			pinMode(RELAY4, OUTPUT)
-
-#define	SetLED()			pinMode(STATLED, OUTPUT)
-#define ToggleLED()			digitalWrite(STATLED, !digitalRead(STATLED))
-#define	TurnOnLED()			digitalWrite(STATLED, HIGH)
-#define	TurnOffLED()		digitalWrite(STATLED, LOW)
-#define	StartupLED()		for(uint8_t l=0;l<10;l++){							\
-								digitalWrite(STATLED, !digitalRead(STATLED));	\
-								delay(500);}									\
-								digitalWrite(STATLED, LOW)
+#define R0 		22
+#define R1 		23
+#define R2 		24
+#define R3 		25
+#define R4 		26
+#define R5 		27
+#define R6 		28
+#define R7 		29
+#define R8 		30
+#define R9 		31
 
 // Set the Reset and PWDN pins in DINo version 2
-#define	InitDINo()			pinMode(10, OUTPUT);					\
-							digitalWrite(10, HIGH); 				\
-							pinMode(9, OUTPUT);						\
-							digitalWrite(9, LOW);					\
-							pinMode(1, OUTPUT);						\
-							pinMode(0, INPUT);						\
+#define	InitControllino()	pinMode(2, OUTPUT);					\
+							pinMode(3, OUTPUT);					\
+							pinMode(4, OUTPUT);					\
+							pinMode(5, OUTPUT);					\
+							pinMode(6, OUTPUT);					\
+							pinMode(7, OUTPUT);					\
+							pinMode(8, OUTPUT);					\
+							pinMode(9, OUTPUT);					\
+							pinMode(10, OUTPUT);				\
+							pinMode(11, OUTPUT);				\
+							pinMode(12, OUTPUT);				\
+                            pinMode(13, OUTPUT);				\
+							pinMode(18, INPUT);					\
+                            pinMode(19, INPUT);					\
+							pinMode(22, OUTPUT);				\
+							pinMode(23, OUTPUT);				\
+							pinMode(24, OUTPUT);				\
+							pinMode(25, OUTPUT);				\
+							pinMode(26, OUTPUT);				\
+							pinMode(27, OUTPUT);				\
+							pinMode(28, OUTPUT);				\
+							pinMode(29, OUTPUT);				\
+							pinMode(30, OUTPUT);				\
+							pinMode(31, OUTPUT);				\
 							delay(1000)	
-
-// Reduce power consumption switching off the Wiznet W5200 if not used
-#define	PowerDownEthernet()	digitalWrite(9, HIGH)
 							
 #endif
