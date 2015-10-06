@@ -78,7 +78,7 @@
 
 // Include defines for Industrino INDIO Board
 #if(IOBOARD_MODEL == 0x07)						
-#	include "hardware/Industrino/INDIO.h"
+#	include "hardware/Industruino/INDIO.h"
 #endif
 
 #endif

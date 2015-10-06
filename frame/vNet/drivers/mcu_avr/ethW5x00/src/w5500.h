@@ -334,10 +334,10 @@ private:
   inline static void initSS()    { DDRB  |=  _BV(4); };
   inline static void setSS()     { PORTB &= ~_BV(4); };
   inline static void resetSS()   { PORTB |=  _BV(4); };
-#elif (BOARD_MODEL == 0x0D)									// Industrino with Ethernet W5100 Module
-  inline static void initSS()    { DDRB  |=  _BV(0); };
-  inline static void setSS()     { PORTB &= ~_BV(0); };
-  inline static void resetSS()   { PORTB |=  _BV(0); }; 
+#elif (BOARD_MODEL == 0x0D)	&& defined(__AVR_AT90USB1286__)		// Industruino with Ethernet W5500 Module
+  inline static void initSS()    { DDRF  |=  _BV(7); };
+  inline static void setSS()     { PORTF &= ~_BV(7); };
+  inline static void resetSS()   { PORTF |=  _BV(7); };
 #elif defined(__AVR_ATmega32U4__)
   inline static void initSS()    { DDRB  |=  _BV(6); };
   inline static void setSS()     { PORTB &= ~_BV(6); };

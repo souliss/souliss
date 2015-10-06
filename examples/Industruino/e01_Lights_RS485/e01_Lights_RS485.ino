@@ -20,7 +20,7 @@
     RS-485 B        (connect)       RS-485 B
     RS-485 GND      (optional)      RS-485 GND
     
-    Run this example on Industrino with W5500 Ethernet module
+    Run this example on Industruino
     
     Applicable for:
         - Light
@@ -28,8 +28,7 @@
     
 ***************************************************************************/
 
-#include "bconf/Industrino_EthernetBridge.h"                    // Define the board type
-#include "conf/Gateway.h"                                       // The main node is the Gateway, we have just one node
+#include "bconf/Industrino.h"                                   // Define the board type
 
 // Include Industrino libraries
 #include "Indio.h"
@@ -60,19 +59,11 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 
 void setup()
 {   
-	// Init the board
+    // Init the board
     Initialize();
-
-    // Setup the network configuration
-    //
-    Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
-    SetAsGateway((U16)ip_address[3]);                                       // Last byte of the IP address is the vNet address
-
+    
     // Define the address for the RS485 interface
-    Souliss_SetAddress(Gateway_RS485_address, myvNet_subnet, 0x0000);         
-
-    // This node as gateway will get data from the Peer
-    SetAsPeerNode(Peer1_address, 1);    
+    Souliss_SetAddress(Peer1_address, myvNet_subnet, Gateway_RS485_address);            
     
     // Set the inputs
     Indio.digitalMode(DI1, INPUT);
@@ -83,14 +74,14 @@ void setup()
     Indio.digitalMode(DO2, OUTPUT);
     Indio.digitalMode(DO3, OUTPUT);
     Indio.digitalMode(DO4, OUTPUT);
- 
+     
     // Define Simple Light logics for the relays
     Set_SimpleLight(LIGHT1);
     Set_SimpleLight(LIGHT2);
     Set_SimpleLight(LIGHT3);
     Set_SimpleLight(LIGHT4);    
     
-} 
+}
 
 void loop()
 { 
@@ -100,7 +91,7 @@ void loop()
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
         
-            DigIn(DI1, Souliss_T1n_ToggleCmd, LIGHT1);          // Read inputs from IN1
+           DigIn(DI1, Souliss_T1n_ToggleCmd, LIGHT1);          // Read inputs from IN1
             DigIn(DI2, Souliss_T1n_ToggleCmd, LIGHT2);          // Read inputs from IN2
             DigIn(DI3, Souliss_T1n_ToggleCmd, LIGHT3);          // Read inputs from IN3
             DigIn(DI4, Souliss_T1n_ToggleCmd, LIGHT4);          // Read inputs from IN4
@@ -117,7 +108,7 @@ void loop()
         } 
         
         // Here we process all communication with other nodes
-        FAST_GatewayComms();    
+        FAST_PeerComms();   
         
     }
     

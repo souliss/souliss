@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss Support for Industrino PLC
+	Souliss Support for Industruino PLC
     Copyright (C) 2015  Veseo
 	
 ***************************************************************************/
@@ -28,8 +28,8 @@
     \file 
     \ingroup
 */
-#ifndef INDUSTRINO_INDIO_H
-#define INDUSTRINO_INDIO_H
+#ifndef INDUSTRUINO_INDIO_H
+#define INDUSTRUINO_INDIO_H
 
 // Pin mapping
 
