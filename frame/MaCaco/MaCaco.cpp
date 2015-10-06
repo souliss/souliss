@@ -351,25 +351,17 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if ((rx->funcode == MaCaco_TYPREQ))
 	{
 		#if(MaCaco_SUBSCRIBERS)
-			U16 nodeoffest, len;
 			
 			// If the node address isn't stored in the memory map, behave as SUSCRIBERS hasn't been set
 			if(C8TO16(memory_map + MaCaco_ADDRESSES_s) == 0)
 				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
 
-			// If the user interface has requested typicals from one node only, send the data directly
+			// If the user interface has requested typical from one node only, send the data directly
 			// or forward the request to the node that owns the data
-			if((rx->numberof == 1) && (rx->startoffset == 0))
-				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));
-			else if(rx->numberof == 1)
+			if((rx->numberof == 1) && (rx->startoffset != 0))
 				return MaCaco_send(C8TO16(memory_map + MaCaco_ADDRESSES_s + rx->startoffset), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
-
-			// If we are here, the user interface has request data from multiple node
-			// in this case all node will answer
-
-			// These points the local data
-			nodeoffest = MaCaco_TYP_s;
-			len = MaCaco_TYPLENGHT;				
+			else if((rx->numberof == 1) && (rx->startoffset == 0))	// Returns typical for this node
+				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, MaCaco_TYPLENGHT, (MaCaco_TYP_s + memory_map));		
 		
 			// Record the request info
 			reqtyp_addr = addr;	
@@ -380,11 +372,10 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			// Flag that the request shall be processed for all nodes, this is used at an upper level
 			reqtyp_times = MaCaco_NODES;		
 			lasttyp_addr=0;
-			
-			// In passthrough mode data from other nodes are not stored, at this time we can send out only local
-			// data, then when other nodes will send back data these will be bridged to the User Interface
-			if(rx->putin == 0) 
-				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));
+
+			// If the user interface has requested typical from multiple node, send the data from this node
+			// the GetTypicals from the main application will forward the request to other nodes
+			return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, MaCaco_TYPLENGHT, (MaCaco_TYP_s + memory_map));
 		#else
 			return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
 		#endif
