@@ -70,6 +70,7 @@
 #define Souliss_T68						0x68            // Pressure measure (0, 1500) hPa 
 #define Souliss_T69						0x69
 #define Souliss_TRL						0xFF			// Related association, i
+
 // General defines for T1n
 #define Souliss_T1n_ToggleCmd			0x01		// Toggle Command
 #define Souliss_T1n_OnCmd				0x02		// ON Command
@@ -98,7 +99,8 @@
 #define Souliss_T1n_AutoOnCoil			0xF1		// Output Feedback ON in AUTO Mode
 #define Souliss_T1n_AutoOffCoil			0xF0		// Output Feedback OFF in AUTO Mode
 #define Souliss_T1n_GoodNight			0xF1		// Output Feedback ON in GoodNight Mode
-#define Souliss_T1n_BrightValue			0x10		
+#define Souliss_T1n_BrightValue			0x10		// Default increase and decrease
+#define Souliss_T1n_BrightDefault		0xAA		// Default Bright Value
 
 /*
 
