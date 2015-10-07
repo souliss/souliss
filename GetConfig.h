@@ -37,6 +37,7 @@
 #include "conf/hardware/hwBoards.h"
 #include "conf/frame/SoulissCfg.h"
 #include "conf/frame/vNetCfg.h"
+#include "conf/cores/cores.h"
 #include "user/user_config.h"
 
 // Define to zero if not used

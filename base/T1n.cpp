@@ -1024,26 +1024,20 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
 	}
-	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd) || (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_OffCmd))		// Off Command
+	else if ((memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd))	// Off Command
 	{
 		// Trigger the change and save the actual color
 		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)
 		{
-			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_OffCmd;		// Save the actual command
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
 			i_trigger = Souliss_TRIGGED;								// Trig the change
 		}
 
 		// Fade out and turn off the light step wise
-			if(memory_map[MaCaco_OUT_s + slot + 1])
+			while(memory_map[MaCaco_OUT_s + slot + 1])
 				memory_map[MaCaco_OUT_s + slot + 1]--;
 
-		// Once is off, reset
-		if((memory_map[MaCaco_OUT_s + slot + 1] == 0))
-		{
-			memory_map[MaCaco_IN_s + slot]    = Souliss_T1n_RstCmd;		// Reset
-			memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_RstCmd;
-		}
+		memory_map[MaCaco_IN_s + slot]    = Souliss_T1n_RstCmd;		// Reset		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
@@ -1055,21 +1049,20 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		// If there were no color set, use a light white
 		if((memory_map[MaCaco_AUXIN_s + slot + 1] == 0))
 		{
-			memory_map[MaCaco_OUT_s + slot + 1] = 0xAA;				// Set a light white
-			memory_map[MaCaco_AUXIN_s + slot + 1] = memory_map[MaCaco_OUT_s + slot + 1];
+			while(memory_map[MaCaco_OUT_s + slot + 1] < Souliss_T1n_BrightDefault)	// Set a light white
+				memory_map[MaCaco_OUT_s + slot + 1]++;
 
+			memory_map[MaCaco_AUXIN_s + slot + 1] = Souliss_T1n_BrightDefault;
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 		}
 		else
 		{
 			// Fade in to the last color
-			if(memory_map[MaCaco_OUT_s + slot + 1] < (memory_map[MaCaco_AUXIN_s + slot + 1]))
+			while(memory_map[MaCaco_OUT_s + slot + 1] < (memory_map[MaCaco_AUXIN_s + slot + 1]))
 				memory_map[MaCaco_OUT_s + slot + 1]++;
 		}
 
-		// Once is on, reset
-		if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1]))
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
 	{
@@ -1123,11 +1116,13 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	else
 	{	// There is no command
 
-		if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Set)			// Decrese the timer value
+		if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Set)			// Decrease the timer value
 			memory_map[MaCaco_AUXIN_s + slot]--;
-		else if(memory_map[MaCaco_AUXIN_s + slot] > 0)					// If we not getting new commands, the burst
+		else if(memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_Set)	// If we not getting new commands, the burst
 		{																// is done, send the actual state
-			memory_map[MaCaco_AUXIN_s + slot] = 0;
+			memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_OUT_s + slot];
+			memory_map[MaCaco_AUXIN_s + slot+1] = memory_map[MaCaco_OUT_s + slot+1];
+
 			i_trigger = Souliss_TRIGGED;
 		}
 	}
@@ -1147,12 +1142,14 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_T19_Timer(U8 *memory_map, U8 slot)
 {
-	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)		// Memory value is used as timer
+	if((memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)	|| (memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Timed))
 	{
+		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_IN_s + slot];
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
 
 		// Decrease timer and check the expiration
-		if((--memory_map[MaCaco_IN_s + slot]) == Souliss_T1n_Timed)
+		if((--memory_map[MaCaco_AUXIN_s + slot]) == Souliss_T1n_Timed)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 
 		// Bright down the light

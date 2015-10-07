@@ -1186,11 +1186,12 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		#endif		
 		
 		// Search for devices that shall be reached
-		while ((route_index < VNET_ROUTING_TABLE) && (donot_route_table[route_index] != *routed_addr))	
+		route_index = 0;
+		while ((route_index < VNET_ROUTING_TABLE) && (donot_route_table[route_index]) && (donot_route_table[route_index] != *routed_addr))	
 			route_index++;														   	
 		
 		// If the address is in the list, drop it
-		if(donot_route_table[route_index] != *routed_addr)
+		if(donot_route_table[route_index] == *routed_addr)
 		{
 			*routed_addr = 0x0000;
 

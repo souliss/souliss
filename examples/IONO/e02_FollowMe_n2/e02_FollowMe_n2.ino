@@ -82,7 +82,6 @@ void loop()
             Logic_T11(LIGHT4);                                  // Execute the logic for Relay 4
             Logic_T11(LIGHT5);                                  // Execute the logic for Relay 5
             Logic_T11(LIGHT6);                                  // Execute the logic for Relay 6
-            Logic_T19(PWMLOGIC);                                // Execute the logic for PWM Output
             
             DigOut(DO1, Souliss_T1n_Coil, LIGHT1);              // Drive the Relay 1
             DigOut(DO2, Souliss_T1n_Coil, LIGHT2);              // Drive the Relay 2
@@ -90,7 +89,6 @@ void loop()
             DigOut(DO4, Souliss_T1n_Coil, LIGHT4);              // Drive the Relay 4
             DigOut(DO5, Souliss_T1n_Coil, LIGHT5);              // Drive the Relay 5
             DigOut(DO6, Souliss_T1n_Coil, LIGHT6);              // Drive the Relay 6
-            analogWrite(AO1, mOutput(PWMOUT));
   
             // If a button has been pressed
             if(button_pressed)
@@ -111,6 +109,12 @@ void loop()
                 button_pressed=0;                       
             }  
         }
+
+		FAST_10ms()  {
+
+            Logic_T19(PWMLOGIC);                                // Execute the logic for PWM Output
+            analogWrite(AO1, mOutput(PWMOUT));			
+		}
         
         // Here we process all communication with other nodes
         // and user interface
@@ -126,7 +130,7 @@ void loop()
             Timer_T11(LIGHT4);
             Timer_T11(LIGHT5);
             Timer_T11(LIGHT6);  
-            Timer_T19(PWMOUT);
+            Timer_T19(PWMLOGIC);
         }		
     }
     
