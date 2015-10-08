@@ -61,6 +61,7 @@
 		0x0A		Moteino RFM69
 		0x0B		Authometion LYT8266 Led Bulb
 		0x0C		Controllino Maxi (custom CS for W5100 only)
+		0x0D		Industruino PLC
  
 */
 /**************************************************************************/
@@ -104,6 +105,7 @@
 		0x04		Authometion LYT88 RGBW Led Bulb
 		0x05		Authometion LYT8266 RGBW Led Bulb
 		0x06		Iono I/O Board
+		0x07		Industruino INDIO I/O Board
 		
 */
 /**************************************************************************/
