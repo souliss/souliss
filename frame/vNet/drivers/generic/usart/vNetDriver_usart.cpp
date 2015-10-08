@@ -80,9 +80,9 @@ void vNet_SetRS485_TXEnable(uint8_t mode)
 	#if(BOARD_MODEL == 0x0C)	// Controllino
 	
 	if (mode) // set RE on HIGH
-		PORTJ |= B00100000;
+		PORTJ |= B01100000;
 	else	// set RE on LOW
-		PORTJ &= B11011111;
+		PORTJ &= B10011111;
 		
 	#else	// All the others
 	
