@@ -66,6 +66,13 @@ void vNet_InitRS485_TXEnable()
 	//set RE,DE on LOW
 	PORTJ &= B10011111;
 	
+	#elif(COMMS_MODEL == 0x09)	// Olimex MOD-RS485
+	
+	pinMode(14, OUTPUT);
+	pinMode(15, OUTPUT);	
+	digitalWrite(14, LOW);	
+	digitalWrite(15, LOW);	
+
 	#else	// All the others
 	
 	pinMode(USART_TXENPIN, OUTPUT);
@@ -83,7 +90,12 @@ void vNet_SetRS485_TXEnable(uint8_t mode)
 		PORTJ |= B01100000;
 	else	// set RE on LOW
 		PORTJ &= B10011111;
-		
+
+	#elif(COMMS_MODEL == 0x09)	// Olimex MOD-RS485
+
+	digitalWrite(14, mode);
+	digitalWrite(15, mode);
+	
 	#else	// All the others
 	
 	digitalWrite(USART_TXENPIN, mode);

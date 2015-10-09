@@ -83,8 +83,9 @@
 		0x04		Olimex MOD-ENC28J60 (UEXT) with Microchip ENC28J60
 		0x05		Olimex MOD-WIFI (UEXT) with Microchip MRF24WB0MA
 		0x06		Nordic nRF24L01 and nRF24L01+
-		0x07		ExpressIf ESP8266
+		0x07		Not used
 		0x08		HopeRF RFM69CW/RFM69HCW
+		0x09		Olimex MOD-RS485
 */
 /**************************************************************************/
 #ifndef COMMS_MODEL_INSKETCH
