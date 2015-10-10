@@ -1,6 +1,5 @@
-
 /**************************************************************************
-	Souliss
+    Souliss
     Copyright (C) 2015  Veseo
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,26 +11,62 @@
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	Modified by Dario Di Maio, original code from 
-	   https://github.com/esp8266/Arduino
-	
+    
+    Modified by Dario Di Maio, original code from 
+       https://github.com/esp8266/Arduino
+    
 ***************************************************************************/
 /*!
     \file 
     \ingroup
 */
 
-#define OTA_Setup()               WiFiServer TelnetServer(8266); \
-                                  WiFiClient Telnet;              \
-                                  WiFiUDP OTA
+#define OTA_Setup()             WiFiServer TelnetServer(8266);                      \
+                                WiFiClient Telnet;                                  \
+                                WiFiUDP OTA
                                   
-#define OTA_Initialization()      if(WiFi.waitForConnectResult() == WL_CONNECTED){ \
-                                  MDNS.begin(host);                                \
-                                  MDNS.addService("arduino", "tcp", 8266);         \
-                                  OTA.begin(aport);                                \
-                                  TelnetServer.begin();                            \        
-                                  TelnetServer.setNoDelay(true);                   \
-                                  Serial.print("IP address: ");                    \
-                                  Serial.println(WiFi.localIP());}
-                                  
+#define OTA_Init()              if(WiFi.waitForConnectResult() == WL_CONNECTED){    \
+                                MDNS.begin(host);                                   \
+                                MDNS.addService("arduino", "tcp", 8266);            \
+                                OTA.begin(aport);                                   \
+                                TelnetServer.begin();                               \        
+                                TelnetServer.setNoDelay(true);}
+
+      
+#define OTA_Process()           if (OTA.parsePacket()) {                            \       
+                                    IPAddress remote = OTA.remoteIP();              \
+                                    int cmd  = OTA.parseInt();                      \
+                                    int port = OTA.parseInt();                      \
+                                    int size   = OTA.parseInt();                    \
+                                    if(!Update.begin(size)) return;                 \
+                                    WiFiClient client;                              \
+                                    if (client.connect(remote, port)) {             \
+                                    uint32_t written;                               \
+                                    while(!Update.isFinished()){                    \
+                                        written = Update.write(client);             \
+                                        if(written > 0) client.print(written, DEC); \
+                                    }                                               \
+                                    if(Update.end()){                               \
+                                        client.println("OK");                       \
+                                        ESP.restart();                              \
+                                    } else {                                        \
+                                        Update.printError(client);                  \
+                                    }                                               \
+                                    } else {                                        \
+                                    }                                               \
+                                }                                                   \
+                                if (TelnetServer.hasClient()){                      \
+                                    if (!Telnet || !Telnet.connected()){            \
+                                    if(Telnet) Telnet.stop();                       \
+                                    Telnet = TelnetServer.available();              \
+                                    } else {                                        \
+                                    WiFiClient toKill = TelnetServer.available();   \
+                                    toKill.stop();                                  \
+                                    }                                               \
+                                }                                                   \
+                                if (Telnet && Telnet.connected() && Telnet.available()){    \
+                                    while(Telnet.available())                               \
+                                    Serial.write(Telnet.read());                            \
+                                }                                                           \           
+                                                                
+                                
