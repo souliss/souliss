@@ -26,14 +26,13 @@
                                 WiFiUDP OTA
                                   
 #define OTA_Init()              if(WiFi.waitForConnectResult() == WL_CONNECTED){    \
-                                MDNS.begin(host);                                   \
+                                MDNS.begin("souliss");                              \
                                 MDNS.addService("arduino", "tcp", 8266);            \
-                                OTA.begin(aport);                                   \
-                                TelnetServer.begin();                               \        
+                                OTA.begin(8266);     	                            \
+                                TelnetServer.begin();                               \
                                 TelnetServer.setNoDelay(true);}
 
-      
-#define OTA_Process()           if (OTA.parsePacket()) {                            \       
+#define OTA_Process()           if (OTA.parsePacket()) {                            \
                                     IPAddress remote = OTA.remoteIP();              \
                                     int cmd  = OTA.parseInt();                      \
                                     int port = OTA.parseInt();                      \
@@ -64,5 +63,4 @@
                                     toKill.stop();                                  \
                                     }                                               \
                                 }                                                   \
-                                                                
-                                
+
