@@ -137,6 +137,7 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #		include "interfaces/mcu_avr/Modbus.h"
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#       include "interfaces/mcu_esp8266/OTA.h"
 #	if(WEBCONFIGSERVER)
 #		include "interfaces/mcu_esp8266/webconfig/webconfig.h"
 #	endif
