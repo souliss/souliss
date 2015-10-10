@@ -30,9 +30,12 @@
 // Define logic slots, multicolor lights use four slots
 #define LYTLIGHT1           0    
 
-#define	RED_STARTUP			0x50
-#define GREEN_STARTUP		0x10
-#define BLUE_STARTUP		0x00
+#define RED_STARTUP         0x50
+#define GREEN_STARTUP       0x10
+#define BLUE_STARTUP        0x00
+
+// Setup the libraries for Over The Air Update
+OTA_Setup();
 
 void setup()
 {
@@ -40,22 +43,22 @@ void setup()
     Initialize();
     InitLYT();
     
-	/****
-		Generally set a PWM output before the connection will lead the 
-		ESP8266 to reboot for a conflict on the FLASH write access.
+    /****
+        Generally set a PWM output before the connection will lead the 
+        ESP8266 to reboot for a conflict on the FLASH write access.
 
-		Here we do the configuration during the WebConfig and so we don't
-		need to write anything in the FLASH, and the module can connect
-		to the last used network.
-	****/
-	SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
+        Here we do the configuration during the WebConfig and so we don't
+        need to write anything in the FLASH, and the module can connect
+        to the last used network.
+    ****/
+    SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point.
-	//
-	// If you want to force the device in WebConfiguration mode, power OFF
-	// your router and power OFF and then ON the bulb, you will see an access
-	// point called Souliss.
+    //
+    // If you want to force the device in WebConfiguration mode, power OFF
+    // your router and power OFF and then ON the bulb, you will see an access
+    // point called Souliss.
     if(!ReadIPConfiguration()) 
     {   
         // Pulse a bit
@@ -91,6 +94,9 @@ void setup()
 
     // Define a logic to handle the bulb
     SetLYTLamps(LYTLIGHT1);
+    
+    // Init the OTA
+    OTA_Init();
 }
 
 void loop()
@@ -112,14 +118,17 @@ void loop()
 
     EXECUTESLOW() {
         UPDATESLOW();
-		
-		// Slowly shut down the lamp
+        
+        // Slowly shut down the lamp
         SLOW_10s() {
             LYTSleepTimer(LYTLIGHT1);      
-        }		
+        }       
         
         // If running as Peer
         if (!IsRuntimeGateway())
             SLOW_PeerJoin();
     } 
+    
+    // Look for a new sketch to update over the air
+    OTA_Process();
 }    
