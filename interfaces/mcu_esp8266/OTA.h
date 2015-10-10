@@ -64,9 +64,5 @@
                                     toKill.stop();                                  \
                                     }                                               \
                                 }                                                   \
-                                if (Telnet && Telnet.connected() && Telnet.available()){    \
-                                    while(Telnet.available())                               \
-                                    Serial.write(Telnet.read());                            \
-                                }                                                           \           
                                                                 
                                 
