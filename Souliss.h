@@ -14,19 +14,19 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 	Originally developed by Dario Di Maio
-	
+
 ***************************************************************************/
 /*!
-    \file 
+    \file
     \ingroup
 */
 #ifndef SOULISSSKETCHMODE_H
 #define SOULISSSKETCHMODE_H
 
 /*************************************/
-/*!	
+/*!
 	All code is compiled into the sketch, without creating middle
 	object files. This let use #define that are globally recognized
 	in the whole code, including sub-libraries.
@@ -52,7 +52,7 @@
 #		define MAXINPIN		29		// Max number of input pins
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#	define MAXINPIN		29		// Max number of input pins	
+#	define MAXINPIN		29		// Max number of input pins
 #endif
 
 void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode);
@@ -122,7 +122,7 @@ void Souliss_ResetOutput(U8 *memory_map, U8 slot);
 void Souliss_ResetInput(U8 *memory_map, U8 slot);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
-uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
+void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
 #if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
 #	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
@@ -183,7 +183,7 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 	#	include "interfaces/mcu_esp8266/webconfig/webconfig.cpp"
 	#endif
 #endif
-	
+
 
 #if(MCU_TYPE == 0x01)	// ATmega AVR
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
