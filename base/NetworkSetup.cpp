@@ -378,7 +378,10 @@ uint8_t Souliss_ReadIPConfiguration()
 			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			else
-				WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
+			{	
+				WiFi.softAPdisconnect();	// We was previously in AP, remove it
+				WiFi.begin();				// WiFi.SSID is a known network, no need to specify it
+			}
 			#elif(ESP8266_G39819F0)
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			#endif
@@ -482,7 +485,10 @@ uint8_t Souliss_ReadIPConfiguration()
 		if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 			WiFi.begin(SSID.c_str(), PSW.c_str());
 		else
-			WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
+		{	
+			WiFi.softAPdisconnect();	// We was previously in AP, remove it
+			WiFi.begin();				// WiFi.SSID is a known network, no need to specify it
+		}
 		#elif(ESP8266_G39819F0)
 			WiFi.begin(SSID.c_str(), PSW.c_str());				
 		#endif

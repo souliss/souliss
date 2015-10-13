@@ -24,7 +24,7 @@
 #define OTA_Setup()             WiFiServer TelnetServer(8266);                      \
                                 WiFiClient Telnet;                                  \
                                 WiFiUDP OTA
-                                  
+
 #define OTA_Init()              if(WiFi.waitForConnectResult() == WL_CONNECTED){    \
                                 MDNS.begin("souliss");                              \
                                 MDNS.addService("arduino", "tcp", 8266);            \
