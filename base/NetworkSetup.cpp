@@ -36,7 +36,7 @@ bool FirstInit = {false}, addrsrv = {false};
 U16 keyidval=0;
 uint8_t	myvNet_dhcp=0;
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Set and init network configuration
 */	
@@ -91,7 +91,7 @@ void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode)
 	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Set the addresses of local nodes into the memory map, shall be used
 	for gateway node
@@ -105,7 +105,7 @@ void Souliss_SetLocalAddress(U8 *memory_map, U16 addr)
 	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Reset the addresses of local nodes into the memory map, shall be used
 	to have the node acting not as a gateway
@@ -119,7 +119,7 @@ void Souliss_ResetLocalAddress(U8 *memory_map)
 	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Get the addresses of local nodes from the memory map, identify if a node
 	has been set as gateway at runtime
@@ -130,7 +130,7 @@ U16 Souliss_GetLocalAddress(U8 *memory_map)
 	return C8TO16(memory_map);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Set the addresses of other nodes into the network
 */	
@@ -142,7 +142,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 	*(memory_map+MaCaco_ADDRESSES_s+node*2+1) = C16TO8H(addr);	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Set an IP address and calculate automatically the vNet address, it
 	overwrite all other settings
@@ -189,7 +189,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Get IP Address from DHCP
 */	
@@ -263,7 +263,7 @@ void Souliss_GetIPAddress(U8 timeout=20)
 #endif	
 }												
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Start the node as an access point
 */	
@@ -315,7 +315,7 @@ void Souliss_SetAccessPoint()
 }
 #endif
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Read IP Configuration from EEPROM or equivalent
 */	
@@ -531,7 +531,7 @@ uint8_t Souliss_ReadIPConfiguration()
 }
 #endif
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define a gateway node as server for dynamic addressing, media without
 	an address will get one automatically.
@@ -580,7 +580,7 @@ void Souliss_SetAddressingServer(U8 *memory_map)
 	#endif	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Set the node to retrieve the address dynamically, this cannot be applied
 	for IP based nodes
@@ -609,7 +609,7 @@ void Souliss_SetDynamicAddressing()
 	}
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Before proceed to request and address, at first boot, look for a previously
 	assigned address.
@@ -650,7 +650,7 @@ U8 Souliss_DynamicAddressing_FirstBoot (U8 *memory_map)
 	
 	return 0;
 }
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Request an addressing and parse the answer, need an unique identifier
 	id that is used while the node hasn't a valid address.
@@ -755,7 +755,7 @@ U8 Souliss_DynamicAddressing (U8 *memory_map, const char id[], U8 size)
 	return 0;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Send a request to join a network, shall be periodically processed by nodes
 	that requested a dynamic address
@@ -768,7 +768,7 @@ void Souliss_JoinNetwork()
 		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, keyidval, 0, 0, 0);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Send a request to join a network and request a reset of the subscription, 
 	use carefully only at begin on a join

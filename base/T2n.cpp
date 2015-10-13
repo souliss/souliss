@@ -24,7 +24,7 @@
 
 */
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 21 : Motorized devices with limit switches
 */	
@@ -34,7 +34,7 @@ void Souliss_SetT21(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T21;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 21 : Motorized devices with limit switches
 	
@@ -136,7 +136,7 @@ U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T21, timeout the OPEN/CLOSE commands
 */	
@@ -147,7 +147,7 @@ void Souliss_T21_Timer(U8 *memory_map, U8 slot)
 		memory_map[MaCaco_AUXIN_s + slot]--;				// Decrease timer
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 22 : Motorized devices with limit switches
 */	
@@ -158,7 +158,7 @@ void Souliss_SetT22(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_Coil_Stop;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 22 : Motorized devices with limit switches and middle position
 	
@@ -322,7 +322,7 @@ U8 Souliss_Logic_T22(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	return i_trigger;	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T22, timeout the OPEN/CLOSE commands
 */	

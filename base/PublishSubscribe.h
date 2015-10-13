@@ -25,7 +25,7 @@
 #ifndef PUBSUB_H
 #define PUBSUB_H
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	This macros connect a sender with a receiver that can do some action
 	once received the notification, example of use:

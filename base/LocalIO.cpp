@@ -49,7 +49,7 @@
 U8 InPin[MAXINPIN];
 static unsigned long time;
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Reset output in memory map, this shall be used in case of LinkIO method
 */	
@@ -59,7 +59,7 @@ void Souliss_ResetOutput(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_OUT_s + slot] = 0x00;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Reset input in memory map, this shall be used in case of RemoteInput 
 	method
@@ -70,7 +70,7 @@ void Souliss_ResetInput(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_IN_s + slot] = 0x00;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Create a link between input and output on the same memory map
 	
@@ -94,7 +94,7 @@ void Souliss_LinkIO(U8 *memory_map, U8 input_slot, U8 output_slot, U8 *trigger)
 	}						
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Create a link between output and input on the same memory map
 */	
@@ -105,7 +105,7 @@ void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot)
 		memory_map[MaCaco_IN_s + input_slot] = memory_map[MaCaco_OUT_s + output_slot];	// Link IO
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on rising edge
 	
@@ -151,7 +151,7 @@ U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=fa
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on falling edge
 	
@@ -196,7 +196,7 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, use with latched two state
 	pushbutton.
@@ -223,7 +223,7 @@ U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Use a single analog input connected to two different pushbuttons, use 
 	different pull-up resistors to define different voltage drops for the
@@ -277,7 +277,7 @@ U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memo
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, use with latched two state
 	pushbutton, active on falling edge
@@ -304,7 +304,7 @@ U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *mem
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on rising edge
 	Identify two states, press and hold.
@@ -343,7 +343,7 @@ U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on falling edge
 	Identify two states, press and hold.
@@ -380,7 +380,7 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on rising edge
 	Identify two states, press and hold.
@@ -420,7 +420,7 @@ U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot,
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on falling edge
 	Identify two states, press and hold.
@@ -458,7 +458,7 @@ U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 sl
 	return MaCaco_NODATACHANGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Read a single precision floating point and store it into the memory_map 
 	as half-precision floating point
@@ -469,7 +469,7 @@ void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue)
 	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), analogvalue);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Read an analog input and store it into the memory_map as half-precision
 	floating point
@@ -487,7 +487,7 @@ void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias
 	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 	
@@ -504,7 +504,7 @@ void Souliss_DigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		dWrite(pin, LOW);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 	
@@ -521,7 +521,7 @@ void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		dWrite(pin, HIGH);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 	
@@ -539,7 +539,7 @@ void Souliss_nDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		dWrite(pin, LOW);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 	
@@ -557,7 +557,7 @@ void Souliss_nLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		dWrite(pin, HIGH);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin, toggle the output value
 */	
@@ -576,7 +576,7 @@ void Souliss_DigOutToggle(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		dWrite(pin, LOW);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 */	
@@ -590,7 +590,7 @@ void Souliss_DigOutLessThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8 sl
 		dWrite(pin, LOW);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 */	
@@ -605,7 +605,7 @@ void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8
 }
 
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
 
@@ -710,7 +710,7 @@ U8 Souliss_LowDigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, 
 	Souliss_DigInHoldSteps_Helper(pin, !dRead(pin), memory_map, firstSlot, lastSlot, step_duration);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	This is a special function that can be used to ensure that the output
 	command is given just once.
@@ -734,7 +734,7 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 	return Souliss_NOTTRIGGED;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Convert a half-precision floating point from the memory_map in single
 	precision floating point
@@ -746,7 +746,7 @@ float Souliss_SinglePrecisionFloating(U8 *input)
 	return returnfloat32(&input16);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Convert a single precision floating point into an half-precision one
 */	

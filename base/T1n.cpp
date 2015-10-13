@@ -24,7 +24,7 @@
 
 */
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 11 : ON/OFF Digital Output with Timer Option
 */
@@ -34,7 +34,7 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 11 : ON/OFF Digital Output with Timer Option
 
@@ -142,7 +142,7 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 	return i_trigger;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T11
 */
@@ -153,7 +153,7 @@ void Souliss_T11_Timer(U8 *memory_map, U8 input_slot)
 		memory_map[MaCaco_AUXIN_s + input_slot]--;									// Decrease timer
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 12 : ON/OFF Digital Output with AUTO mode
 */
@@ -163,7 +163,7 @@ void Souliss_SetT12(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T12;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 12 : ON/OFF Digital Output with AUTO mode
 
@@ -295,7 +295,7 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 	return i_trigger;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T12
 */
@@ -306,7 +306,7 @@ void Souliss_T12_Timer(U8 *memory_map, U8 input_slot)
 		memory_map[MaCaco_IN_s + input_slot]--;							// Decrease timer
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 13 : Digital Input Value
 */
@@ -316,7 +316,7 @@ void Souliss_SetT13(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T13;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 13 : Digital Input Value
 
@@ -373,7 +373,7 @@ U8 Souliss_Logic_T13(U8 *memory_map, U8 slot, U8 *trigger)
 	return i_trigger;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 14 : Pulse Digital Output
 */
@@ -383,7 +383,7 @@ void Souliss_SetT14(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T14;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 14 : Pulse Digital Output
 
@@ -442,7 +442,7 @@ void Souliss_SetT15(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 15 : RGB Light
 
@@ -503,7 +503,7 @@ U8 Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 16 : RGB LED Strip
 */
@@ -516,7 +516,7 @@ void Souliss_SetT16(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot + 3] = Souliss_TRL;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 16 : RGB LED Strip
 
@@ -783,7 +783,7 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T16
 */
@@ -814,7 +814,7 @@ void Souliss_T16_Timer(U8 *memory_map, U8 slot)
 	}
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 18 : ON/OFF Digital Output with pulse output
 	with Timer Option
@@ -825,7 +825,7 @@ void Souliss_SetT18(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T18;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 18 : ON/OFF Digital Output
 
@@ -919,7 +919,7 @@ U8 Souliss_Logic_T18(U8 *memory_map, U8 slot, U8 *trigger)
 	return *trigger;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T18
 */
@@ -930,7 +930,7 @@ void Souliss_T18_Timer(U8 *memory_map, U8 input_slot)
 		memory_map[MaCaco_AUXIN_s + input_slot]--;									// Decrease timer
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 19 : RGB LED Strip
 */
@@ -941,7 +941,7 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot + 1] = Souliss_TRL;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 19 : Single Color LED Strip
 
@@ -1135,7 +1135,7 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T19
 */
@@ -1164,7 +1164,7 @@ void Souliss_T19_Timer(U8 *memory_map, U8 slot)
 	}
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 1A : Digital pass through
 */
@@ -1174,7 +1174,7 @@ void Souliss_SetT1A(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T1A;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 1A : Digital Input Pass Through
 
@@ -1215,7 +1215,7 @@ U8 Souliss_Logic_T1A(U8 *memory_map, U8 slot, U8 *trigger)
 	return i_trigger;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 1B : Position Constrained ON/OFF Digital Output
 */
@@ -1225,7 +1225,7 @@ void Souliss_SetT1B(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T1B;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 1B : Position Constrained ON/OFF Digital Output
 
@@ -1317,7 +1317,7 @@ U8 Souliss_Logic_T1B(U8 *memory_map, U8 slot, U8 *trigger)
 }
 
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of a group of Typical 11
 	A group is defined as a set of consecutive T11 slots
@@ -1332,7 +1332,7 @@ void Souliss_SetT11Group(U8 *memory_map, U8 firstSlot, U8 lastSlot)
 	}
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Logics for T11 groups
 	Simply execute T11 logics for each slot in the group
@@ -1344,7 +1344,7 @@ void Souliss_Logic_T11Group(U8 *memory_map, U8 firstSlot, U8 lastSlot, U8 *trigg
 		Souliss_Logic_T11(memory_map, slot, trigger);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer for T11 groups
 	Simply execute T11 timer for each slot in the group
