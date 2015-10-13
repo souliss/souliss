@@ -84,7 +84,7 @@ void wakeUpNow()        // here the interrupt is handled after wakeup
 	wakeupscycles = wakeupCycles;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	This put the microcontroller and the vNet radio in sleep mode, use this
 	code as follow:

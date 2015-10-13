@@ -33,7 +33,7 @@
 
 U8 s_value=0;
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node), 
 	active on rising edge.
@@ -53,7 +53,7 @@ U8 Souliss_RemoteDigIn(U8 pin, U8 value, U16 addr, U8 slot, bool filteractive=fa
 		return 0;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node),
 	active on falling edge.
@@ -73,7 +73,7 @@ U8 Souliss_RemoteLowDigIn(U8 pin, U8 value, U16 addr, U8 slot, bool filteractive
 		return 0;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node), 
 	use with latched two state pushbutton.
@@ -90,7 +90,7 @@ U8 Souliss_RemoteDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U16 
 		return 0;
 }	
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node).
 	
@@ -112,7 +112,7 @@ U8 Souliss_RemoteAnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U1
 	else
 		return 0;
 }
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node), 
 	use with latched two state pushbutton, active on falling edge
@@ -128,7 +128,7 @@ U8 Souliss_RemoteLowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U
 		return 0;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node), 
 	active on rising edge.
@@ -146,7 +146,7 @@ U8 Souliss_RemoteDigInHold(U8 pin, U8 value, U8 value_hold, U16 addr, U8 slot, U
 		return 0;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map of another (remote node), 
 	active on falling edge.
