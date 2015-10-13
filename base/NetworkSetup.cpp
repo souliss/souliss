@@ -373,15 +373,14 @@ uint8_t Souliss_ReadIPConfiguration()
 			
 		#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 			
+			WiFi.mode(WIFI_STA);		
+
 			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
 			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			else
-			{	
-				WiFi.softAPdisconnect();	// We was previously in AP, remove it
 				WiFi.begin();				// WiFi.SSID is a known network, no need to specify it
-			}
 			#elif(ESP8266_G39819F0)
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			#endif
@@ -479,18 +478,18 @@ uint8_t Souliss_ReadIPConfiguration()
 		DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 		#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+
+		WiFi.mode(WIFI_STA);
 		
 		#if(ESP8266_GEF26cCF)
 		// If is the first time that we connect to WiFi.SSID
 		if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str())) 
 			WiFi.begin(SSID.c_str(), PSW.c_str());
 		else
-		{	
-			WiFi.softAPdisconnect();	// We was previously in AP, remove it
 			WiFi.begin();				// WiFi.SSID is a known network, no need to specify it
-		}
+
 		#elif(ESP8266_G39819F0)
-			WiFi.begin(SSID.c_str(), PSW.c_str());				
+			WiFi.begin(SSID.c_str(), PSW.c_str());		
 		#endif
 
 		// Connect
