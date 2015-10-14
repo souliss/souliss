@@ -140,6 +140,7 @@ void send_network_configuration_html()
 		delay(10000);
 		
 		// Connect a first time, and write into the ESP8266 own FLASH sector the SSID and Password
+		WiFi.mode(WIFI_STA);
 		WiFi.begin(config.ssid.c_str(), config.password.c_str());
 		
 		// Wait for a connection

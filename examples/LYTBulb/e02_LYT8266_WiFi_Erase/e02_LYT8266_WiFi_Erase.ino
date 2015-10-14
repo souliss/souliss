@@ -7,6 +7,10 @@
     
 ***************************************************************************/
 
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <EEPROM.h>
 #include <WiFiUdp.h>
 
 #include "bconf/MCU_ESP8266.h"
@@ -18,6 +22,8 @@
 #include <EEPROM.h>
 #include "Souliss.h"
 
+// Setup the libraries for Over The Air Update
+OTA_Setup();
 
 void setup()
 {   
@@ -28,6 +34,9 @@ void setup()
 
     // Init Serial
     Serial.begin(9600);
+
+    // Init the OTA
+    OTA_Init();
 }
 
 void loop()
@@ -43,4 +52,7 @@ void loop()
 
     // Stops here
     while(1);
+
+    // Look for a new sketch to update over the air
+    OTA_Process();
 } 
