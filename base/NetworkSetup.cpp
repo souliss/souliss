@@ -384,6 +384,18 @@ uint8_t Souliss_ReadIPConfiguration()
 			
 			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
+
+			#if (SOULISS_DEBUG)
+			// Print debug messages
+			SOULISS_LOG(F("(ss)<Read_SSID>"));
+			SOULISS_LOG(WiFi.SSID());	
+			SOULISS_LOG("\r\n");
+
+			SOULISS_LOG(F("(ss)<Read_Password>"));
+			SOULISS_LOG(WiFi.psk());	
+			SOULISS_LOG("\r\n");
+			#endif
+
 			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str()))
 			{
 				WiFi.mode(WIFI_STA);
@@ -489,7 +501,18 @@ uint8_t Souliss_ReadIPConfiguration()
 		DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 		#if(MCU_TYPE == 0x02)	// Expressif ESP8266
-		
+
+			#if (SOULISS_DEBUG)
+			// Print debug messages
+			SOULISS_LOG(F("(ss)<Read_SSID>"));
+			SOULISS_LOG(WiFi.SSID());	
+			SOULISS_LOG("\r\n");
+
+			SOULISS_LOG(F("(ss)<Read_Password>"));
+			SOULISS_LOG(WiFi.psk());	
+			SOULISS_LOG("\r\n");
+			#endif
+
 			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
 			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str()))

@@ -51,6 +51,9 @@ void setup()
         Here we do the configuration during the WebConfig and so we don't
         need to write anything in the FLASH, and the module can connect
         to the last used network.
+
+		If you don't use the WebConfig use a dummy sketch that connects to
+		your WiFi and then use this sketch
     ****/
     SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 
