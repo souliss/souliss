@@ -356,18 +356,18 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			if(C8TO16(memory_map + MaCaco_ADDRESSES_s) == 0)
 				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
 
-			// If the user interface has requested typical from one node only, send the data directly
-			// or forward the request to the node that owns the data
-			if((rx->numberof == 1) && (rx->startoffset != 0))
-				return MaCaco_send(C8TO16(memory_map + MaCaco_ADDRESSES_s + rx->startoffset), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
-			else if((rx->numberof == 1) && (rx->startoffset == 0))	// Returns typical for this node
-				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, MaCaco_TYPLENGHT, (MaCaco_TYP_s + memory_map));		
-		
 			// Record the request info
 			reqtyp_addr = addr;	
 			reqtyp_putin = rx->putin;
 			reqtyp_startoffset = rx->startoffset;
-			reqtyp_numberof = rx->numberof;
+			reqtyp_numberof = rx->numberof;			
+			
+			// If the user interface has requested typical from one node only, send the data directly
+			// or forward the request to the node that owns the data
+			if((rx->numberof == 1) && (rx->startoffset != 0))
+				return MaCaco_send(C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*(rx->startoffset)), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+			else if((rx->numberof == 1) && (rx->startoffset == 0))	// Returns typical for this node
+				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, MaCaco_TYPLENGHT, (MaCaco_TYP_s + memory_map));
 				
 			// Flag that the request shall be processed for all nodes, this is used at an upper level
 			reqtyp_times = MaCaco_NODES;		
