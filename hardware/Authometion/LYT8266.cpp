@@ -481,6 +481,9 @@ U8 Souliss_Logic_LYTLamps(U8 *memory_map, U8 slot, U8 *trigger)
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
 	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Flash
+		Souliss_UnsupportedCommand();												// Actually not supported
+	
 
 	// Update the trigger
 	if(i_trigger)
