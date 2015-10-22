@@ -23,6 +23,8 @@
 // Include framework code and libraries
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // This identify the number of the LED logic

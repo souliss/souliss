@@ -21,6 +21,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration according to your router settings

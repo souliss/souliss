@@ -38,6 +38,8 @@
 // Include framework code and libraries
 #include <SPI.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT1                  0           // This is the memory slot used for the execution of the logic

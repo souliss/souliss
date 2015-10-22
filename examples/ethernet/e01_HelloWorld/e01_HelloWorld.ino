@@ -23,6 +23,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // This identify the number of the LED logic

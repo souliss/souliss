@@ -25,6 +25,8 @@
 #include "conf/DynamicAddressing.h"         // Use dynamically assigned addresses
 #include "conf/WEBCONFinterface.h"          // Enable the WebConfig interface
 
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
    
 #define MYLED               0

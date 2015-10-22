@@ -22,6 +22,8 @@
 
 // Include framework code and libraries
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 

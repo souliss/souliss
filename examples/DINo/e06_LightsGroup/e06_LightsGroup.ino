@@ -20,6 +20,8 @@
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
 
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT_1			0
