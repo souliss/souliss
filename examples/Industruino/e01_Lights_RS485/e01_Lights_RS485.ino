@@ -28,7 +28,7 @@
     
 ***************************************************************************/
 
-#include "bconf/Industrino.h"                                   // Define the board type
+#include "bconf/Industruino.h"                                   // Define the board type
 
 // Include Industrino libraries
 #include "Indio.h"
