@@ -194,8 +194,12 @@ void loop()
 		}
 
 		// Process analogue values
+		FAST_510ms() {
+			if(Logic_Light(LIGHTINTESITY)) SendData(0xAB02, 22, 2, &(mOutput(LIGHTINTESITY)));
+		}
+
+		// Process analogue values
 		FAST_9110ms() {
-			Logic_Light(LIGHTINTESITY);
 			Logic_Humidity(HUMIDITY);
 			Logic_Temperature(TEMPERATURE);
 

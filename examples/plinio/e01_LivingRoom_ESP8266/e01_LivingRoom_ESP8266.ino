@@ -32,6 +32,7 @@
 #define	PUSH2	1
 #define	LowMood									0xFF01,0x01
 #define	FullLight								0xFF01,0x02
+#define	LightChange								0xFF01,0x03
 
 void setup()
 {   
@@ -67,7 +68,9 @@ void setup()
     // nodes in your Souliss network
     SetAddress(0xCE01, 0xFF00, 0x0000);
     SetAddress(0xAB01, 0xFF00, 0x0000);
+
     SetAsPeerNode(0xCE02, 1);
+    SetAsPeerNode(0xAB02, 2);
 
 	Set_T14(PUSH1);
 	Set_T14(PUSH2);
