@@ -199,7 +199,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	Get IP Address from DHCP
 */	
 /**************************************************************************/ 
-void Souliss_GetIPAddress(U8 timeout=20)
+uint8_t Souliss_GetIPAddress(U8 timeout=20)
 {
 
 #if((MCU_TYPE == 0x01) && ARDUINO_DHCP)	// Atmel AVR Atmega
@@ -268,7 +268,29 @@ void Souliss_GetIPAddress(U8 timeout=20)
 	DEFAULT_BASEIPADDRESS[i-1]=0;					// The BASEIPADDRESS has last byte always zero
 	
 	// Set the address
-	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);	
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
+
+	#if(MCU_TYPE == 0x02)
+	if(WiFi.status() != WL_CONNECTED) 
+	{
+		// Print debug messages
+		#if (SOULISS_DEBUG)
+		SOULISS_LOG(F("(ss)<WiFi Fail>\r\n"));
+		#endif	
+
+		return 0;
+	}
+	else 
+	{
+		// Print debug messages
+		#if (SOULISS_DEBUG)
+		SOULISS_LOG(F("(ss)<WiFi Connected>\r\n"));
+		#endif	
+
+		return 1;
+	}
+	#endif
+
 #endif	
 }												
 
