@@ -28,6 +28,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT1_NODE1            0            

@@ -25,6 +25,8 @@
 // Include framework code and libraries
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files

@@ -20,6 +20,8 @@
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
 
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT_1			0
@@ -27,6 +29,10 @@
 #define LIGHT_3			2		
 #define LIGHT_4			3
 
+// static IP address
+uint8_t ip_address[4]  = {192, 168, 1, 77};
+uint8_t subnet_mask[4] = {255, 255, 255, 0};
+uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 
 void setup()
 {
@@ -49,10 +55,6 @@ void setup()
     SetLED();
     TurnOnLED();
 
-    // static IP address
-	uint8_t ip_address[4]  = {192, 168, 1, 77};
-	uint8_t subnet_mask[4] = {255, 255, 255, 0};
-	uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 	Souliss_SetIPAddress(ip_address, subnet_mask, ip_gateway);
 
 	Set_LightsGroup(LIGHT_1, LIGHT_4);

@@ -67,7 +67,7 @@ void Souliss_BatteryChannels(U8 *memory_map, U16 addr);
 U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr);
 void Souliss_JoinNetwork();
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway);
-void Souliss_GetIPAddress(U8 timeout);
+uint8_t Souliss_GetIPAddress(U8 timeout);
 void Souliss_SetAccessPoint();
 uint8_t Souliss_ReadIPConfiguration();
 void Souliss_SetAddressingServer(U8 *memory_map);
@@ -87,6 +87,7 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 U8 Souliss_PullData(U16 addr, U8 slot, U8 remote_slot, U8 remote_numbof);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
+U8 Souliss_UnsupportedCommand();
 
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);
 U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);

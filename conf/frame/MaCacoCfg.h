@@ -66,7 +66,7 @@
 			0x18	Ping answer,
 			0x09	Trace root request (Functional code not supported),
 			0x19	Trace root answer (Functional code not supported),
-			0x83	Functional code not supported,
+			0x83	General Error,
 			0x84	Data out of range,
 			0x85	Subscription refused.
 
@@ -114,7 +114,7 @@
 #define MaCaco_PINGANS			0x18	// Ping answer,
 #define MaCaco_TRACEREQ			0x09	// Trace root request (not implemented),
 #define MaCaco_TRACEANS			0x19	// Trace root answer  (not implemented),
-#define MaCaco_ERR83			0x83	// Functional code not supported,
+#define MaCaco_ERR83			0x83	// General error,
 #define MaCaco_ERR84			0x84	// Data out of range,
 #define MaCaco_ERR85			0x85	// Subscription refused
 

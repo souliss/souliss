@@ -92,10 +92,10 @@ void float16(uint16_t *output, float *input)
     uint32_t	x, xs, xe, xm;
     int hes;
     
-
 	x = *(uint32_t*) input;
+
 	if( (x & 0x7FFFFFFF) == 0 ) 										// Signed zero   
-		*hp = (uint16_t) (x >> 16);  									// Return the signed zero
+		*hp = 0x8000; 													// Return the signed zero
 	else 
 	{ 
 		// Not zero

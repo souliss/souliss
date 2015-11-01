@@ -30,6 +30,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define ANALOGDAQ               0           // This is the memory slot used for the execution of the logic
