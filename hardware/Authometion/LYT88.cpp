@@ -170,7 +170,7 @@ void LYTSetColorRGB(U8 R, U8 G, U8 B, U8 slot)
 
 /**************************************************************************
 /*!
-	Check the actual state, the code stops until an answer has been received
+	Check the actual state
 */	
 /**************************************************************************/
 void Souliss_LYTStateRequest()
