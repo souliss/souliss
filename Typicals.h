@@ -102,6 +102,13 @@
 #define Souliss_T1n_BrightValue			0x10		// Default increase and decrease
 #define Souliss_T1n_BrightDefault		0xAA		// Default Bright Value
 
+// Useful defines for T16
+#define	Souliss_MAXBRIGHT				0xFF
+#define	Souliss_MEDBRIGHT				0x50
+#define	Souliss_MINBRIGHT				0x00
+#define	BRIGHT_STEP						15
+#define	BRIGHT_DEFAULT					Souliss_MEDBRIGHT
+
 /*
 
 //	These values are not yet updated in SoulissApp, reverse to old ones
