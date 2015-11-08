@@ -748,7 +748,7 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
 		// Decrease the brightness
-		if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot] - BRIGHT_STEP;		// Decrease the light value
+		if(memory_map[MaCaco_AUXIN_s + slot] > (Souliss_MINBRIGHT+BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot] - BRIGHT_STEP;		// Decrease the light value
 
 		// Get the base brightness
 		uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
@@ -804,7 +804,7 @@ void Souliss_T16_Timer(U8 *memory_map, U8 slot)
 	}	
 
 	// Decrease brightness and check the expiration
-	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight) && (memory_map[MaCaco_AUXIN_s + slot] <= (LYT_MinBright+BRIGHT_STEP)))	
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight) && (memory_map[MaCaco_AUXIN_s + slot] <= (Souliss_MINBRIGHT+BRIGHT_STEP)))	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;	
 	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight))	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
