@@ -108,6 +108,7 @@
 #define	Souliss_MINBRIGHT				0x00
 #define	BRIGHT_STEP						15
 #define	BRIGHT_DEFAULT					Souliss_MEDBRIGHT
+#define FADETIME						5
 
 /*
 

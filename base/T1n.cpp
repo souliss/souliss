@@ -644,6 +644,9 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 
 			if(memory_map[MaCaco_OUT_s + slot + 3])
 				memory_map[MaCaco_OUT_s + slot + 3]--;
+
+			// Delay to have a visible fade
+			delay(FADETIME);
 		}
 
 		// Once is off, reset
