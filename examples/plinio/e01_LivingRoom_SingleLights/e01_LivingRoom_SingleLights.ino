@@ -117,10 +117,13 @@ void loop()
 				else					LYTOff(LYTLIGHT3);
 
 			// If all are ON or all are OFF, align the RGB typical
-			if(mOutput(LYTLIGHT1) && mOutput(LYTLIGHT2) && mOutput(LYTLIGHT3) && (mOutput(LYTLIGHT0) == Souliss_T1n_OffCoil))
+			if((mOutput(LYTLIGHT1) || mOutput(LYTLIGHT2) || mOutput(LYTLIGHT3)) && (mOutput(LYTLIGHT0) == Souliss_T1n_OffCoil))
 				mOutput(LYTLIGHT0) = Souliss_T1n_OnCoil;
 			else if(!mOutput(LYTLIGHT1) && !mOutput(LYTLIGHT2) && !mOutput(LYTLIGHT3) && (mOutput(LYTLIGHT0) == Souliss_T1n_OnCoil))
 				mOutput(LYTLIGHT0) = Souliss_T1n_OffCoil;
+
+			// Read the state of the lamp
+			LYTState(LYTLIGHT0);
          }
 		
 		// Listen for topic published by other nodes
@@ -195,7 +198,7 @@ void loop()
 
 		// Process analogue values
 		FAST_510ms() {
-			if(Logic_Light(LIGHTINTESITY)) SendData(0xAB02, 22, 2, &(mOutput(LIGHTINTESITY)));
+			if(Logic_Light(LIGHTINTESITY)) SendData(0xAB02, 22, &(mOutput(LIGHTINTESITY)), 2);
 		}
 
 		// Process analogue values
@@ -224,5 +227,12 @@ void loop()
 			th = dht.readTemperature();
 			ImportAnalog(TEMPERATURE, &th);	
         }
+
+		SLOW_50s() {
+			
+			// LYT State Request
+			Souliss_LYTStateRequest();
+		}
+
 	}
 } 
