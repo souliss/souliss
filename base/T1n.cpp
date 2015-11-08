@@ -508,6 +508,14 @@ U8 Souliss_Logic_T15(U8 *memory_map, U8 slot, U8 *trigger)
 	Define the use of Typical 16 : RGB LED Strip
 */
 /**************************************************************************/
+#define	LYT_MaxBright					0xFF
+#define	LYT_MedBright					0x50
+#define	LYT_MinBright					0x00
+
+#define	BRIGHT_STEP						15
+#define	BRIGHT_DEFAULT					LYT_MedBright
+
+
 void Souliss_SetT16(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T16;
@@ -668,8 +676,6 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
 		else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
 		else							memory_map[MaCaco_OUT_s + slot + 3] = b;
-			
-		LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
 	
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;					// Reset	
 	}
