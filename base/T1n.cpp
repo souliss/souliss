@@ -591,28 +591,47 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
+	
+	if(memory_map[MaCaco_IN_s + slot] == Souliss_T1n_RstCmd)
+		return 0;
 
-	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
+	// Set a new color
+	if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)
+	{	
+		// Set the new color
+		for(U8 i=1;i<4;i++)
+		{
+			memory_map[MaCaco_OUT_s + slot + i] = memory_map[MaCaco_IN_s + slot + i];
+			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_IN_s + slot + i];
+			memory_map[MaCaco_IN_s + slot + i] = Souliss_T1n_RstCmd;
+		}
+		
+		// Set the brightness value as the high between R, G and B
+		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 1];
+		if(memory_map[MaCaco_AUXIN_s + slot + 2] > memory_map[MaCaco_AUXIN_s + slot])
+			memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 2];
+		if(memory_map[MaCaco_AUXIN_s + slot + 3] > memory_map[MaCaco_AUXIN_s + slot])
+			memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot + 3];			
+
+		
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		
+		
+	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
 	{
 		// Toggle the actual status of the light
-		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;
-		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil || memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight )
+		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)		
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OnCmd;			
+		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
 		else
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;
-
-		// Trig the change
-		i_trigger = Souliss_TRIGGED;
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd)		// Off Command
 	{
-		// Trigger the change and save the actual color
-		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OffCoil)
-		{
-			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch off the light state
-			i_trigger = Souliss_TRIGGED;									// Trig the change
-		}
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the light state
+		i_trigger = Souliss_TRIGGED;									// Trig the change
 
 		// Fade out and turn off the light step wise
 		for(U8 i=1;i<4;i++)
@@ -620,45 +639,39 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 				memory_map[MaCaco_OUT_s + slot + i]--;
 
 		// Once is off, reset
-		if((memory_map[MaCaco_OUT_s + slot + 1] == 0) && (memory_map[MaCaco_OUT_s + slot + 2] == 0)
-			&& (memory_map[MaCaco_OUT_s + slot + 3] == 0))
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;		// Reset
-
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
-		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_OnCoil)
-			i_trigger = Souliss_TRIGGED;
-
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
+		i_trigger = Souliss_TRIGGED;									// Trig the change
 
-		// If there were no color set, use a light white
-		if((memory_map[MaCaco_AUXIN_s + slot + 1] == 0) && (memory_map[MaCaco_AUXIN_s + slot + 2] == 0)
-			&& (memory_map[MaCaco_AUXIN_s + slot + 3] == 0))
-		{
-			for(U8 i=1;i<4;i++)
-			{
-				memory_map[MaCaco_OUT_s + slot + i] = 0xAA;				// Set a light white
-				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
-			}
+		// Get the base brightness
+		uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
+		if(memory_map[MaCaco_AUXIN_s + slot + 2] > base_bright)
+			base_bright =  memory_map[MaCaco_AUXIN_s + slot + 2];
+		if(memory_map[MaCaco_AUXIN_s + slot + 3] > base_bright)
+			base_bright =  memory_map[MaCaco_AUXIN_s + slot + 3];
 
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-		}
-		else
-		{
-			// Fade in to the last color
-			for(U8 i=1;i<4;i++)
-				if(memory_map[MaCaco_OUT_s + slot + i] < (memory_map[MaCaco_AUXIN_s + slot + i]))
-					memory_map[MaCaco_OUT_s + slot + i]++;
-		}
+		float r = memory_map[MaCaco_AUXIN_s + slot + 1] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
+		float g = memory_map[MaCaco_AUXIN_s + slot + 2] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
+		float b = memory_map[MaCaco_AUXIN_s + slot + 3] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 
-		// Once is on, reset
-		if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1])
-			&& (memory_map[MaCaco_OUT_s + slot + 2] == memory_map[MaCaco_AUXIN_s + slot + 2])
-			&& (memory_map[MaCaco_OUT_s + slot + 3] == memory_map[MaCaco_AUXIN_s + slot + 3]))
-		{
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-		}
+		if(r > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 1] = (0xF0 - BRIGHT_STEP -1);
+		else if(r < 0)					memory_map[MaCaco_OUT_s + slot + 1] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 1] = r;
+
+		if(g > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 2] = (0xF0 - BRIGHT_STEP -1);
+		else if(g < 0)					memory_map[MaCaco_OUT_s + slot + 2] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 2] = g;
+
+		if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
+		else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 3] = b;
+			
+		LYTSetColorRGB(memory_map[MaCaco_OUT_s + slot + 1], memory_map[MaCaco_OUT_s + slot + 2], memory_map[MaCaco_OUT_s + slot + 3], slot);
+	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;					// Reset	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
 	{
@@ -687,131 +700,100 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 				memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_AUXIN_s + slot + i];
         	}
 	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)				// Increase the light value 
 	{
-		// Increase the light value
-		if(memory_map[MaCaco_OUT_s + slot + 1] < 255 - Souliss_T1n_BrightValue)
-			memory_map[MaCaco_OUT_s + slot + 1] += Souliss_T1n_BrightValue;
+		// Increase the brightness
+		if(memory_map[MaCaco_AUXIN_s + slot] < (LYT_MaxBright-BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot] + BRIGHT_STEP;	// Increase the light value
 
-		if(memory_map[MaCaco_OUT_s + slot + 2] < 255 - Souliss_T1n_BrightValue)
-			memory_map[MaCaco_OUT_s + slot + 2] += Souliss_T1n_BrightValue;
+		// Get the base brightness
+		uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
+		if(memory_map[MaCaco_AUXIN_s + slot + 2] > base_bright)
+			base_bright =  memory_map[MaCaco_AUXIN_s + slot + 2];
+		if(memory_map[MaCaco_AUXIN_s + slot + 3] > base_bright)
+			base_bright =  memory_map[MaCaco_AUXIN_s + slot + 3];
 
-		if(memory_map[MaCaco_OUT_s + slot + 3] < 255 - Souliss_T1n_BrightValue)
-			memory_map[MaCaco_OUT_s + slot + 3] += Souliss_T1n_BrightValue;
+		float r = memory_map[MaCaco_AUXIN_s + slot + 1] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
+		float g = memory_map[MaCaco_AUXIN_s + slot + 2] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
+		float b = memory_map[MaCaco_AUXIN_s + slot + 3] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 
-		// Save the new output value
-		for(U8 i=1;i<4;i++)
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_AUXIN_s + slot + i];
+		if(r > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 1] = (0xF0 - BRIGHT_STEP -1);
+		else if(r < 0)					memory_map[MaCaco_OUT_s + slot + 1] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 1] = r;
 
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		if(g > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 2] = (0xF0 - BRIGHT_STEP -1);
+		else if(g < 0)					memory_map[MaCaco_OUT_s + slot + 2] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 2] = g;
+
+		if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
+		else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 3] = b;
+			
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
-		// Decrease the light value
-		if(memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue)
-			memory_map[MaCaco_OUT_s + slot + 1] -= Souliss_T1n_BrightValue;
+		// Decrease the brightness
+		if(memory_map[MaCaco_AUXIN_s + slot] > (LYT_MinBright+BRIGHT_STEP))	memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_AUXIN_s + slot] - BRIGHT_STEP;		// Decrease the light value
 
-		if(memory_map[MaCaco_OUT_s + slot + 2] > Souliss_T1n_BrightValue)
-			memory_map[MaCaco_OUT_s + slot + 2] -= Souliss_T1n_BrightValue;
+		// Get the base brightness
+		uint8_t base_bright =  memory_map[MaCaco_AUXIN_s + slot + 1];
+		if(memory_map[MaCaco_AUXIN_s + slot + 2] > base_bright)
+			base_bright =  memory_map[MaCaco_AUXIN_s + slot + 2];
+		if(memory_map[MaCaco_AUXIN_s + slot + 3] > base_bright)
+			base_bright =  memory_map[MaCaco_AUXIN_s + slot + 3];
 
-		if(memory_map[MaCaco_OUT_s + slot + 3] > Souliss_T1n_BrightValue)
-			memory_map[MaCaco_OUT_s + slot + 3] -= Souliss_T1n_BrightValue;
+		float r = memory_map[MaCaco_AUXIN_s + slot + 1] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
+		float g = memory_map[MaCaco_AUXIN_s + slot + 2] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
+		float b = memory_map[MaCaco_AUXIN_s + slot + 3] + (memory_map[MaCaco_AUXIN_s + slot] - base_bright);
 
-		// Save the new output value
-		for(U8 i=1;i<4;i++)
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_AUXIN_s + slot + i];
+		if(r > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 1] = (0xF0 - BRIGHT_STEP -1);
+		else if(r < 0)					memory_map[MaCaco_OUT_s + slot + 1] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 1] = r;
 
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
-	{
-		// If the light was on
-		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
-		{
-			// Switch ON and OFF until a new command is received
-			if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1])
-				&& (memory_map[MaCaco_OUT_s + slot + 2] == memory_map[MaCaco_AUXIN_s + slot + 2])
-				&& (memory_map[MaCaco_OUT_s + slot + 3] == memory_map[MaCaco_AUXIN_s + slot + 3]))
-			{
-				// Set output to zero
-				memory_map[MaCaco_OUT_s + slot + 1] = 0;
-				memory_map[MaCaco_OUT_s + slot + 2] = 0;
-				memory_map[MaCaco_OUT_s + slot + 3] = 0;
-			}
-			else if((memory_map[MaCaco_OUT_s + slot + 1] == 0)
-				&& (memory_map[MaCaco_OUT_s + slot + 2]  == 0)
-				&& (memory_map[MaCaco_OUT_s + slot + 3]  == 0))
-			{
-				// Set output to previous value
-				memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_AUXIN_s + slot + 1];
-				memory_map[MaCaco_OUT_s + slot + 2] = memory_map[MaCaco_AUXIN_s + slot + 2];
-				memory_map[MaCaco_OUT_s + slot + 3] = memory_map[MaCaco_AUXIN_s + slot + 3];
-			}
-		}
-	}
-	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)
-	{
-		// Set the new color
-		for(U8 i=1;i<4;i++)
-		{
-			memory_map[MaCaco_OUT_s + slot + i] = memory_map[MaCaco_IN_s + slot + i];
-			memory_map[MaCaco_AUXIN_s + slot + i] = memory_map[MaCaco_OUT_s + slot + i];
-			memory_map[MaCaco_IN_s + slot + i] = Souliss_T1n_RstCmd;
-		}
+		if(g > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 2] = (0xF0 - BRIGHT_STEP -1);
+		else if(g < 0)					memory_map[MaCaco_OUT_s + slot + 2] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 2] = g;
 
-		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T1n_Timed;			// Set a timer for the state notification
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-	}
-	else
-	{	// There is no command
-
-		if(memory_map[MaCaco_AUXIN_s + slot] > Souliss_T1n_Set)			// Decrese the timer value
-			memory_map[MaCaco_AUXIN_s + slot]--;
-		else if(memory_map[MaCaco_AUXIN_s + slot] > 0)					// If we not getting new commands, the burst
-		{																// is done, send the actual state
-			memory_map[MaCaco_AUXIN_s + slot] = 0;
-			i_trigger = Souliss_TRIGGED;
-		}
+		if(b > (0xF0 - BRIGHT_STEP -1))	memory_map[MaCaco_OUT_s + slot + 3] = (0xF0 - BRIGHT_STEP -1);
+		else if(b < 0)					memory_map[MaCaco_OUT_s + slot + 3] = 0;
+		else							memory_map[MaCaco_OUT_s + slot + 3] = b;
+			
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
 	}
 
 	// Update the trigger
 	if(i_trigger)
 		*trigger = i_trigger;
-
-	return i_trigger;
-
+	
+	return i_trigger;	
+	
 }
 
-/**************************************************************************/
+/**************************************************************************
 /*!
 	Timer associated to T16
-*/
+*/	
 /**************************************************************************/
 void Souliss_T16_Timer(U8 *memory_map, U8 slot)
 {
-	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)		// Memory value is used as timer
+	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed)	
 	{
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
+		// Set the good night mode
+		if(memory_map[MaCaco_OUT_s + slot] != Souliss_T1n_GoodNight)
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_GoodNight;
+		
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
+		memory_map[MaCaco_IN_s + slot + 1] = Souliss_T1n_RstCmd;
+		memory_map[MaCaco_IN_s + slot + 2] = Souliss_T1n_RstCmd;
+		memory_map[MaCaco_IN_s + slot + 3] = Souliss_T1n_RstCmd;
+	}	
 
-		// Decrease timer and check the expiration
-		if((--memory_map[MaCaco_IN_s + slot]) == Souliss_T1n_Timed)
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;
-
-		// Bright down the light
-		for(U8 i=1;i<4;i++)
-			if(memory_map[MaCaco_OUT_s + slot + i])
-				memory_map[MaCaco_OUT_s + slot + i]--;
-			else
-				memory_map[MaCaco_OUT_s + slot + i] = 0;
-
-		// If there is no more light, declare it off
-		if((memory_map[MaCaco_OUT_s + slot + 1] == Souliss_T1n_OffCoil) && (memory_map[MaCaco_OUT_s + slot + 2] == Souliss_T1n_OffCoil)
-			&& (memory_map[MaCaco_OUT_s + slot + 3] == Souliss_T1n_OffCoil))
-		{
-			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;		// Reset
-		}
-	}
+	// Decrease brightness and check the expiration
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight) && (memory_map[MaCaco_AUXIN_s + slot] <= (LYT_MinBright+BRIGHT_STEP)))	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_OffCmd;	
+	else if((memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_GoodNight))	
+		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_BrightDown;
+	
 }
 
 /**************************************************************************/
