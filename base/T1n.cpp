@@ -634,23 +634,18 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		i_trigger = Souliss_TRIGGED;									// Trig the change
 
 		// Fade out and turn off the light step wise
-		while(memory_map[MaCaco_OUT_s + slot + 1] || memory_map[MaCaco_OUT_s + slot + 2] || memory_map[MaCaco_OUT_s + slot + 3])
-		{
-			if(memory_map[MaCaco_OUT_s + slot + 1])
-				memory_map[MaCaco_OUT_s + slot + 1]--;
+		if(memory_map[MaCaco_OUT_s + slot + 1])
+			memory_map[MaCaco_OUT_s + slot + 1]--;
 
-			if(memory_map[MaCaco_OUT_s + slot + 2])
-				memory_map[MaCaco_OUT_s + slot + 2]--;
+		if(memory_map[MaCaco_OUT_s + slot + 2])
+			memory_map[MaCaco_OUT_s + slot + 2]--;
 
-			if(memory_map[MaCaco_OUT_s + slot + 3])
-				memory_map[MaCaco_OUT_s + slot + 3]--;
-
-			// Delay to have a visible fade
-			delay(FADETIME);
-		}
+		if(memory_map[MaCaco_OUT_s + slot + 3])
+			memory_map[MaCaco_OUT_s + slot + 3]--;
 
 		// Once is off, reset
-		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset		
+		if(!((memory_map[MaCaco_OUT_s + slot + 1]) && (memory_map[MaCaco_OUT_s + slot + 2]) && (memory_map[MaCaco_OUT_s + slot + 3])))
+			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;		// Reset		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
