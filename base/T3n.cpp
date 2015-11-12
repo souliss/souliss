@@ -182,13 +182,6 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 				else {															// Cooling is already off -> do nothing 
 					i_trigger = Souliss_NOTTRIGGED;					
 				}
-				if(memory_map[MaCaco_OUT_s + slot] | ~Souliss_T3n_CoolingOn) {  // Cooling is already off -> do nothing
-					i_trigger = Souliss_NOTTRIGGED;	
-				}
-				else {
-					memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingOn;	// Stop the heating 
-					memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_CoolingOn;	// Stop the cooling
-				} 
 			}
 			else {
 				i_trigger = Souliss_NOTTRIGGED;									// No action, no need for trig	
