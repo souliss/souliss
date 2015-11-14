@@ -303,7 +303,7 @@ private:
   uint16_t RBASE[SOCKETS]; // Rx buffer base address
 
 private:
-#if (BOARD_MODEL == 0x0C)  								                  // Controllino
+#if (BOARD_MODEL == 0x0C)  								     // Controllino
 	inline static void initSS()    { DDRJ  |=  _BV(3); };
 	inline static void setSS()     { PORTJ &= ~_BV(3); };
 	inline static void resetSS()   { PORTJ |=  _BV(3); };

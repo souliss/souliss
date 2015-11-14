@@ -351,9 +351,9 @@ private:
   inline static void setSS()     { PORTL &= ~_BV(0); };
   inline static void resetSS()   { PORTL |=  _BV(0); }; 
 #elif (BOARD_MODEL == 0x0A)  								// Moteino use the PORTB2 for the onboard radio
-  inline static void initSS()    { DDRB  |=  _BV(0); };
-  inline static void setSS()     { PORTB &= ~_BV(0); };
-  inline static void resetSS()   { PORTB |=  _BV(0); };   
+  inline static void initSS()    { DDRB  |=  _BV(7); };
+  inline static void setSS()     { PORTB &= ~_BV(7); };
+  inline static void resetSS()   { PORTB |=  _BV(7); };   
 #else
   inline static void initSS()    { DDRB  |=  _BV(2); };
   inline static void setSS()     { PORTB &= ~_BV(2); };
