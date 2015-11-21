@@ -78,7 +78,7 @@ void loop()
         UPDATESLOW();
         
         SLOW_10s() {
-            LYTStateRequest(LYTLIGHT1);     // Request the lamp state
+            LYTStateRequest();              // Request the lamp state
         }
     }
 } 
