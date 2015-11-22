@@ -228,8 +228,12 @@ void Souliss_LYTState(U8* memory_map, U8 slot, U8* trigger)
 		LYT[index].answer_timeout--;
 	else if(LYT[index].answer_timeout == ANSWER_TIMEOUT)
 	{
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;
-		*trigger = MaCaco_DATACHANGED;		
+		// If the state was ON, set OFF
+		if(memory_map[MaCaco_OUT_s + slot]) 
+		{
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;
+			*trigger = MaCaco_DATACHANGED;
+		}		
 	}
 }	
 
