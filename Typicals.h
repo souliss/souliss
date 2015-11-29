@@ -103,12 +103,10 @@
 #define Souliss_T1n_BrightDefault		0xAA		// Default Bright Value
 
 // Useful defines for T16
-#define	Souliss_MAXBRIGHT				0xFF
-#define	Souliss_MEDBRIGHT				0x50
-#define	Souliss_MINBRIGHT				0x00
-#define	BRIGHT_STEP						15
-#define	BRIGHT_DEFAULT					Souliss_MEDBRIGHT
-#define FADETIME						5
+#define	Souliss_T1n_MaxBright			0xFF
+#define	Souliss_T1n_MinBright			0x00
+#define	Souliss_T1n_BrightStep			0x0A
+#define	Souliss_T1n_BrightDefault		0x50
 
 /*
 
