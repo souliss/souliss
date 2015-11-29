@@ -644,7 +644,7 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_OUT_s + slot + 3]--;
 
 		// Once is off, reset
-		if(!((memory_map[MaCaco_OUT_s + slot + 1]) && (memory_map[MaCaco_OUT_s + slot + 2]) && (memory_map[MaCaco_OUT_s + slot + 3])))
+		if(!(memory_map[MaCaco_OUT_s + slot + 1]) && !(memory_map[MaCaco_OUT_s + slot + 2]) && !(memory_map[MaCaco_OUT_s + slot + 3]))
 			memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;		// Reset		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
