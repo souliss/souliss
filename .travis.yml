@@ -12,7 +12,7 @@ before_install:
   - ln -s $PWD $HOME/arduino_ide/libraries/souliss
   - export PATH="$HOME/arduino_ide:$PATH"
 install:
-  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266_index.json" --save-prefs
+  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
   - arduino --install-boards esp8266:esp8266 --save-prefs
 
 script:
