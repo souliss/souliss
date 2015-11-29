@@ -24,7 +24,7 @@
 */
 
 #include "MODRGB.h"
-#include "tools/I2C/I2C.c"
+#include "tools/I2C/mcu_avr/I2C.c"
 
 // Define the I2C data buffer
 uint8_t	mRGB_cmd[7] = {OLIMEX, 0, ADDRESS, 0, 0, 0};
