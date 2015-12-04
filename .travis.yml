@@ -35,17 +35,17 @@ env:
     - PLATFORMIO_CI_SRC=examples/IONO/e01_HelloWorld/e01_HelloWorld.ino
     - PLATFORMIO_CI_SRC=examples/IONO/e02_FollowMe_n1/e02_FollowMe_n1.ino
     - PLATFORMIO_CI_SRC=examples/IONO/e02_FollowMe_n2/e02_FollowMe_n2.ino
-    - PLATFORMIO_CI_SRC=examples/LYTBulb/e01_LYTBulb_Arduino/e01_LYTBulb_Arduino.ino
+    # - PLATFORMIO_CI_SRC=examples/LYTBulb/e01_LYTBulb_Arduino/e01_LYTBulb_Arduino.ino
     - PLATFORMIO_CI_SRC=examples/LYTBulb/e01_LYTBulb_ESP8266/e01_LYTBulb_ESP8266.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=esp01"
-    - PLATFORMIO_CI_SRC=examples/LYTBulb/e02_LYT8266_WiFi_Bulb/e02_LYT8266_WiFi_Bulb.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=esp01"
+    # - PLATFORMIO_CI_SRC=examples/LYTBulb/e02_LYT8266_WiFi_Bulb/e02_LYT8266_WiFi_Bulb.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=esp01"
     - PLATFORMIO_CI_SRC=examples/LYTBulb/e02_LYT8266_WiFi_Erase/e02_LYT8266_WiFi_Erase.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=esp01"
     - PLATFORMIO_CI_SRC=examples/Olimex/e01_Olimex_LEDs/e01_Olimex_LEDs.ino
     - PLATFORMIO_CI_SRC=examples/Olimex/e02_Olimex_Lights/e02_Olimex_Lights.ino
     - PLATFORMIO_CI_SRC=examples/Olimex/e03_Olimex_RGBStrip/e03_Olimex_RGBStrip.ino
     - PLATFORMIO_CI_SRC=examples/Olimex/e04_Olimex_ESP8266-EVB/e04_Olimex_ESP8266-EVB.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=esp01"
     # - PLATFORMIO_CI_SRC=examples/Olimex/e05_Olimex_ESP8266-EVB_MOD-MPU6050/e05_Olimex_ESP8266-EVB_MOD-MPU6050.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=esp01"
-    - PLATFORMIO_CI_SRC=examples/others/e01_AndroidRGBLamp/e01_AndroidRGBLamp.ino
-    - PLATFORMIO_CI_SRC=examples/others/e02_AndroidAirConditioner/e02_AndroidAirConditioner.ino
+    - PLATFORMIO_CI_SRC=examples/others/e01_AndroidRGBLamp/e01_AndroidRGBLamp.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=uno"
+    - PLATFORMIO_CI_SRC=examples/others/e02_AndroidAirConditioner/e02_AndroidAirConditioner.ino PLATFORMIO_CI_SPECIAL_ARGS="--board=uno"
     - PLATFORMIO_CI_SRC=examples/others/e03_RGBStrip/e03_RGBStrip.ino
     - PLATFORMIO_CI_SRC=examples/others/e04_TwinStrips_n1/e04_TwinStrips_n1.ino
     - PLATFORMIO_CI_SRC=examples/others/e04_TwinStrips_n2/e04_TwinStrips_n2.ino
