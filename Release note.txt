@@ -1,9 +1,9 @@
 Souliss
 Copyright (C) 2011-2015
 
-Release note for revision v7.1.1, on dd/mm/2015
+Release note for revision v7.1.1, on 12/12/2015
 	
-	Minor bugfix.
+	Patch release, minor bugfix and improvements.
 
 Release note for revision v7.1, on 14/10/2015 (Maker Faire 2015 Edition)
 
