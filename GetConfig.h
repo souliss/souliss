@@ -26,6 +26,10 @@
 #ifndef GENCONF_H
 #define GENCONF_H
 
+#ifndef SERIALPORT_INSKETCH
+  #define LOG Serial
+ #endif
+
 // Include configuration files
 #include "conf/frame/MaCacoCfg.h"
 #include "conf/uIP/uIPopt.h"

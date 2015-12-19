@@ -94,7 +94,7 @@
 #endif	
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print	
+	#define VNET_LOG LOG.print	
 #endif
 
 // Routing and bridging tables

@@ -175,7 +175,7 @@ struct uip_stats uip_stat;
 
 #if UIP_LOGGING == 1
 #include <stdio.h>
-void uip_log(char *msg){Serial.println(msg);}
+void uip_log(char *msg){LOG.println(msg);}
 #define UIP_LOG(m) uip_log(m)
 #else
 #define UIP_LOG(m)

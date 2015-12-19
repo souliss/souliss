@@ -52,7 +52,7 @@ typedef struct
 	U8  slot;								// Node Slot
 } CommandBufferHeader;
 
-#define XMLSERVER_LOG Serial.print
+#define XMLSERVER_LOG LOG.print
 
 #if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
 void XMLSERVERInit(U8 *memory_map);

@@ -33,7 +33,7 @@
 /**************************************************************************/
 
 #include "oFrame.h"
-#define oFRAME_LOG 		Serial.print
+#define oFRAME_LOG 		LOG.print
 
 #define MAX_BUSYCYCLE	5				// Max on number of cycle before auto-reset of the frame
 

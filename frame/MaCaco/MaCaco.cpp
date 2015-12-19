@@ -75,7 +75,7 @@ extern bool addrsrv;
 #endif
 
 #if (MaCaco_DEBUG)
-	#define MaCaco_LOG Serial.print
+	#define MaCaco_LOG LOG.print
 #endif
 
 /**************************************************************************/
