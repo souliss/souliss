@@ -50,7 +50,7 @@ extern uint8_t vNetM1_header;
 extern TCPIP stack;
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print	
+	#define VNET_LOG LOG.print	
 #endif
 
 /**************************************************************************/

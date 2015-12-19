@@ -51,7 +51,7 @@
 #define USART_TXENABLE				1
 #define USART_TXENPIN				0				// The TXENABLE pin is not mapped
 #define	USARTDRIVER					Serial3	
-#define USART_LOG 					Serial.print
+#define USART_LOG 					LOG.print
 
 
 #endif

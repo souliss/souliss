@@ -226,7 +226,7 @@
 #	define SOULISS_DEBUG  		0
 #endif
 
-#define SOULISS_LOG 			Serial.print	// Define the output peripheral for the debug
+#define SOULISS_LOG 			LOG.print	// Define the output peripheral for the debug
 
 #endif
 							  

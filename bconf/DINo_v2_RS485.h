@@ -48,7 +48,7 @@
 #define USART_TXENABLE				1
 #define USART_TXENPIN				3
 #define	USARTDRIVER					Serial1	
-#define USART_LOG 					Serial.print
+#define USART_LOG 					LOG.print
 
 #endif
 
