@@ -27,6 +27,11 @@
 #ifndef SOULISS_CFG_H
 #define SOULISS_CFG_H
 
+
+#ifndef SERIALPORT_INSKETCH
+  #define LOG Serial
+#endif
+
 /**************************************************************************/
 /*!
 	The HTTP server is listening on the port number 80 and parse remote 
