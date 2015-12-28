@@ -172,8 +172,6 @@ void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 		#include "interfaces/mcu_avr/HTTP_uIP.cpp"
 	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
 	#	include "interfaces/mcu_avr/XMLServer_HTTP.cpp"
-	#elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-	#	include "interfaces/mcu_avr/XMLServer_UDP.cpp"
 	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
 	#	include "interfaces/mcu_avr/XMLServer_HTTP_uIP.cpp"
 	#elif(MODBUS)

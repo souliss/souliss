@@ -954,17 +954,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			#if(MaCaco_PERSISTANCE)
 			if(rx->numberof)
 				memmove((memory_map+MaCaco_P_TYP_s+(nodeindex*MaCaco_TYPLENGHT)), rx->data, rx->numberof);
-			#elif(MaCaco_LASTIN)		// LASTIN is active, store the last information
-			
-			// Identify the first and last slot in the typical 5n group (analogue values)
-			// this is an unconventional check at this layer, typicals are handled at a top
-			// level
-			i=0;
-			while(((*(rx->data+i) & 0xF0) != 0x50) && i < MaCaco_SLOT)	i++;
-			*(memory_map+MaCaco_L_TYP5n_s+2*nodeindex) = i; 
-					
-			while((((*(rx->data+i) == 0xFF) && ((*(rx->data+i) & 0xF0) == 0x50))  && i < MaCaco_SLOT))	i++;
-			*(memory_map+MaCaco_L_TYP5n_s+2*nodeindex+1) = i;
 			#endif
 			
 			if(reqtyp_addr)		// If there is a stored address from a User Interface
@@ -1005,13 +994,17 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 				// Identify a free space into the LASTIN data area
 				i=0;
 				while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
-								
-				// Store the node index
-				*(memory_map+MaCaco_L_IDX_s+i) = nodeindex;
-				
-				// Store data
-				if((i != MaCaco_L_BUFSIZE) && (rx->numberof))
+
+				if(rx->numberof)
+				{
+					// If there is now free space, overwrite the oldest data
+					if((i == MaCaco_L_BUFSIZE))		i = 0;
+
+					// Store node index and data
+					*(memory_map+MaCaco_L_IDX_s+i) = nodeindex;
 					memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), rx->data, rx->numberof);
+
+				}
 				#endif
 						
 				// Send the data to all subscribers
@@ -1119,14 +1112,15 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 			U16 i=0;
 			while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
 
-			if(i != MaCaco_L_BUFSIZE)
-			{		
-				// Store the node index
-				*(memory_map+MaCaco_L_IDX_s+i) = 0;											// Local node has index 0
+			// Store data in the free space or overwrite the oldest data
+			if(i != MaCaco_L_BUFSIZE)	i = 0;
+
+			// Store the node index
+			*(memory_map+MaCaco_L_IDX_s+i) = 0;									// Local node has index 0
 								
-				// Store the data
-				memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
-			}	
+			// Store the data
+			memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
+
 		#endif
 	}	
 		
@@ -1585,23 +1579,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	#elif(MaCaco_LASTIN)			// LOCALIN is active, store data	
 		// Clear the index list
 		for(i=0;i<MaCaco_L_BUFSIZE;i++)
-			*(memory_map+MaCaco_L_IDX_s+i) = MaCaco_L_IDX_NULL;
-		
-		// Clear the typical list
-		for(i=0;i<(2*MaCaco_NODES);i++)
-			*(memory_map+MaCaco_L_TYP5n_s+i) = MaCaco_SLOT;			// This is the index of the first and last
-																	// analog T5n type typical logic, we set it
-																	// at last available value.
-		
-		// Identify the first and last slot in the typical 5n group (analogue values) 
-		// this an unconventional check at this layer
-		i=0;
-		while(((*(memory_map+MaCaco_TYP_s+i) & 0xF0) != 0x50) && i < MaCaco_SLOT)	i++;
-		*(memory_map+MaCaco_L_TYP5n_s) = i; 
-				
-		while(((*(memory_map+MaCaco_TYP_s+i) == 0xFF) || ((*(memory_map+MaCaco_TYP_s+i) & 0xF0) == 0x50))  && i < MaCaco_SLOT)	i++;
-		*(memory_map+MaCaco_L_TYP5n_s+1) = i;
-		
+			*(memory_map+MaCaco_L_IDX_s+i) = MaCaco_L_IDX_NULL;		
 	#endif
 							
 	/** Create a permanent data subscription as it was received by an user interface **/
