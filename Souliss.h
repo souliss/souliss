@@ -125,6 +125,13 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
 void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
+#if(MaCaco_LASTIN)
+U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id);
+void Souliss_LastIn_ClearData(U8 *memory_map, U8 id);
+U8 Souliss_LastIn_GetData(U8 *memory_map, U8 id, U8 slot);
+float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
+#endif
+
 #if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
 #	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
 #		include "interfaces/mcu_avr/HTTP.h"
@@ -193,6 +200,7 @@ void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "base/LocalIO.cpp"
 #include "base/RemoteIO.cpp"
 #include "base/NetworkSetup.cpp"
+#include "base/LastIn.cpp"
 #include "base/T1n.cpp"
 #include "base/T2n.cpp"
 #include "base/T3n.cpp"

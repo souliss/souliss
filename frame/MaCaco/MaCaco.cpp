@@ -1613,6 +1613,7 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 }
 #endif
 
+#if(MaCaco_LASTIN)
 /**************************************************************************/
 /*!
     Return if are LASTIN data available
@@ -1662,12 +1663,36 @@ U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber)
 	
 	if(i == MaCaco_L_BUFSIZE)
 		return MaCaco_L_IDX_NULL;										// No new data
+		
+	// Return the index
+	return i;
+}
+
+/**************************************************************************/
+/*!
+    Clear the index of the first available value into the LASTIN 
+	data area, use this when all data from a node has been parsed
+*/
+/**************************************************************************/
+U8 MaCaco_ClearLastIndex(U8 *memory_map, U8 nodenumber)
+{
+	// Get the index
+	U8 i=0;
+	
+	if(nodenumber == MaCaco_L_IDX_NULL)
+		return MaCaco_L_IDX_NULL;
+	
+	while((*(memory_map+MaCaco_L_IDX_s+i) != nodenumber) && (i < MaCaco_L_BUFSIZE))	i++;
+	
+	if(i == MaCaco_L_BUFSIZE)
+		return MaCaco_L_IDX_NULL;										// No new data
 	
 	*(memory_map+MaCaco_L_IDX_s+i) = MaCaco_L_IDX_NULL;
 	
 	// Return the index
 	return i;
 }
+#endif
 
 /**************************************************************************/
 /*!

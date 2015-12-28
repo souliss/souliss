@@ -308,6 +308,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define RemoteDigInHold											Souliss_RemoteDigInHold
 #define RemoteLowDigInHold										Souliss_RemoteLowDigInHold
 
+#define LastIn_IsData(id)										Souliss_LastIn_IsData(memory_map, id)
+#define LastIn_ClearData(id)									Souliss_LastIn_ClearData(memory_map, id)
+#define LastIn_GetData(id, slot) 								Souliss_LastIn_GetData(memory_map, id, slot)
+#define LastIn_GetAnalog(id, slot)								Souliss_LastIn_GetAnalog(memory_map, id, slot)
 
 /*****************************************/
 
