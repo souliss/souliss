@@ -27,11 +27,6 @@
 #ifndef SOULISS_CFG_H
 #define SOULISS_CFG_H
 
-
-#ifndef SERIALPORT_INSKETCH
-  #define LOG Serial
-#endif
-
 /**************************************************************************/
 /*!
 	The HTTP server is listening on the port number 80 and parse remote 
@@ -231,7 +226,22 @@
 #	define SOULISS_DEBUG  		0
 #endif
 
-#define SOULISS_LOG 			Serial.print	// Define the output peripheral for the debug
+/**************************************************************************/
+/*!
+	Define an object for debug messages, this can be an USART or any other
+	type of object that support print method.
+*/
+/**************************************************************************/
+#ifndef SERIALPORT_INSKETCH
+#	define LOG 					Serial
+#endif
+
+/**************************************************************************/
+/*!
+	Define the specific print output for debug messages
+*/
+/**************************************************************************/
+#define SOULISS_LOG 			LOG.print
 
 #endif
 							  
