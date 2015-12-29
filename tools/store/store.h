@@ -13,6 +13,7 @@
 #define	STORE__DEFAULTID	0xABCD
 						
 #define STORE__INDEX		0												// The first byte allocated in the EEPROM
+#define STORE_USERSPACE		40												// Bytes reserver for users
 
 #define STORE__ID_s			0												// Identifier (2 bytes)
 #define	STORE__ADDR_s		2												// Address M1 to M5 (2 bytes per address)
@@ -35,11 +36,13 @@
 #define	STORE__WIFIPSW_f	(STORE__WIFIPSW_s+64)
 #define STORE__USERMODE_s	(STORE__WIFIPSW_f+1)							// User Mode Addresses
 #define STORE__USERMODE_f	(STORE__USERMODE_s+UMODE_USERS*2)
-#define	STORE__USABLESIZE	(STORE__USERMODE_f+1)
+#define STORE__USERSPACE_s	(STORE__USERMODE_f+1)
+#define STORE__USERSPACE_f	(STORE__USERSPACE_s+STORE_USERSPACE)
+#define	STORE__USABLESIZE	(STORE__USERSPACE_f+1)
 #define	STORE__SIZE			(STORE__INDEX+STORE__USABLESIZE)
 
 #if(DYNAMICADDRESSING)
-#	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__SIZE+1)
+#	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__USERSPACE_s)
 #else
 #	define	FIRST_EEPROM_BYTE	(STORE__INDEX+1)	
 #endif
