@@ -125,6 +125,11 @@ U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
 void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 
+#if(MaCaco_PERSISTANCE)
+U8 Souliss_Persistence_IsData(U8 *memory_map, U8 id);
+void Souliss_Persistence_ClearData(U8 *memory_map, U8 id);
+#endif
+
 #if(MaCaco_LASTIN)
 U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id);
 void Souliss_LastIn_ClearData(U8 *memory_map, U8 id);
@@ -201,6 +206,7 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 #include "base/RemoteIO.cpp"
 #include "base/NetworkSetup.cpp"
 #include "base/LastIn.cpp"
+#include "base/Persistence.cpp"
 #include "base/T1n.cpp"
 #include "base/T2n.cpp"
 #include "base/T3n.cpp"

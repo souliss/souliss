@@ -989,7 +989,17 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 
 				#if(MaCaco_PERSISTANCE)		// PERSISTENCE is active, store information
 				if(rx->numberof)
+				{
 					memmove((memory_map+MaCaco_P_OUT_s+(nodeindex*MaCaco_OUTLENGHT)), rx->data, rx->numberof);
+					
+					// Look for a free entry
+					i=0;
+					while((*(memory_map+MaCaco_P_IDX_s+i) != MaCaco_P_IDX_NULL) && (i < MaCaco_P_BUFSIZE))	i++;
+					
+					// If there is now free space, overwrite the oldest data
+					if((i == MaCaco_P_BUFSIZE))		i = 0;
+					*(memory_map+MaCaco_P_IDX_s+i) = nodeindex;			
+				}
 				#elif(MaCaco_LASTIN)		// LASTIN is active, store the last information
 				// Identify a free space into the LASTIN data area
 				i=0;
@@ -1107,6 +1117,15 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 		
 		#if(MaCaco_PERSISTANCE)			// PERSISTENCE is active, store data
 			memmove((memory_map+MaCaco_P_OUT_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
+
+			// Look for a free entry
+			U16 i=0;
+			while((*(memory_map+MaCaco_P_IDX_s+i) != MaCaco_P_IDX_NULL) && (i < MaCaco_P_BUFSIZE))	i++;
+
+			// Store data in the free space or overwrite the oldest data
+			if(i != MaCaco_P_BUFSIZE)	i = 0;
+			*(memory_map+MaCaco_P_IDX_s+i) = 0;									// Local node has index 0
+
 		#elif(MaCaco_LASTIN)			// LOCALIN is active, store data
 			// Identify a free space into the LASTIN data area
 			U16 i=0;
@@ -1575,7 +1594,12 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	/** Init the typicals **/
 
 	#if(MaCaco_PERSISTANCE)			// PERSISTENCE is active, store data
-		memmove((memory_map+MaCaco_P_TYP_s), (memory_map+MaCaco_TYP_s), MaCaco_SLOT);		
+		memmove((memory_map+MaCaco_P_TYP_s), (memory_map+MaCaco_TYP_s), MaCaco_SLOT);
+
+		// Clear the index list
+		for(i=0;i<MaCaco_P_BUFSIZE;i++)
+			*(memory_map+MaCaco_P_IDX_s+i) = MaCaco_P_IDX_NULL;
+
 	#elif(MaCaco_LASTIN)			// LOCALIN is active, store data	
 		// Clear the index list
 		for(i=0;i<MaCaco_L_BUFSIZE;i++)
@@ -1610,6 +1634,87 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	// Flag that the request shall be processed for all nodes, this is used at an upper level
 	reqtyp_times = MaCaco_NODES;		
 			
+}
+#endif
+
+#if(MaCaco_PERSISTANCE)
+/**************************************************************************/
+/*!
+    Return if are PERSISTENCE data available 
+*/
+/**************************************************************************/
+U8 MaCaco_isPersistence(U8 *memory_map)
+{
+	if(MaCaco_GetPersistence(memory_map) == MaCaco_P_IDX_NULL)
+		return MaCaco_FUNCODE_ERR;
+		
+	return MaCaco_FUNCODE_OK;
+}
+
+/**************************************************************************/
+/*!
+    Return the node number of the first available value into the PERSISTENCE 
+	data area
+*/
+/**************************************************************************/
+U8 MaCaco_GetPersistence(U8 *memory_map)
+{
+	// Get the index
+	U8 i=0;
+	while((*(memory_map+MaCaco_P_IDX_s+i) == MaCaco_P_IDX_NULL) && (i < MaCaco_P_BUFSIZE))	i++;
+	
+	if(i == MaCaco_P_BUFSIZE)
+		return MaCaco_P_IDX_NULL;										// No new data
+	
+	return *(memory_map+MaCaco_P_IDX_s+i);
+}
+
+/**************************************************************************/
+/*!
+    Return the index of the first available value into the PERSISTENCE 
+	data area
+*/
+/**************************************************************************/
+U8 MaCaco_GetPersistenceIndex(U8 *memory_map, U8 nodenumber)
+{
+	// Get the index
+	U8 i=0;
+	
+	if(nodenumber == MaCaco_P_IDX_NULL)
+		return MaCaco_P_IDX_NULL;
+	
+	while((*(memory_map+MaCaco_P_IDX_s+i) != nodenumber) && (i < MaCaco_P_BUFSIZE))	i++;
+	
+	if(i == MaCaco_P_BUFSIZE)
+		return MaCaco_P_IDX_NULL;										// No new data
+		
+	// Return the index
+	return i;
+}
+
+/**************************************************************************/
+/*!
+    Clear the index of the first available value into the PERSISTENCE 
+	data area, use this when all data from a node has been parsed
+*/
+/**************************************************************************/
+U8 MaCaco_ClearPersistenceIndex(U8 *memory_map, U8 nodenumber)
+{
+	// Get the index
+	U8 i=0;
+	
+	if(nodenumber == MaCaco_P_IDX_NULL)
+		return MaCaco_P_IDX_NULL;
+	
+	while((*(memory_map+MaCaco_P_IDX_s+i) != nodenumber) && (i < MaCaco_P_BUFSIZE))	i++;
+	
+	if(i == MaCaco_P_BUFSIZE)
+		return MaCaco_P_IDX_NULL;										// No new data
+	
+	*(memory_map+MaCaco_P_IDX_s+i) = MaCaco_P_IDX_NULL;
+	
+	// Return the index
+	return i;
 }
 #endif
 
