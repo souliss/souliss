@@ -14,12 +14,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+	
 	Originally developed by Dario Di Maio
-
+	
 ***************************************************************************/
 /*!
-    \file
+    \file 
     \ingroup
 */
 
@@ -35,7 +35,7 @@
 /**************************************************************************/
 /*!
 	Return if data are available from a node id
-*/
+*/	
 /**************************************************************************/
 U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id)
 {
@@ -45,7 +45,7 @@ U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id)
 /**************************************************************************/
 /*!
 	Clear data if available from a node id
-*/
+*/	
 /**************************************************************************/
 void Souliss_LastIn_ClearData(U8 *memory_map, U8 id)
 {
@@ -55,22 +55,22 @@ void Souliss_LastIn_ClearData(U8 *memory_map, U8 id)
 /**************************************************************************/
 /*!
 	Return data from a node id and slot, if any
-*/
+*/	
 /**************************************************************************/
 U8 Souliss_LastIn_GetData(U8 *memory_map, U8 id, U8 slot)
 {
-	U8 index = MaCaco_GetLastIndex(memory_map, id);
+	U8 index = MaCaco_GetLastIndex(memory_map, U8 id);
 	return *(memory_map+MaCaco_G_OUT_s+(index*MaCaco_SLOT)+slot);
 }
 
 /**************************************************************************/
 /*!
 	Return data as floating point from a node id and slot, if any
-*/
+*/	
 /**************************************************************************/
 float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot)
 {
-	U8 index = MaCaco_GetLastIndex(memory_map, id);
+	U8 index = MaCaco_GetLastIndex(memory_map, U8 id);
 	return Souliss_SinglePrecisionFloating(memory_map+MaCaco_G_OUT_s+(index*MaCaco_SLOT)+slot);
 }
 #endif
