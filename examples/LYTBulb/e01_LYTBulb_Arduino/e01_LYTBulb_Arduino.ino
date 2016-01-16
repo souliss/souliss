@@ -13,6 +13,10 @@
     chip select for the radio.
     
 ***************************************************************************/
+
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/StandardArduino.h"              // Use an Arduino board
 #include "bconf/LYT88_LEDBulb_Radio.h"          // Define the board type
 #include "conf/usart_fast.h"                    // Ethernet through Wiznet W5100
