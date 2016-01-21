@@ -39,7 +39,7 @@
 /**************************************************************************/
 U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id)
 {
-	return (MaCaco_GetLastIn(memory_map) == id);
+	return (MaCaco_GetLastIn(memory_map, id) == id);
 }
 
 /**************************************************************************/

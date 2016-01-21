@@ -1132,7 +1132,7 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 			while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
 
 			// Store data in the free space or overwrite the oldest data
-			if(i != MaCaco_L_BUFSIZE)	i = 0;
+			if(i == MaCaco_L_BUFSIZE)	i = 0;
 
 			// Store the node index
 			*(memory_map+MaCaco_L_IDX_s+i) = 0;									// Local node has index 0
@@ -1738,11 +1738,11 @@ U8 MaCaco_isLastIn(U8 *memory_map)
 	data area
 */
 /**************************************************************************/
-U8 MaCaco_GetLastIn(U8 *memory_map)
+U8 MaCaco_GetLastIn(U8 *memory_map, U8 nodenumber)
 {
 	// Get the index
 	U8 i=0;
-	while((*(memory_map+MaCaco_L_IDX_s+i) == MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
+	while((*(memory_map+MaCaco_L_IDX_s+i) != nodenumber) && (i < MaCaco_L_BUFSIZE))	i++;
 	
 	if(i == MaCaco_L_BUFSIZE)
 		return MaCaco_L_IDX_NULL;										// No new data
