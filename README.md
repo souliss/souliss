@@ -1,4 +1,4 @@
-# souliss [![Build Status](https://travis-ci.org/souliss/souliss.svg)](https://travis-ci.org/souliss/souliss)
+# souliss [![Build Status](https://travis-ci.org/souliss/souliss.svg?branch=new_lastin)](https://travis-ci.org/souliss/souliss)
 
 [![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orgs/souliss/rooms#)
 
