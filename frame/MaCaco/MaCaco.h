@@ -71,7 +71,6 @@ U8 MaCaco_isPersistence(U8 *memory_map);
 U8 MaCaco_GetPersistence(U8 *memory_map);
 U8 MaCaco_GetPersistenceIndex(U8 *memory_map, U8 nodenumber);
 U8 MaCaco_ClearPersistenceIndex(U8 *memory_map, U8 nodenumber);
-U8 MaCaco_isLastIn(U8 *memory_map);
 U8 MaCaco_GetLastIn(U8 *memory_map, U8 nodenumber);
 U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber);
 U8 MaCaco_ClearLastIndex(U8 *memory_map, U8 nodenumber);

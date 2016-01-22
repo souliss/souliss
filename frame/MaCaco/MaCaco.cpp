@@ -1721,19 +1721,6 @@ U8 MaCaco_ClearPersistenceIndex(U8 *memory_map, U8 nodenumber)
 #if(MaCaco_LASTIN)
 /**************************************************************************/
 /*!
-    Return if are LASTIN data available
-*/
-/**************************************************************************/
-U8 MaCaco_isLastIn(U8 *memory_map)
-{
-	if(MaCaco_GetLastIn(memory_map) == MaCaco_L_IDX_NULL)
-		return MaCaco_FUNCODE_ERR;
-		
-	return MaCaco_FUNCODE_OK;
-}
-
-/**************************************************************************/
-/*!
     Return the node number of the first available value into the LASTIN 
 	data area
 */
