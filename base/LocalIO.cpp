@@ -597,7 +597,7 @@ void Souliss_PulseLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	}
 	else if ((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINSET)
 	{
-		dWrite(pin, HIGH)		
+		dWrite(pin, HIGH);		
 	}
 	else if (memory_map[MaCaco_OUT_s + slot] != value)
 	{
