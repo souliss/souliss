@@ -12,6 +12,9 @@
         
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/Olimex_ESP8266EVB.h"              // Load the code directly on the ESP8266
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node

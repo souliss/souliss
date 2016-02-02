@@ -28,6 +28,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/Industruino.h"                                   // Define the board type
 
 // Include Industrino libraries

@@ -37,6 +37,7 @@
 #define	PINRELEASED			0x3
 #define	PIN_2STATE_RESET	0x4
 #define	PIN_2STATE_SET		0x5
+#define PINUSED			0x6
 
 // Use local defines to redefine the IO methods
 #ifndef	LOCAL_IO
@@ -361,12 +362,17 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 	}
 	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && (InPin[pin]==PINSET))
 	{
-		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
+		InPin[pin] = PINUSED;								// Stay there till pushbutton is released
 
 		// Write timer value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
 
 		return value_hold;
+	}
+	else if(dRead(pin) && (InPin[pin]==PINUSED))
+	{
+		InPin[pin] = PINRESET;
+		return MaCaco_NODATACHANGED;
 	}
 	else if(dRead(pin) && (InPin[pin]==PINSET))
 	{
@@ -428,33 +434,40 @@ U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot,
 /**************************************************************************/
 U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
 {
+	
 	// If pin is on, set the "value"
-	if(!dRead(pin) && !InPin[pin])
-	{
+	if(!dRead(pin) && !(InPin[pin]))
+	{	
 		time = millis();								// Record time
 
 		InPin[pin] = PINSET;
 		return MaCaco_NODATACHANGED;
 	}
-	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
-	{
+	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINUSED)))
+	{	
 		time = millis();
-		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
+		InPin[pin] = PINUSED;						// Stay there till pushbutton is released
 
 		// Write timer value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
 
 		return value_hold;
 	}
+	else if(dRead(pin) && (InPin[pin]==PINUSED))
+	{	
+		
+		InPin[pin] = PINRESET;
+		return MaCaco_NODATACHANGED;
+	}
 	else if(dRead(pin) && (InPin[pin]==PINSET))
-	{
+	{	
 		// Write input value in memory map
+		
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
-
+		
 		InPin[pin] = PINRESET;
 		return value;
 	}
-
 	return MaCaco_NODATACHANGED;
 }
 

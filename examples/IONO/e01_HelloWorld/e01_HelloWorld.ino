@@ -10,6 +10,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/IonoEthernet.h"             // Define the board type
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
 

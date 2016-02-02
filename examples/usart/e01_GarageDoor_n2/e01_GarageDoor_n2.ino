@@ -16,6 +16,9 @@
             
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/usart.h"                     // USART RS485

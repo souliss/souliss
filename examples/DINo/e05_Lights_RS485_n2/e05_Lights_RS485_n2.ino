@@ -36,6 +36,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/DINo_v2_RS485.h"                    // Define the board type
 
 // Include framework code and libraries

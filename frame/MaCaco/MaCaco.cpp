@@ -754,7 +754,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	
 	#if(DYNAMICADDRESSING && (MaCaco_USERMODE || VNET_SUPERNODE))	
 	// answer to a subnet request
-	if ((rx->funcode == MaCaco_SUBNETREQ) && (C8TO16(memory_map + MaCaco_ADDRESSES_s)))
+	if ((rx->funcode == MaCaco_SUBNETREQ))
 	{	
 		
 		// the startoffset is used as media number
