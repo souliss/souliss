@@ -278,8 +278,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	DigKeepHold(pin, value_state1,value_state2,slot)		Souliss_DigKeepHold(pin, value_state1, value_state2, memory_map, slot)
 #define	LowDigKeepHold(pin, value_state1,value_state2,slot)		Souliss_LowDigKeepHold(pin, value_state1, value_state2, memory_map, slot)
 #define DigOut(pin,value,slot)									Souliss_DigOut(pin, value, memory_map, slot)
+#define PulseDigOut(pin,value,slot)								Souliss_PulseDigOut(pin, value, memory_map, slot)
 #define nDigOut(pin,value,slot)									Souliss_nDigOut(pin, value, memory_map, slot)
 #define LowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
+#define PulseLowDigOut(pin,value,slot)							Souliss_PulseLowDigOut(pin, value, memory_map, slot)
 #define nLowDigOut(pin,value,slot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
 #define DigOutToggle(pin,value,slot)							Souliss_DigOutToggle(pin, value, memory_map, slot)
 #define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
@@ -398,7 +400,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 #define SetTrigger()				(data_changed=1);	
 #define ResetTrigger()				(data_changed=0);	
-#define	Initialize()				MaCaco_init(memory_map)
+#define	Initialize()				Souliss_Initialize(memory_map)
 #define	isTrigger()					data_changed
 
 #define SetInput(slot, value) 		mInput(slot) = value			
