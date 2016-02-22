@@ -49,7 +49,7 @@
 
 U8 InPin[MAXINPIN];
 U8 OutPin[MAXINPIN];
-static unsigned long time;
+static unsigned long souliss_time;
 
 /**************************************************************************/
 /*!
@@ -334,12 +334,12 @@ U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U
 	// If pin is on, set the "value"
 	if(dRead(pin) && (InPin[pin]==PINRESET))
 	{
-		time = millis();								// Record time
+		souliss_time = millis();								// Record time
 		InPin[pin] = PINSET;
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(dRead(pin) && (abs(millis()-time) > holdtime) && (InPin[pin]==PINSET))
+	else if(dRead(pin) && (abs(millis()-souliss_time) > holdtime) && (InPin[pin]==PINSET))
 	{
 		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
 
@@ -373,12 +373,12 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 	// If pin is on, set the "value"
 	if(!dRead(pin) && !InPin[pin])
 	{
-		time = millis();								// Record time
+		souliss_time = millis();								// Record time
 
 		InPin[pin] = PINSET;
 		return MaCaco_NODATACHANGED;
 	}
-	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && (InPin[pin]==PINSET))
+	else if(!dRead(pin) && (abs(millis()-souliss_time) > holdtime) && (InPin[pin]==PINSET))
 	{
 		InPin[pin] = PINUSED;								// Stay there till pushbutton is released
 
@@ -415,14 +415,14 @@ U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot,
 	// If pin is on, set the "value"
 	if(dRead(pin) && (InPin[pin]==PINRESET))
 	{
-		time = millis();								// Record time
+		souliss_time = millis();								// Record time
 		InPin[pin] = PINSET;
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(dRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
+	else if(dRead(pin) && (abs(millis()-souliss_time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
 	{
-		time = millis();
+		souliss_time = millis();
 		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
 
 		// Write timer value in memory map
@@ -456,14 +456,14 @@ U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 sl
 	// If pin is on, set the "value"
 	if(!dRead(pin) && !(InPin[pin]))
 	{	
-		time = millis();								// Record time
+		souliss_time = millis();								// Record time
 
 		InPin[pin] = PINSET;
 		return MaCaco_NODATACHANGED;
 	}
-	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINUSED)))
+	else if(!dRead(pin) && (abs(millis()-souliss_time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINUSED)))
 	{	
-		time = millis();
+		souliss_time = millis();
 		InPin[pin] = PINUSED;						// Stay there till pushbutton is released
 
 		// Write timer value in memory map
@@ -723,7 +723,7 @@ U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstS
 	if( InPin[pin] == PINRESET ) // it was unpressed before
 	{
 		InPin[pin] = PINSET;
-		time = millis();								// Record time
+		souliss_time = millis();								// Record time
 		// this is the first cycle detecting the button press: current input=1, previous input=0
 
 		// verify if some of the lights in the group are ON
@@ -748,7 +748,7 @@ U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstS
 		InPin[pin] = PINACTIVE;
 		return MaCaco_NODATACHANGED;
 	}
-	else if( InPin[pin]==PINACTIVE && (abs(millis()-time) > 0) && (abs(millis()-time) < step_duration) )
+	else if( InPin[pin]==PINACTIVE && (abs(millis()-souliss_time) > 0) && (abs(millis()-souliss_time) < step_duration) )
 	{
 		if(memory_map[MaCaco_OUT_s + firstSlot] != Souliss_T1n_OnCoil)
 		{
@@ -759,12 +759,12 @@ U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstS
 		}
 
 	}
-	else if( InPin[pin]==PINACTIVE && (abs(millis()-time) > step_duration) )
+	else if( InPin[pin]==PINACTIVE && (abs(millis()-souliss_time) > step_duration) )
 	{
 		// this cycle is executed while the button is kept pressed
 		// the current input is 1, the previous input was 1 and some time passed from the first press
 
-		U8 powered_lights_count = (U8) ( abs(millis()-time) / step_duration + 1 );
+		U8 powered_lights_count = (U8) ( abs(millis()-souliss_time) / step_duration + 1 );
 		if ( powered_lights_count > lastSlot - firstSlot + 1 )
 			powered_lights_count = lastSlot - firstSlot + 1;
 
