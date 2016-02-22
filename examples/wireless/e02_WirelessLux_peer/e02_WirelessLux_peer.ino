@@ -15,12 +15,17 @@
       
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/nRF24L01.h"
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration according to your router settings

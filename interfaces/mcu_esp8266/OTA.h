@@ -21,12 +21,16 @@
     \ingroup
 */
 
+#ifndef HOST_NAME_INSKETCH				
+#	define HOST_NAME  		"souliss"
+#endif
+
 #define OTA_Setup()             WiFiServer TelnetServer(8266);                      \
                                 WiFiClient Telnet;                                  \
                                 WiFiUDP OTA
 
 #define OTA_Init()              if(WiFi.waitForConnectResult() == WL_CONNECTED){    \
-                                MDNS.begin("souliss");                              \
+                                MDNS.begin(HOST_NAME);                              \
                                 MDNS.addService("arduino", "tcp", 8266);            \
                                 OTA.begin(8266);     	                            \
                                 TelnetServer.begin();                               \

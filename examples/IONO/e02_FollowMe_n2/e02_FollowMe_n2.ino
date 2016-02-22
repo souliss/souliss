@@ -10,6 +10,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/IonoEthernet.h"             // Define the board type
 
 // Define the network configuration
@@ -20,6 +23,8 @@ uint8_t ip_gateway[4]  = {192, 168, 1, 1};
 // Include framework code and libraries
 #include <SPI.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Each logic is associated to a slot of the memory

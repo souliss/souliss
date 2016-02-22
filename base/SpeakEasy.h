@@ -64,6 +64,24 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	FAST_71110ms()	if (!(phase_fast % 7111))
 #define	FAST_91110ms()	if (!(phase_fast % 9111))
 
+#define	SHIFT_10ms(n)		if ((phase_fast % 1)==n)
+#define	SHIFT_30ms(n)		if ((phase_fast % 3)==n)
+#define	SHIFT_50ms(n)		if ((phase_fast % 5)==n)
+#define	SHIFT_70ms(n)		if ((phase_fast % 7)==n)
+#define	SHIFT_90ms(n)		if ((phase_fast % 9)==n)
+#define	SHIFT_110ms(n)		if ((phase_fast % 11)==n)
+#define SHIFT_210ms(n)		if ((phase_fast % 21)==n)
+#define	SHIFT_510ms(n)		if ((phase_fast % 51)==n)
+#define	SHIFT_710ms(n)		if ((phase_fast % 71)==n)
+#define	SHIFT_910ms(n)		if ((phase_fast % 91)==n)
+#define	SHIFT_1110ms(n)		if ((phase_fast % 111)==n)
+#define	SHIFT_2110ms(n)		if ((phase_fast % 211)==n)
+#define	SHIFT_7110ms(n)		if ((phase_fast % 711)==n)
+#define	SHIFT_9110ms(n)		if ((phase_fast % 911)==n)
+#define	SHIFT_11110ms(n)	if ((phase_fast % 1111)==n)
+#define	SHIFT_21110ms(n)	if ((phase_fast % 2111)==n)
+#define	SHIFT_71110ms(n)	if ((phase_fast % 7111)==n)
+#define	SHIFT_91110ms(n)	if ((phase_fast % 9111)==n)
 
 #define EXECUTESLOW()	else if(abs(millis()-tmr_slow) > time_base_slow)
 #define UPDATESLOW()	tmr_slow = millis();	\
@@ -260,8 +278,10 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	DigKeepHold(pin, value_state1,value_state2,slot)		Souliss_DigKeepHold(pin, value_state1, value_state2, memory_map, slot)
 #define	LowDigKeepHold(pin, value_state1,value_state2,slot)		Souliss_LowDigKeepHold(pin, value_state1, value_state2, memory_map, slot)
 #define DigOut(pin,value,slot)									Souliss_DigOut(pin, value, memory_map, slot)
+#define PulseDigOut(pin,value,slot)								Souliss_PulseDigOut(pin, value, memory_map, slot)
 #define nDigOut(pin,value,slot)									Souliss_nDigOut(pin, value, memory_map, slot)
 #define LowDigOut(pin,value,slot)								Souliss_LowDigOut(pin, value, memory_map, slot)
+#define PulseLowDigOut(pin,value,slot)							Souliss_PulseLowDigOut(pin, value, memory_map, slot)
 #define nLowDigOut(pin,value,slot)								Souliss_nLowDigOut(pin, value, memory_map, slot)
 #define DigOutToggle(pin,value,slot)							Souliss_DigOutToggle(pin, value, memory_map, slot)
 #define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
@@ -290,6 +310,13 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define RemoteDigInHold											Souliss_RemoteDigInHold
 #define RemoteLowDigInHold										Souliss_RemoteLowDigInHold
 
+#define Persistence_IsData(id)									Souliss_Persistence_IsData(memory_map, id)
+#define Persistence_ClearData(id)								Souliss_Persistence_ClearData(memory_map, id)
+
+#define LastIn_IsData(id)										Souliss_LastIn_IsData(memory_map, id)
+#define LastIn_ClearData(id)									Souliss_LastIn_ClearData(memory_map, id)
+#define LastIn_GetData(id, slot) 								Souliss_LastIn_GetData(memory_map, id, slot)
+#define LastIn_GetAnalog(id, slot)								Souliss_LastIn_GetAnalog(memory_map, id, slot)
 
 /*****************************************/
 
@@ -373,7 +400,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 #define SetTrigger()				(data_changed=1);	
 #define ResetTrigger()				(data_changed=0);	
-#define	Initialize()				MaCaco_init(memory_map)
+#define	Initialize()				Souliss_Initialize(memory_map)
 #define	isTrigger()					data_changed
 
 #define SetInput(slot, value) 		mInput(slot) = value			

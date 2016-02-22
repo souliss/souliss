@@ -29,6 +29,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/ethW5100.h"                  // Ethernet through Wiznet W5100
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
@@ -38,6 +41,8 @@
 // Include framework code and libraries
 #include <SPI.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT1                  0           // This is the memory slot used for the execution of the logic

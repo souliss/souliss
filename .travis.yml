@@ -1,0 +1,97 @@
+language: c
+branches:
+  only:
+    - friariello
+
+before_install:
+  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16
+  - sleep 3
+  - export DISPLAY=:1.0
+  - wget http://downloads.arduino.cc/arduino-1.6.5-linux64.tar.xz
+  - tar xf arduino-1.6.5-linux64.tar.xz
+  - sudo mv arduino-1.6.5 $HOME/arduino_ide
+  - ln -s $PWD $HOME/arduino_ide/libraries/souliss
+  - export PATH="$HOME/arduino_ide:$PATH"
+install:
+  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/staging/package_esp8266com_index.json" --save-prefs
+  - arduino --install-boards esp8266:esp8266:1.6.5-1160-gef26c5f --save-prefs
+
+script:
+
+  - arduino --board arduino:avr:leonardo
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e01_Lights_n1/e01_Lights_n1.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e01_Lights_n2/e01_Lights_n2.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e02_GarageDoor/e02_GarageDoor.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e03_Followme_n1/e03_Followme_n1.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e03_Followme_n2/e03_Followme_n2.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e04_Modbus_n1/e04_Modbus_n1.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e04_Modbus_n2/e04_Modbus_n2.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e05_Lights_RS485_n1/e05_Lights_RS485_n1.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e05_Lights_RS485_n2/e05_Lights_RS485_n2.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e06_LightsGroup/e06_LightsGroup.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/DINo/e07_StepRelay/e07_StepRelay.ino
+
+  - arduino --board arduino:avr:uno
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e01_HelloWorld/e01_HelloWorld.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e01_HelloWorld_uIP/e01_HelloWorld_uIP.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e02_GarageDoor_n1/e02_GarageDoor_n1.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e02_GarageDoor_n2/e02_GarageDoor_n2.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e03_AnalogInput/e03_AnalogInput.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e04_RGBStrip/e04_RGBStrip.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e05_Thermostat/e05_Thermostat.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e06_PIRSensor/e06_PIRSensor.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e07_TwinLights_n1/e07_TwinLights_n1.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e07_TwinLights_n2/e07_TwinLights_n2.ino
+
+#  Include LYT88 libraries to compile this sketch
+#  - arduino --verify --board arduino:avr:uno $PWD/examples/LYTBulb/e01_LYTBulb_Arduino/e01_LYTBulb_Arduino.ino
+
+  - arduino --board esp8266:esp8266:generic
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e01_LYTBulb_ESP8266/e01_LYTBulb_ESP8266.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Bulb/e02_LYT8266_WiFi_Bulb.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Erase/e02_LYT8266_WiFi_Erase.ino
+
+  - arduino --board arduino:avr:leonardo
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/Olimex/e01_Olimex_LEDs/e01_Olimex_LEDs.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/Olimex/e02_Olimex_Lights/e02_Olimex_Lights.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/Olimex/e03_Olimex_RGBStrip/e03_Olimex_RGBStrip.ino
+
+  - arduino --board esp8266:esp8266:generic
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/Olimex/e04_Olimex_ESP8266-EVB/e04_Olimex_ESP8266-EVB.ino
+#  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/Olimex/e05_Olimex_ESP8266-EVB_MOD-MPU6050/e05_Olimex_ESP8266-EVB_MOD-MPU6050.ino
+
+  - arduino --board arduino:avr:uno
+  - arduino --verify --board arduino:avr:uno $PWD/examples/usart/e01_GarageDoor_n1/e01_GarageDoor_n1.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/usart/e01_GarageDoor_n2/e01_GarageDoor_n2.ino
+
+  - arduino --board esp8266:esp8266:generic
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e01_Hello_ESP8266/e01_Hello_ESP8266.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e01_Peer_ESP8266/e01_Peer_ESP8266.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e02_WiFitoRS485_n1/e02_WiFitoRS485_n1.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e02_WiFitoRS485_n2/e02_WiFitoRS485_n2.ino
+
+  - arduino --board arduino:avr:uno
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e01_Curtains_gateway/e01_Curtains_gateway.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e01_Curtains_peer/e01_Curtains_peer.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e02_WirelessLux_gateway/e02_WirelessLux_gateway.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e02_WirelessLux_peer/e02_WirelessLux_peer.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e03_AntiTheft_bridge/e03_AntiTheft_bridge.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e03_AntiTheft_n1/e03_AntiTheft_n1.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e03_AntiTheft_n2/e03_AntiTheft_n2.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e04_GarageDoor_gateway/e04_GarageDoor_gateway.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e04_GarageDoor_peer/e04_GarageDoor_peer.ino
+  - arduino --verify --board arduino:avr:uno $PWD/examples/zeroconf/e01_ZeroConf_n1/e01_ZeroConf_n1.ino
+
+  - arduino --board arduino:avr:leonardo
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/zeroconf/e01_ZeroConf_n2/e01_ZeroConf_n2.ino
+  - arduino --verify --board arduino:avr:leonardo $PWD/examples/zeroconf/e01_ZeroConf_n3/e01_ZeroConf_n3.ino
+
+  - arduino --board esp8266:esp8266:generic
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/zeroconf/e02_WebConfig_OTA/e02_WebConfig_OTA.ino
+
+  - arduino --board arduino:avr:uno
+  - arduino --verify --board arduino:avr:uno $PWD/examples/zeroconf/erase_ZeroConf/erase_ZeroConf.ino
+notifications:
+  email:
+    on_success: change
+    on_failure: change

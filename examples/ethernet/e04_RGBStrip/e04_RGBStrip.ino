@@ -16,6 +16,8 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
 
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
@@ -25,6 +27,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LEDCONTROL          0               // This is the memory slot for the logic that handle the light

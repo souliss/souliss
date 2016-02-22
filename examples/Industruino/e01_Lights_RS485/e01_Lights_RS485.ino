@@ -28,7 +28,10 @@
     
 ***************************************************************************/
 
-#include "bconf/Industrino.h"                                   // Define the board type
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
+#include "bconf/Industruino.h"                                   // Define the board type
 
 // Include Industrino libraries
 #include "Indio.h"
@@ -36,6 +39,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration

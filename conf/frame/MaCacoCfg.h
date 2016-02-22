@@ -66,7 +66,7 @@
 			0x18	Ping answer,
 			0x09	Trace root request (Functional code not supported),
 			0x19	Trace root answer (Functional code not supported),
-			0x83	Functional code not supported,
+			0x83	General Error,
 			0x84	Data out of range,
 			0x85	Subscription refused.
 
@@ -114,7 +114,7 @@
 #define MaCaco_PINGANS			0x18	// Ping answer,
 #define MaCaco_TRACEREQ			0x09	// Trace root request (not implemented),
 #define MaCaco_TRACEANS			0x19	// Trace root answer  (not implemented),
-#define MaCaco_ERR83			0x83	// Functional code not supported,
+#define MaCaco_ERR83			0x83	// General error,
 #define MaCaco_ERR84			0x84	// Data out of range,
 #define MaCaco_ERR85			0x85	// Subscription refused
 
@@ -287,19 +287,21 @@ const int MaCaco_funcode[MaCaco_FUNCODE_NO] = {0x01, 0x11, 0x02, 0x12,
 #define MaCaco_HEALTHY_s		(MaCaco_ADDRESSES_f+1)							// First byte of the healthy for the remote nodes
 #define MaCaco_HEALTHY_f		(MaCaco_HEALTHY_s+MaCaco_NODES-1)				// Last  byte of the healthy for the remote nodes
 
-#define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writeable data by a remote device
-#define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writeable data by a remote device
+#define MaCaco_WRITE_s			(MaCaco_AUXIN_s)								// First writable data by a remote device
+#define MaCaco_WRITE_f			(MaCaco_IN_f)									// Last  writable data by a remote device
 
-#define	MaCaco_P_TYP_s			(MaCaco_HEALTHY_f+1)								// First byte for typical logic definitions in PERSISTENCE mode
+#define	MaCaco_P_BUFSIZE		5												// Number of nodes stored in the buffer for PERSISTENCE mode
+#define	MaCaco_P_IDX_NULL		255												// Null value for the index in PERSISTENCE mode									
+#define	MaCaco_P_IDX_s			(MaCaco_HEALTHY_f+1)							// First byte for node index in case of PERSISTENCE mode
+#define	MaCaco_P_IDX_f			(MaCaco_L_IDX_s+MaCaco_L_BUFSIZE)				// Last byte for node index in case of PERSISTENCE mode
+#define	MaCaco_P_TYP_s			(MaCaco_P_IDX_f+1)								// First byte for typical logic definitions in PERSISTENCE mode
 #define MaCaco_P_TYP_f			(MaCaco_P_TYP_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for typical logic definitions in PERSISTENCE mode
 #define	MaCaco_P_OUT_s			(MaCaco_P_TYP_f+1)								// First byte for output data in PERSISTENCE mode
 #define MaCaco_P_OUT_f			(MaCaco_P_OUT_s+(MaCaco_NODES*MaCaco_SLOT))		// Last byte for output data in PERSISTENCE mode
 
-#define	MaCaco_L_BUFSIZE		3												// Number of nodes stored in the buffer for LASTIN mode
+#define	MaCaco_L_BUFSIZE		5												// Number of nodes stored in the buffer for LASTIN mode
 #define	MaCaco_L_IDX_NULL		255												// Null value for the index in LASTIN mode									
-#define MaCaco_L_TYP5n_s		(MaCaco_HEALTHY_f+1)								// First byte for last incoming data in case of LASTIN mode
-#define MaCaco_L_TYP5n_f		(MaCaco_L_TYP5n_s+(2*MaCaco_NODES))				// First byte for last incoming data in case of LASTIN mode
-#define	MaCaco_L_IDX_s			(MaCaco_L_TYP5n_f+1)							// First byte for node index in case of LASTIN mode
+#define	MaCaco_L_IDX_s			(MaCaco_HEALTHY_f+1)							// First byte for node index in case of LASTIN mode
 #define	MaCaco_L_IDX_f			(MaCaco_L_IDX_s+MaCaco_L_BUFSIZE)				// Last byte for node index in case of LASTIN mode
 #define	MaCaco_L_OUT_s			(MaCaco_L_IDX_f+1)								// First byte for the output data in LASTIN mode 
 #define	MaCaco_L_OUT_f			(MaCaco_L_OUT_s+(MaCaco_L_BUFSIZE*MaCaco_SLOT))	// Last byte for the output data in LASTIN mode

@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss 
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2016  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,29 +14,18 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 	Originally developed by Dario Di Maio
-	
+
 ***************************************************************************/
 /*!
-    \file 
+    \file
     \ingroup
 */
 
-#ifndef MODRGB_H
-#define MODRGB_H
+/*** 
+	This is an empty file used to allow the Arduino IDE to identify the library
+	folder, this is required starting from Arduino IDE 1.6.6
 
-#include "tools/types.h"
-#include "tools/I2C/mcu_avr/I2C.h"
-#include "Olimex.h"
-
-// Functional Codes for I2C Communication to MOD-RGB
-#define	STOP_PWM	0x00
-#define	START_PWM	0x01
-#define	SET_RGB		0x03
-
-void mRGB_Init();
-void mRGB_Reset();
-void mRGB_SetColor(uint8_t *color);
-
-#endif
+	This file shall be the first include of your sketch.
+***/

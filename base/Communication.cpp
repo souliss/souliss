@@ -497,3 +497,14 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 	// Return the alarm state
 	return memory_map[MaCaco_OUT_s + chain_slot];	
 }
+
+/**************************************************************************/
+/*!
+	At this level the stack doesn't know the source address, so if somenthing
+	fails, just broadcast a general error
+*/	
+/**************************************************************************/
+U8 Souliss_UnsupportedCommand()
+{
+	return MaCaco_send(VNET_ADDR_BRDC, MaCaco_ERR83, 0, 0, 0, 0);
+}

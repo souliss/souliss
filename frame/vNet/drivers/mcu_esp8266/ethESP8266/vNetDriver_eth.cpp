@@ -34,7 +34,7 @@
 #include "frame/vNet/tools/UserMode.c"
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print
+	#define VNET_LOG LOG.print
 #endif
 
 #define	VNET_M3_HEADER		1

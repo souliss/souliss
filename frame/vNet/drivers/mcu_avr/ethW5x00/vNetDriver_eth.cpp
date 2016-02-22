@@ -43,7 +43,7 @@
 #include "frame/vNet/drivers/mcu_avr/ethW5x00/ServerClient.cpp"
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print
+	#define VNET_LOG LOG.print
 #endif
 
 unsigned long start_time;

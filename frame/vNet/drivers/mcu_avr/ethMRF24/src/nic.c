@@ -28,7 +28,7 @@
 #include "nic.h"
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print
+	#define VNET_LOG LOG.print
 #endif
 
 void nic_send(void)

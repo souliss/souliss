@@ -293,7 +293,7 @@ uint8_t MAC_ADDRESS[] = {0x1A, 0xA6, 0x49, 0x6B, 0x00, 0x01};
 	
 */
 /**************************************************************************/
-// Connection mode
+// Connection mode, most of these parameters applies only to MRF24 WiFi Radio
 #ifndef WIFICONF_INSKETCH
 #	define WiFi_Infrastracture		1
 #	define WiFi_AdHoc				0

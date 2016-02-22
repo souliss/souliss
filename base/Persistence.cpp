@@ -1,6 +1,6 @@
 /**************************************************************************
-	Souliss 
-    Copyright (C) 2013  Veseo
+	Souliss
+    Copyright (C) 2015  Veseo
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,20 +23,32 @@
     \ingroup
 */
 
-#ifndef MODRGB_H
-#define MODRGB_H
+#include "Souliss.h"
+#include "Typicals.h"
+#include <Arduino.h>
 
 #include "tools/types.h"
-#include "tools/I2C/mcu_avr/I2C.h"
-#include "Olimex.h"
+#include "GetConfig.h"
+#include "Souliss.h"
 
-// Functional Codes for I2C Communication to MOD-RGB
-#define	STOP_PWM	0x00
-#define	START_PWM	0x01
-#define	SET_RGB		0x03
+#if(MaCaco_PERSISTANCE)
+/**************************************************************************/
+/*!
+	Return if data are available from a node id
+*/	
+/**************************************************************************/
+U8 Souliss_Persistence_IsData(U8 *memory_map, U8 id)
+{
+	return (MaCaco_GetPersistence(memory_map) == id);
+}
 
-void mRGB_Init();
-void mRGB_Reset();
-void mRGB_SetColor(uint8_t *color);
-
+/**************************************************************************/
+/*!
+	Clear data if available from a node id
+*/	
+/**************************************************************************/
+void Souliss_Persistence_ClearData(U8 *memory_map, U8 id)
+{
+	MaCaco_ClearPersistenceIndex(memory_map, id);
+}
 #endif

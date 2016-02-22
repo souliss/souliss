@@ -22,6 +22,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/Olimexino328.h"             // Use a Olimex Olimexino328
 #include "bconf/OlimexMOD-ENC28J60.h"       // Ethernet through Microchip ENC28J60
@@ -30,6 +33,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration according to your router settings

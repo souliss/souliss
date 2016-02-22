@@ -28,7 +28,10 @@
     
 ***************************************************************************/
 
-#include "bconf/Industrino_EthernetBridge.h"                    // Define the board type
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
+#include "bconf/Industruino_EthernetBridge_RS485.h"             // Define the board type
 #include "conf/Gateway.h"                                       // The main node is the Gateway, we have just one node
 
 // Include Industrino libraries
@@ -37,6 +40,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration

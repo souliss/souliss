@@ -11,6 +11,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/DINo_v2.h"                  // Define the board type
 #include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
 #include "conf/Webhook.h"                   // Enable DHCP and DNS
@@ -19,6 +22,8 @@
 // Include framework code and libraries
 #include <SPI.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // By default the board will get an IP address with .77 as last byte, you can change it

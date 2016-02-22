@@ -37,6 +37,7 @@
 #define	PINRELEASED			0x3
 #define	PIN_2STATE_RESET	0x4
 #define	PIN_2STATE_SET		0x5
+#define PINUSED				0x6
 
 // Use local defines to redefine the IO methods
 #ifndef	LOCAL_IO
@@ -47,7 +48,25 @@
 #endif
 
 U8 InPin[MAXINPIN];
+U8 OutPin[MAXINPIN];
 static unsigned long time;
+
+/**************************************************************************/
+/*!
+	Init variables
+*/
+/**************************************************************************/
+void Souliss_Initialize(U8 *memory_map)
+{
+	for(U8 i=0; i<MAXINPIN; i++)
+	{
+		InPin[i]  = PINRESET;
+	    OutPin[i] = PINRESET;
+	}
+
+	// Init MaCaco
+	MaCaco_init(memory_map);
+}
 
 /**************************************************************************/
 /*!
@@ -361,12 +380,17 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 	}
 	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && (InPin[pin]==PINSET))
 	{
-		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
+		InPin[pin] = PINUSED;								// Stay there till pushbutton is released
 
 		// Write timer value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
 
 		return value_hold;
+	}
+	else if(dRead(pin) && (InPin[pin]==PINUSED))
+	{
+		InPin[pin] = PINRESET;
+		return MaCaco_NODATACHANGED;
 	}
 	else if(dRead(pin) && (InPin[pin]==PINSET))
 	{
@@ -428,33 +452,40 @@ U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot,
 /**************************************************************************/
 U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
 {
+	
 	// If pin is on, set the "value"
-	if(!dRead(pin) && !InPin[pin])
-	{
+	if(!dRead(pin) && !(InPin[pin]))
+	{	
 		time = millis();								// Record time
 
 		InPin[pin] = PINSET;
 		return MaCaco_NODATACHANGED;
 	}
-	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
-	{
+	else if(!dRead(pin) && (abs(millis()-time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINUSED)))
+	{	
 		time = millis();
-		InPin[pin] = PINRESET;								// Stay there till pushbutton is released
+		InPin[pin] = PINUSED;						// Stay there till pushbutton is released
 
 		// Write timer value in memory map
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
 
 		return value_hold;
 	}
+	else if(dRead(pin) && (InPin[pin]==PINUSED))
+	{	
+		
+		InPin[pin] = PINRESET;
+		return MaCaco_NODATACHANGED;
+	}
 	else if(dRead(pin) && (InPin[pin]==PINSET))
-	{
+	{	
 		// Write input value in memory map
+		
 		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
-
+		
 		InPin[pin] = PINRESET;
 		return value;
 	}
-
 	return MaCaco_NODATACHANGED;
 }
 
@@ -512,6 +543,33 @@ void Souliss_DigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	memory_map, let a logic act on external devices.
 */
 /**************************************************************************/
+void Souliss_PulseDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
+{
+	// If output is active switch on the pin, else off
+	if((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINRESET)
+	{
+		OutPin[pin] = PINSET;
+		dWrite(pin, HIGH);
+	}
+	else if((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINSET)
+	{
+		dWrite(pin, LOW);		
+	}
+	else if (memory_map[MaCaco_OUT_s + slot] != value)
+	{
+		OutPin[pin] = PINRESET;
+		dWrite(pin, LOW);
+	}
+}
+
+/**************************************************************************/
+/*!
+	Link the shared memory map to an hardware pin
+
+	It write a digital output pin based on the value of the output into
+	memory_map, let a logic act on external devices.
+*/
+/**************************************************************************/
 void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 {
 	// If output is active switch on the pin, else off
@@ -519,6 +577,33 @@ void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 		dWrite(pin, LOW);
 	else
 		dWrite(pin, HIGH);
+}
+
+/**************************************************************************/
+/*!
+	Link the shared memory map to an hardware pin
+
+	It write a digital output pin based on the value of the output into
+	memory_map, let a logic act on external devices.
+*/
+/**************************************************************************/
+void Souliss_PulseLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
+{
+	// If output is active switch on the pin, else off
+	if((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINRESET)
+	{
+		OutPin[pin] = PINSET;
+		dWrite(pin, LOW);
+	}
+	else if ((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINSET)
+	{
+		dWrite(pin, HIGH);		
+	}
+	else if (memory_map[MaCaco_OUT_s + slot] != value)
+	{
+		OutPin[pin] = PINRESET;
+		dWrite(pin, HIGH);
+	}
 }
 
 /**************************************************************************/

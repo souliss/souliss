@@ -32,19 +32,9 @@
 #define	HTTP_REQBYTES	50					// Max length for URL request
 #define HTTP_BUFBYTES	(20+12*MaCaco_SLOT)	// Max length for data buffer
 
-// XML over UDP			(event based) require MaCaco LASTIN mode
-#define	XML_REQBYTES	HTTP_REQBYTES		// Max length for URL request
-#define	XML_BUFBYTES	HTTP_BUFBYTES		// Max length for data buffer
-#define	udpXML_inPORT	290					// Listening UDP port
-#define	udpXML_outPORT	2900				// Destination UDP port
-
 #define NULLID			0xFF				// This ID value is assumed as Null
 
 #define	MAXVALUES		5					// Number of values into a single URL, comma separated
-
-#define	CMDBUFF_NO		5
-#define	CMDBUFF_HEADER	(5*CMDBUFF_NO)		// Length of the header structure
-#define	CMDBUFF_VALS	(5*CMDBUFF_NO)		// Length of the vals area
 
 typedef struct
 {
@@ -52,7 +42,7 @@ typedef struct
 	U8  slot;								// Node Slot
 } CommandBufferHeader;
 
-#define XMLSERVER_LOG Serial.print
+#define XMLSERVER_LOG LOG.print
 
 #if(XMLSERVER && VNET_MEDIA1_ENABLE && ( ETH_W5100 || ETH_W5200 || ETH_W5500 || ETH_ENC28J60))
 void XMLSERVERInit(U8 *memory_map);

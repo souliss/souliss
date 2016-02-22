@@ -50,7 +50,7 @@ U8  last_entry, last_entry_blacklist,
 	blacklist_IP_Addresses[UMODE_USERS*IPADDRESS_BYTES], in_P_Port[UMODE_USERS*PPORT_BYTES];
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print	
+	#define VNET_LOG LOG.print	
 #endif
 
 /**************************************************************************/

@@ -9,6 +9,9 @@
         
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/ethENC28J60.h"               // Ethernet through Wiznet W5100
@@ -16,6 +19,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // This identify the number of the LED logic
@@ -25,10 +30,8 @@
 uint8_t ip_address[4]  = {192, 168, 1, 77};
 uint8_t subnet_mask[4] = {255, 255, 255, 0};
 uint8_t ip_gateway[4]  = {192, 168, 1, 1};
-#define Gateway_address 77
 #define myvNet_address  ip_address[3]       // The last byte of the IP address (77) is also the vNet address
 #define myvNet_subnet   0xFF00
-#define myvNet_supern   Gateway_address
 
 void setup()
 {   

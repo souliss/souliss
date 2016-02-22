@@ -14,6 +14,9 @@
  
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
@@ -26,6 +29,8 @@
 #include "conf/DynamicAddressing.h"         // Use dynamically assigned addresses
 #include "conf/WEBCONFinterface.h"          // Enable the WebConfig interface
 
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
    
 // Define logic slots, multicolor lights use four slots
