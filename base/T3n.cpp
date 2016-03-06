@@ -137,7 +137,7 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		
 	// Check the actual operational mode (Cooling / Heating)
 	if (memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_SystemOn) {			 	// Power is on
-		if (memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode) {	 	// We're in heating mode
+		if (!(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingMode)) {	 	// We're in heating mode
 			if(actual_temp < (actual_setpnt - Souliss_T3n_Hysteresis )) {	 	// Temp is lower than setpoint - hysteresis -> we need heating
 				if(memory_map[MaCaco_OUT_s + slot] & Souliss_T3n_HeatingOn){ 	// heating is already on -> do nothing
 					i_trigger = Souliss_NOTTRIGGED;
@@ -192,6 +192,8 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 			}
 		}			
 	}
+	else
+		i_trigger = Souliss_NOTTRIGGED;
 	
 	// Check the fan mode (Manual / Auto)
 	float deviation = 0;
@@ -233,9 +235,9 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_AsMeasured)
 			actual_setpnt = int(actual_temp+0.5);									// As actual temperature ()rounded)
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Cooling)
-			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingMode;			// Set Cooling Mode
+			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_CoolingMode;			// Set Cooling Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_Heating)
-			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_HeatingMode;				// Set Heating Mode
+			memory_map[MaCaco_OUT_s + slot] &= ~Souliss_T3n_HeatingMode;				// Set Heating Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanAuto)
 			memory_map[MaCaco_OUT_s + slot] |= Souliss_T3n_FanAutoState;			// Set Fan in Automatic Mode
 		else if(memory_map[MaCaco_IN_s + slot] == Souliss_T3n_FanManual)
