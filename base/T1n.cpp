@@ -1076,12 +1076,16 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightSwitch)		// Toggle Bright
 	{
 		if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil )
-			if(  memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue)
+		{
+			if(memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue)
 				memory_map[MaCaco_OUT_s + slot + 1] -= Souliss_T1n_BrightValue;
 			else memory_map[MaCaco_OUT_s + slot + 1] = 0;
-        	if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)
-            		if(memory_map[MaCaco_OUT_s + slot + 1] < 255 - Souliss_T1n_BrightValue)
+		}
+		else if (memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)
+		{
+			if(memory_map[MaCaco_OUT_s + slot + 1] < 255 - Souliss_T1n_BrightValue)
 				memory_map[MaCaco_OUT_s + slot + 1] += Souliss_T1n_BrightValue;
+		}
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)		// Increase the light value
 	{
