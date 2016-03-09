@@ -106,7 +106,6 @@
 #define	Souliss_T1n_MaxBright			0xFF
 #define	Souliss_T1n_MinBright			0x00
 #define	Souliss_T1n_BrightStep			0x0A
-#define	Souliss_T1n_BrightDefault		0x50
 
 /*
 
