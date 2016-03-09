@@ -210,6 +210,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	
 	// The last byte of the IP address is used as vNet address
 	myvNet_dhcp = ip[3];	
+	return 1;
 
 	/*** This calls Souliss_SetIPAddress directly	***/
 
