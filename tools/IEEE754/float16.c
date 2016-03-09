@@ -87,7 +87,6 @@
 void float16(uint16_t *output, float *input)
 {
     uint16_t *hp = (uint16_t*) output; 	
-    uint32_t *xp = (uint32_t*) input; 
     uint16_t	hs, he, hm;
     uint32_t	x, xs, xe, xm;
     int hes;
