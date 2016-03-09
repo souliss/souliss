@@ -116,9 +116,12 @@ U8 oFrame_isBusy()
 U8 oFrame_Available()
 {
 	// If a frame is defined
-	if(actualframe)
+	if(actualframe) {
 		if (oFrame_GetLenght())
 			return 1;
+		else
+			return 0;
+	}
 	else
 		return 0;
 }
