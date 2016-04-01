@@ -11,6 +11,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/DINo_v2.h"                  // Define the board type
 #include "conf/SmallNetwork.h"              // Lower the number of slot and nodes to match Modbus limits
 

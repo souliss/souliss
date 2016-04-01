@@ -9,6 +9,9 @@
         
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
 #include "conf/ethENC28J60.h"               // Ethernet through Wiznet W5100

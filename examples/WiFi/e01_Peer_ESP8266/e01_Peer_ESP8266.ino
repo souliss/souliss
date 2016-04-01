@@ -9,6 +9,9 @@
         
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
 #include "conf/IPBroadcast.h"

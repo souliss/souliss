@@ -89,6 +89,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
 U8 Souliss_UnsupportedCommand();
 
+void Souliss_Initialize(U8 *memory_map);
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);
 U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);
 U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot);
@@ -110,8 +111,10 @@ U8 Souliss_RemoteLowDigInHold(U8 pin, U8 value, U8 value_hold, U16 addr, U8 slot
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue);
 void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias);
 void Souliss_DigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
+void Souliss_PulseDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_nDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
+void Souliss_PulseLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_nLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_DigOutToggle(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_DigOutLessThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8 slot);
@@ -124,6 +127,18 @@ void Souliss_ResetInput(U8 *memory_map, U8 slot);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
 void Souliss_HalfPrecisionFloating(U8 *output, float *input);
+
+#if(MaCaco_PERSISTANCE)
+U8 Souliss_Persistence_IsData(U8 *memory_map, U8 id);
+void Souliss_Persistence_ClearData(U8 *memory_map, U8 id);
+#endif
+
+#if(MaCaco_LASTIN)
+U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id);
+void Souliss_LastIn_ClearData(U8 *memory_map, U8 id);
+U8 Souliss_LastIn_GetData(U8 *memory_map, U8 id, U8 slot);
+float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
+#endif
 
 #if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
 #	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
@@ -172,8 +187,6 @@ void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 		#include "interfaces/mcu_avr/HTTP_uIP.cpp"
 	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
 	#	include "interfaces/mcu_avr/XMLServer_HTTP.cpp"
-	#elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-	#	include "interfaces/mcu_avr/XMLServer_UDP.cpp"
 	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
 	#	include "interfaces/mcu_avr/XMLServer_HTTP_uIP.cpp"
 	#elif(MODBUS)
@@ -195,6 +208,8 @@ void Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "base/LocalIO.cpp"
 #include "base/RemoteIO.cpp"
 #include "base/NetworkSetup.cpp"
+#include "base/LastIn.cpp"
+#include "base/Persistence.cpp"
 #include "base/T1n.cpp"
 #include "base/T2n.cpp"
 #include "base/T3n.cpp"

@@ -28,6 +28,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/Industruino_EthernetBridge_RS485.h"             // Define the board type
 #include "conf/Gateway.h"                                       // The main node is the Gateway, we have just one node
 

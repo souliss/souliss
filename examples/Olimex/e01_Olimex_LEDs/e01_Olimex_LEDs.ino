@@ -20,6 +20,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/Olimexino328.h"             // Use a Olimex Olimexino328
 #include "bconf/OlimexMOD-ENC28J60.h"       // Ethernet through Microchip ENC28J60
