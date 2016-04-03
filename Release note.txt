@@ -10,6 +10,7 @@ Release note for revision v7.2,   on dd/mm/yyyy
 		- Revamped LASTIN for simpler use with Cloud services
         - Debug object #define is centralized
 		- Introduction of Pulsed Output functions
+		- Support for ESP8266 Core 2
 
 Release note for revision v7.1.1, on 12/12/2015
     
