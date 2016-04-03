@@ -153,7 +153,6 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 #		include "interfaces/mcu_avr/Modbus.h"
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#       include "interfaces/mcu_esp8266/OTA.h"
 #	if(WEBCONFIGSERVER)
 #		include "interfaces/mcu_esp8266/webconfig/webconfig.h"
 #	endif

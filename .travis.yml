@@ -2,7 +2,7 @@ language: c
 branches:
   only:
     - friariello
-
+    - esp8266_core2
 before_install:
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16
   - sleep 3
@@ -13,8 +13,8 @@ before_install:
   - ln -s $PWD $HOME/arduino_ide/libraries/souliss
   - export PATH="$HOME/arduino_ide:$PATH"
 install:
-  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/staging/package_esp8266com_index.json" --save-prefs
-  - arduino --install-boards esp8266:esp8266:1.6.5-1160-gef26c5f --save-prefs
+  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
+  - arduino --install-boards esp8266:esp8266:2.1.0 --save-prefs
 
 script:
 

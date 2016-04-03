@@ -36,22 +36,4 @@
 // a core release and the relevant distribution of the updates.
 
 
-/**************************************************************************/
-/*!
-	ESP8266 Core Selection
-	
-	Below you can select the core that you have installed in your IDE, 
-	having a core different from the latest supported one can result in 
-	compile error or unpredicted behavior.
-
-		Value       
-        0x0         Disable
-        0x1         Enable
-*/
-/**************************************************************************/
-#ifndef ESP8266_CORE_INSKETCH
-#	define ESP8266_G39819F0			1
-#	define ESP8266_GEF26cCF			0
-#endif
-
 #endif

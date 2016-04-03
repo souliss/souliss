@@ -22,6 +22,7 @@
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
 #include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 // Configure the Souliss framework
 #include "bconf/LYT8266_LEDBulb.h"          // Load the code directly on the ESP8266
@@ -40,9 +41,6 @@
 #define GREEN_STARTUP       0x10
 #define BLUE_STARTUP        0x00
 
-// Setup the libraries for Over The Air Update
-OTA_Setup();
-
 void setup()
 {
     // Init the network stack and the bulb, turn on with a warm amber
@@ -57,8 +55,8 @@ void setup()
         need to write anything in the FLASH, and the module can connect
         to the last used network.
 
-		If you don't use the WebConfig use a dummy sketch that connects to
-		your WiFi and then use this sketch
+        If you don't use the WebConfig use a dummy sketch that connects to
+        your WiFi and then use this sketch
     ****/
     SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 
@@ -103,9 +101,10 @@ void setup()
 
     // Define a logic to handle the bulb
     SetLYTLamps(LYTLIGHT1);
-    
+
     // Init the OTA
-    OTA_Init();
+    ArduinoOTA.setHostname("souliss-nodename");    
+    ArduinoOTA.begin();
 }
 
 void loop()
@@ -139,5 +138,5 @@ void loop()
     } 
     
     // Look for a new sketch to update over the air
-    OTA_Process();
+    ArduinoOTA.handle();
 }    
