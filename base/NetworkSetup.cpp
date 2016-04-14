@@ -217,7 +217,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	
 	#if(ESP8266_GEF26cCF)
 	// If is the first time that we connect to WiFi.SSID
-	if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password))
+	if(strcmp(WiFi.SSID().c_str(), WiFi_SSID) || strcmp(WiFi.psk().c_str(), WiFi_Password))
 	{
 		WiFi.mode(WIFI_STA);
 		WiFi.begin(WiFi_SSID, WiFi_Password);
@@ -418,7 +418,7 @@ uint8_t Souliss_ReadIPConfiguration()
 			SOULISS_LOG("\r\n");
 			#endif
 
-			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str()))
+			if(strcmp(WiFi.SSID().c_str(), SSID.c_str()) || strcmp(WiFi.psk().c_str(), PSW.c_str()))
 			{
 				WiFi.mode(WIFI_STA);
 				WiFi.begin(SSID.c_str(), PSW.c_str());
@@ -537,7 +537,7 @@ uint8_t Souliss_ReadIPConfiguration()
 
 			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
-			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str()))
+			if(strcmp(WiFi.SSID().c_str(), SSID.c_str()) || strcmp(WiFi.psk().c_str(), PSW.c_str()))
 			{
 				WiFi.mode(WIFI_STA);
 				WiFi.begin(SSID.c_str(), PSW.c_str());
