@@ -14,12 +14,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 	Originally developed by Dario Di Maio
-	
+
 ***************************************************************************/
 /*!
-    \file 
+    \file
     \ingroup
 */
 #ifndef SPEAKEASY_H
@@ -28,7 +28,7 @@
 #include "Typicals.h"
 
 U8 memory_map[MaCaco_MEMMAP];				// define the shared memory map
-U8 data_changed = 1;						// flag 
+U8 data_changed = 1;						// flag
 
 /************** Scheduler ******************/
 #define time_base_fast		10				// Time cycle in milliseconds
@@ -36,7 +36,7 @@ U8 data_changed = 1;						// flag
 #define num_phases			1000			// Number of phases
 
 U16 phase_speedy=0, phase_fast=0, phase_slow=0;
-unsigned long tmr_fast=0, tmr_slow=0;  
+unsigned long tmr_fast=0, tmr_slow=0;
 
 
 #define EXECUTEFAST()	if(abs(millis()-tmr_fast) > time_base_fast)
@@ -44,9 +44,9 @@ unsigned long tmr_fast=0, tmr_slow=0;
 						phase_fast = (phase_fast + 1) % num_phases
 
 
-#define	FAST_x10ms(n)	if (!(phase_fast % n))							
-#define	FAST_10ms()		if (!(phase_fast % 1))	
-#define	FAST_30ms()		if (!(phase_fast % 3))						
+#define	FAST_x10ms(n)	if (!(phase_fast % n))
+#define	FAST_10ms()		if (!(phase_fast % 1))
+#define	FAST_30ms()		if (!(phase_fast % 3))
 #define	FAST_50ms()		if (!(phase_fast % 5))
 #define	FAST_70ms()		if (!(phase_fast % 7))
 #define	FAST_90ms()		if (!(phase_fast % 9))
@@ -240,6 +240,46 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Set_T58(slot)				Souliss_SetT58(memory_map, slot)
 #define	Logic_T58(slot)				Souliss_Logic_T58(memory_map, slot, 0.015, &data_changed)
 
+#define Set_Analog_Setpoint(slot)					Souliss_SetT61(memory_map, slot)
+#define	Logic_AnalogIn(slot)							Souliss_Logic_T61(memory_map, slot, &data_changed)
+#define Set_T61(slot)											Souliss_SetT61(memory_map, slot)
+#define	Logic_T61(slot)										Souliss_Logic_T61(memory_map, slot, &data_changed)
+
+#define Set_Temperature_Setpoint(slot)		Souliss_SetT62(memory_map, slot)
+#define	Logic_Temperature_Setpoint(slot)	Souliss_Logic_T62(memory_map, slot, &data_changed)
+#define Set_T62(slot)											Souliss_SetT62(memory_map, slot)
+#define	Logic_T62(slot)										Souliss_Logic_T62(memory_map, slot, &data_changed)
+
+#define Set_Humidity_Setpoint(slot)				Souliss_SetT63(memory_map, slot)
+#define	Logic_Humidity_Setpoint(slot)			Souliss_Logic_T63(memory_map, slot, &data_changed)
+#define Set_T63(slot)											Souliss_SetT63(memory_map, slot)
+#define	Logic_T63(slot)										Souliss_Logic_T63(memory_map, slot, &data_changed)
+
+#define Set_Light_Setpoint(slot)					Souliss_SetT64(memory_map, slot)
+#define	Logic_Light_Setpoint(slot)				Souliss_Logic_T64(memory_map, slot, &data_changed)
+#define Set_T64(slot)											Souliss_SetT64(memory_map, slot)
+#define	Logic_T64(slot)										Souliss_Logic_T64(memory_map, slot, &data_changed)
+
+#define Set_Voltage_Setpoint(slot)				Souliss_SetT65(memory_map, slot)
+#define	Logic_Voltage_Setpoint(slot)			Souliss_Logic_T65(memory_map, slot, &data_changed)
+#define Set_T65(slot)											Souliss_SetT65(memory_map, slot)
+#define	Logic_T65(slot)										Souliss_Logic_T65(memory_map, slot, &data_changed)
+
+#define Set_Current_Setpoint(slot)				Souliss_SetT66(memory_map, slot)
+#define	Logic_Current_Setpoint(slot)			Souliss_Logic_T66(memory_map, slot, &data_changed)
+#define Set_T66(slot)											Souliss_SetT66(memory_map, slot)
+#define	Logic_T66(slot)										Souliss_Logic_T66(memory_map, slot, &data_changed)
+
+#define Set_Power_Setpoint(slot)					Souliss_SetT67(memory_map, slot)
+#define	Logic_Power_Setpoint(slot)				Souliss_Logic_T67(memory_map, slot, &data_changed)
+#define Set_T67(slot)											Souliss_SetT67(memory_map, slot)
+#define	Logic_T67(slot)										Souliss_Logic_T67(memory_map, slot, &data_changed)
+
+#define Set_Pressure_Setpoint(slot)				Souliss_SetT68(memory_map, slot)
+#define	Logic_Pressure_Setpoint(slot)			Souliss_Logic_T68(memory_map, slot, &data_changed)
+#define Set_T68(slot)											Souliss_SetT68(memory_map, slot)
+#define	Logic_T68(slot)										Souliss_Logic_T68(memory_map, slot, &data_changed)
+
 #define	Watchdog(chain_address, chain_slot, alarm_command)	Souliss_Watchdog(memory_map, chain_address, chain_slot, alarm_command)
 /******************************************/
 
@@ -265,7 +305,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SetAsPeerNode(address, index)							Souliss_SetRemoteAddress(memory_map, address, index)
 #define	SetAsBatteryNode(address, index)						Souliss_SetRemoteAddress(memory_map, address, index);	\
 																Souliss_BatteryChannels(memory_map, address)
-																
+
 #define	HardcodedChannel										Souliss_HardcodedCommunicationChannel
 #define	GetTypicals()											Souliss_GetTypicals(memory_map)
 #define	CommunicationChannels()									Souliss_CommunicationChannels(memory_map)
@@ -286,7 +326,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define DigOutToggle(pin,value,slot)							Souliss_DigOutToggle(pin, value, memory_map, slot)
 #define	ImportAnalog(slot,analogvalue)							Souliss_ImportAnalog(memory_map, slot, analogvalue)
 #define	AnalogIn(pin, slot, conv, bias)							Souliss_AnalogIn(pin, memory_map, slot, conv, bias)
-#define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)											
+#define isTrigged(slot)											Souliss_isTrigged(memory_map, slot)
 #define	RemoteInput												Souliss_RemoteInput
 #define	RemoteInputs											Souliss_RemoteInputs
 #define	Send													Souliss_RemoteInput
@@ -320,21 +360,21 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 /*****************************************/
 
-/************* Let be lazy ***************/	
+/************* Let be lazy ***************/
 #define	FAST_GatewayComms()						FAST_30ms()    						\
 													ProcessCommunication();			\
 												FAST_1110ms() 						\
 													CommunicationChannels();		\
 												FAST_2110ms() 						\
 													GetTypicals()
-										
+
 #define	FAST_BridgeComms()						FAST_30ms()    						\
 													ProcessCommunication();			\
-													
-			
+
+
 #define	FAST_PeerComms()						FAST_70ms()    						\
-													ProcessCommunication();			
-													
+													ProcessCommunication();
+
 #define	START_PeerJoin()						FAST_71110ms()						\
 												{									\
 													if(!MaCaco_IsSubscribed())		\
@@ -342,8 +382,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 														JoinNetwork();				\
 													}								\
 												}
-												
-#define	JoinInProgress()						(!MaCaco_IsSubscribed())												
+
+#define	JoinInProgress()						(!MaCaco_IsSubscribed())
 
 #define	SLOW_PeerJoin()							SLOW_510s() {						\
 													JoinNetwork();					\
@@ -364,8 +404,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 																break;													\
 															delay(10);	}												\
 													}}
-																														
-												
+
+
 
 #define WaitSubscription()						while(!MaCaco_IsSubscribed())	{	\
 													ProcessCommunication();			\
@@ -374,7 +414,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	aMinuteToSleep()						for(uint8_t s=0; s<255; s++)	{	\
 													ProcessCommunication();			\
 													delay(200);}
-	
+
 /*****************************************/
 
 /*****************************************/
@@ -386,8 +426,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	IN							MaCaco_IN_s
 #define	TYP							MaCaco_TYP_s
 #define	OUT							MaCaco_OUT_s
-#define mAuxiliary(slot)			memory_map[AUX+slot]	
-#define mInput(slot)				memory_map[IN+slot]	
+#define mAuxiliary(slot)			memory_map[AUX+slot]
+#define mInput(slot)				memory_map[IN+slot]
 #define	mTypical(slot)				memory_map[TYP+slot]
 #define mOutput(slot)				memory_map[OUT+slot]
 #define	mOutputAsFloat(slot)		Souliss_SinglePrecisionFloating(memory_map+MaCaco_OUT_s+slot)
@@ -398,12 +438,11 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	pOutput(node,slot)			memory_map[pOUT+slot+(node*MaCaco_SLOT)]
 #define	pOutputAsFloat(node,slot)	Souliss_SinglePrecisionFloating(memory_map+MaCaco_P_OUT_s+slot+(node*MaCaco_SLOT))
 
-#define SetTrigger()				(data_changed=1);	
-#define ResetTrigger()				(data_changed=0);	
+#define SetTrigger()				(data_changed=1);
+#define ResetTrigger()				(data_changed=0);
 #define	Initialize()				Souliss_Initialize(memory_map)
 #define	isTrigger()					data_changed
 
-#define SetInput(slot, value) 		mInput(slot) = value			
+#define SetInput(slot, value) 		mInput(slot) = value
 
 #endif
-
