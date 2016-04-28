@@ -570,11 +570,12 @@ void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8
 	It is used to handle lightning in a room having multiple lights with the use of
 	one single monostable pushbutton.
 
-	Starting with all lights off, one press turns on the first light as a standard T11.
+	Starting with all lights off, a short press turns ON the first light as a standard T11.
 	By holding the pushbutton all the others lights in the group are turned on in sequence.
 	step_duration defines how long the button has to be held before turning on the next slot.
 
-	Starting with some of the lights on, one press turns off the whole group in once.
+	Starting with some of the lights on, a short press turns off the whole group in once
+	while a long press increase number of lights ON
 
 	The following is an helper function.
 	Souliss_DigInHoldSteps and Souliss_LowDigInHoldSteps should be used for positive or falling edge inputs
@@ -583,51 +584,68 @@ void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8
 /**************************************************************************/
 inline U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
 {
+	// HANDLE BUTTON RELEASE EVENT
 	if( pin_value == PINRESET ) // unpressed button
 	{
+		// handle button release on short press
+		if( InPin[pin] == PINSET )
+		{
+			// button is unpressed and it was a single press.
+			InPin[pin] = PINRESET;
+
+			// verify if some of the lights in the group are ON
+			U8 bLightsOn = false;
+			for(U8 i=firstSlot; i<=lastSlot; i++)
+			{
+				if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OnCoil)
+				{
+					bLightsOn = true;
+				}
+			}
+
+			if( bLightsOn )
+			{
+				// it was a single press with some lights ON
+				// set all light to OFF
+				for(U8 i=firstSlot; i<=lastSlot; i++)
+					memory_map[MaCaco_IN_s + i] = Souliss_T1n_OffCmd;
+			}
+			else
+			{
+				// it was a single press with all lights OFF
+				// turn on the first light of the group
+				memory_map[MaCaco_IN_s + firstSlot] = Souliss_T1n_OnCmd;
+			}
+			return MaCaco_DATACHANGED;
+		}
+
+		// if here it was either a long press or no press at all
 		InPin[pin] = PINRESET;
 		return MaCaco_NODATACHANGED;
 	}
 
-	// if here the button is pressed
+	// HANDLE BUTTON PRESS EVENT
+	// if here the button is pressed (pin_value != PINRESET)
 	if( InPin[pin] == PINRESET ) // it was unpressed before
 	{
+		// this is the first cycle detecting the button press: current input=1, previous input=0
 		InPin[pin] = PINSET;
 		souliss_time = millis();								// Record time
-		// this is the first cycle detecting the button press: current input=1, previous input=0
 
-		// verify if some of the lights in the group are ON
-		for(U8 i=firstSlot; i<=lastSlot; i++)
-		{
-			if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OnCoil)
-			{
-				// there's at least one light ON
-				// the user must have been pressing to turn everything OFF
-				// then cycle on all the remaining slots to put set all of them to OFF
-				for (U8 j = i; j <= lastSlot; j++)
-					memory_map[MaCaco_IN_s + j] = Souliss_T1n_OffCmd;
-
-				return MaCaco_DATACHANGED;
-			}
-		}
-
-		// if here all lights were OFF
-
-		// do nothing to filter false activations for spikes
-		// the first slot will be set to on on the next cicle
-		InPin[pin] = PINACTIVE;
+		// no nothing here
+		// short presses are handled on button release event
 		return MaCaco_NODATACHANGED;
 	}
-	else if( InPin[pin]==PINACTIVE && (abs(millis()-souliss_time) > 0) && (abs(millis()-souliss_time) < step_duration) )
+	else if( InPin[pin]==PINSET && (abs(millis()-souliss_time) < step_duration) )
 	{
-		if(memory_map[MaCaco_OUT_s + firstSlot] != Souliss_T1n_OnCoil)
-		{
-			// the user must have been pressing to turn some lights ON
-			// let's start to turn ON the first light in the group
-			memory_map[MaCaco_IN_s + firstSlot] = Souliss_T1n_OnCmd;
-			return MaCaco_DATACHANGED;
-		}
-
+		// still short press -> do nothing
+		return MaCaco_NODATACHANGED;
+	}
+	else if( InPin[pin]==PINSET && (abs(millis()-souliss_time) > step_duration) )
+	{
+		// long press -> do nothing now, but remember it with InPin value
+		InPin[pin]==PINACTIVE;
+		return MaCaco_NODATACHANGED;
 	}
 	else if( InPin[pin]==PINACTIVE && (abs(millis()-souliss_time) > step_duration) )
 	{
@@ -635,6 +653,18 @@ inline U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8
 		// the current input is 1, the previous input was 1 and some time passed from the first press
 
 		U8 powered_lights_count = (U8) ( abs(millis()-souliss_time) / step_duration + 1 );
+
+		// detect if any light is already ON
+		U8 i = firstSlot;
+		for(; i<=lastSlot; i++)
+		{
+			if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OffCoil)
+				break;
+		}
+		// here i contains the first OFF light
+		// then increase number of powered lights if there were any already ON
+		powered_lights_count += i-firstSlot;
+
 		if ( powered_lights_count > lastSlot - firstSlot + 1 )
 			powered_lights_count = lastSlot - firstSlot + 1;
 
