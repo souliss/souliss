@@ -48,7 +48,7 @@ U8 Souliss_Logic_T61(U8 *memory_map, U8 slot, U8 *trigger)
 			*(memory_map + MaCaco_OUT_s + slot)     = 0x00;		// Force at NaN
 			*(memory_map + MaCaco_OUT_s + slot + 1) = 0xFE;		// Force at NaN
 
-			return 0;
+			return Souliss_NOTTRIGGED;
 		}
 
 		// If the new input value is different from the actual output value, store it in the output
@@ -67,7 +67,7 @@ U8 Souliss_Logic_T61(U8 *memory_map, U8 slot, U8 *trigger)
 		}
 	}
 
-	return 0;
+	return Souliss_NOTTRIGGED;
 }
 
 /**************************************************************************/
@@ -88,7 +88,7 @@ U8 Souliss_Logic_T61(U8 *memory_map, U8 slot, U8 *trigger)
 			Souliss_Logic_T66 - Current (0, 25)  A
 			Souliss_Logic_T67 - Power (0, 6500)  W
 			Souliss_Logic_T68 - Pressure measure (0, 1500) hPa
-			Souliss_Logic_T69 -
+			Souliss_Logic_T69 - 
 
 		All typicals between T52 and T59 are handled with T51, simply the value
 		at user interface side will be clamped into the pre-defined ranges, having
