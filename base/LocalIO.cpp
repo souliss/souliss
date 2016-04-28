@@ -435,12 +435,12 @@ inline void Souliss_DigOut_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map
 		dWrite(pin, !pin_value);
 }
 
-void Souliss_DigOut(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot)
+void Souliss_DigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 {
 	Souliss_DigOut_Helper(pin, HIGH, value, memory_map, slot);
 }
 
-void Souliss_LowDigOut(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot)
+void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 {
 	Souliss_DigOut_Helper(pin, LOW, value, memory_map, slot);
 }
