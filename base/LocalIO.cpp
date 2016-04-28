@@ -636,34 +636,41 @@ inline U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8
 		// short presses are handled on button release event
 		return MaCaco_NODATACHANGED;
 	}
-	else if( InPin[pin]==PINSET && (abs(millis()-souliss_time) < step_duration) )
+	else if( (InPin[pin]==PINSET) && (abs(millis()-souliss_time) < step_duration) )
 	{
 		// still short press -> do nothing
 		return MaCaco_NODATACHANGED;
 	}
-	else if( InPin[pin]==PINSET && (abs(millis()-souliss_time) > step_duration) )
+	else if( (InPin[pin]==PINSET) && (abs(millis()-souliss_time) > step_duration) )
 	{
 		// long press -> do nothing now, but remember it with InPin value
-		InPin[pin]==PINACTIVE;
+		InPin[pin]=PINACTIVE;
 		return MaCaco_NODATACHANGED;
 	}
-	else if( InPin[pin]==PINACTIVE && (abs(millis()-souliss_time) > step_duration) )
+	else if( (InPin[pin]==PINACTIVE || InPin[pin]==PINUSED) && (abs(millis()-souliss_time) > step_duration) )
 	{
 		// this cycle is executed while the button is kept pressed
 		// the current input is 1, the previous input was 1 and some time passed from the first press
+		U8 powered_lights_count = (U8) ( abs(millis()-souliss_time) / step_duration );
 
-		U8 powered_lights_count = (U8) ( abs(millis()-souliss_time) / step_duration + 1 );
-
-		// detect if any light is already ON
-		U8 i = firstSlot;
-		for(; i<=lastSlot; i++)
+		if( InPin[pin]==PINACTIVE )
 		{
-			if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OffCoil)
-				break;
+			// first time here
+			// detect if any light is already ON
+			U8 i = firstSlot;
+			for(; i<=lastSlot; i++)
+			{
+				if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OffCoil)
+					break;
+			}
+			// here i contains the first OFF light (group offset)
+			// store it for following cycles
+			OutPin[pin] = i-firstSlot;
+
+			InPin[pin] = PINUSED;
 		}
-		// here i contains the first OFF light
-		// then increase number of powered lights if there were any already ON
-		powered_lights_count += i-firstSlot;
+
+		powered_lights_count += OutPin[pin];
 
 		if ( powered_lights_count > lastSlot - firstSlot + 1 )
 			powered_lights_count = lastSlot - firstSlot + 1;
