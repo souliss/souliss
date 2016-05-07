@@ -164,11 +164,11 @@ inline U8 Souliss_DigIn_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U
 			return value;
 		}
 	}
-	else if(filteractive && pin_value && InPin[pin]==PINACTIVE)
+	else if(filteractive && !pin_value && InPin[pin]==PINACTIVE)
 		InPin[pin] = PINRELEASED;
-	else if(filteractive && pin_value && InPin[pin]==PINRELEASED)
+	else if(filteractive && !pin_value && InPin[pin]==PINRELEASED)
 		InPin[pin] = PINRESET;
-	else if(!filteractive && pin_value)
+	else if(!filteractive && !pin_value)
 		InPin[pin] = PINRESET;
 
 	return MaCaco_NODATACHANGED;
