@@ -240,45 +240,45 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	Set_T58(slot)				Souliss_SetT58(memory_map, slot)
 #define	Logic_T58(slot)				Souliss_Logic_T58(memory_map, slot, 0.015, &data_changed)
 
-#define Set_Analog_Setpoint(slot)					Souliss_SetT61(memory_map, slot)
-#define	Logic_AnalogIn(slot)							Souliss_Logic_T61(memory_map, slot, &data_changed)
-#define Set_T61(slot)											Souliss_SetT61(memory_map, slot)
-#define	Logic_T61(slot)										Souliss_Logic_T61(memory_map, slot, &data_changed)
+#define Set_Analog_Setpoint(slot)	Souliss_SetT61(memory_map, slot)
+#define	Logic_AnalogIn(slot)		Souliss_Logic_T61(memory_map, slot, &data_changed)
+#define Set_T61(slot)				Souliss_SetT61(memory_map, slot)
+#define	Logic_T61(slot)				Souliss_Logic_T61(memory_map, slot, &data_changed)
 
 #define Set_Temperature_Setpoint(slot)		Souliss_SetT62(memory_map, slot)
 #define	Logic_Temperature_Setpoint(slot)	Souliss_Logic_T62(memory_map, slot, &data_changed)
-#define Set_T62(slot)											Souliss_SetT62(memory_map, slot)
-#define	Logic_T62(slot)										Souliss_Logic_T62(memory_map, slot, &data_changed)
+#define Set_T62(slot)						Souliss_SetT62(memory_map, slot)
+#define	Logic_T62(slot)						Souliss_Logic_T62(memory_map, slot, &data_changed)
 
 #define Set_Humidity_Setpoint(slot)				Souliss_SetT63(memory_map, slot)
 #define	Logic_Humidity_Setpoint(slot)			Souliss_Logic_T63(memory_map, slot, &data_changed)
-#define Set_T63(slot)											Souliss_SetT63(memory_map, slot)
-#define	Logic_T63(slot)										Souliss_Logic_T63(memory_map, slot, &data_changed)
+#define Set_T63(slot)							Souliss_SetT63(memory_map, slot)
+#define	Logic_T63(slot)							Souliss_Logic_T63(memory_map, slot, &data_changed)
 
-#define Set_Light_Setpoint(slot)					Souliss_SetT64(memory_map, slot)
+#define Set_Light_Setpoint(slot)				Souliss_SetT64(memory_map, slot)
 #define	Logic_Light_Setpoint(slot)				Souliss_Logic_T64(memory_map, slot, &data_changed)
-#define Set_T64(slot)											Souliss_SetT64(memory_map, slot)
-#define	Logic_T64(slot)										Souliss_Logic_T64(memory_map, slot, &data_changed)
+#define Set_T64(slot)							Souliss_SetT64(memory_map, slot)
+#define	Logic_T64(slot)							Souliss_Logic_T64(memory_map, slot, &data_changed)
 
 #define Set_Voltage_Setpoint(slot)				Souliss_SetT65(memory_map, slot)
 #define	Logic_Voltage_Setpoint(slot)			Souliss_Logic_T65(memory_map, slot, &data_changed)
-#define Set_T65(slot)											Souliss_SetT65(memory_map, slot)
-#define	Logic_T65(slot)										Souliss_Logic_T65(memory_map, slot, &data_changed)
+#define Set_T65(slot)							Souliss_SetT65(memory_map, slot)
+#define	Logic_T65(slot)							Souliss_Logic_T65(memory_map, slot, &data_changed)
 
 #define Set_Current_Setpoint(slot)				Souliss_SetT66(memory_map, slot)
 #define	Logic_Current_Setpoint(slot)			Souliss_Logic_T66(memory_map, slot, &data_changed)
-#define Set_T66(slot)											Souliss_SetT66(memory_map, slot)
-#define	Logic_T66(slot)										Souliss_Logic_T66(memory_map, slot, &data_changed)
+#define Set_T66(slot)							Souliss_SetT66(memory_map, slot)
+#define	Logic_T66(slot)							Souliss_Logic_T66(memory_map, slot, &data_changed)
 
-#define Set_Power_Setpoint(slot)					Souliss_SetT67(memory_map, slot)
+#define Set_Power_Setpoint(slot)				Souliss_SetT67(memory_map, slot)
 #define	Logic_Power_Setpoint(slot)				Souliss_Logic_T67(memory_map, slot, &data_changed)
-#define Set_T67(slot)											Souliss_SetT67(memory_map, slot)
-#define	Logic_T67(slot)										Souliss_Logic_T67(memory_map, slot, &data_changed)
+#define Set_T67(slot)							Souliss_SetT67(memory_map, slot)
+#define	Logic_T67(slot)							Souliss_Logic_T67(memory_map, slot, &data_changed)
 
 #define Set_Pressure_Setpoint(slot)				Souliss_SetT68(memory_map, slot)
 #define	Logic_Pressure_Setpoint(slot)			Souliss_Logic_T68(memory_map, slot, &data_changed)
-#define Set_T68(slot)											Souliss_SetT68(memory_map, slot)
-#define	Logic_T68(slot)										Souliss_Logic_T68(memory_map, slot, &data_changed)
+#define Set_T68(slot)							Souliss_SetT68(memory_map, slot)
+#define	Logic_T68(slot)							Souliss_Logic_T68(memory_map, slot, &data_changed)
 
 #define	Watchdog(chain_address, chain_slot, alarm_command)	Souliss_Watchdog(memory_map, chain_address, chain_slot, alarm_command)
 /******************************************/
@@ -444,5 +444,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	isTrigger()					data_changed
 
 #define SetInput(slot, value) 		mInput(slot) = value
+
+#define	ReqTyp						MaCaco_reqtyp
 
 #endif
