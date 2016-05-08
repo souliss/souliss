@@ -39,7 +39,7 @@ U16 phase_speedy=0, phase_fast=0, phase_slow=0;
 unsigned long tmr_fast=0, tmr_slow=0;
 
 
-#define EXECUTEFAST()	if( millis()-tmr_fast > time_base_fast )
+#define EXECUTEFAST()	if((millis()-tmr_fast) > time_base_fast )
 #define UPDATEFAST()	tmr_fast = millis();	\
 						phase_fast = (phase_fast + 1) % num_phases
 
@@ -83,7 +83,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SHIFT_71110ms(n)	if ((phase_fast % 7111)==n)
 #define	SHIFT_91110ms(n)	if ((phase_fast % 9111)==n)
 
-#define EXECUTESLOW()	else if( millis()-tmr_slow > time_base_slow )
+#define EXECUTESLOW()	else if((millis()-tmr_slow) > time_base_slow )
 #define UPDATESLOW()	tmr_slow = millis();	\
 						phase_slow = (phase_slow + 1) % num_phases
 
