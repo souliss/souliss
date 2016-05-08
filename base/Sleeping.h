@@ -138,7 +138,7 @@ void sleepNow()         // here we put the arduino to sleep
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
  	
 	// set the interrupt to wake the device
-	if(sleepmode & SLEEPMODE_INPUT)	attachInterrupt(wakePinINT, wakeUpNow, RISING); 
+	if(sleepmode & SLEEPMODE_INPUT)	attachInterrupt(wakePinINT, wakeUpNow, CHANGE); 
 	if(sleepmode & SLEEPMODE_TIMER)	sleep_timer_enable();
 
 	cli();					// we wont yet sleep
