@@ -313,6 +313,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	DigIn(pin,value,slot)									Souliss_DigIn(pin, value, memory_map, slot)
 #define	LowDigIn(pin,value,slot)								Souliss_LowDigIn(pin, value, memory_map, slot)
 #define	DigIn2State(pin,value_state_on,value_state_off,slot)	Souliss_DigIn2State(pin, value_state_on, value_state_off, memory_map, slot)
+#define	LowDigIn2State(pin,value_state_on,value_state_off,slot)	Souliss_LowDigIn2State(pin, value_state_on, value_state_off, memory_map, slot)
 #define	DigInHold(pin, value_state1,value_state2,slot)			Souliss_DigInHold(pin, value_state1, value_state2, memory_map, slot)
 #define	LowDigInHold(pin, value_state1,value_state2,slot)		Souliss_LowDigInHold(pin, value_state1, value_state2, memory_map, slot)
 #define	DigKeepHold(pin, value_state1,value_state2,slot)		Souliss_DigKeepHold(pin, value_state1, value_state2, memory_map, slot)
