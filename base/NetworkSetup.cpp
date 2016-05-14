@@ -151,7 +151,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 {	
 	// Starting from IP configuration define the vNet ones
-	U8 i=0, timeout=20;
+	U8 i=0;
 	for(i=0; i<4; i++)
 	{
 		if(DEFAULT_BASEIPADDRESS) 	DEFAULT_BASEIPADDRESS[i]=ip_address[i];
@@ -163,20 +163,16 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 	#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+		U8 timeout=20;
 	
-		#if(ESP8266_GEF26cCF)
 		// If is the first time that we connect to WiFi.SSID
-		if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password))
+		if(strcmp(WiFi.SSID().c_str(), WiFi_SSID) || strcmp(WiFi.psk().c_str(), WiFi_Password))
 		{
 			WiFi.mode(WIFI_STA);
 			WiFi.begin(WiFi_SSID, WiFi_Password);
 		}
 		else
 			WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
-		#elif(ESP8266_G39819F0)
-			WiFi.mode(WIFI_STA);
-			WiFi.begin(WiFi_SSID, WiFi_Password);
-		#endif
 		
 		// Connect
 		while ((WiFi.status() != WL_CONNECTED) && timeout)
@@ -210,24 +206,20 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	
 	// The last byte of the IP address is used as vNet address
 	myvNet_dhcp = ip[3];	
+	return 1;
 
 	/*** This calls Souliss_SetIPAddress directly	***/
 
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 	
-	#if(ESP8266_GEF26cCF)
 	// If is the first time that we connect to WiFi.SSID
-	if(strcmp(WiFi.SSID(), WiFi_SSID) || strcmp(WiFi.psk(), WiFi_Password))
+	if(strcmp(WiFi.SSID().c_str(), WiFi_SSID) || strcmp(WiFi.psk().c_str(), WiFi_Password))
 	{
 		WiFi.mode(WIFI_STA);
 		WiFi.begin(WiFi_SSID, WiFi_Password);
 	}
 	else
 		WiFi.begin();	// WiFi.SSID is a known network, no need to specify it
-	#elif(ESP8266_G39819F0)
-		WiFi.mode(WIFI_STA);
-		WiFi.begin(WiFi_SSID, WiFi_Password);
-	#endif
 
 	// Connect
 	while ((WiFi.status() != WL_CONNECTED) && timeout)
@@ -404,7 +396,6 @@ uint8_t Souliss_ReadIPConfiguration()
 			
 		#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 			
-			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
 
 			#if (SOULISS_DEBUG)
@@ -418,17 +409,13 @@ uint8_t Souliss_ReadIPConfiguration()
 			SOULISS_LOG("\r\n");
 			#endif
 
-			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str()))
+			if(strcmp(WiFi.SSID().c_str(), SSID.c_str()) || strcmp(WiFi.psk().c_str(), PSW.c_str()))
 			{
 				WiFi.mode(WIFI_STA);
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			}
 			else
 				WiFi.begin();				// WiFi.SSID is a known network, no need to specify it
-			#elif(ESP8266_G39819F0)
-				WiFi.mode(WIFI_STA);
-				WiFi.begin(SSID.c_str(), PSW.c_str());
-			#endif
 
 			// Connect
 			while ((WiFi.status() != WL_CONNECTED) && timeout)
@@ -535,20 +522,14 @@ uint8_t Souliss_ReadIPConfiguration()
 			SOULISS_LOG("\r\n");
 			#endif
 
-			#if(ESP8266_GEF26cCF)
 			// If is the first time that we connect to WiFi.SSID
-			if(strcmp(WiFi.SSID(), SSID.c_str()) || strcmp(WiFi.psk(), PSW.c_str()))
+			if(strcmp(WiFi.SSID().c_str(), SSID.c_str()) || strcmp(WiFi.psk().c_str(), PSW.c_str()))
 			{
 				WiFi.mode(WIFI_STA);
 				WiFi.begin(SSID.c_str(), PSW.c_str());
 			}
 			else
 				WiFi.begin();				// WiFi.SSID is a known network, no need to specify it
-
-			#elif(ESP8266_G39819F0)
-				WiFi.mode(WIFI_STA);
-				WiFi.begin(SSID.c_str(), PSW.c_str());		
-			#endif
 
 			// Connect
 			while ((WiFi.status() != WL_CONNECTED) && timeout)

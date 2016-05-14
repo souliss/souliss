@@ -15,6 +15,7 @@
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
 #include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 #include "bconf/MCU_ESP8266.h"
 #include "conf/DynamicAddressing.h"                 // Use dynamic address
@@ -27,9 +28,6 @@
 /*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
-// Setup the libraries for Over The Air Update
-OTA_Setup();
-
 void setup()
 {   
     // Erase network configuration parameters from previous use of ZeroConf
@@ -41,7 +39,8 @@ void setup()
     Serial.begin(9600);
 
     // Init the OTA
-    OTA_Init();
+    ArduinoOTA.setHostname("souliss-nodename");    
+    ArduinoOTA.begin();
 }
 
 void loop()
@@ -59,5 +58,5 @@ void loop()
     while(1);
 
     // Look for a new sketch to update over the air
-    OTA_Process();
+    ArduinoOTA.handle();
 } 

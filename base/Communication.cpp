@@ -206,7 +206,7 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 	that may never match the subscription request because sleeping at time.
 */	
 /**************************************************************************/	
-U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr)
+void Souliss_HardcodedCommunicationChannel(U16 gateway_addr)
 {
 	if(gateway_addr)
 		MaCaco_subscribe_record(gateway_addr, MaCaco_SUBSCRREQ, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN);

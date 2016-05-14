@@ -443,12 +443,21 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_DATAREQ)
 	{	
 		U16 nodeoffest, len;
-		
+
 		// If a manual update is requested, force an update request to the remote nodes (if any)
-		// to get at next process fresh data
-		for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-			subscr_count[i] = 0;
-				
+		// to get at next process fresh data. If is not specified the number of nodes that are 
+		// required to be refreshed, do it for all
+		if(rx->numberof == 0)
+		{
+			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+				subscr_count[i] = 0;
+		}
+		else // Do it only for the requested nodes
+		{
+			for(U8 i=rx->startoffset;i<(rx->startoffset+rx->numberof);i++)
+				subscr_count[i] = 0;
+		}
+		
 		// These points the local data
 		nodeoffest = MaCaco_OUT_s;
 		len = MaCaco_OUTLENGHT;			

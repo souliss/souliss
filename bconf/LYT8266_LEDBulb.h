@@ -34,12 +34,6 @@
 #define VNET_MEDIA_INSKETCH
 #define ETH_INSKETCH	
 
-// The LYT8266 need core 1.6.5-1160-gef26c5f, this allow to reconnect on the
-// last known WiFi network. This will avoid the core to write on to FLASH 
-// memory at the connection time, this operation conflicts with PWM. 
-#define ESP8266_CORE_INSKETCH
-#define ESP8266_GEF26cCF			1
-
 #define	MCU_TYPE					0x2
 #define	BOARD_MODEL					0xB		
 #define	COMMS_MODEL					0x7
