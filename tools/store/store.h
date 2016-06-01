@@ -53,10 +53,16 @@
 #define User_Return_16bit(addr)		Return_16bit(FIRST_EEPROM_BYTE+addr)
 
 void Store_Clear();
-void Store_8bit(uint8_t addr, uint8_t store_val);
-uint16_t Return_8bit(uint8_t addr);
-void Store_16bit(uint8_t addr, uint16_t store_val);
-uint16_t Return_16bit(uint8_t addr);
+
+//--void Store_8bit(uint8_t addr, uint8_t store_val);
+//--uint16_t Return_8bit(uint8_t addr);
+//--void Store_16bit(uint8_t addr, uint16_t store_val);
+//--uint16_t Return_16bit(uint8_t addr);
+void Store_8bit(int addr, uint8_t store_val);
+uint16_t Return_8bit(int addr);
+void Store_16bit(int addr, uint16_t store_val);
+uint16_t Return_16bit(int addr);
+
 void Store_ID(uint16_t id);
 uint16_t Return_ID();
 void Store_Address(uint16_t address, uint8_t media);
@@ -65,7 +71,8 @@ void Store_PeerAddresses(uint8_t *addresses, uint8_t n_addresses);
 void Return_PeerAddresses(uint8_t *addresses, uint8_t n_addresses);
 void Store_UserModeAddresses(uint16_t *addresses, uint8_t n_addresses);
 void Return_UserModeAddresses(uint16_t *addresses, uint8_t n_addresses);
-uint16_t Return_SinglePeerAddresses(uint8_t n_addr);
+//--uint16_t Return_SinglePeerAddresses(uint8_t n_addr);
+uint16_t Return_SinglePeerAddresses(int n_addr);
 void Store_GatewayMode(uint8_t mode);
 uint8_t Return_GatewayMode();
 void Store_DHCPMode(uint8_t mode);
