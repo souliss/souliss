@@ -168,6 +168,8 @@ inline U8 Souliss_DigIn_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U
 		InPin[pin] = PINRELEASED;
 	else if(filteractive && !pin_value && InPin[pin]==PINRELEASED)
 		InPin[pin] = PINRESET;
+	else if(filteractive && !pin_value && InPin[pin]==PINSET)
+		InPin[pin] = PINRESET;
 	else if(!filteractive && !pin_value)
 		InPin[pin] = PINRESET;
 
