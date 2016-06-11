@@ -16,6 +16,7 @@
 // Include framework code and libraries
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 #include <EEPROM.h>
 #include <WiFiUdp.h>
 
@@ -30,9 +31,13 @@
 
 #define	PUSH1	0
 #define	PUSH2	1
+#define PUSH3	2
 #define	LowMood									0xFF01,0x01
 #define	FullLight								0xFF01,0x02
-#define	LightChange								0xFF01,0x03
+#define	MediumLight								0xFF01,0x03
+
+// Setup the libraries for Over The Air Update
+OTA_Setup();
 
 void setup()
 {   
@@ -74,6 +79,10 @@ void setup()
 
 	Set_T14(PUSH1);
 	Set_T14(PUSH2);
+	Set_T14(PUSH3);
+
+    // Init the OTA
+    OTA_Init();  
 }
 
 void loop()
@@ -94,11 +103,16 @@ void loop()
 			// Full Light Command
 			if(Logic_T14(PUSH2))
 				if(mOutput(PUSH2))	publish(FullLight);
+
+			// Full Light Command
+			if(Logic_T14(PUSH3))
+				if(mOutput(PUSH3))	publish(MediumLight);
 		}
             
         // Complete the communication tasks at normal rate
         FAST_GatewayComms();
-
-
     }
+
+    // Look for a new sketch to update over the air
+    OTA_Process();	 
 }   

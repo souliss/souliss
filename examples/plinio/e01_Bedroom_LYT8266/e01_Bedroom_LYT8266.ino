@@ -50,7 +50,7 @@ void setup()
 		need to write anything in the FLASH, and the module can connect
 		to the last used network.
 	****/
-    SetColor(LYTLIGHT1, RED_DEFAULT, GREEN_DEFAULT, BLUE_DEFAULT);
+    SetWhite(LYTLIGHT1, 0xF1);
 
     // If there is no network to connect, just loop at low mood
     if(!Souliss_GetIPAddress())
@@ -69,7 +69,7 @@ void setup()
     SetLYTLamps(LYTLIGHT1);
 
     // This T11 is used as AUTO/MAN selector
-    mInput(LIGHTMODE)=Souliss_T1n_OnCmd;
+    mInput(LIGHTMODE)=Souliss_T1n_OffCmd;
     Logic_T11(LIGHTMODE);
 
     // Init the OTA

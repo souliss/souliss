@@ -39,8 +39,10 @@
 
 #define	LowMood									0xFF01,0x01
 #define	FullLight								0xFF01,0x02
+#define	MediumLight								0xFF01,0x03
 
 uint8_t toggleswitch = 0;
+uint8_t round_lamp=LYTLIGHT1;
 
 DHT dht(A1, DHT11);
 float th=0;
@@ -76,14 +78,8 @@ void setup()
 	Set_Humidity(HUMIDITY);
 }
 
-void loop()
-{ 
-	// Here we start to play
-	EXECUTEFAST() {						
-		UPDATEFAST();	
-
-        ProcessCommunication();	
-	
+void mainLamp()
+{
 		// Handle bubls color and brightness
         if(LogicLYTLamps(LYTLIGHT0))
 		{
@@ -101,6 +97,18 @@ void loop()
 				mInput(LYTLIGHT3) = Souliss_T1n_OffCmd; 				
 			}
 		}
+}
+
+void loop()
+{ 
+	// Here we start to play
+	EXECUTEFAST() {						
+		UPDATEFAST();	
+
+        ProcessCommunication();
+
+		// Execute the logic for the main lamp
+		mainLamp();
 
 		// Turn ON/OFF the bulbs
         FAST_710ms() {
@@ -121,9 +129,6 @@ void loop()
 				mOutput(LYTLIGHT0) = Souliss_T1n_OnCoil;
 			else if(!mOutput(LYTLIGHT1) && !mOutput(LYTLIGHT2) && !mOutput(LYTLIGHT3) && (mOutput(LYTLIGHT0) == Souliss_T1n_OnCoil))
 				mOutput(LYTLIGHT0) = Souliss_T1n_OffCoil;
-
-			// Read the state of the lamp
-			LYTState(LYTLIGHT0);
          }
 		
 		// Listen for topic published by other nodes
@@ -140,27 +145,46 @@ void loop()
 
 				// Turn on one light
 				LYTOn(LYTLIGHT1);
-				delay(50);
 
 				mInput(LYTLIGHT0+1) = 0x64;
 				mInput(LYTLIGHT0+2) = 0x23;
 				mInput(LYTLIGHT0+3) = 0x00;
 				mInput(LYTLIGHT0) = Souliss_T1n_Set;		
-				LogicLYTLamps(LYTLIGHT0);				
+				LogicLYTLamps(LYTLIGHT0);	
+
+				delay(50);
+				mOutput(LYTLIGHT2) = Souliss_T1n_OffCoil;
+				mOutput(LYTLIGHT3) = Souliss_T1n_OffCoil;
+				LYTOff(LYTLIGHT2);
+				LYTOff(LYTLIGHT3);	
 			}
 
 			// Set Full Light
 			if(subscribe(FullLight))
 			{
 				mInput(LYTLIGHT0) = Souliss_T1n_OnCmd;
-				LogicLYTLamps(LYTLIGHT0);
+				mainLamp();
 				delay(50);
 
 				mInput(LYTLIGHT0+1) = 0xFF;
 				mInput(LYTLIGHT0+2) = 0xFF;
 				mInput(LYTLIGHT0+3) = 0xFF;
 				mInput(LYTLIGHT0) = Souliss_T1n_Set;		
-				LogicLYTLamps(LYTLIGHT0);				
+				mainLamp();				
+			}
+
+			// Set Medium Light
+			if(subscribe(MediumLight))
+			{
+				mInput(LYTLIGHT0) = Souliss_T1n_OnCmd;
+				mainLamp();
+				delay(50);
+
+				mInput(LYTLIGHT0+1) = 0xFF;
+				mInput(LYTLIGHT0+2) = 0x50;
+				mInput(LYTLIGHT0+3) = 0x00;
+				mInput(LYTLIGHT0) = Souliss_T1n_Set;		
+				mainLamp();				
 			}
 
 		}
@@ -179,7 +203,7 @@ void loop()
 				mInput(LYTLIGHT0+2) = 0xF0;
 				mInput(LYTLIGHT0+3) = 0xF0;
 				mInput(LYTLIGHT0) = Souliss_T1n_Set;		
-				LogicLYTLamps(LYTLIGHT0);
+				mainLamp();
 				
 				while(digitalRead(8))
 				{
@@ -190,7 +214,7 @@ void loop()
 						mInput(LYTLIGHT0) = Souliss_T1n_BrightDown;
 
 					// Drive the LYT bulb
-					LogicLYTLamps(LYTLIGHT0);
+					mainLamp();
 					delay(250);	
 				}	
 			}	
@@ -208,6 +232,7 @@ void loop()
 
 			LYTSleepTimer(LYTLIGHT0);       // Slowly shut down the lamp
 		}
+
 	}	
 	
 	EXECUTESLOW() {
@@ -227,12 +252,6 @@ void loop()
 			th = dht.readTemperature();
 			ImportAnalog(TEMPERATURE, &th);	
         }
-
-		SLOW_50s() {
-			
-			// LYT State Request
-			Souliss_LYTStateRequest();
-		}
 
 	}
 } 
