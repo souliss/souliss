@@ -22,5 +22,12 @@
   [
     "atmelavr",
     "espressif"
-  ]
+  ],
+  "build": {
+    "srcFilter": [
+      "+<*.c>",
+      "+<*.cpp>",
+      "+<*.h>"
+    ]
+  }  
 }
