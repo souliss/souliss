@@ -39,7 +39,7 @@ const char PAGE_NetworkConfiguration[] PROGMEM = R"=====(
 Connect to Router with these settings:<br>
 <form action="" method="get">
 <table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
-<tr><br><td align="left"><strong>Enabled this Node as Gateway?:</strong></td></tr>
+<tr><br><td align="left"><strong>Enable this Node as Gateway?:</strong></td></tr>
 <tr><td><input type="checkbox" id="mnenabled" name="mnenabled"></td></tr>
 <br>
 <tr><td align="right">SSID:</td><td><input type="text" id="ssid" name="ssid" value=""></td></tr>
@@ -52,7 +52,7 @@ Connect to Router with these settings:<br>
 </table>
 </form>
 <hr>
-<strong>You will need only ONE Gateway Node, If this is your First Node you must enabled it as Gateway..</strong>
+<strong>You will need only ONE Gateway Node, If this is your First Node you must enable it as Gateway..</strong>
 <strong>Connection State:</strong><div id="connectionstate">N/A</div>
 <hr>
 <strong>Networks:</strong><br>
@@ -99,7 +99,7 @@ const char PAGE_WaitAndReload[] PROGMEM = R"=====(
 <meta http-equiv="refresh" content="5; URL=config.html">
 <tr><br><td align="left"><strong>Please Wait....Configuring and Restarting</strong></td></tr>
 <br>
-<tr><br><td align="left">You will soon lose connection to this page because the node is connecting to your router. Start SoulissApp and have fun!</td></tr>
+<tr><br><td align="left">This page won't be available any longer, because the node will connect to your router and join your WiFi. Start SoulissApp and have fun!</td></tr>
 )=====";
 
 
