@@ -306,13 +306,12 @@ void Souliss_SetAccessPoint()
 	uint8_t ipaddr[4];
 	uint8_t gateway[4];		
 	
-	// Use a static access point name with a dynamic number
-	char _time[9] = __TIME__;
-	char _apname[18]= "Souliss_000000000";
-	
-	// Build the access point name
-	for(i=0;i<8;i++)
-		_apname[i+9] = _time[i];
+	// Set the access point name with the last 3 bytes of the WiFi MAC address
+	char _apname[15];
+	byte mac[6];
+
+    WiFi.softAPmacAddress(mac);
+    sprintf(_apname, "Souliss_%02X%02X%02X", mac[3],mac[4],mac[5]);
 	
 	WiFi.mode(WIFI_AP);
 	WiFi.softAP(_apname);
