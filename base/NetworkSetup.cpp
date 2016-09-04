@@ -300,21 +300,33 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 */	
 /**************************************************************************/ 
 #if(MCU_TYPE == 0x02)	// Expressif ESP8266
-void Souliss_SetAccessPoint()
+String Souliss_SetAccessPoint(const char ap_name[32] = "", const char ap_pass[32] = "soulissnode")
 {
 	uint8_t i;
 	uint8_t ipaddr[4];
 	uint8_t gateway[4];		
 	
 	// Set the access point name with the last 3 bytes of the WiFi MAC address
-	char _apname[15];
-	byte mac[6];
+	char _apname[32];
 
-    WiFi.softAPmacAddress(mac);
-    sprintf(_apname, "Souliss_%02X%02X%02X", mac[3],mac[4],mac[5]);
+	if (ap_name[0] == 0) {
+
+		// get the MAC address
+		byte mac[6];
+	    char _macaddr[18];
+
+	    WiFi.softAPmacAddress(mac);
+
+	    sprintf(_apname, "Souliss_%02X%02X%02X", mac[3],mac[4],mac[5]);
+
+	} else {
+		strncpy(_apname, ap_name, 31);
+		_apname[31] ='\0';
+	}
+
 	
 	WiFi.mode(WIFI_AP);
-	WiFi.softAP(_apname);
+	WiFi.softAP(_apname, ap_pass);
 
 	// Setup the Souliss framework, get the IP network parameters
 	IPAddress lIP  = WiFi.softAPIP();
@@ -341,7 +353,9 @@ void Souliss_SetAccessPoint()
 	DEFAULT_BASEIPADDRESS[i-1]=0;					// The BASEIPADDRESS has last byte always zero
 	
 	// Set the address
-	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);	
+	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
+
+	return String(_apname);	
 }
 #endif
 
