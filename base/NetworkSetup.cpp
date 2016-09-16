@@ -300,7 +300,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 */	
 /**************************************************************************/ 
 #if(MCU_TYPE == 0x02)	// Expressif ESP8266
-String Souliss_SetAccessPoint(const char ap_name[32] = "", const char ap_pass[32] = "soulissnode")
+String Souliss_SetAccessPoint(const char ap_name[32] = "", const char ap_pass[32] = "")
 {
 	uint8_t i;
 	uint8_t ipaddr[4];
