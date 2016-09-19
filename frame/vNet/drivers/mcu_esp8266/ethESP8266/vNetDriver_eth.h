@@ -53,7 +53,7 @@ void vNet_SetAddress_M1(uint16_t addr);
 void vNet_SetAddress_M3(uint16_t addr);
 uint8_t vNet_Send_M1(uint16_t addr, oFrame* frame, uint8_t len);
 uint16_t vNet_GetSourceAddress_M3();
-uint8_t  vNet_setIncomingData_M3();
+void  vNet_setIncomingData_M3();
 uint8_t  vNet_hasIncomingData_M3();
 uint8_t vNet_Send_M3(uint16_t addr, oFrame *frame, uint8_t len);
 uint8_t vNet_DataSize_M1();

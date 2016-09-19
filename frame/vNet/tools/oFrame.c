@@ -106,6 +106,7 @@ U8 oFrame_isBusy()
 		i_busy = 0;
 		oFrame_Reset();
 	}	
+	//TOFIX: No return, in function returning non-void - control reaches end of non-void function
 }
 
 /**************************************************************************/
@@ -116,9 +117,12 @@ U8 oFrame_isBusy()
 U8 oFrame_Available()
 {
 	// If a frame is defined
-	if(actualframe)
+	if(actualframe) {
 		if (oFrame_GetLenght())
 			return 1;
+		else
+			return 0;
+	}
 	else
 		return 0;
 }
@@ -201,7 +205,7 @@ U8 oFrame_GetByte()
 		actualframe->payload_len--;
 		outbyte = actualframe->payload[i_payload++];	
 	}
-	
+	//TOFIX: 'outbyte' may be used uninitialized in this function
 	return outbyte;
 }
 

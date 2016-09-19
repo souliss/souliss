@@ -151,7 +151,7 @@ void Souliss_SetRemoteAddress(U8 *memory_map, U16 addr, U8 node)
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 {	
 	// Starting from IP configuration define the vNet ones
-	U8 i=0, timeout=20;
+	U8 i=0;
 	for(i=0; i<4; i++)
 	{
 		if(DEFAULT_BASEIPADDRESS) 	DEFAULT_BASEIPADDRESS[i]=ip_address[i];
@@ -163,6 +163,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 	#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+		U8 timeout=20;
 	
 		#if(ESP8266_GEF26cCF)
 		// If is the first time that we connect to WiFi.SSID
@@ -210,6 +211,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	
 	// The last byte of the IP address is used as vNet address
 	myvNet_dhcp = ip[3];	
+	return 1;
 
 	/*** This calls Souliss_SetIPAddress directly	***/
 

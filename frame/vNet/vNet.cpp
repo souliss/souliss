@@ -603,7 +603,7 @@ U8 vNet_SendRoute(U16 routed_addr, U8 media, U8 *data, U8 len)
 		break;
 	#endif		
 	}
-
+	//TOFIX: control reaches end of non-void function
 }
 
 /**************************************************************************/
@@ -1048,6 +1048,7 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index)
 	}	
 	else
 		return VNET_FAIL;
+	//TOFIX: control reaches end of non-void function
 }
 
 /**************************************************************************/
@@ -1063,6 +1064,7 @@ U8 vNet_SetDoNotRoutingTable(U16 addr, U8 index)
 	}	
 	else
 		return VNET_FAIL;
+	//TOFIX: control reaches end of non-void function
 }
  
 /**************************************************************************/

@@ -39,8 +39,6 @@
 /**************************************************************************/
 U8 Souliss_Logic_T61(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 {
-	float m_in, m_out;
-	
 	// If there is a new values, compare it against the previous one
 	if((memory_map[MaCaco_IN_s + slot] != 0) || (memory_map[MaCaco_IN_s + slot + 1] != 0))
 	{	

@@ -147,4 +147,5 @@ U8 Souliss_Logic_T42(U8 *memory_map, U8 slot, U8 *trigger, U16 main_antitheft_ad
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm))
 		return memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_RstCmd;	
+	//TOFIX: No return, in function returning non-void - control reaches end of non-void function
 }
