@@ -68,7 +68,7 @@ void Souliss_HardcodedCommunicationChannel(U16 gateway_addr);
 void Souliss_JoinNetwork();
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway);
 uint8_t Souliss_GetIPAddress(U8 timeout);
-void Souliss_SetAccessPoint();
+String Souliss_SetAccessPoint(char *ap_name, char *ap_pass);
 uint8_t Souliss_ReadIPConfiguration();
 void Souliss_SetAddressingServer(U8 *memory_map);
 void Souliss_SetDynamicAddressing();
