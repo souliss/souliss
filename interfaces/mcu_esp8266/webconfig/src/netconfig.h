@@ -156,7 +156,7 @@ void send_network_configuration_html()
 	}
 	else
 	{
-            server.send ( 200, "text/html", PAGE_NetworkConfiguration ); 
+            server.send_P ( 200, "text/html", PAGE_NetworkConfiguration ); 
 
 	}
 }
