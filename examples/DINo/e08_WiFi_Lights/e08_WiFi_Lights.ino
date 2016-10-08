@@ -1,6 +1,6 @@
 /**************************************************************************
     Souliss - Lights
-    
+
     It handle the four relays either via IN1 to IN4 inputs or using the
     Android interface. Connecting the relays to lights or similar electrical 
     appliance, you can get remote control of them.
@@ -9,6 +9,8 @@
         - Light
         - Other ON/OFF electrical appliance
     
+    Runs on KMP Electronics ProDINo Wroom (WiFi ESP8266)
+
 ***************************************************************************/
 
 // Let the IDE point to the Souliss framework
@@ -26,9 +28,6 @@
 /*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
-// By default the board will get an IP address with .77 as last byte, you can change it
-// in runtime using the Android application SoulissApp
-
 #define LIGHT1                  0           // This is the memory slot used for the execution of the logic
 #define LIGHT2                  1           
 #define LIGHT3                  2           
@@ -45,10 +44,7 @@ void setup()
     Set_SimpleLight(LIGHT3);
     Set_SimpleLight(LIGHT4);    
     
-    // We don't assign a fixed IP address to the board, the board will get the base IP
-    // information from the first broadcast frame sent out with the Android application.
-    // By default the board will get an IP address with .77 as last byte, you can change
-    // it in runtime using the Android application SoulissApp.
+    // This node will act as addressing server for the other peers in the network
     SetAddressingServer();
 }
 
