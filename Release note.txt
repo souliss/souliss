@@ -7,10 +7,11 @@ Release note for revision v7.2,   on dd/mm/yyyy
 	LASTIN. Debug messages can now be printed on any interface and not only USART with a
 	simple inSketch definition.
 
+		- Support for KMP Electronics PRODINo WiFi-ESP WROOM-2
 		- Revamped LASTIN for simpler use with Cloud services
         - Debug object #define is centralized
 		- Introduction of Pulsed Output functions
-		- Support for ESP8266 Core 2
+		- Support for ESP8266 Core 2.3.0
 		- Resolved many compiler warnings
 
 Release note for revision v7.1.1, on 12/12/2015

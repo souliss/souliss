@@ -1,5 +1,5 @@
 /**************************************************************************
-	Souliss 
+	Souliss Home Automation
     Copyright (C) 2013  Veseo
 
     This program is free software: you can redistribute it and/or modify
@@ -22,38 +22,33 @@
     \file 
     \ingroup
 */
+#ifndef bconf_DINOv2_H
+#define bconf_DINOv2_H
 
-#include "IOdef.h"
-#include "GetConfig.h"			// need : hwBoards.h
+#ifndef bconf_DINOwifi_H
+#define bconf_DINOwifi_H
 
-// Include drivers for Olimex MOD-IO
-#if(IOBOARD_MODEL == 0x01)						
-#	include "hardware/Olimex/MODIO.cpp"
-#	include "hardware/Olimex/Souliss_MODIO.cpp"
+// Expressif ESP8266 Board
+#define MCU_TYPE_INSKETCH
+#define BOARD_MODEL_INSKETCH
+#define	IOBOARD_MODEL_INSKETCH
+#define COMMS_MODEL_INSKETCH
+
+#define VNET_MEDIA_INSKETCH
+#define ETH_INSKETCH	
+
+// Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
+#define	MCU_TYPE					0x2
+#define	BOARD_MODEL					0xF		
+#define	COMMS_MODEL					0x0
+#define	IOBOARD_MODEL				0x0
+
+#define VNET_MEDIA5_ENABLE  		1
+
+#define USARTDRIVER_INSKETCH
+#define USART_TXENABLE				1
+#define USART_TXENPIN				0x10
+#define	USARTDRIVER					Serial
+
 #endif
 
-// Include drivers for Olimex MOD-IO2
-#if(IOBOARD_MODEL == 0x02)						
-#	include "hardware/Olimex/MODIO2.cpp"
-#	include "hardware/Olimex/Souliss_MODIO.cpp"
-#endif
-
-// Include drivers for Olimex MOD-RGB
-#if(IOBOARD_MODEL == 0x03)						
-#	include "hardware/Olimex/MODRGB.cpp"
-#endif
-
-// Include drivers for Authometion LYT88 RGBW Led Bulb
-#if(IOBOARD_MODEL == 0x04)						
-#	include "hardware/Authometion/LYT88.cpp"
-#endif
-
-// Include drivers for Authometion LYT8266 RGBW Led Bulb
-#if(BOARD_MODEL == 0x0B)						
-#	include "hardware/Authometion/LYT8266.cpp"
-#endif
-
-// Include defines for DINo Wroom WiFi Board
-#if(BOARD_MODEL == 0x0F)						
-#	include "hardware/KMPElectronics/DINoWroom.cpp"
-#endif

@@ -62,6 +62,7 @@
 		0x0B		Authometion LYT8266 Led Bulb
 		0x0C		Controllino Maxi (custom CS for W5100 only)
 		0x0D		Industruino PLC
+		0x0F		KMP Electronics DINo Wroom (ESP8266)
  
 */
 /**************************************************************************/

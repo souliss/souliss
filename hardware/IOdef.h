@@ -42,7 +42,6 @@
 #	include "hardware/DFRobots/XBoardRelay.h"
 #endif
 
-
 // Include drivers for Olimex MOD-IO
 #if(IOBOARD_MODEL == 0x01)						
 #	include "hardware/Olimex/MODIO.h"
@@ -84,6 +83,11 @@
 // Include defines for Industrino INDIO Board
 #if(IOBOARD_MODEL == 0x07)						
 #	include "hardware/Industruino/INDIO.h"
+#endif
+
+// Include defines for DINo Wroom WiFi Board
+#if(BOARD_MODEL == 0x0F)						
+#	include "hardware/KMPElectronics/DINoWroom.h"
 #endif
 
 #endif
