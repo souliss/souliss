@@ -52,7 +52,9 @@
 #		define	IPBROADCAST					0
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#	if(VNET_MEDIA1_ENABLE)
 #		define VNET_MEDIA3_ENABLE  			1
+#	endif
 #endif
 
 #endif
