@@ -73,6 +73,11 @@ void vNet_InitRS485_TXEnable()
 	digitalWrite(14, LOW);	
 	digitalWrite(15, LOW);	
 
+	#elif(USART_REVERSTXEENABLE == 0x01)	// All the others
+
+	pinMode(USART_TXENPIN, OUTPUT);
+	digitalWrite(USART_TXENPIN, HIGH);
+
 	#else	// All the others
 	
 	pinMode(USART_TXENPIN, OUTPUT);
@@ -96,9 +101,13 @@ void vNet_SetRS485_TXEnable(uint8_t mode)
 	digitalWrite(14, mode);
 	digitalWrite(15, mode);
 	
-	#else	// All the others
+	#elif(USART_REVERSTXEENABLE == 0x01)	// All the others
 	
-	digitalWrite(USART_TXENPIN, mode);
+	digitalWrite(USART_TXENPIN, !mode);
+
+	#else
+
+	digitalWrite(USART_TXENPIN, mode);	
 	
 	#endif
 }

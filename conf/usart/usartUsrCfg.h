@@ -71,6 +71,20 @@
 
 /**************************************************************************/
 /*!
+	Reverse the TXENABLE control pin
+	        
+		Value       Media
+        0x0         Disable (Default)
+        0x1         Enable 
+	
+*/
+/**************************************************************************/
+#ifndef USART_REVERSETXENABLE_INSKETCH
+#	define USART_REVERSTXEENABLE		0
+#endif
+
+/**************************************************************************/
+/*!
 	Enable the collision avoidance mechanism before sending data
 	        
 		Value       Media

@@ -65,15 +65,15 @@
 #define RS485PIN 0x10
 
 // User defined pins
-#define IN1				1
-#define IN2				2
-#define IN3				3
-#define IN4				4
+#define IN1				0
+#define IN2				1
+#define IN3				2
+#define IN4				3
 
-#define RELAY1			1
-#define RELAY2			2
-#define RELAY3			3
-#define RELAY4			4	
+#define RELAY1			0
+#define RELAY2			1
+#define RELAY3			2
+#define RELAY4			3	
 
 /**
  * @brief Grove connector first pin GPIO4/SDA.
@@ -101,7 +101,7 @@ uint8_t  _expTxData[16];
 uint8_t  _expRxData[16];
 
 // User Methods
-#define	InitDINo()	DINoWroom_ExpanderInitGPIO()
+#define	InitDINo()	DINoWroom_init()
 #define	dRead		DINoWroom_ExpanderGetPin
 #define	dWrite		DINoWroom_ExpanderSetPin
 #define	aRead		analogRead

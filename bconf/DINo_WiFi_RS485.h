@@ -22,9 +22,6 @@
     \file 
     \ingroup
 */
-#ifndef bconf_DINOv2_H
-#define bconf_DINOv2_H
-
 #ifndef bconf_DINOwifi_H
 #define bconf_DINOwifi_H
 
@@ -37,12 +34,26 @@
 #define VNET_MEDIA_INSKETCH
 #define ETH_INSKETCH	
 
+#define	LOCAL_IO
+
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
 #define	MCU_TYPE					0x2
 #define	BOARD_MODEL					0xF		
 #define	COMMS_MODEL					0x0
 #define	IOBOARD_MODEL				0x0
+#define ETH_W5100  					0
+#define ETH_W5200  					0
+#define ETH_W5500					0
+#define ETH_ENC28J60  				0
+#define WIFI_MRF24					0
+#define WIFI_ESP8266				1
 
+// The ESP8266 works always with two media, it use Media 3 to
+// remove dependence between vNet address and IP address from DHCP
+#define VNET_MEDIA1_ENABLE  		0
+#define VNET_MEDIA3_ENABLE  		0
+
+// Enable RS485 Communication over Serial
 #define VNET_MEDIA5_ENABLE  		1
 
 #define USARTDRIVER_INSKETCH

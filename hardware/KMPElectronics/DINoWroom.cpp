@@ -113,6 +113,29 @@ void DINoWroom_ExpanderInitGPIO()
 }
 
 /**
+ * @brief Initialize KMP Dino WiFi board.
+ *		   WiFi module ESP8266, Expander MCP23S17, relays and opto inputs.
+ *
+ * @return void
+ */
+void DINoWroom_init()
+{
+	// Expander settings.
+	SPI.begin();
+	SPI.setHwCs(CS);
+	SPI.setFrequency(1000000);
+	SPI.setDataMode(SPI_MODE0);
+
+	pinMode(CS, OUTPUT);
+	digitalWrite(CS, HIGH);
+	DINoWroom_ExpanderInitGPIO();
+
+	// RS485 init.
+	pinMode(RS485PIN, OUTPUT);
+	digitalWrite(RS485PIN, HIGH);
+}
+
+/**
  * @brief Set expander MCP23S17 pin state.
  *
  * @param pinNumber The number of pin to be set.
@@ -123,14 +146,15 @@ void DINoWroom_ExpanderInitGPIO()
 void DINoWroom_ExpanderSetPin(uint8_t pinNumber, bool state)
 {
 	uint8_t registerData = DINoWroom_ExpanderReadRegister(OLAT);
+	uint8_t _pinNumber   = RELAY_PINS[pinNumber];
 
 	if (state)
 	{
-		registerData |= (1 << pinNumber);
+		registerData |= (1 << _pinNumber);
 	}
 	else
 	{
-		registerData &= ~(1 << pinNumber);
+		registerData &= ~(1 << _pinNumber);
 	}
 
 	DINoWroom_ExpanderWriteRegister(OLAT, registerData);
@@ -146,6 +170,7 @@ void DINoWroom_ExpanderSetPin(uint8_t pinNumber, bool state)
 bool DINoWroom_ExpanderGetPin(uint8_t pinNumber)
 {
 	uint8_t registerData = DINoWroom_ExpanderReadRegister(GPIO);
+	uint8_t _pinNumber = OPTOIN_PINS[pinNumber];
 
-	return registerData & (1 << pinNumber);
+	return !(registerData & (1 << _pinNumber));
 }

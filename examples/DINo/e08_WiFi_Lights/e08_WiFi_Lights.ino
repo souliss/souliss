@@ -21,8 +21,14 @@
 #include "conf/Webhook.h"                   // Enable DHCP and DNS
 #include "conf/DynamicAddressing.h"         // Use dynamic address
 
+// **** Define the WiFi name and password ****
+#define WIFICONF_INSKETCH
+#define WiFi_SSID               "mywifi"
+#define WiFi_Password           "mypassword"    
+
 // Include framework code and libraries
 #include <SPI.h>
+#include <ESP8266WiFi.h>
 #include <EEPROM.h>
 
 /*** All configuration includes should be above this line ***/ 
@@ -37,6 +43,10 @@ void setup()
 {   
     // Init the board
     InitDINo();
+
+    // Connect to the WiFi network and get an address from DHCP
+    GetIPAddress();                           
+    SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
     
     // Define Simple Light logics for the relays
     Set_SimpleLight(LIGHT1);
@@ -70,7 +80,6 @@ void loop()
             DigOut(RELAY2, Souliss_T1n_Coil, LIGHT2);           // Drive the Relay 2
             DigOut(RELAY3, Souliss_T1n_Coil, LIGHT3);           // Drive the Relay 3
             DigOut(RELAY4, Souliss_T1n_Coil, LIGHT4);           // Drive the Relay 4
-        
         } 
         
         // Here we process all communication with other nodes
@@ -84,7 +93,7 @@ void loop()
             Timer_SimpleLight(LIGHT1);
             Timer_SimpleLight(LIGHT2);  
             Timer_SimpleLight(LIGHT3);
-            Timer_SimpleLight(LIGHT4);              
+            Timer_SimpleLight(LIGHT4);
         }     
     }
 } 

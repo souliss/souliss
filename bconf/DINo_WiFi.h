@@ -34,6 +34,8 @@
 #define VNET_MEDIA_INSKETCH
 #define ETH_INSKETCH	
 
+#define	LOCAL_IO
+
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
 #define	MCU_TYPE					0x2
 #define	BOARD_MODEL					0xF		

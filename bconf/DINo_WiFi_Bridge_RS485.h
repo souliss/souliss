@@ -34,6 +34,12 @@
 #define VNET_MEDIA_INSKETCH
 #define ETH_INSKETCH	
 
+#define	LOCAL_IO
+
+// Enable the SuperNode
+#define VNET_SUPERNODE_INSKETCH
+#define	VNET_SUPERNODE				1
+
 // Refer to ethUsrCfg.h, vNetCfg.h and hwBoards.h
 #define	MCU_TYPE					0x2
 #define	BOARD_MODEL					0xF		
@@ -50,6 +56,8 @@
 // remove dependence between vNet address and IP address from DHCP
 #define VNET_MEDIA1_ENABLE  		1
 #define VNET_MEDIA3_ENABLE  		1
+
+// Enable RS485 Communication over Serial
 #define VNET_MEDIA5_ENABLE  		1
 
 #define USARTDRIVER_INSKETCH
@@ -57,5 +65,8 @@
 #define USART_TXENPIN				0x10
 #define	USARTDRIVER					Serial
 
+// The DINo Wroom has a reverse circuit on the TXENABLE
+#define USART_REVERSETXENABLE_INSKETCH
+#define USART_REVERSTXEENABLE		1
 
 #endif
