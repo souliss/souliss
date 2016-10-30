@@ -3,6 +3,13 @@
 > Open source framework for Smart Home based on Arduino compatible devices (AVR, ESP8266) released as GPLv3.
 > Copyright (C) 2011-2016
 
+### Release note for revision v7.2.1,   on 30/10/2016
+
+Completed support for KMP Electronics PRODINo WiFi-ESP WROOM-2
+- Rewritten KMP Electronics PRODINo WiFi-ESP WROOM-2 examples for RS485
+- Fixed support for ESP8266 and RS485
+- Publish/Subscribe methods renamed to avoid conflict with MQTT library
+
 ### Release note for revision v7.2,   on 08/10/2016
 
 The Gateway can now interact easily with event-based cloud services using the new LASTIN. Debug messages can now be printed on any interface and not only USART with a simple inSketch definition.
