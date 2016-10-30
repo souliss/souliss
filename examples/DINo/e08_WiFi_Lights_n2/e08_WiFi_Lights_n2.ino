@@ -4,6 +4,9 @@
     It handle the four relays either via IN1 to IN4 inputs or using the
     Android interface. Connecting the relays to lights or similar electrical 
     appliance, you can get remote control of them.
+
+    Connect multiple ProDINo Wroom via RS485 using the e08_WiFi_Lights_n2.ino
+    on the peer boards.
         
     Applicable for:
         - Light
@@ -16,15 +19,8 @@
 // Let the IDE point to the Souliss framework
 #include "SoulissFramework.h"
 
-#include "bconf/DINo_WiFi.h"                // Define the board type
-#include "conf/Gateway.h"                   // The main node is the Gateway, we have just one node
-#include "conf/Webhook.h"                   // Enable DHCP and DNS
-#include "conf/DynamicAddressing.h"         // Use dynamic address
-
-// **** Define the WiFi name and password ****
-#define WIFICONF_INSKETCH
-#define WiFi_SSID               "mywifi"
-#define WiFi_Password           "mypassword"    
+#include "bconf/DINo_WiFi_RS485.h"   // Define the board type
+#include "conf/DynamicAddressing.h"         // Use dynamic address  
 
 // Include framework code and libraries
 #include <SPI.h>
@@ -33,6 +29,9 @@
 
 /*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
+
+// By default the board will get an IP address with .77 as last byte, you can change it
+// in runtime using the Android application SoulissApp
 
 #define LIGHT1                  0           // This is the memory slot used for the execution of the logic
 #define LIGHT2                  1           
@@ -43,10 +42,7 @@ void setup()
 {   
     // Init the board
     InitDINo();
-
-    // Connect to the WiFi network and get an address from DHCP
-    GetIPAddress();                           
-    SetAsGateway(myvNet_dhcp);       // Set this node as gateway for SoulissApp  
+   
     
     // Define Simple Light logics for the relays
     Set_SimpleLight(LIGHT1);
@@ -54,8 +50,11 @@ void setup()
     Set_SimpleLight(LIGHT3);
     Set_SimpleLight(LIGHT4);    
     
-    // This node will act as addressing server for the other peers in the network
-    SetAddressingServer();
+    // This board (peer) request an address to the gateway one at runtime, no need
+    // to configure any parameter here
+    SetDynamicAddressing();
+    GetAddress();
+    
 }
 
 void loop()
@@ -80,10 +79,15 @@ void loop()
             DigOut(RELAY2, Souliss_T1n_Coil, LIGHT2);           // Drive the Relay 2
             DigOut(RELAY3, Souliss_T1n_Coil, LIGHT3);           // Drive the Relay 3
             DigOut(RELAY4, Souliss_T1n_Coil, LIGHT4);           // Drive the Relay 4
-        } 
         
+        } 
+            
         // Here we process all communication with other nodes
-        FAST_GatewayComms();    
+        FAST_PeerComms();
+        
+        // At first runs, we look for a gateway to join
+        START_PeerJoin();
+
     }
     
     EXECUTESLOW() { 
@@ -93,7 +97,10 @@ void loop()
             Timer_SimpleLight(LIGHT1);
             Timer_SimpleLight(LIGHT2);  
             Timer_SimpleLight(LIGHT3);
-            Timer_SimpleLight(LIGHT4);
+            Timer_SimpleLight(LIGHT4);              
         }     
+        
+        // Here we periodically check for a gateway to join
+        SLOW_PeerJoin();        
     }
 } 

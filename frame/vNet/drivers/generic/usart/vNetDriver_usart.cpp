@@ -104,7 +104,7 @@ void vNet_SetRS485_TXEnable(uint8_t mode)
 	#elif(USART_REVERSTXEENABLE == 0x01)	// All the others
 	
 	digitalWrite(USART_TXENPIN, !mode);
-
+		
 	#else
 
 	digitalWrite(USART_TXENPIN, mode);	
@@ -318,6 +318,12 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 	for(i=0; i<USART_POSTAMBLE_LEN; i++)
 		USARTDRIVER.write(USART_POSTAMBLE);
 	USARTDRIVER.flush();					// Wait data send
+
+	// The ESP8266 flush doesn't honour the AVR behaviour and miss the last baud
+	// so a delay for the time required to transmit a single baud at slower speed
+	#if(MCU_TYPE == 0x02)
+	delayMicroseconds(105);
+	#endif
 
 	// Reset the write mode pin of the RS485
 	#if(USART_TXENABLE)

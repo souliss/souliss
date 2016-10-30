@@ -61,5 +61,9 @@
 #define USART_TXENPIN				0x10
 #define	USARTDRIVER					Serial
 
+// The DINo Wroom has a reverse circuit on the TXENABLE
+#define USART_REVERSETXENABLE_INSKETCH
+#define USART_REVERSTXEENABLE		1
+
 #endif
 
