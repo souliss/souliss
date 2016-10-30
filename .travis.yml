@@ -51,7 +51,8 @@ script:
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e01_LYTBulb_ESP8266/e01_LYTBulb_ESP8266.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Bulb/e02_LYT8266_WiFi_Bulb.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Erase/e02_LYT8266_WiFi_Erase.ino
-  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/DINo/e08_WiFi_Lights/e08_WiFi_Lights.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/DINo/e08_WiFi_Lights_n1/e08_WiFi_Lights_n1.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/DINo/e08_WiFi_Lights_n2/e08_WiFi_Lights_n2.ino
 
   - arduino --board arduino:avr:leonardo
   - arduino --verify --board arduino:avr:leonardo $PWD/examples/Olimex/e01_Olimex_LEDs/e01_Olimex_LEDs.ino
