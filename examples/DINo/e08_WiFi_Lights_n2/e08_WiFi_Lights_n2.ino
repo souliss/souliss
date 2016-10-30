@@ -30,9 +30,6 @@
 /*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
-// By default the board will get an IP address with .77 as last byte, you can change it
-// in runtime using the Android application SoulissApp
-
 #define LIGHT1                  0           // This is the memory slot used for the execution of the logic
 #define LIGHT2                  1           
 #define LIGHT3                  2           
