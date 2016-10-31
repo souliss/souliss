@@ -45,6 +45,7 @@
 void setup()
 {   
     // Init the board
+    Initialize();
     InitDINo();
 
     // Connect to the WiFi network and get an address from DHCP

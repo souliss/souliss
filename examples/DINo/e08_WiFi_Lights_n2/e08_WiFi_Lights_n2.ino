@@ -38,6 +38,7 @@
 void setup()
 {   
     // Init the board
+    Initialize();
     InitDINo();
    
     
