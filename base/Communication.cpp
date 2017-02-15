@@ -442,7 +442,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 	
 	#if (SOULISS_DEBUG)
 	// Look for input values
-	U8 i=0;
+	U16 i=0;
 	for(i=0;i<MaCaco_WRITE_f;i++)
 		if(*(memory_map+MaCaco_WRITE_s+i) !=0)
 			break;
