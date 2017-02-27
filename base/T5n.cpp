@@ -38,7 +38,7 @@
 		This typical use two (2) memory slots
 */	
 /**************************************************************************/
-U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
+U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float abs_deadband, U8 *trigger)
 {
 	float m_in, m_out;
 	
@@ -62,7 +62,7 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 		// If previously set as NaN or if there is a change greater than the deadband, update the output
 		if((((C8TO16(memory_map + MaCaco_IN_s + slot)) != (C8TO16(memory_map + MaCaco_OUT_s + slot))) && 
 				C8TO16(memory_map + MaCaco_OUT_s + slot) == 0xFE00) || 
-				(abs(m_in - m_out) > abs(deadband*m_out)))
+				(abs(m_in - m_out) > abs_deadband))
 		{
 			// Store the new value
 			memory_map[MaCaco_OUT_s + slot] = memory_map[MaCaco_IN_s + slot];
@@ -91,7 +91,7 @@ U8 Souliss_Logic_T51(U8 *memory_map, U8 slot, const float deadband, U8 *trigger)
 		
 		The following pre-defined analog inputs are available,
 			Souliss_Logic_T51 - Generic
-			Souliss_Logic_T52 - Temperature measure (-20, +50) °C
+			Souliss_Logic_T52 - Temperature measure (-20, +50) ï¿½C
 			Souliss_Logic_T53 - Humidity measure (0, 100) %
 			Souliss_Logic_T54 - Light Sensor (0, 40) kLux
 			Souliss_Logic_T55 - Voltage (0, 400) V
