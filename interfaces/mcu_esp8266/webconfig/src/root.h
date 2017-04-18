@@ -44,8 +44,13 @@ const char PAGE_Root[] PROGMEM = R"=====(
 
 )=====";
 
+#ifndef ASYNCWEBSERVER
 void sendRootPage()
+#else
+void sendRootPage(AsyncWebServerRequest *request)
+#endif
 {
+#ifndef ASYNCWEBSERVER
 	yield();
 	if (server.args() > 0 )  // Are there any POST/GET Fields ? 
 	{
@@ -53,4 +58,12 @@ void sendRootPage()
 		}
 	}
 	server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_Root) );  
+#else
+	if (request->params() > 0 )  // Are there any POST/GET Fields ?
+	{
+		for ( uint8_t i = 0; i < request->params(); i++ ) {  // Iterate through the fields
+		}
+	}
+	request->send( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_Root) );
+#endif
 }

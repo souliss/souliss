@@ -35,7 +35,12 @@
 
 #include "webconfig.h"
 
+#ifndef ASYNCWEBSERVER
 ESP8266WebServer server(HTTP_PORT);	// The Webserver
+#else
+AsyncWebServer server(HTTP_PORT);	// The Webserver
+#endif
+
 int AdminTimeOutCounter = 0;		// Counter for Disabling the AdminMode
 boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
 
@@ -65,17 +70,33 @@ void startWebServer()
 	ReadConfig();
 	
 	// Setup the webserver
+#ifndef ASYNCWEBSERVER
 	server.onNotFound ( []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_main));   }  );
 	server.on ( "/", []() {server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_main));   }  );	
+#else
+	server.onNotFound ( [](AsyncWebServerRequest *request) {request->send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_main));   }  );
+	server.on ( "/", [](AsyncWebServerRequest *request) {request->send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_main));   }  );	
+#endif	
 	server.on ( "/admin/processMain", processMain);
 	server.on ( "/admin/filldynamicdata", filldynamicdata );	
+#ifndef ASYNCWEBSERVER
 	server.on ( "/favicon.ico",   []() { server.send ( 200, "text/html", "" );   }  );
 	server.on ( "/admin.html", []() { server.send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+#else
+	server.on ( "/favicon.ico",   [](AsyncWebServerRequest *request) { request->send ( 200, "text/html", "" );   }  );
+	server.on ( "/admin.html", [](AsyncWebServerRequest *request) { request->send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
+#endif
 	server.on ( "/config.html", send_network_configuration_html );
 	server.on ( "/main.html", processMain  );
+#ifndef ASYNCWEBSERVER
 	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_main );  } );
 	server.on ( "/style.css", []() { server.send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
 	server.on ( "/microajax.js", []() { server.send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
+#else
+	server.on ( "/main.html", [](AsyncWebServerRequest *request) { request->send ( 200, "text/html", PAGE_main );  } );
+	server.on ( "/style.css", [](AsyncWebServerRequest *request) { request->send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
+	server.on ( "/microajax.js", [](AsyncWebServerRequest *request) { request->send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
+#endif	
 	server.on ( "/admin/values", send_network_configuration_values_html );
 	server.on ( "/admin/connectionstate", send_connection_state_values_html );
 	server.on ( "/admin/rstvalues", send_reset_values_html);
@@ -93,7 +114,9 @@ void disableWebServer()
 // Process the communication for the webserver
 void runWebServer()
 {
+#ifndef ASYNCWEBSERVER
 	server.handleClient();      
+#endif
 }
 
 // Write actual configuration in the EEPROM

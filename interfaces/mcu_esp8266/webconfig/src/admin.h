@@ -66,10 +66,20 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 
 
+#ifndef ASYNCWEBSERVER
 void filldynamicdata()
+#else
+void filldynamicdata(AsyncWebServerRequest *request)
+#endif
 {        
+#ifndef ASYNCWEBSERVER
 	yield();
+#endif	
 	String values ="";
 	values += "mydynamicdata|" + (String) + "Souliss Node, Millis since start: " + (String) millis() + "|div\n";   // Build a string, like this:  ID|VALUE|TYPE
+#ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/plain", values);   
+#else
+	request->send ( 200, "text/plain", values);
+#endif
 }
