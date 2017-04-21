@@ -266,7 +266,7 @@ void send_connection_state_values_html(AsyncWebServerRequest *request)
 
 
 
-#ifndef ASYNCWEBSERVER
+#ifdef ASYNCWEBSERVER
 	int n = WiFi.scanComplete();
 #else
 	int n = WiFi.scanNetworks();
