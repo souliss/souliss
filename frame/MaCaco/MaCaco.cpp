@@ -731,6 +731,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					U8 tryagain=0, trying=0;
 					do
 					{
+						// we ran across all node addresses once
+						tryagain=0;	
+						
 						for(nodes=0;nodes<MaCaco_NODES;nodes++)
 						{
 							if(nodeaddress == (C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
