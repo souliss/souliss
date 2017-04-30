@@ -79,7 +79,7 @@
 
 */ 
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Convert a single precision floating point into an half precision one
 */	
@@ -87,15 +87,14 @@
 void float16(uint16_t *output, float *input)
 {
     uint16_t *hp = (uint16_t*) output; 	
-    uint32_t *xp = (uint32_t*) input; 
     uint16_t	hs, he, hm;
     uint32_t	x, xs, xe, xm;
     int hes;
     
-
 	x = *(uint32_t*) input;
+
 	if( (x & 0x7FFFFFFF) == 0 ) 										// Signed zero   
-		*hp = (uint16_t) (x >> 16);  									// Return the signed zero
+		*hp = 0x8000; 													// Return the signed zero
 	else 
 	{ 
 		// Not zero
@@ -148,7 +147,7 @@ void float16(uint16_t *output, float *input)
 }
 
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Convert an half precision floating point into an single precision one
 */	

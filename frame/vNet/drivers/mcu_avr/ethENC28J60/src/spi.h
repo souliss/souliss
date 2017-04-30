@@ -40,7 +40,7 @@
 #    define SPI0_MISO_DDR            DDRB
 #    define SPI0_MISO_PORT           PORTB
 
-#    define ENC28J60_CS_BIT		BIT4        // ATmega2560 PB4 - Arduino pin 10   
+#    define ENC28J60_CS_BIT			BIT4        // ATmega2560 PB4 - Arduino pin 10   
 #    define ENC28J60_CS_DDR       	DDRB
 #    define ENC28J60_CS_PORT      	PORTB
 

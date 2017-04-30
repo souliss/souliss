@@ -75,14 +75,28 @@ const char PAGE_main[] PROGMEM = R"=====(
 
 )=====";
 
+#ifndef ASYNCWEBSERVER
 void processMain()
+#else
+void processMain(AsyncWebServerRequest *request)
+#endif
 {
+#ifndef ASYNCWEBSERVER
 	if (server.args() > 0 )  // Reboot Settings
+#else
+	if (request->params() > 0 )  // Reboot Settings
+#endif	
 	{
 		config.rst = true;
 		String temp = "";
+#ifndef ASYNCWEBSERVER
 		for ( uint8_t i = 0; i < server.args(); i++ ) {
 			if (server.argName(i) == "rst") config.rst = false; 
+#else
+		for ( uint8_t i = 0; i < request->params(); i++ ) {
+			AsyncWebParameter* p = request->getParam(i);
+			if (p->name() == "rst") config.rst = false;
+#endif
 			Store_Clear();
 			Store_Commit();
 		}
@@ -90,13 +104,27 @@ void processMain()
 	ESP.restart();
     }
 
+#ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_main)); 
+#else
+	request->send( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_main));
+#endif	
 }
 
+#ifndef ASYNCWEBSERVER
 void send_reset_values_html()
+#else
+void send_reset_values_html(AsyncWebServerRequest *request)
+#endif	
 {
+#ifndef ASYNCWEBSERVER
 	yield();
+#endif	
 	String values ="";
 	values += "rst|" +  (String) (config.rst ? "checked" : "") + "|chk\n";
+#ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/plain", values);
+#else
+	request->send( 200, "text/plain", values);
+#endif
 }

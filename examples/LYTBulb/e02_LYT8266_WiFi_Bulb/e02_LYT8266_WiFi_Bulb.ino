@@ -14,10 +14,15 @@
  
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 #include <EEPROM.h>
 #include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 // Configure the Souliss framework
 #include "bconf/LYT8266_LEDBulb.h"          // Load the code directly on the ESP8266
@@ -25,14 +30,16 @@
 #include "conf/DynamicAddressing.h"         // Use dynamically assigned addresses
 #include "conf/WEBCONFinterface.h"          // Enable the WebConfig interface
 
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
    
 // Define logic slots, multicolor lights use four slots
 #define LYTLIGHT1           0    
 
-#define	RED_STARTUP			0x50
-#define GREEN_STARTUP		0x10
-#define BLUE_STARTUP		0x00
+#define RED_STARTUP         0x50
+#define GREEN_STARTUP       0x10
+#define BLUE_STARTUP        0x00
 
 void setup()
 {
@@ -40,19 +47,25 @@ void setup()
     Initialize();
     InitLYT();
     
-	/****
-		Actually the ESP8266 cores doesn't allow the use of PWM while connecting
-		to the router, so the only way to quickly turn on the bulb is without PWM
-		(full bright).
-	****/
-	LYTOn();
+    /****
+        Generally set a PWM output before the connection will lead the 
+        ESP8266 to reboot for a conflict on the FLASH write access.
+
+        Here we do the configuration during the WebConfig and so we don't
+        need to write anything in the FLASH, and the module can connect
+        to the last used network.
+
+        If you don't use the WebConfig use a dummy sketch that connects to
+        your WiFi and then use this sketch
+    ****/
+    SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
 
     // Read the IP configuration from the EEPROM, if not available start
     // the node as access point.
-	//
-	// If you want to force the device in WebConfiguration mode, power OFF
-	// your router and power OFF and then ON the bulb, you will see an access
-	// point called Souliss.
+    //
+    // If you want to force the device in WebConfiguration mode, power OFF
+    // your router and power OFF and then ON the bulb, you will see an access
+    // point called Souliss.
     if(!ReadIPConfiguration()) 
     {   
         // Pulse a bit
@@ -89,11 +102,9 @@ void setup()
     // Define a logic to handle the bulb
     SetLYTLamps(LYTLIGHT1);
 
-	/****
-		Here the lamp is connected, so we can select a color via PWM
-		and get any color or dimming effect
-    ****/
-	SetColor(LYTLIGHT1, RED_STARTUP, GREEN_STARTUP, BLUE_STARTUP);
+    // Init the OTA
+    ArduinoOTA.setHostname("souliss-nodename");    
+    ArduinoOTA.begin();
 }
 
 void loop()
@@ -115,14 +126,17 @@ void loop()
 
     EXECUTESLOW() {
         UPDATESLOW();
-		
-		// Slowly shut down the lamp
+        
+        // Slowly shut down the lamp
         SLOW_10s() {
             LYTSleepTimer(LYTLIGHT1);      
-        }		
+        }       
         
         // If running as Peer
         if (!IsRuntimeGateway())
             SLOW_PeerJoin();
     } 
+    
+    // Look for a new sketch to update over the air
+    ArduinoOTA.handle();
 }    

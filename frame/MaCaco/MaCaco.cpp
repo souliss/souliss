@@ -75,7 +75,7 @@ extern bool addrsrv;
 #endif
 
 #if (MaCaco_DEBUG)
-	#define MaCaco_LOG Serial.print
+	#define MaCaco_LOG LOG.print
 #endif
 
 /**************************************************************************/
@@ -351,30 +351,31 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if ((rx->funcode == MaCaco_TYPREQ))
 	{
 		#if(MaCaco_SUBSCRIBERS)
-			U16 nodeoffest, len;
 			
 			// If the node address isn't stored in the memory map, behave as SUSCRIBERS hasn't been set
 			if(C8TO16(memory_map + MaCaco_ADDRESSES_s) == 0)
 				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
 
-			// These points the local data
-			nodeoffest = MaCaco_TYP_s;
-			len = MaCaco_TYPLENGHT;				
-		
 			// Record the request info
 			reqtyp_addr = addr;	
 			reqtyp_putin = rx->putin;
 			reqtyp_startoffset = rx->startoffset;
-			reqtyp_numberof = rx->numberof;
+			reqtyp_numberof = rx->numberof;			
+			
+			// If the user interface has requested typical from one node only, send the data directly
+			// or forward the request to the node that owns the data
+			if((rx->numberof == 1) && (rx->startoffset != 0))
+				return MaCaco_send(C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*(rx->startoffset)), MaCaco_TYPREQ, 0, MaCaco_TYP_s, MaCaco_TYPLENGHT, 0x00);			
+			else if((rx->numberof == 1) && (rx->startoffset == 0))	// Returns typical for this node
+				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, MaCaco_TYPLENGHT, (MaCaco_TYP_s + memory_map));
 				
 			// Flag that the request shall be processed for all nodes, this is used at an upper level
 			reqtyp_times = MaCaco_NODES;		
 			lasttyp_addr=0;
-			
-			// In passthrough mode data from other nodes are not stored, at this time we can send out only local
-			// data, then when other nodes will send back data these will be bridged to the User Interface
-			if(rx->putin == 0) 
-				return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, len, (nodeoffest + memory_map));
+
+			// If the user interface has requested typical from multiple node, send the data from this node
+			// the GetTypicals from the main application will forward the request to other nodes
+			return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, MaCaco_TYPLENGHT, (MaCaco_TYP_s + memory_map));
 		#else
 			return MaCaco_send(addr, MaCaco_TYPANS, rx->putin, rx->startoffset, rx->numberof, (rx->startoffset + memory_map));
 		#endif
@@ -442,12 +443,21 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	if (rx->funcode == MaCaco_DATAREQ)
 	{	
 		U16 nodeoffest, len;
-		
+
 		// If a manual update is requested, force an update request to the remote nodes (if any)
-		// to get at next process fresh data
-		for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
-			subscr_count[i] = 0;
-				
+		// to get at next process fresh data. If is not specified the number of nodes that are 
+		// required to be refreshed, do it for all
+		if(rx->numberof == 0)
+		{
+			for(U8 i=0;i<MaCaco_OUTMAXSUBSCR;i++)
+				subscr_count[i] = 0;
+		}
+		else // Do it only for the requested nodes
+		{
+			for(U8 i=rx->startoffset;i<(rx->startoffset+rx->numberof);i++)
+				subscr_count[i] = 0;
+		}
+		
 		// These points the local data
 		nodeoffest = MaCaco_OUT_s;
 		len = MaCaco_OUTLENGHT;			
@@ -721,6 +731,9 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 					U8 tryagain=0, trying=0;
 					do
 					{
+						// we ran across all node addresses once
+						tryagain=0;	
+						
 						for(nodes=0;nodes<MaCaco_NODES;nodes++)
 						{
 							if(nodeaddress == (C8TO16(memory_map + MaCaco_ADDRESSES_s + 2*nodes)))
@@ -753,7 +766,7 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 	
 	#if(DYNAMICADDRESSING && (MaCaco_USERMODE || VNET_SUPERNODE))	
 	// answer to a subnet request
-	if ((rx->funcode == MaCaco_SUBNETREQ) && (C8TO16(memory_map + MaCaco_ADDRESSES_s)))
+	if ((rx->funcode == MaCaco_SUBNETREQ))
 	{	
 		
 		// the startoffset is used as media number
@@ -953,17 +966,6 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 			#if(MaCaco_PERSISTANCE)
 			if(rx->numberof)
 				memmove((memory_map+MaCaco_P_TYP_s+(nodeindex*MaCaco_TYPLENGHT)), rx->data, rx->numberof);
-			#elif(MaCaco_LASTIN)		// LASTIN is active, store the last information
-			
-			// Identify the first and last slot in the typical 5n group (analogue values)
-			// this is an unconventional check at this layer, typicals are handled at a top
-			// level
-			i=0;
-			while(((*(rx->data+i) & 0xF0) != 0x50) && i < MaCaco_SLOT)	i++;
-			*(memory_map+MaCaco_L_TYP5n_s+2*nodeindex) = i; 
-					
-			while((((*(rx->data+i) == 0xFF) && ((*(rx->data+i) & 0xF0) == 0x50))  && i < MaCaco_SLOT))	i++;
-			*(memory_map+MaCaco_L_TYP5n_s+2*nodeindex+1) = i;
 			#endif
 			
 			if(reqtyp_addr)		// If there is a stored address from a User Interface
@@ -999,18 +1001,32 @@ U8 MaCaco_peruse(U16 addr, MaCaco_rx_data_t *rx, U8 *memory_map)
 
 				#if(MaCaco_PERSISTANCE)		// PERSISTENCE is active, store information
 				if(rx->numberof)
+				{
 					memmove((memory_map+MaCaco_P_OUT_s+(nodeindex*MaCaco_OUTLENGHT)), rx->data, rx->numberof);
+					
+					// Look for a free entry
+					i=0;
+					while((*(memory_map+MaCaco_P_IDX_s+i) != MaCaco_P_IDX_NULL) && (i < MaCaco_P_BUFSIZE))	i++;
+					
+					// If there is now free space, overwrite the oldest data
+					if((i == MaCaco_P_BUFSIZE))		i = 0;
+					*(memory_map+MaCaco_P_IDX_s+i) = nodeindex;			
+				}
 				#elif(MaCaco_LASTIN)		// LASTIN is active, store the last information
 				// Identify a free space into the LASTIN data area
 				i=0;
 				while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
-								
-				// Store the node index
-				*(memory_map+MaCaco_L_IDX_s+i) = nodeindex;
-				
-				// Store data
-				if((i != MaCaco_L_BUFSIZE) && (rx->numberof))
+
+				if(rx->numberof)
+				{
+					// If there is now free space, overwrite the oldest data
+					if((i == MaCaco_L_BUFSIZE))		i = 0;
+
+					// Store node index and data
+					*(memory_map+MaCaco_L_IDX_s+i) = nodeindex;
 					memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), rx->data, rx->numberof);
+
+				}
 				#endif
 						
 				// Send the data to all subscribers
@@ -1113,19 +1129,29 @@ U8 MaCaco_retrieve(U8* memory_map, U8* data_chg)
 		
 		#if(MaCaco_PERSISTANCE)			// PERSISTENCE is active, store data
 			memmove((memory_map+MaCaco_P_OUT_s), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
+
+			// Look for a free entry
+			U16 i=0;
+			while((*(memory_map+MaCaco_P_IDX_s+i) != MaCaco_P_IDX_NULL) && (i < MaCaco_P_BUFSIZE))	i++;
+
+			// Store data in the free space or overwrite the oldest data
+			if(i != MaCaco_P_BUFSIZE)	i = 0;
+			*(memory_map+MaCaco_P_IDX_s+i) = 0;									// Local node has index 0
+
 		#elif(MaCaco_LASTIN)			// LOCALIN is active, store data
 			// Identify a free space into the LASTIN data area
 			U16 i=0;
 			while((*(memory_map+MaCaco_L_IDX_s+i) != MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
 
-			if(i != MaCaco_L_BUFSIZE)
-			{		
-				// Store the node index
-				*(memory_map+MaCaco_L_IDX_s+i) = 0;											// Local node has index 0
+			// Store data in the free space or overwrite the oldest data
+			if(i == MaCaco_L_BUFSIZE)	i = 0;
+
+			// Store the node index
+			*(memory_map+MaCaco_L_IDX_s+i) = 0;									// Local node has index 0
 								
-				// Store the data
-				memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
-			}	
+			// Store the data
+			memmove((memory_map+MaCaco_L_OUT_s+(i*MaCaco_SLOT)), (memory_map+MaCaco_OUT_s), MaCaco_SLOT);
+
 		#endif
 	}	
 		
@@ -1580,27 +1606,16 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 	/** Init the typicals **/
 
 	#if(MaCaco_PERSISTANCE)			// PERSISTENCE is active, store data
-		memmove((memory_map+MaCaco_P_TYP_s), (memory_map+MaCaco_TYP_s), MaCaco_SLOT);		
+		memmove((memory_map+MaCaco_P_TYP_s), (memory_map+MaCaco_TYP_s), MaCaco_SLOT);
+
+		// Clear the index list
+		for(i=0;i<MaCaco_P_BUFSIZE;i++)
+			*(memory_map+MaCaco_P_IDX_s+i) = MaCaco_P_IDX_NULL;
+
 	#elif(MaCaco_LASTIN)			// LOCALIN is active, store data	
 		// Clear the index list
 		for(i=0;i<MaCaco_L_BUFSIZE;i++)
-			*(memory_map+MaCaco_L_IDX_s+i) = MaCaco_L_IDX_NULL;
-		
-		// Clear the typical list
-		for(i=0;i<(2*MaCaco_NODES);i++)
-			*(memory_map+MaCaco_L_TYP5n_s+i) = MaCaco_SLOT;			// This is the index of the first and last
-																	// analog T5n type typical logic, we set it
-																	// at last available value.
-		
-		// Identify the first and last slot in the typical 5n group (analogue values) 
-		// this an unconventional check at this layer
-		i=0;
-		while(((*(memory_map+MaCaco_TYP_s+i) & 0xF0) != 0x50) && i < MaCaco_SLOT)	i++;
-		*(memory_map+MaCaco_L_TYP5n_s) = i; 
-				
-		while(((*(memory_map+MaCaco_TYP_s+i) == 0xFF) || ((*(memory_map+MaCaco_TYP_s+i) & 0xF0) == 0x50))  && i < MaCaco_SLOT)	i++;
-		*(memory_map+MaCaco_L_TYP5n_s+1) = i;
-		
+			*(memory_map+MaCaco_L_IDX_s+i) = MaCaco_L_IDX_NULL;		
 	#endif
 							
 	/** Create a permanent data subscription as it was received by an user interface **/
@@ -1634,14 +1649,15 @@ void MaCaco_InternalSubcription(U8 *memory_map)
 }
 #endif
 
+#if(MaCaco_PERSISTANCE)
 /**************************************************************************/
 /*!
-    Return if are LASTIN data available
+    Return if are PERSISTENCE data available 
 */
 /**************************************************************************/
-U8 MaCaco_isLastIn(U8 *memory_map)
+U8 MaCaco_isPersistence(U8 *memory_map)
 {
-	if(MaCaco_GetLastIn(memory_map) == MaCaco_L_IDX_NULL)
+	if(MaCaco_GetPersistence(memory_map) == MaCaco_P_IDX_NULL)
 		return MaCaco_FUNCODE_ERR;
 		
 	return MaCaco_FUNCODE_OK;
@@ -1649,15 +1665,83 @@ U8 MaCaco_isLastIn(U8 *memory_map)
 
 /**************************************************************************/
 /*!
+    Return the node number of the first available value into the PERSISTENCE 
+	data area
+*/
+/**************************************************************************/
+U8 MaCaco_GetPersistence(U8 *memory_map)
+{
+	// Get the index
+	U8 i=0;
+	while((*(memory_map+MaCaco_P_IDX_s+i) == MaCaco_P_IDX_NULL) && (i < MaCaco_P_BUFSIZE))	i++;
+	
+	if(i == MaCaco_P_BUFSIZE)
+		return MaCaco_P_IDX_NULL;										// No new data
+	
+	return *(memory_map+MaCaco_P_IDX_s+i);
+}
+
+/**************************************************************************/
+/*!
+    Return the index of the first available value into the PERSISTENCE 
+	data area
+*/
+/**************************************************************************/
+U8 MaCaco_GetPersistenceIndex(U8 *memory_map, U8 nodenumber)
+{
+	// Get the index
+	U8 i=0;
+	
+	if(nodenumber == MaCaco_P_IDX_NULL)
+		return MaCaco_P_IDX_NULL;
+	
+	while((*(memory_map+MaCaco_P_IDX_s+i) != nodenumber) && (i < MaCaco_P_BUFSIZE))	i++;
+	
+	if(i == MaCaco_P_BUFSIZE)
+		return MaCaco_P_IDX_NULL;										// No new data
+		
+	// Return the index
+	return i;
+}
+
+/**************************************************************************/
+/*!
+    Clear the index of the first available value into the PERSISTENCE 
+	data area, use this when all data from a node has been parsed
+*/
+/**************************************************************************/
+U8 MaCaco_ClearPersistenceIndex(U8 *memory_map, U8 nodenumber)
+{
+	// Get the index
+	U8 i=0;
+	
+	if(nodenumber == MaCaco_P_IDX_NULL)
+		return MaCaco_P_IDX_NULL;
+	
+	while((*(memory_map+MaCaco_P_IDX_s+i) != nodenumber) && (i < MaCaco_P_BUFSIZE))	i++;
+	
+	if(i == MaCaco_P_BUFSIZE)
+		return MaCaco_P_IDX_NULL;										// No new data
+	
+	*(memory_map+MaCaco_P_IDX_s+i) = MaCaco_P_IDX_NULL;
+	
+	// Return the index
+	return i;
+}
+#endif
+
+#if(MaCaco_LASTIN)
+/**************************************************************************/
+/*!
     Return the node number of the first available value into the LASTIN 
 	data area
 */
 /**************************************************************************/
-U8 MaCaco_GetLastIn(U8 *memory_map)
+U8 MaCaco_GetLastIn(U8 *memory_map, U8 nodenumber)
 {
 	// Get the index
 	U8 i=0;
-	while((*(memory_map+MaCaco_L_IDX_s+i) == MaCaco_L_IDX_NULL) && (i < MaCaco_L_BUFSIZE))	i++;
+	while((*(memory_map+MaCaco_L_IDX_s+i) != nodenumber) && (i < MaCaco_L_BUFSIZE))	i++;
 	
 	if(i == MaCaco_L_BUFSIZE)
 		return MaCaco_L_IDX_NULL;										// No new data
@@ -1683,12 +1767,36 @@ U8 MaCaco_GetLastIndex(U8 *memory_map, U8 nodenumber)
 	
 	if(i == MaCaco_L_BUFSIZE)
 		return MaCaco_L_IDX_NULL;										// No new data
+		
+	// Return the index
+	return i;
+}
+
+/**************************************************************************/
+/*!
+    Clear the index of the first available value into the LASTIN 
+	data area, use this when all data from a node has been parsed
+*/
+/**************************************************************************/
+U8 MaCaco_ClearLastIndex(U8 *memory_map, U8 nodenumber)
+{
+	// Get the index
+	U8 i=0;
+	
+	if(nodenumber == MaCaco_L_IDX_NULL)
+		return MaCaco_L_IDX_NULL;
+	
+	while((*(memory_map+MaCaco_L_IDX_s+i) != nodenumber) && (i < MaCaco_L_BUFSIZE))	i++;
+	
+	if(i == MaCaco_L_BUFSIZE)
+		return MaCaco_L_IDX_NULL;										// No new data
 	
 	*(memory_map+MaCaco_L_IDX_s+i) = MaCaco_L_IDX_NULL;
 	
 	// Return the index
 	return i;
 }
+#endif
 
 /**************************************************************************/
 /*!

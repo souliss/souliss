@@ -7,7 +7,15 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <EEPROM.h>
 #include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 #include "bconf/MCU_ESP8266.h"
 #include "conf/DynamicAddressing.h"                 // Use dynamic address
@@ -16,8 +24,9 @@
 
 // Include framework code and libraries
 #include <EEPROM.h>
-#include "Souliss.h"
 
+/*** All configuration includes should be above this line ***/ 
+#include "Souliss.h"
 
 void setup()
 {   
@@ -28,6 +37,10 @@ void setup()
 
     // Init Serial
     Serial.begin(9600);
+
+    // Init the OTA
+    ArduinoOTA.setHostname("souliss-nodename");    
+    ArduinoOTA.begin();
 }
 
 void loop()
@@ -43,4 +56,7 @@ void loop()
 
     // Stops here
     while(1);
+
+    // Look for a new sketch to update over the air
+    ArduinoOTA.handle();
 } 

@@ -19,6 +19,8 @@
         
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
 
 // Configure the framework
 #include "bconf/StandardArduino.h"          // Use a standard Arduino
@@ -28,6 +30,8 @@
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT1_NODE1            0            
@@ -63,8 +67,8 @@ void loop()
         FAST_90ms() {
         
             // Use Pin2 and Pin 3 as ON/OFF command
-            DigIn(2, LIGHT_ON_CYCLE, LIGHT1_NODE1); 
-            DigIn(3, LIGHT_ON_CYCLE, LIGHT2_NODE1);     
+            DigIn(2, Souliss_T1n_AutoCmd + LIGHT_ON_CYCLE, LIGHT1_NODE1); 
+            DigIn(3, Souliss_T1n_AutoCmd + LIGHT_ON_CYCLE, LIGHT2_NODE1);     
             
             // Execute the logic
             Logic_AutoLight(LIGHT1_NODE1);

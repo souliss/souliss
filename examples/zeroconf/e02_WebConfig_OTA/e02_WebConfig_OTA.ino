@@ -3,16 +3,25 @@
     
     This example demonstrate a complete web configuration of ESP8266 based
 	nodes, the node starts as access point and allow though a web interface
-	the configuration of IP and Souliss parameters.
+	the configuration of IP and Souliss parameters (Gateway / Peer mode).
 
+	Once configured the IP and Souliss parameters, the node will be recognized
+	by SoulissApp and will be available in the Arduino IDE for OTA (Over the Air)
+	programming through its IP address.
+	
 	This example is only supported on ESP8266.
  
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 #include <EEPROM.h>
 #include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 // Configure the Souliss framework
 #include "bconf/MCU_ESP8266.h"              // Load the code directly on the ESP8266
@@ -20,6 +29,8 @@
 #include "conf/DynamicAddressing.h"         // Use dynamically assigned addresses
 #include "conf/WEBCONFinterface.h"          // Enable the WebConfig interface
 
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
    
 #define MYLED               0
@@ -62,7 +73,10 @@ void setup()
     }
     
     Set_DimmableLight(MYLED);
-    
+	
+    // Init the OTA
+    ArduinoOTA.setHostname("souliss-nodename");    
+    ArduinoOTA.begin(); 
 }
 
 void loop()
@@ -93,4 +107,7 @@ void loop()
         if (!IsRuntimeGateway())
             SLOW_PeerJoin();
     } 
+
+    // Look for a new sketch to update over the air
+    ArduinoOTA.handle();	
 }    

@@ -35,15 +35,15 @@
 const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<h2>Souliss Node Administration </h2>
+<h2>Souliss Node Administration</h2>
 <hr>
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
 <a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Restart Your Node</a><br>
 <hr>
 <strong> <div id="mydynamicdata"> </div> </strong> <!-- added a DIV, where the dynamic data goes to -->
 <strong>Clicking Main Interface Button will leaving Access Point Mode, </strong>
-<p>Please make a note of your IP Address Node in Network Information, read the wiki at http://www.souliss.net for Getting started information </p>
-<p>This configuration interface is only available if the node doesn't connect to your WiFi network.</p>
+<p>Please take note of your IP Address Node in Network Information, read the wiki at http://www.souliss.net for Getting started information </p>
+<p>This "default" configuration interface is only available if the node doesn't connect to your WiFi network.</p>
 
 <script>
 window.onload = function ()
@@ -66,10 +66,20 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 
 
+#ifndef ASYNCWEBSERVER
 void filldynamicdata()
+#else
+void filldynamicdata(AsyncWebServerRequest *request)
+#endif
 {        
+#ifndef ASYNCWEBSERVER
 	yield();
+#endif	
 	String values ="";
 	values += "mydynamicdata|" + (String) + "Souliss Node, Millis since start: " + (String) millis() + "|div\n";   // Build a string, like this:  ID|VALUE|TYPE
+#ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/plain", values);   
+#else
+	request->send ( 200, "text/plain", values);
+#endif
 }

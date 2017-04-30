@@ -60,6 +60,9 @@
 		0x09		ExpressIf ESP8266
 		0x0A		Moteino RFM69
 		0x0B		Authometion LYT8266 Led Bulb
+		0x0C		Controllino Maxi (custom CS for W5100 only)
+		0x0D		Industruino PLC
+		0x0F		KMP Electronics DINo Wroom (ESP8266)
  
 */
 /**************************************************************************/
@@ -81,8 +84,9 @@
 		0x04		Olimex MOD-ENC28J60 (UEXT) with Microchip ENC28J60
 		0x05		Olimex MOD-WIFI (UEXT) with Microchip MRF24WB0MA
 		0x06		Nordic nRF24L01 and nRF24L01+
-		0x07		ExpressIf ESP8266
+		0x07		Not used
 		0x08		HopeRF RFM69CW/RFM69HCW
+		0x09		Olimex MOD-RS485
 */
 /**************************************************************************/
 #ifndef COMMS_MODEL_INSKETCH
@@ -103,6 +107,7 @@
 		0x04		Authometion LYT88 RGBW Led Bulb
 		0x05		Authometion LYT8266 RGBW Led Bulb
 		0x06		Iono I/O Board
+		0x07		Industruino INDIO I/O Board
 		
 */
 /**************************************************************************/

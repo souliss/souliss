@@ -52,3 +52,8 @@
 #if(BOARD_MODEL == 0x0B)						
 #	include "hardware/Authometion/LYT8266.cpp"
 #endif
+
+// Include defines for DINo Wroom WiFi Board
+#if(BOARD_MODEL == 0x0F)						
+#	include "hardware/KMPElectronics/DINoWroom.cpp"
+#endif

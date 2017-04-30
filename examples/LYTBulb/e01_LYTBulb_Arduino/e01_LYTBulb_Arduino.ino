@@ -13,12 +13,18 @@
     chip select for the radio.
     
 ***************************************************************************/
+
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/StandardArduino.h"              // Use an Arduino board
 #include "bconf/LYT88_LEDBulb_Radio.h"          // Define the board type
 #include "conf/usart_fast.h"                    // Ethernet through Wiznet W5100
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Include Authometion libraries
@@ -76,7 +82,7 @@ void loop()
         UPDATESLOW();
         
         SLOW_10s() {
-            LYTStateRequest(LYTLIGHT1);     // Request the lamp state
+            LYTStateRequest();              // Request the lamp state
         }
     }
 } 

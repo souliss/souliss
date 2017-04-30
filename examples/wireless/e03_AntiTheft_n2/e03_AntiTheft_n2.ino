@@ -20,11 +20,16 @@
       
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 // Configure the framework
 #include "bconf/Chibiduino_v1.h"            // Use a Chibiduino 2.4 GHz wireless board
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration according to your router settings

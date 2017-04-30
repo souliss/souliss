@@ -42,7 +42,6 @@
 #	include "hardware/DFRobots/XBoardRelay.h"
 #endif
 
-
 // Include drivers for Olimex MOD-IO
 #if(IOBOARD_MODEL == 0x01)						
 #	include "hardware/Olimex/MODIO.h"
@@ -71,9 +70,24 @@
 #	include "hardware/Authometion/LYT8266.h"
 #endif
 
-// Include drivers for Iono I/O Board
+// Include defines for Iono I/O Board
 #if(IOBOARD_MODEL == 0x06)						
 #	include "hardware/Iono/IonoBoard.h"
+#endif
+
+// Include pins definition for Controllino Maxi
+#if(BOARD_MODEL == 0x0C)						
+#	include "hardware/SGTronic/ControllinoMaxi.h"
+#endif
+
+// Include defines for Industrino INDIO Board
+#if(IOBOARD_MODEL == 0x07)						
+#	include "hardware/Industruino/INDIO.h"
+#endif
+
+// Include defines for DINo Wroom WiFi Board
+#if(BOARD_MODEL == 0x0F)						
+#	include "hardware/KMPElectronics/DINoWroom.h"
 #endif
 
 #endif

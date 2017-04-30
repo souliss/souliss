@@ -33,7 +33,7 @@
 
 U8 roundrob_1=1,roundrob_2=1, timeout=TIMEOUT_SET;
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define a communication subscription channel between two nodes
 	
@@ -60,7 +60,7 @@ U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 outp
 	return MaCaco_subscribe(addr, memory_map, input_slot, MaCaco_OUT_s + output_slot, numof_slot, subscr_chnl);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define multiple communication channels managed in round robin, data are
 	located in the output area of the memory_map, and are ready to be read
@@ -74,11 +74,7 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	// If not yet, setup the communication channel
 	if (*(memory_map+MaCaco_HEALTHY_s+roundrob_2) == 0)
 		*(memory_map+MaCaco_HEALTHY_s+roundrob_2) = MaCaco_SUBINITHEALTHY;
-	
-	// Check subscription has been reset
-	if((roundrob_2 > 1) && (MaCaco_subscribe_is_init()))
-		roundrob_2=1;		// Start from first remote node
-		
+			
 	// Handle the subscription in round robin
 	if(roundrob_2 < MaCaco_NODES)
 	{
@@ -99,7 +95,7 @@ U8 Souliss_CommunicationChannels(U8 *memory_map)
 	return ret;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define a Communication Channel as battery operated
 */	
@@ -114,7 +110,7 @@ void Souliss_BatteryChannels(U8 *memory_map, U16 addr)
 		}	
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Get definitions for typical from multiple remote devices
 	
@@ -197,7 +193,7 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 } 
 #endif
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Record into a node a subscription at code time, it has the same effect
 	of a runtime subscription but avoids long wait times.
@@ -206,13 +202,13 @@ U8 Souliss_GetTypicals(U8 *memory_map)
 	that may never match the subscription request because sleeping at time.
 */	
 /**************************************************************************/	
-U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr)
+void Souliss_HardcodedCommunicationChannel(U16 gateway_addr)
 {
 	if(gateway_addr)
 		MaCaco_subscribe_record(gateway_addr, MaCaco_SUBSCRREQ, 0, MaCaco_OUT_s, MaCaco_SUBSCRLEN);
 }
 	
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Write on network node, act as a remote input
 	
@@ -226,7 +222,7 @@ U8 Souliss_RemoteInput(U16 addr, U8 slot, U8 command)
 	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + slot, 1, &cmd);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Write on network node, act as a remote input
 	
@@ -239,7 +235,7 @@ U8 Souliss_RemoteInputs(U16 addr, U8 firstslot, U8 *commands, U8 numberof)
 	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, MaCaco_IN_s + firstslot, numberof, commands);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Apply the command on all the logic assigned to that typical in the node
 */	
@@ -250,7 +246,7 @@ U8 Souliss_MassiveCommand(U16 addr, U8 typ, U8 command)
 	return MaCaco_send(addr, MaCaco_FORCEREGSTR, 0x00, typ, 1, &cmd); 
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Apply the command on all the logic assigned to that typical in all the
 	nodes of the network
@@ -424,7 +420,7 @@ U8 Souliss_PullData(U16 addr, U8 slot, U8 remote_slot, U8 remote_numbof)
 	return MaCaco_send(addr, MaCaco_READREQDIG, (U16)slot, MaCaco_OUT_s + remote_slot, remote_numbof, 0);
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Retrieve the data from the communication channels
 */	
@@ -442,7 +438,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 	
 	#if (SOULISS_DEBUG)
 	// Look for input values
-	U8 i=0;
+	U16 i=0;
 	for(i=0;i<MaCaco_WRITE_f;i++)
 		if(*(memory_map+MaCaco_WRITE_s+i) !=0)
 			break;
@@ -464,7 +460,7 @@ U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger)
 	return ret;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Build a distributed watchdog using a chain of devices
 	
@@ -496,4 +492,15 @@ U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_c
 	
 	// Return the alarm state
 	return memory_map[MaCaco_OUT_s + chain_slot];	
+}
+
+/**************************************************************************/
+/*!
+	At this level the stack doesn't know the source address, so if somenthing
+	fails, just broadcast a general error
+*/	
+/**************************************************************************/
+U8 Souliss_UnsupportedCommand()
+{
+	return MaCaco_send(VNET_ADDR_BRDC, MaCaco_ERR83, 0, 0, 0, 0);
 }

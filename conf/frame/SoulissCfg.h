@@ -46,13 +46,11 @@
 							
 /**************************************************************************/
 /*!
-	The XML Server is an TCP or UDP server listening for HTTP URLs and 
+	The XML Server is an TCP server listening for HTTP URLs and 
 	enable data transfer using a XML string.
 	
 	Enabled in TCP mode, the node can be polled using a standard HTTP URL
-	(connection in TCP on port 80) this allow data forcing and retriving.
-	Enabled in UDP mode, the node once polled send data every time that
-	new data are available.
+	(connection in TCP on port 80) this allow data forcing and retrieving.
 	
 	Data are available in XML format.
 	
@@ -62,7 +60,6 @@
         Value       
         0x0         Disable (Default)
         0x1         Enable in TCP (Polling)
-		0x2			Enable in UDP (Event-driven)
 
 	This is supported on AVR only.
 */
@@ -226,7 +223,22 @@
 #	define SOULISS_DEBUG  		0
 #endif
 
-#define SOULISS_LOG 			Serial.print	// Define the output peripheral for the debug
+/**************************************************************************/
+/*!
+	Define an object for debug messages, this can be an USART or any other
+	type of object that support print method.
+*/
+/**************************************************************************/
+#ifndef SERIALPORT_INSKETCH
+#	define LOG 					Serial
+#endif
+
+/**************************************************************************/
+/*!
+	Define the specific print output for debug messages
+*/
+/**************************************************************************/
+#define SOULISS_LOG 			LOG.print
 
 #endif
 							  

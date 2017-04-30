@@ -16,10 +16,15 @@
 
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/DINo_v2.h"                  // Define the board type
 
 // Include framework code and libraries
 #include <SPI.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 // Define the network configuration
@@ -75,12 +80,14 @@ void loop()
         
         FAST_50ms() {   // We process the logic and relevant input and output every 50 milliseconds
 
-            U8 button_pressed=0;
+            U8 button_pressed=1;
                     
-            button_pressed = DigInHold(IN1, Souliss_T1n_ToggleCmd, ONTIME, LIGHT1);         // Read inputs from IN1
-            button_pressed = DigInHold(IN2, Souliss_T1n_ToggleCmd, ONTIME, LIGHT2);         // Read inputs from IN2
-            button_pressed = DigInHold(IN3, Souliss_T1n_ToggleCmd, ONTIME, LIGHT3);         // Read inputs from IN3
-            button_pressed = DigInHold(IN4, Souliss_T1n_ToggleCmd, ONTIME, LIGHT4);         // Read inputs from IN4
+            if(DigInHold(IN1, Souliss_T1n_ToggleCmd, ONTIME, LIGHT1));         // Read inputs from IN1
+            else if(DigInHold(IN2, Souliss_T1n_ToggleCmd, ONTIME, LIGHT2));    // Read inputs from IN2
+            else if(DigInHold(IN3, Souliss_T1n_ToggleCmd, ONTIME, LIGHT3));    // Read inputs from IN3
+            else if(DigInHold(IN4, Souliss_T1n_ToggleCmd, ONTIME, LIGHT4));    // Read inputs from IN4
+            else
+               button_pressed=0;
         
             Logic_SimpleLight(LIGHT1);                          // Execute the logic for Relay 1
             Logic_SimpleLight(LIGHT2);                          // Execute the logic for Relay 2
@@ -92,7 +99,7 @@ void loop()
             DigOut(RELAY3, Souliss_T1n_Coil, LIGHT3);           // Drive the Relay 3
             DigOut(RELAY4, Souliss_T1n_Coil, LIGHT4);           // Drive the Relay 4
 
-            // If a button has been press
+            // If a button has been pressed
             if(button_pressed)
             {       
                 U8 cmd[LIGHT_NO];
@@ -105,7 +112,7 @@ void loop()
                         cmd[i]=Souliss_T1n_OffCmd;
                 
                 // Sync the remote node with the actual status of this node
-                SendData(Gateway_address, i, cmd, LIGHT_NO);
+                SendData(Gateway_address, LIGHT1, cmd, LIGHT_NO);
             
                 // Reset    
                 button_pressed=0;                       

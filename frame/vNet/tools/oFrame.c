@@ -33,7 +33,7 @@
 /**************************************************************************/
 
 #include "oFrame.h"
-#define oFRAME_LOG 		Serial.print
+#define oFRAME_LOG 		LOG.print
 
 #define MAX_BUSYCYCLE	5				// Max on number of cycle before auto-reset of the frame
 
@@ -106,6 +106,8 @@ U8 oFrame_isBusy()
 		i_busy = 0;
 		oFrame_Reset();
 	}	
+	
+	return 0;
 }
 
 /**************************************************************************/
@@ -173,7 +175,7 @@ void oFrame_AppendLast(oFrame *appendframe)
 /**************************************************************************/
 U8 oFrame_GetByte()
 {
-	U8 outbyte;
+	U8 outbyte=0;
 	oFrame*	previousframe;
 	
 	// If the actual frame is empty, look for the next

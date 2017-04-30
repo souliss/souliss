@@ -14,19 +14,19 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 	Originally developed by Dario Di Maio
-	
+
 ***************************************************************************/
 /*!
-    \file 
+    \file
     \ingroup
 */
 #ifndef SOULISSSKETCHMODE_H
 #define SOULISSSKETCHMODE_H
 
 /*************************************/
-/*!	
+/*!
 	All code is compiled into the sketch, without creating middle
 	object files. This let use #define that are globally recognized
 	in the whole code, including sub-libraries.
@@ -52,7 +52,7 @@
 #		define MAXINPIN		29		// Max number of input pins
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#	define MAXINPIN		29		// Max number of input pins	
+#	define MAXINPIN		29		// Max number of input pins
 #endif
 
 void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode);
@@ -64,11 +64,11 @@ U8 Souliss_GetTypicals(U8 *memory_map);
 U8 Souliss_CommunicationChannel(U16 addr, U8 *memory_map, U8 input_slot, U8 output_slot, U8 numof_slot, U8 subscr_chnl);
 U8 Souliss_CommunicationChannels(U8 *memory_map);
 void Souliss_BatteryChannels(U8 *memory_map, U16 addr);
-U8 Souliss_HardcodedCommunicationChannel(U16 gateway_addr);
+void Souliss_HardcodedCommunicationChannel(U16 gateway_addr);
 void Souliss_JoinNetwork();
 void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway);
-void Souliss_GetIPAddress();
-void Souliss_SetAccessPoint();
+uint8_t Souliss_GetIPAddress(U8 timeout);
+String Souliss_SetAccessPoint(char *ap_name, char *ap_pass);
 uint8_t Souliss_ReadIPConfiguration();
 void Souliss_SetAddressingServer(U8 *memory_map);
 void Souliss_SetDynamicAddressing();
@@ -87,7 +87,9 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 U8 Souliss_PullData(U16 addr, U8 slot, U8 remote_slot, U8 remote_numbof);
 U8 Souliss_CommunicationData(U8 *memory_map, U8 *trigger);
 U8 Souliss_Watchdog(U8 *memory_map, U16 chain_address, U8 chain_slot, U8 alarm_command);
+U8 Souliss_UnsupportedCommand();
 
+void Souliss_Initialize(U8 *memory_map);
 U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);
 U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive);
 U8 Souliss_DigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot);
@@ -109,8 +111,10 @@ U8 Souliss_RemoteLowDigInHold(U8 pin, U8 value, U8 value_hold, U16 addr, U8 slot
 void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue);
 void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias);
 void Souliss_DigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
+void Souliss_PulseDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_nDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
+void Souliss_PulseLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_nLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_DigOutToggle(U8 pin, U8 value, U8 *memory_map, U8 slot);
 void Souliss_DigOutLessThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8 slot);
@@ -122,7 +126,19 @@ void Souliss_ResetOutput(U8 *memory_map, U8 slot);
 void Souliss_ResetInput(U8 *memory_map, U8 slot);
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot);
 float Souliss_SinglePrecisionFloating(U8 *input);
-uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
+void Souliss_HalfPrecisionFloating(U8 *output, float *input);
+
+#if(MaCaco_PERSISTANCE)
+U8 Souliss_Persistence_IsData(U8 *memory_map, U8 id);
+void Souliss_Persistence_ClearData(U8 *memory_map, U8 id);
+#endif
+
+#if(MaCaco_LASTIN)
+U8 Souliss_LastIn_IsData(U8 *memory_map, U8 id);
+void Souliss_LastIn_ClearData(U8 *memory_map, U8 id);
+U8 Souliss_LastIn_GetData(U8 *memory_map, U8 id, U8 slot);
+float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
+#endif
 
 #if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
 #	if(HTTPSERVER && VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500))
@@ -170,8 +186,6 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 		#include "interfaces/mcu_avr/HTTP_uIP.cpp"
 	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
 	#	include "interfaces/mcu_avr/XMLServer_HTTP.cpp"
-	#elif((XMLSERVER == 2) && (VNET_MEDIA1_ENABLE && (ETH_W5100 || ETH_W5200 || ETH_W5500)))
-	#	include "interfaces/mcu_avr/XMLServer_UDP.cpp"
 	#elif((XMLSERVER == 1) && (VNET_MEDIA1_ENABLE && ETH_ENC28J60))
 	#	include "interfaces/mcu_avr/XMLServer_HTTP_uIP.cpp"
 	#elif(MODBUS)
@@ -182,7 +196,7 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 	#	include "interfaces/mcu_esp8266/webconfig/webconfig.cpp"
 	#endif
 #endif
-	
+
 
 #if(MCU_TYPE == 0x01)	// ATmega AVR
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
@@ -193,6 +207,8 @@ uint16_t Souliss_HalfPrecisionFloating(U8 *output, float *input);
 #include "base/LocalIO.cpp"
 #include "base/RemoteIO.cpp"
 #include "base/NetworkSetup.cpp"
+#include "base/LastIn.cpp"
+#include "base/Persistence.cpp"
 #include "base/T1n.cpp"
 #include "base/T2n.cpp"
 #include "base/T3n.cpp"

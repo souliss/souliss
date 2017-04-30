@@ -14,12 +14,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 	Originally developed by Dario Di Maio and Alessandro DelPex
-	
+
 ***************************************************************************/
 /*!
-    \file 
+    \file
     \ingroup
 */
 #ifndef TYP_H
@@ -47,7 +47,7 @@
 #define Souliss_T1B						0X1B			// Position Constrained ON/OFF Digital Output
 #define Souliss_T21						0x21			// Motorized devices with limit switches
 #define Souliss_T22						0x22			// Motorized devices with limit switches and middle position
-#define Souliss_T31						0x31			// Temperature control 
+#define Souliss_T31						0x31			// Temperature control
 #define Souliss_T32						0x32			// Air Conditioner
 #define Souliss_T41						0x41			// Anti-theft integration (Main)
 #define Souliss_T42						0x42			// Anti-theft integration (Peer)
@@ -58,7 +58,7 @@
 #define Souliss_T55						0x55			// Voltage (0, 400) V
 #define Souliss_T56						0x56            // Current (0, 25)  A
 #define Souliss_T57						0x57            // Power (0, 6500)  W
-#define Souliss_T58						0x58            // Pressure measure (0, 1500) hPa 
+#define Souliss_T58						0x58            // Pressure measure (0, 1500) hPa
 #define Souliss_T59						0x59
 #define Souliss_T61						0x61			// Generic
 #define Souliss_T62						0x62            // Temperature measure (-20, +50) °C
@@ -67,9 +67,10 @@
 #define Souliss_T65						0x65			// Voltage (0, 400) V
 #define Souliss_T66						0x66            // Current (0, 25)  A
 #define Souliss_T67						0x67            // Power (0, 6500)  W
-#define Souliss_T68						0x68            // Pressure measure (0, 1500) hPa 
+#define Souliss_T68						0x68            // Pressure measure (0, 1500) hPa
 #define Souliss_T69						0x69
 #define Souliss_TRL						0xFF			// Related association, i
+
 // General defines for T1n
 #define Souliss_T1n_ToggleCmd			0x01		// Toggle Command
 #define Souliss_T1n_OnCmd				0x02		// ON Command
@@ -98,7 +99,13 @@
 #define Souliss_T1n_AutoOnCoil			0xF1		// Output Feedback ON in AUTO Mode
 #define Souliss_T1n_AutoOffCoil			0xF0		// Output Feedback OFF in AUTO Mode
 #define Souliss_T1n_GoodNight			0xF1		// Output Feedback ON in GoodNight Mode
-#define Souliss_T1n_BrightValue			0x10		
+#define Souliss_T1n_BrightValue			0x10		// Default increase and decrease
+#define Souliss_T1n_BrightDefault		0xAA		// Default Bright Value
+
+// Useful defines for T16
+#define	Souliss_T1n_MaxBright			0xFF
+#define	Souliss_T1n_MinBright			0x00
+#define	Souliss_T1n_BrightStep			0x0A
 
 /*
 
@@ -112,7 +119,7 @@
 #define Souliss_T1n_RGBLamp_G			0x07		// Green Color
 #define Souliss_T1n_RGBLamp_B			0x08		// Blue Color
 #define Souliss_T1n_RGBLamp_W			0x09		// White Color
-#define Souliss_T1n_RGBLamp_BrightUp	0x10		
+#define Souliss_T1n_RGBLamp_BrightUp	0x10
 #define Souliss_T1n_RGBLamp_BrightDown	0x20
 */
 
@@ -123,8 +130,8 @@
 #define Souliss_T1n_RGBLamp_G	        0x03 		// Green Color
 #define Souliss_T1n_RGBLamp_B	        0x04 		// Blue Color
 #define Souliss_T1n_RGBLamp_W	        0x05 		// White Color
-#define Souliss_T1n_RGBLamp_BrightUp	0x06 	
-#define Souliss_T1n_RGBLamp_BrightDown	0x07 	
+#define Souliss_T1n_RGBLamp_BrightUp	0x06
+#define Souliss_T1n_RGBLamp_BrightDown	0x07
 
 
 #define Souliss_T1n_RGBLamp_Flash		0xA1
@@ -145,7 +152,7 @@
 #define Souliss_T1n_RGBLamp_B5			0xD4
 
 // General defines for T2n
-#define Souliss_T2n_CloseCmd_SW			0x01		// Close Command 
+#define Souliss_T2n_CloseCmd_SW			0x01		// Close Command
 #define Souliss_T2n_OpenCmd_SW			0x02		// Open Command
 #define Souliss_T2n_CloseCmd			Souliss_T2n_CloseCmd_SW		// Close Command (legacy)
 #define Souliss_T2n_OpenCmd				Souliss_T2n_OpenCmd_SW		// Open Command (legacy)
@@ -181,9 +188,17 @@
 #define Souliss_T3n_FanHigh				0x09		// Heating / Cooling Fan High
 #define Souliss_T3n_FanAuto				0x0A		// Heating / Cooling Fan Automatic
 #define Souliss_T3n_FanManual			0x0B		// Heating / Cooling Fan Manual
-#define Souliss_T3n_DeadBand			0.01		// Percentage Deadband
-#define Souliss_T3n_ThMed				0.10		// Threshold for medium speed
-#define Souliss_T3n_ThHigh				0.15		// Threshold for high speed
+
+#ifndef T3N_DEADBAND_INSKETCH
+	#define Souliss_T3n_DeadBand			0.6			// Degrees Deadband
+#endif
+	
+#ifndef T3N_HYSTERESIS_INSKETCH
+	#define Souliss_T3n_Hysteresis			0.5			// Degrees Hysteresis
+#endif
+
+#define Souliss_T3n_ThMed				1.2 		// Threshold for medium speed
+#define Souliss_T3n_ThHigh				3   		// Threshold for high speed
 #define Souliss_T3n_SetTemp				0x0C		// Set the setpoint
 #define Souliss_T3n_ShutDown			0x0D		// Shut down heating and cooling
 
@@ -198,7 +213,7 @@
 #define Souliss_T3n_HeatingMode			0x80		// State set as heating
 #define Souliss_T3n_CoolingMode			0x80		// State set as cooling
 
-#define Souliss_T3n_AirCon_OnCmd		0xF0 
+#define Souliss_T3n_AirCon_OnCmd		0xF0
 #define Souliss_T3n_AirCon_OffCmd 		0xFC
 #define Souliss_T3n_AirCon_RstCmd		0x00
 #define Souliss_T3n_AirCon_T16C			0x0F
@@ -219,7 +234,7 @@
 #define Souliss_T3n_AirCon_Normal		0x71
 #define Souliss_T3n_AirCon_Eco			0x01
 #define Souliss_T3n_AirCon_Turbo		0x11
-#define Souliss_T3n_AirCon_Auto			0x0F 
+#define Souliss_T3n_AirCon_Auto			0x0F
 #define Souliss_T3n_AirCon_Dry			0x0B
 #define Souliss_T3n_AirCon_Fan			0x03
 #define Souliss_T3n_AirCon_Heat			0x0D
@@ -232,8 +247,8 @@
 #define Souliss_T3n_AirCon_Opt2			0x77
 
 // General defines for T4n
-#define Souliss_T4n_Alarm				0x01		// Alarm Condition Detected (Input)		
-#define Souliss_T4n_RstCmd				0x00		
+#define Souliss_T4n_Alarm				0x01		// Alarm Condition Detected (Input)
+#define Souliss_T4n_RstCmd				0x00
 #define Souliss_T4n_ReArm				0x03		// Silence and Arm Command
 #define Souliss_T4n_NotArmed			0x04		// Anti-theft not Armed Command
 #define Souliss_T4n_Armed				0x05		// Anti-theft Armed Command
@@ -326,7 +341,7 @@ void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ);
 #define Souliss_SetT62(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x62)
 #define Souliss_SetT63(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x63)
 #define Souliss_SetT64(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x64)
-#define Souliss_SetT66(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x66)
+#define Souliss_SetT65(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x65)
 #define Souliss_SetT66(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x66)
 #define Souliss_SetT67(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x67)
 #define Souliss_SetT68(memory_map, slot) Souliss_SetT6n(memory_map, slot, 0x68)
@@ -335,7 +350,7 @@ void Souliss_SetT5n(U8 *memory_map, U8 slot, U8 typ);
 #define Souliss_Logic_T62 Souliss_Logic_T61
 #define Souliss_Logic_T63 Souliss_Logic_T61
 #define Souliss_Logic_T64 Souliss_Logic_T61
-#define Souliss_Logic_T66 Souliss_Logic_T61
+#define Souliss_Logic_T65 Souliss_Logic_T61
 #define Souliss_Logic_T66 Souliss_Logic_T61
 #define Souliss_Logic_T67 Souliss_Logic_T61
 #define Souliss_Logic_T68 Souliss_Logic_T61

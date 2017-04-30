@@ -24,7 +24,7 @@
 
 */
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 41 : Anti-theft Integration (Main)
 */	
@@ -34,7 +34,7 @@ void Souliss_SetT41(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T41;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 41 : Anti-theft integration (Main)
 	
@@ -87,7 +87,7 @@ U8 Souliss_Logic_T41(U8 *memory_map, U8 slot, U8 *trigger)
 }
 
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Timer associated to T41, delayed activation of the main anti-theft
 */	
@@ -99,7 +99,7 @@ void Souliss_T41_Timer(U8 *memory_map, U8 slot)
 }	
 
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Define the use of Typical 42 : Anti-theft Integration (Peer)
 */	
@@ -109,7 +109,7 @@ void Souliss_SetT42(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T42;
 }
 
-/**************************************************************************
+/**************************************************************************/
 /*!
 	Typical 42 : Anti-theft integration (Peer)
 	
@@ -147,4 +147,6 @@ U8 Souliss_Logic_T42(U8 *memory_map, U8 slot, U8 *trigger, U16 main_antitheft_ad
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm))
 		return memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_RstCmd;	
+
+	return 0;
 }

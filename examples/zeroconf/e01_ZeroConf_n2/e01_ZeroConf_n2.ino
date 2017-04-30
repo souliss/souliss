@@ -29,6 +29,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 #include "bconf/DINo_v2_EthernetBridge_RS485.h"                 // Define the board type
 #include "conf/SuperNode.h"                                     // The main node is the SuperNode
 #include "conf/DynamicAddressing.h"                             // Use dynamic address
@@ -36,6 +39,8 @@
 // Include framework code and libraries
 #include <SPI.h>
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 #define LIGHT1                  0           // This is the memory slot used for the execution of the logic

@@ -7,6 +7,9 @@
     
 ***************************************************************************/
 
+// Let the IDE point to the Souliss framework
+#include "SoulissFramework.h"
+
 /*
     Use bconf/StandardArduino.h for Arduino board based on AVR
     Use bconf/MCU_ESP8266.h for ESP8266 based board
@@ -22,6 +25,8 @@
 
 // Include framework code and libraries
 #include <EEPROM.h>
+
+/*** All configuration includes should be above this line ***/ 
 #include "Souliss.h"
 
 

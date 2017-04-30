@@ -94,7 +94,7 @@
 #endif	
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print	
+	#define VNET_LOG LOG.print	
 #endif
 
 // Routing and bridging tables
@@ -603,7 +603,8 @@ U8 vNet_SendRoute(U16 routed_addr, U8 media, U8 *data, U8 len)
 		break;
 	#endif		
 	}
-
+	
+	return VNET_DATA_FAIL;
 }
 
 /**************************************************************************/
@@ -1048,6 +1049,9 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index)
 	}	
 	else
 		return VNET_FAIL;
+	
+	return VNET_DATA_FAIL;
+
 }
 
 /**************************************************************************/
@@ -1058,11 +1062,11 @@ U8 vNet_SetRoutingTable(U16 dest_path, U16 src_path, U8 index)
 U8 vNet_SetDoNotRoutingTable(U16 addr, U8 index)
 {
 	if(index < VNET_ROUTING_TABLE)
-	{
 		donot_route_table[index] = addr;
-	}	
 	else
 		return VNET_FAIL;
+	
+	return VNET_DATA_FAIL;
 }
  
 /**************************************************************************/
@@ -1186,11 +1190,12 @@ void vNet_OutPath(U16 addr, U16 *routed_addr, U8 *media)
 		#endif		
 		
 		// Search for devices that shall be reached
-		while ((route_index < VNET_ROUTING_TABLE) && (donot_route_table[route_index] != *routed_addr))	
+		route_index = 0;
+		while ((route_index < VNET_ROUTING_TABLE) && (donot_route_table[route_index]) && (donot_route_table[route_index] != *routed_addr))	
 			route_index++;														   	
 		
 		// If the address is in the list, drop it
-		if(donot_route_table[route_index] != *routed_addr)
+		if(donot_route_table[route_index] == *routed_addr)
 		{
 			*routed_addr = 0x0000;
 

@@ -1,0 +1,33 @@
+{
+  "name": "souliss",
+  "keywords": "communication, network, wifi, ethernet",
+  "description": "SmartHome Networking Framework. Build a network of multiple nodes over WiFi/Ethernet, Wireless and RS485 for your smart home",
+  "authors": 
+  {
+    "name": "Souliss Team",
+    "email": "info@souliss.net",
+    "url": "http://souliss.github.io"
+  },  
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/souliss/souliss.git"
+  },
+  "examples": [
+    "examples/*/*.ino",
+    "examples/*/*/*.ino"
+  ],  
+  "frameworks": "arduino",
+  "platforms":
+  [
+    "atmelavr",
+    "espressif"
+  ],
+  "build": {
+    "srcFilter": [
+      "+<*.c>",
+      "+<*.cpp>",
+      "+<*.h>"
+    ]
+  }  
+}

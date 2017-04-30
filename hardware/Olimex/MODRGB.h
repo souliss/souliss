@@ -27,7 +27,7 @@
 #define MODRGB_H
 
 #include "tools/types.h"
-#include "tools/I2C/I2C.h"
+#include "tools/I2C/mcu_avr/I2C.h"
 #include "Olimex.h"
 
 // Functional Codes for I2C Communication to MOD-RGB

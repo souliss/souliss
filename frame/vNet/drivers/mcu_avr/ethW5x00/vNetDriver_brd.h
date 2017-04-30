@@ -49,7 +49,7 @@ extern uint8_t vNetM1_header;
 extern TCPIP stack;
 
 #if (VNET_DEBUG)
-	#define VNET_LOG Serial.print
+	#define VNET_LOG LOG.print
 #endif
 
 /**************************************************************************/
@@ -138,7 +138,7 @@ uint16_t vNet_GetSourceAddress_M3(){return vNetM3_srcaddr;}
 	flags are used for that scope
 */
 /**************************************************************************/
-uint8_t  vNet_setIncomingData_M3() {vNetM3_isdata = 1;}
+void  vNet_setIncomingData_M3() {vNetM3_isdata = 1;}
 uint8_t  vNet_hasIncomingData_M3() 
 {
 	if(vNetM3_isdata)
