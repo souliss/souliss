@@ -1,4 +1,5 @@
 /**************************************************************************
+/**************************************************************************
 	Souliss
     Copyright (C) 2011  Veseo
 
@@ -117,7 +118,7 @@ U8 Souliss_Logic_T21(U8 *memory_map, U8 slot, U8 *trigger, U8 timeout=Souliss_T2
 	}
 	else if((memory_map[MaCaco_IN_s + slot] == Souliss_T2n_LimSwitch_Close) || ((memory_map[MaCaco_OUT_s + slot] == Souliss_T2n_Coil_Close) && (memory_map[MaCaco_AUXIN_s + slot] == Souliss_T2n_Timer_Off)))
 	{
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_State_Close;			// Close Limit Switch
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T2n_LimSwitch_Close;			// Close Limit Switch
 		memory_map[MaCaco_IN_s + slot] = Souliss_T2n_RstCmd;					// Reset
   		i_trigger = Souliss_TRIGGED;
 	}
