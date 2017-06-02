@@ -32,9 +32,9 @@
 #include "Souliss.h"
 
 #define LEDCONTROL          0               // This is the memory slot for the logic that handle the light
-#define LEDRED              1               // This is the memory slot for the logic that handle the light
+#define LEDBLUE             1               // This is the memory slot for the logic that handle the light
 #define LEDGREEN            2               // This is the memory slot for the logic that handle the light
-#define LEDBLUE             3               // This is the memory slot for the logic that handle the light
+#define LEDRED              3               // This is the memory slot for the logic that handle the light
 
 void setup()
 {   
