@@ -373,7 +373,7 @@ U8 Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger)
 		*/
 		
 		memory_map[MaCaco_IN_s + slot] = Souliss_T3n_AirCon_RstCmd;			// Reset
-			
+		memory_map[MaCaco_IN_s + slot + 1] = Souliss_T3n_AirCon_RstCmd;			// Reset	
 	}	
 	
 	// Update the trigger
