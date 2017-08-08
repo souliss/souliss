@@ -356,7 +356,7 @@ U8 Souliss_Logic_T32(U8 *memory_map, U8 slot, U8 *trigger)
 	if(memory_map[MaCaco_IN_s + slot] != Souliss_T3n_AirCon_RstCmd)	
 	{	
 		// If the input command is different from the last executed command, trig a change
-		if(memory_map[MaCaco_OUT_s + slot] != memory_map[MaCaco_IN_s + slot])  
+		if(memory_map[MaCaco_OUT_s + slot] != memory_map[MaCaco_IN_s + slot] || memory_map[MaCaco_OUT_s + slot + 1] != memory_map[MaCaco_IN_s + slot + 1])  
 		{
 			memory_map[MaCaco_AUXIN_s + slot] = Souliss_TRIGGED;
 			i_trigger = Souliss_TRIGGED;	// Trig change
