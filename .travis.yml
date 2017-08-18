@@ -73,6 +73,8 @@ script:
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e02_WiFitoRS485_n1/e02_WiFitoRS485_n1.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e02_WiFitoRS485_n2/e02_WiFitoRS485_n2.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e03_ESP_Gateway_with_T11_T12_T13_T14_T21_T22/e03_ESP_Gateway_with_T11_T12_T13_T14_T21_T22.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e04_ESP_Gateway_with_T16_T19/e04_ESP_Gateway_with_T16_T19.ino
+  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/WiFi/e05_ESP_Gateway_with_T1A/e05_ESP_Gateway_with_T1A.ino
 
   - arduino --board arduino:avr:uno
   - arduino --verify --board arduino:avr:uno $PWD/examples/wireless/e01_Curtains_gateway/e01_Curtains_gateway.ino
