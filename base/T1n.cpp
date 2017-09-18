@@ -1105,15 +1105,26 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
+		//flash mod with speed
+		int flashspeed = 30 ;
+		
 		// If the light was on
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 		{
 			// Switch ON and OFF until a new command is received
 			if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1]))
-				memory_map[MaCaco_OUT_s + slot + 1] = 0;										// Set output to zero
+				{
+				memory_map[MaCaco_OUT_s + slot + 1] = 0;
+				delay(flashspeed);	
+				}
+			// Set output to zero
 			else if((memory_map[MaCaco_OUT_s + slot + 1] == 0))
+				{
 				memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_AUXIN_s + slot + 1];	// Set output to previous value
+				delay(flashspeed);	
+				}
 		}
+		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)
 	{
