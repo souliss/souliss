@@ -164,6 +164,13 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define Logic_T19(slot)				Souliss_Logic_T19(memory_map, slot, &data_changed)
 #define Timer_T19(slot)				Souliss_T19_Timer(memory_map, slot)
 
+#define Set_MultipleInputs(slot)	Souliss_SetT1A(memory_map, slot)
+#define Logic_MultipleInputst(slot)	Souliss_Logic_T1A(memory_map, slot, &data_changed)
+#define Timer_MultipleInputs(slot)	Souliss_T1A_Timer(memory_map, slot)
+#define Set_T1A(slot)				Souliss_SetT1A(memory_map, slot)
+#define Logic_T1A(slot)				Souliss_Logic_T1A(memory_map, slot, &data_changed)
+#define Timer_T1A(slot)				Souliss_T1A_Timer(memory_map, slot)
+
 #define Set_GarageDoor(slot)		Souliss_SetT21(memory_map, slot)
 #define Logic_GarageDoor(slot)		Souliss_Logic_T21(memory_map, slot, &data_changed)
 #define Timer_GarageDoor(slot)		Souliss_T21_Timer(memory_map, slot)
