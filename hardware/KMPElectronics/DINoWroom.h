@@ -97,8 +97,8 @@ const uint8_t RELAY_PINS[RELAY_COUNT] =
 const int OPTOIN_PINS[OPTOIN_COUNT] =
 { IN1PIN, IN2PIN, IN3PIN, IN4PIN };
 
-uint8_t  _expTxData[16];
-uint8_t  _expRxData[16];
+uint8_t  _expTxData[16] __attribute__((aligned(4)));
+uint8_t  _expRxData[16] __attribute__((aligned(4)));
 
 // User Methods
 #define	InitDINo()	DINoWroom_init()
