@@ -255,6 +255,7 @@
 #define Souliss_T4n_Antitheft			0x01		// Anti-theft Armed Feedback
 #define Souliss_T4n_NoAntitheft			0x00		// Anti-theft not Armed Feedback
 #define Souliss_T4n_InAlarm				0x03		// Anti-theft in Alarm
+#define Souliss_T4n_InReArm				0x04		// Anti-theft Rearmed
 
 #define Souliss_RstCmd					0x00
 #define Souliss_NOTTRIGGED				0x00

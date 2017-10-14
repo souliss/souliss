@@ -62,10 +62,16 @@ void Souliss_SetT41(U8 *memory_map, U8 slot)
 U8 Souliss_Logic_T41(U8 *memory_map, U8 slot, U8 *trigger)
 {
 	// Active or de-active the anti-theft
-	if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Armed) || (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm))
+	if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Armed) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T4n_InReArm))
 	{
 		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;			
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_Antitheft;	// Activate the anti-theft
+		*trigger = Souliss_TRIGGED;	
+	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm)
+	{
+		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;					
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_InReArm;	//ReArm the anti-theft
 		*trigger = Souliss_TRIGGED;	
 	}	
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_NotArmed)
