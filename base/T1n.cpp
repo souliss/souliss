@@ -554,14 +554,14 @@ void Souliss_SetT16(U8 *memory_map, U8 slot)
 			If using a bistable wall switch (press without return), the two
 			switch position can be associated with the ON and OFF commands
 				#define Souliss_T1n_OnCmd			0x02
-				#define Souliss_T1n_OffCmd			0x03
+				#define Souliss_T1n_OffCmd			0x04
 
 		Software Commands:
 
 			From any available software interface, these commands will turn
 			the light ON and OFF.
 				#define Souliss_T1n_OnCmd			0x02
-				#define Souliss_T1n_OffCmd			0x03
+				#define Souliss_T1n_OffCmd			0x04
 				#define Souliss_T1n_BrightUp		0x10
 				#define Souliss_T1n_BrightDown		0x20
 				#define Souliss_T1n_Flash			0x21
@@ -968,14 +968,14 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 			If using a bistable wall switch (press without return), the two
 			switch position can be associated with the ON and OFF commands
 				#define Souliss_T1n_OnCmd			0x02
-				#define Souliss_T1n_OffCmd			0x03
+				#define Souliss_T1n_OffCmd			0x04
 
 		Software Commands:
 
 			From any available software interface, these commands will turn
 			the light ON and OFF.
 				#define Souliss_T1n_OnCmd			0x02
-				#define Souliss_T1n_OffCmd			0x03
+				#define Souliss_T1n_OffCmd			0x0
 				#define Souliss_T1n_BrightUp		0x10
 				#define Souliss_T1n_BrightDown		0x20
 				#define Souliss_T1n_Flash			0x21
