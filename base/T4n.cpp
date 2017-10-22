@@ -61,29 +61,58 @@ void Souliss_SetT41(U8 *memory_map, U8 slot)
 /**************************************************************************/
 U8 Souliss_Logic_T41(U8 *memory_map, U8 slot, U8 *trigger)
 {
+	U8 i_trigger=0;														// Internal trigger
+
 	// Active or de-active the anti-theft
-	if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Armed) || (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm))
+	if((memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Armed) || (memory_map[MaCaco_OUT_s + slot] == Souliss_T4n_InReArm))
 	{
-		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;			
+		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T4n_RstCmd;			
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_Antitheft;	// Activate the anti-theft
-		*trigger = Souliss_TRIGGED;	
+		i_trigger = Souliss_TRIGGED;	
+	}
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_ReArm)
+	{
+		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T4n_RstCmd;						
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_InReArm;	//ReArm the anti-theft
+		i_trigger = Souliss_TRIGGED;	
 	}	
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_NotArmed)
 	{
-		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;					
-		memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_NoAntitheft;	// Deactivate the anti-theft
-		*trigger = Souliss_TRIGGED;	
-	}	
+		memory_map[MaCaco_IN_s + slot]    = Souliss_T4n_RstCmd;	
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T4n_RstCmd;				
+		memory_map[MaCaco_OUT_s + slot]   = Souliss_T4n_NoAntitheft;	// Deactivate the anti-theft
+		i_trigger = Souliss_TRIGGED;	
+	}
+	
+	// If the anti-theft is set and there is an alarm, set a timer	
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T4n_Antitheft) && (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_AlarmDelay) && (memory_map[MaCaco_AUXIN_s + slot]==0))
+	{
+		memory_map[MaCaco_AUXIN_s + slot] = Souliss_T4n_DelayTime;
+		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_Alarm;
+	}
+
+	// If the anti-theft is set and there is an alarm, run a timer	
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T4n_Antitheft) && (memory_map[MaCaco_AUXIN_s + slot]))
+	{
+		memory_map[MaCaco_AUXIN_s + slot]--;
+		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_Alarm;	//Keep it ready to alarm
+	}
 	
 	// If the anti-theft is set and there is an alarm, set the output	
-	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T4n_Antitheft) && (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Alarm))
+	if((memory_map[MaCaco_OUT_s + slot] == Souliss_T4n_Antitheft) && (memory_map[MaCaco_IN_s + slot] == Souliss_T4n_Alarm) && !(memory_map[MaCaco_AUXIN_s + slot]))
 	{
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T4n_InAlarm;
 		memory_map[MaCaco_IN_s + slot] = Souliss_T4n_RstCmd;
-		*trigger = Souliss_TRIGGED;	
+		i_trigger = Souliss_TRIGGED;	
 	}
 
-	return memory_map[MaCaco_OUT_s + slot];	
+	// Update the trigger
+	if(i_trigger)
+		*trigger = i_trigger;
+
+	return i_trigger;
 }
 
 

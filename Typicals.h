@@ -248,13 +248,17 @@
 
 // General defines for T4n
 #define Souliss_T4n_Alarm				0x01		// Alarm Condition Detected (Input)
+#define Souliss_T4n_AlarmDelay			0x02		// Alarm Condition Detected (Input)
+#define Souliss_T4n_DelayTime			0x50		// Delay cycles
 #define Souliss_T4n_RstCmd				0x00
 #define Souliss_T4n_ReArm				0x03		// Silence and Arm Command
 #define Souliss_T4n_NotArmed			0x04		// Anti-theft not Armed Command
 #define Souliss_T4n_Armed				0x05		// Anti-theft Armed Command
+
 #define Souliss_T4n_Antitheft			0x01		// Anti-theft Armed Feedback
 #define Souliss_T4n_NoAntitheft			0x00		// Anti-theft not Armed Feedback
 #define Souliss_T4n_InAlarm				0x03		// Anti-theft in Alarm
+#define Souliss_T4n_InReArm				0x04		// Anti-theft Rearmed
 
 #define Souliss_RstCmd					0x00
 #define Souliss_NOTTRIGGED				0x00
