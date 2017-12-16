@@ -37,6 +37,8 @@
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 #		define VNET_MEDIA3_ENABLE  			1
+#elif(MCU_TYPE == 0x03)	// Expressif ESP32
+#		define VNET_MEDIA3_ENABLE  			1
 #endif
 
 #endif

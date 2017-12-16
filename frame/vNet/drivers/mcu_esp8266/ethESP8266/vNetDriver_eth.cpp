@@ -29,7 +29,7 @@
 
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
-//#include "ESP8266WiFi.h"
+#include "ESP8266WiFi.h"
 
 #include "frame/vNet/tools/UserMode.c"
 

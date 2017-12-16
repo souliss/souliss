@@ -321,7 +321,7 @@ uint8_t vNet_Send_M5(uint16_t addr, oFrame *frame, uint8_t len)
 
 	// The ESP8266 flush doesn't honour the AVR behaviour and miss the last baud
 	// so a delay for the time required to transmit a single baud at slower speed
-	#if(MCU_TYPE == 0x02)
+	#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))
 	delayMicroseconds(105);
 	#endif
 

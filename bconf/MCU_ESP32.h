@@ -41,10 +41,10 @@
 #define ETH_W5500					0
 #define ETH_ENC28J60  				0
 #define WIFI_MRF24					0
-//#define WIFI_ESP8266				1
+#define WIFI_ESP8266				0
 #define WIFI_ESP32					1
 
-// The ESP8266 works always with two media, it use Media 3 to
+// The ESP32 works always with two media, it use Media 3 to
 // remove dependence between vNet address and IP address from DHCP
 #define VNET_MEDIA1_ENABLE  		1
 #define VNET_MEDIA3_ENABLE  		1

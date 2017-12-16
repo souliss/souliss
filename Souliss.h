@@ -204,8 +204,7 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 	#endif
 #elif(MCU_TYPE == 0x03)	// Expressif ESP32
 	#if(WEBCONFIGSERVER)
-// NON GIRA SU ESP32
-//		#	include "interfaces/mcu_esp32/webconfig/webconfig.cpp"
+	#	include "interfaces/mcu_esp32/webconfig/webconfig.cpp"
 	#endif
 #endif
 

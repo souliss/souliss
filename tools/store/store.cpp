@@ -33,7 +33,7 @@
 void Store_Init()
 {
 	#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
-	#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 		EEPROM.begin(STORE__SIZE);
 	#endif	
 }	
@@ -45,7 +45,7 @@ void Store_Clear()
 	for(uint16_t i=0;i<EEPROM.length();i++)
 		//--EEPROM.update(i, 0);
     EEPROM.update(STORE__INDEX+i, 0);
-#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	for(uint16_t i=0;i<STORE__USABLESIZE;i++)
 		//--EEPROM.write(i, 0);
     EEPROM.write(STORE__INDEX+i, 0);
@@ -57,7 +57,7 @@ void Store_8bit(int addr, uint8_t store_val)
 {	
 #if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
 	EEPROM.update(STORE__INDEX+addr, store_val);
-#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	EEPROM.write(STORE__INDEX+addr, store_val);	
 #endif		
 }
@@ -74,7 +74,7 @@ void Store_16bit(int addr, uint16_t store_val)
 #if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
 	EEPROM.update(STORE__INDEX+addr,   C16TO8L(store_val));
 	EEPROM.update(STORE__INDEX+addr+1, C16TO8H(store_val));
-#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	EEPROM.write(STORE__INDEX+addr,   C16TO8L(store_val));
 	EEPROM.write(STORE__INDEX+addr+1, C16TO8H(store_val));
 #endif		
@@ -295,7 +295,7 @@ String Read_Password()
 void Store_Commit()
 {
 	#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega	
-	#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+	#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	EEPROM.commit();	
 	#endif
 }

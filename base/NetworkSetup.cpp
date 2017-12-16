@@ -162,7 +162,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	U16 vNet_address = (U16)ip_address[i-1];			// The last byte of the IP address is the vNet one
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
-	#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+	#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 		U8 timeout=20;
 	
 		// If is the first time that we connect to WiFi.SSID
@@ -210,7 +210,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 
 	/*** This calls Souliss_SetIPAddress directly	***/
 
-#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	
 	// If is the first time that we connect to WiFi.SSID
 	if(strcmp(WiFi.SSID().c_str(), WiFi_SSID) || strcmp(WiFi.psk().c_str(), WiFi_Password))
@@ -262,7 +262,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	// Set the address
 	Souliss_SetAddress(vNet_address, DYNAMICADDR_SUBNETMASK, 0);
 
-	#if(MCU_TYPE == 0x02)
+	#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	if(WiFi.status() != WL_CONNECTED) 
 	{
 		// Print debug messages
@@ -291,7 +291,7 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	Start the node as an access point
 */	
 /**************************************************************************/ 
-#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 String Souliss_SetAccessPoint(const char ap_name[32] = "", const char ap_pass[32] = "")
 {
 	uint8_t i;
@@ -373,7 +373,7 @@ uint8_t Souliss_ReadIPConfiguration()
 	}
 
 	// Setup the SSID and Password
-	#if(MCU_TYPE == 0x02)	
+	#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32	
 	String SSID = Read_SSID();
 	String PSW  = Read_Password();
 
@@ -407,7 +407,7 @@ uint8_t Souliss_ReadIPConfiguration()
 			// The last byte of the IP address is used as vNet address
 			myvNet_dhcp = ip[3];	
 			
-		#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+		#elif((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 			
 			// If is the first time that we connect to WiFi.SSID
 
@@ -522,7 +522,7 @@ uint8_t Souliss_ReadIPConfiguration()
 		myvNet_dhcp = (U16)_ip_address[i-1];			// The last byte of the IP address is the vNet one
 		DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
-		#if(MCU_TYPE == 0x02)	// Expressif ESP8266
+		#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 
 			#if (SOULISS_DEBUG)
 			// Print debug messages
@@ -560,7 +560,7 @@ uint8_t Souliss_ReadIPConfiguration()
 		Souliss_SetAddress(myvNet_dhcp, DYNAMICADDR_SUBNETMASK, 0);
 	}
 
-	#if(MCU_TYPE == 0x02)
+	#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
 	if(WiFi.status() != WL_CONNECTED) 
 	{
 		// Print debug messages
