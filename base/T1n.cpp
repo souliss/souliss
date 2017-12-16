@@ -1018,7 +1018,7 @@ void Souliss_SetT19(U8 *memory_map, U8 slot)
 			From any available software interface, these commands will turn
 			the light ON and OFF.
 				#define Souliss_T1n_OnCmd			0x02
-				#define Souliss_T1n_OffCmd			0x04
+				#define Souliss_T1n_OffCmd			0x0
 				#define Souliss_T1n_BrightUp		0x10
 				#define Souliss_T1n_BrightDown		0x20
 				#define Souliss_T1n_Flash			0x21
