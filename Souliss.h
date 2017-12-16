@@ -53,6 +53,8 @@
 #	endif
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
 #	define MAXINPIN		29		// Max number of input pins
+#elif(MCU_TYPE == 0x03)	// Expressif ESP32
+#	define MAXINPIN		29		// Max number of input pins
 #endif
 
 void Souliss_SetAddress(U16 addr, U16 subnetmask, U16 mysupernode);
@@ -156,6 +158,11 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 #	if(WEBCONFIGSERVER)
 #		include "interfaces/mcu_esp8266/webconfig/webconfig.h"
 #	endif
+#elif(MCU_TYPE == 0x03)	// Expressif ESP32
+#	if(WEBCONFIGSERVER)
+#		include "interfaces/mcu_esp32/webconfig/webconfig.h"
+#	endif
+
 #endif
 
 // Include IO definitions and other tools
@@ -195,11 +202,17 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 	#if(WEBCONFIGSERVER)
 	#	include "interfaces/mcu_esp8266/webconfig/webconfig.cpp"
 	#endif
+#elif(MCU_TYPE == 0x03)	// Expressif ESP32
+	#if(WEBCONFIGSERVER)
+// NON GIRA SU ESP32
+//		#	include "interfaces/mcu_esp32/webconfig/webconfig.cpp"
+	#endif
 #endif
 
 
 #if(MCU_TYPE == 0x01)	// ATmega AVR
 #elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+#elif(MCU_TYPE == 0x03)	// Expressif ESP32
 #endif
 
 // Include Souliss code base and typicals

@@ -787,7 +787,50 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
 	}
-
+	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
+	{
+	//flash 7.2.0	
+	
+	// If the light was on
+		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
+		{
+		int flashspeed = 10 ;	
+		// Switch ON and OFF until a new command is received
+			if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1]))
+			{
+			memory_map[MaCaco_OUT_s + slot + 1] = 0;										// Set output to zero
+			delay(flashspeed);	
+			}
+			
+			else if((memory_map[MaCaco_OUT_s + slot + 1] == 0))
+			{	
+			memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_AUXIN_s + slot + 1];	// Set output to previous value
+			delay(flashspeed);	
+			}
+			// Switch ON and OFF until a new command is received
+			if((memory_map[MaCaco_OUT_s + slot + 2] == memory_map[MaCaco_AUXIN_s + slot + 2]))
+			{	
+			memory_map[MaCaco_OUT_s + slot + 2] = 0;										// Set output to zero
+			delay(flashspeed);	
+			}
+			else if((memory_map[MaCaco_OUT_s + slot + 2] == 0))
+			{
+				memory_map[MaCaco_OUT_s + slot + 2] = memory_map[MaCaco_AUXIN_s + slot + 2];	// Set output to previous value
+			delay(flashspeed);	
+			}	
+			// Switch ON and OFF until a new command is received
+			if((memory_map[MaCaco_OUT_s + slot + 3] == memory_map[MaCaco_AUXIN_s + slot + 3]))
+			{	
+			memory_map[MaCaco_OUT_s + slot + 3] = 0;										// Set output to zero
+			delay(flashspeed);	
+			}
+			else if((memory_map[MaCaco_OUT_s + slot + 3] == 0))
+			{		
+			memory_map[MaCaco_OUT_s + slot + 3] = memory_map[MaCaco_AUXIN_s + slot + 3];	// Set output to previous value
+			delay(flashspeed);	
+			}
+		}
+	}
 	// Update the trigger
 	if(i_trigger)
 		*trigger = i_trigger;
@@ -1105,14 +1148,24 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
+		//flash 7.2
+		int flashspeed = 30 ;
+		
 		// If the light was on
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
 		{
 			// Switch ON and OFF until a new command is received
 			if((memory_map[MaCaco_OUT_s + slot + 1] == memory_map[MaCaco_AUXIN_s + slot + 1]))
-				memory_map[MaCaco_OUT_s + slot + 1] = 0;										// Set output to zero
+				{
+				memory_map[MaCaco_OUT_s + slot + 1] = 0;
+				delay(flashspeed);	
+				}
+			// Set output to zero
 			else if((memory_map[MaCaco_OUT_s + slot + 1] == 0))
+				{
 				memory_map[MaCaco_OUT_s + slot + 1] = memory_map[MaCaco_AUXIN_s + slot + 1];	// Set output to previous value
+				delay(flashspeed);	
+				}
 		}
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)

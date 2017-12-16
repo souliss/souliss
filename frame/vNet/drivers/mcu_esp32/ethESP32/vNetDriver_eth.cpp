@@ -29,7 +29,7 @@
 
 #include "GetConfig.h"				// need : ethUsrCfg.h
 #include "vNetDriver_eth.h"
-//#include "ESP8266WiFi.h"
+#include "WiFi.h"
 
 #include "frame/vNet/tools/UserMode.c"
 
@@ -52,7 +52,7 @@ uint8_t  vNetM3_isdata =0;							// Flag if Media3 has incoming data
 oFrame vNetM3_oFrame;	
 
 WiFiUDP udp;										// WiFi UDP Socket
-extern ESP8266WiFiClass WiFi;
+extern WiFiClass WiFi;
 
 unsigned long start_time;
 

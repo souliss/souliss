@@ -53,6 +53,11 @@
 	#if (WIFI_ESP8266)
 		#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.cpp"	
 	#endif		
+	// Driver for Expressif ESP32 WiFi
+	#if (WIFI_ESP32)
+		#include "drivers/mcu_esp32/ethESP32/vNetDriver_eth.cpp"	
+	#endif		
+
 	
 #endif
 	

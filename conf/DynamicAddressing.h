@@ -55,6 +55,11 @@
 #	if(VNET_MEDIA1_ENABLE)
 #		define VNET_MEDIA3_ENABLE  			1
 #	endif
+#elif(MCU_TYPE == 0x03)	// Expressif ESP32
+#	if(VNET_MEDIA1_ENABLE)
+#		define VNET_MEDIA3_ENABLE  			1
+#	endif
+
 #endif
 
 #endif
