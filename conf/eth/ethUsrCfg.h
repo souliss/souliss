@@ -45,6 +45,7 @@
 		ETH_ENC28J60	-  Microchip ENC28J60		(Wired Ethernet)
 		WIFI_MRF24		-  Microchip MRF24WB0MA 	(WiFi) 
 		WIFI_ESP8266	-  Expressif ESP8266		(SoC with WiFi)
+		WIFI_ESP32		-  Expressif ESP32			(SoC with WiFi)
 */
 /**************************************************************************/
 #ifndef ETH_INSKETCH				
@@ -54,6 +55,7 @@
 #	define ETH_ENC28J60  	0
 #	define WIFI_MRF24		0
 #	define WIFI_ESP8266		0
+#	define WIFI_ESP32		0
 #endif
 /**************************************************************************/
 /*!

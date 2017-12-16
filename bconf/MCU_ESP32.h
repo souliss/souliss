@@ -22,23 +22,36 @@
     \file 
     \ingroup
 */
-#ifndef bconf_ssETHW5100_H
-#define bconf_ssETHW5100_H
+#ifndef bconf_ssMCUESP32_H
+#define bconf_ssMCUESP32_H
 
-#define VNET_MEDIA_INSKETCH
-#define	ETH_INSKETCH
+// Expressif ESP32 Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE					3
+
+#define BOARD_MODEL_INSKETCH
 #define	COMMS_MODEL_INSKETCH
+#define VNET_MEDIA_INSKETCH
+#define ETH_INSKETCH	
 
-// Refer to ethUsrCfg.h, vNetCfg.h and hwBoard.h
-#define	COMMS_MODEL					1
-#define ETH_W5100  					1
+#define	BOARD_MODEL					9		
+#define	COMMS_MODEL					7
+#define ETH_W5100  					0
 #define ETH_W5200  					0
 #define ETH_W5500					0
 #define ETH_ENC28J60  				0
 #define WIFI_MRF24					0
-#define WIFI_ESP8266				0
-#define WIFI_ESP32					0
+//#define WIFI_ESP8266				1
+#define WIFI_ESP32					1
 
+// The ESP8266 works always with two media, it use Media 3 to
+// remove dependence between vNet address and IP address from DHCP
 #define VNET_MEDIA1_ENABLE  		1
+#define VNET_MEDIA3_ENABLE  		1
+
+#define USARTDRIVER_INSKETCH
+#define USART_TXENABLE				0
+#define USART_TXENPIN				2
+#define	USARTDRIVER					Serial
 
 #endif

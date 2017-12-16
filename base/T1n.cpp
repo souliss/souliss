@@ -789,7 +789,7 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
-	//flash mod with speed
+	//flash 7.2.0	
 	
 	// If the light was on
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
@@ -831,7 +831,6 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 			}
 		}
 	}
-
 	// Update the trigger
 	if(i_trigger)
 		*trigger = i_trigger;
@@ -1149,7 +1148,7 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
-		//flash mod with speed
+		//flash 7.2
 		int flashspeed = 30 ;
 		
 		// If the light was on
@@ -1168,7 +1167,6 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 				delay(flashspeed);	
 				}
 		}
-		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Set)
 	{
