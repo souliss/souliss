@@ -71,6 +71,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SHIFT_90ms(n)		if ((phase_fast % 9)==n)
 #define	SHIFT_110ms(n)		if ((phase_fast % 11)==n)
 #define SHIFT_210ms(n)		if ((phase_fast % 21)==n)
+#define SHIFT_310ms(n)		if ((phase_fast % 31)==n)
 #define	SHIFT_510ms(n)		if ((phase_fast % 51)==n)
 #define	SHIFT_710ms(n)		if ((phase_fast % 71)==n)
 #define	SHIFT_910ms(n)		if ((phase_fast % 91)==n)
@@ -93,6 +94,8 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_70s()		if (!(phase_slow % 7))
 #define	SLOW_90s()		if (!(phase_slow % 9))
 #define	SLOW_110s()		if (!(phase_slow % 11))
+#define	SLOW_210s()		if (!(phase_slow % 21))
+#define	SLOW_310s()		if (!(phase_slow % 31))
 #define	SLOW_510s()		if (!(phase_slow % 51))
 #define	SLOW_710s()		if (!(phase_slow % 71))
 #define	SLOW_15m()		if (!(phase_slow % 91))
@@ -102,6 +105,12 @@ unsigned long tmr_fast=0, tmr_slow=0;
 #define	SLOW_4h()		if (!(phase_slow % 1441))
 #define	SLOW_halfday()	if (!(phase_slow % 4321))
 #define	SLOW_1day()		if (!(phase_slow % 8641))
+
+#define	SHIFT_SLOW_10s(n)		if ((phase_slow % 1)==n)
+#define	SHIFT_SLOW_50s(n)		if ((phase_slow % 5)==n)
+#define	SHIFT_SLOW_70s(n)		if ((phase_slow % 7)==n)
+#define	SHIFT_SLOW_90s(n)		if ((phase_slow % 9)==n)
+#define	SHIFT_SLOW_110s(n)		if ((phase_slow % 11)==n)
 
 #define EXECUTESPEEDY() else
 #define UPDATESPEEDY()	phase_speedy = (phase_speedy + 1) % num_phases
