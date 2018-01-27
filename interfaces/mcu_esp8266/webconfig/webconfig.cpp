@@ -30,6 +30,7 @@
 /***
 	
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
+	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram)
 
 ***/
 
@@ -50,6 +51,7 @@ boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
 #include "src/style.css.h"
 #include "src/main.h"
 #include "src/netconfig.h"
+#include "src/notify.h"
 
 // Apply default configuration
 void defaultWebConfig()
@@ -87,6 +89,8 @@ void startWebServer()
 	server.on ( "/admin.html", [](AsyncWebServerRequest *request) { request->send ( 200, "text/html",  reinterpret_cast<const __FlashStringHelper *>(PAGE_AdminMainPage));   }  );
 #endif
 	server.on ( "/config.html", send_network_configuration_html );
+	server.on ( "/notify.html", send_notify_settings_html );
+	
 	server.on ( "/main.html", processMain  );
 #ifndef ASYNCWEBSERVER
 	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_main );  } );
@@ -98,6 +102,7 @@ void startWebServer()
 	server.on ( "/microajax.js", [](AsyncWebServerRequest *request) { request->send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
 #endif	
 	server.on ( "/admin/values", send_network_configuration_values_html );
+	server.on ( "/admin/notifyvalues", send_notify_settings_values_html );
 	server.on ( "/admin/connectionstate", send_connection_state_values_html );
 	server.on ( "/admin/rstvalues", send_reset_values_html);
 	
@@ -146,7 +151,30 @@ void WriteConfig()
 	// Store WiFi SSID and Password
 	Store_SSID(config.ssid);
 	Store_Password(config.password);
+	
+	// Store Pushetta 
+	Store_Pushetta_ApiKey 		(pushetta.pushettaapikey);
+	Store_Pushetta_Channel 		(pushetta.pushettachannel);
+	if(pushetta.pushettaenabled)	Store_PushettaEnabled(SET_TRUE);
+	else							Store_PushettaEnabled(SET_FALSE);
 
+	// Store Pushover 
+	Store_Pushover_ApiToken  	(pushover.pushoverapitoken);
+	Store_Pushover_UserKey 		(pushover.pushoveruserkey);
+	Store_Pushover_Device  		(pushover.pushoverdevice);
+	Store_Pushover_Sound   		(pushover.pushoversound);
+	if(pushover.pushoverenabled)	Store_PushoverEnabled(SET_TRUE);
+	else							Store_PushoverEnabled(SET_FALSE);
+
+	// Store Telegram 
+	Store_Telegram_BOTtoken 	(telegram.telegrambottoken);
+	Store_Telegram_ChatGroup 	(telegram.telegramchatgroup);
+	Store_Telegram_ChatID 		(telegram.telegramchatid);
+	if(telegram.telegramenabled)	Store_TelegramEnabled(SET_TRUE);
+	else							Store_TelegramEnabled(SET_FALSE);
+
+	
+	
 	// Commit changes
 	Store_Commit();
 }

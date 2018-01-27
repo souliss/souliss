@@ -30,6 +30,7 @@
 /***
 	
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
+	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram)
 
 ***/
 #ifndef WEBCONFIG_H
@@ -64,6 +65,27 @@ struct strConfig {
 	boolean rst;
 	boolean RuntimeGateway; //test node mode as gateway or peer
 }   config;
+
+struct strPushetta {
+	String pushettaapikey;
+	String pushettachannel;
+	boolean pushettaenabled; //test node mode as gateway or peer
+}   pushetta;
+
+struct strPushover {
+	String pushoverapitoken;
+	String pushoveruserkey;
+	String pushoverdevice;
+	String pushoversound;
+	boolean pushoverenabled; //test node mode as gateway or peer
+}   pushover;
+
+struct strTelegram {
+	String telegrambottoken;
+	String telegramchatgroup;
+	String telegramchatid;
+	boolean telegramenabled; //test node mode as gateway or peer
+}   telegram;
 
 
 void defaultWebConfig();
