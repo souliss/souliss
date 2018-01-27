@@ -188,7 +188,7 @@ void send_network_configuration_html(AsyncWebServerRequest *request)
 		}
 		
 		// Time to restart and enter in the user application
-		ESP.restart();
+		ESP.reset();
 	}
 	else
 	{
