@@ -112,7 +112,7 @@ String Return_String(int addr, uint8_t maxlenght)
 	{
 		rChar = EEPROM.read(addr + counter);
 		if (rChar == 0) break;
-		if (counter > 31) break;
+		if (counter > 51) break;
 		counter++;
 		retString.concat(rChar);
 
@@ -290,6 +290,144 @@ String Read_Password()
 {
 	return Return_String(STORE__WIFIPSW_s, 64);
 }
+
+// Store the Pushetta APIKEY
+void Store_Pushetta_ApiKey(String string)
+{
+	Store_String(STORE__PUSHETTAAPIKEY_s, string);
+}
+// Return the Pushetta APIKEY
+String Read_Pushetta_ApiKey()
+{
+	return Return_String(STORE__PUSHETTAAPIKEY_s, 40);
+}
+// Store the Pushetta CHANNEL
+void Store_Pushetta_Channel(String string)
+{
+	Store_String(STORE__PUSHETTACHANNEL_s, string);
+}
+
+// Return the Pushetta CHANNEL
+String Read_Pushetta_Channel()
+{
+	return Return_String(STORE__PUSHETTACHANNEL_s, 20);
+}
+
+// Store the Pushetta Enabled 
+void Store_PushettaEnabled(uint8_t mode)
+{
+	Store_8bit(STORE__PUSHETTAENABLED_s, mode);
+}
+
+// Read the Pushetta Enabled (If Enabled or not)
+uint8_t Return_PushettaEnabled()
+{
+	return Return_8bit(STORE__PUSHETTAENABLED_s);
+}
+
+// Store the Pushover APITOKEN
+void Store_Pushover_ApiToken(String string)
+{
+	Store_String(STORE__PUSHOVERAPITOKEN_s, string);
+}
+// Return the Pushover APIKEY
+String Read_Pushover_ApiToken()
+{
+	return Return_String(STORE__PUSHOVERAPITOKEN_s, 30);
+}
+
+// Store the Pushover USERKEY
+void Store_Pushover_UserKey(String string)
+{
+	Store_String(STORE__PUSHOVERUSERKEY_s, string);
+}
+// Return the Pushover USERKEY
+String Read_Pushover_UserKey()
+{
+	return Return_String(STORE__PUSHOVERUSERKEY_s, 30);
+}
+
+// Store the Pushover DEVICE
+void Store_Pushover_Device(String string)
+{
+	Store_String(STORE__PUSHOVERDEVICE_s, string);
+}
+
+// Return the Pushover DEVICE
+String Read_Pushover_Device()
+{
+	return Return_String(STORE__PUSHOVERDEVICE_s, 20);
+}
+// Store the Pushover SOUND
+void Store_Pushover_Sound(String string)
+{
+	Store_String(STORE__PUSHOVERSOUND_s, string);
+}
+
+// Return the Pushover SOUND
+String Read_Pushover_Sound()
+{
+	return Return_String(STORE__PUSHOVERSOUND_s, 20);
+}
+
+// Store the Pushover Enabled 
+void Store_PushoverEnabled(uint8_t mode)
+{
+	Store_8bit(STORE__PUSHOVERENABLED_s, mode);
+}
+
+// Read the Pushover Enabled (If Enabled or not)
+uint8_t Return_PushoverEnabled()
+{
+	return Return_8bit(STORE__PUSHOVERENABLED_s);
+}
+
+// Store the Telegram BOT TOKEN
+void Store_Telegram_BOTtoken(String string)
+{
+	Store_String(STORE__TELEGRAMBOTTOKEN_s, string);
+}
+// Return the Telegram BOT TOKEN
+String Read_Telegram_BOTtoken()
+{
+	return Return_String(STORE__TELEGRAMBOTTOKEN_s, 45);
+}
+
+// Store the Telegram CHAT GROUP
+void Store_Telegram_ChatGroup(String string)
+{
+	Store_String(STORE__TELEGRAMCHATGROUP_s, string);
+}
+// Return the Telegram CHAT GROUP
+String Read_Telegram_ChatGroup()
+{
+	return Return_String(STORE__TELEGRAMCHATGROUP_s, 20);
+}
+
+// Store the Telegram CHAT ID
+void Store_Telegram_ChatID(String string)
+{
+	Store_String(STORE__TELEGRAMCHATID_s, string);
+}
+
+// Return the Telegram CHAT ID
+String Read_Telegram_ChatID()
+{
+	return Return_String(STORE__TELEGRAMCHATID_s, 20);
+}
+
+// Store the Telegram Enabled 
+void Store_TelegramEnabled(uint8_t mode)
+{
+	Store_8bit(STORE__TELEGRAMENABLED_s, mode);
+}
+
+// Read the Telegram Enabled (If Enabled or not)
+uint8_t Return_TelegramEnabled()
+{
+	return Return_8bit(STORE__TELEGRAMENABLED_s);
+}
+
 
 // Commit to EEPROM
 void Store_Commit()
