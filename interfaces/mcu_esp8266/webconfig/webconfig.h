@@ -69,7 +69,7 @@ struct strConfig {
 struct strPushetta {
 	String pushettaapikey;
 	String pushettachannel;
-	boolean pushettaenabled; //test node mode as gateway or peer
+	boolean pushettaenabled; 
 }   pushetta;
 
 struct strPushover {
@@ -77,14 +77,14 @@ struct strPushover {
 	String pushoveruserkey;
 	String pushoverdevice;
 	String pushoversound;
-	boolean pushoverenabled; //test node mode as gateway or peer
+	boolean pushoverenabled; 
 }   pushover;
 
 struct strTelegram {
 	String telegrambottoken;
 	String telegramchatgroup;
 	String telegramchatid;
-	boolean telegramenabled; //test node mode as gateway or peer
+	boolean telegramenabled; 
 }   telegram;
 
 
