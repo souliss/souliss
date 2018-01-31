@@ -30,7 +30,7 @@
 /***
 	
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
-	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram)
+	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram) 
 
 ***/
 
@@ -213,5 +213,24 @@ boolean ReadConfig()
 	config.ssid = Read_SSID();
 	config.password = Read_Password();
 
+	// Read Notify Settings
+	pushetta.pushettaapikey = Read_Pushetta_ApiKey();
+	pushetta.pushettachannel= Read_Pushetta_Channel();
+	if(Return_PushettaEnabled()) pushetta.pushettaenabled = true;
+	else						 pushetta.pushettaenabled = false;
+	
+	pushover.pushoverapitoken = Read_Pushover_ApiToken();
+	pushover.pushoveruserkey = Read_Pushover_UserKey();
+	pushover.pushoverdevice = Read_Pushover_Device();
+	pushover.pushoversound = Read_Pushover_Sound();
+	if(Return_PushoverEnabled()) pushover.pushoverenabled = true;
+	else						 pushover.pushoverenabled = false;
+	
+	telegram.telegrambottoken = Read_Telegram_BOTtoken();
+	telegram.telegramchatgroup = Read_Telegram_ChatGroup();
+	telegram.telegramchatid = Read_Telegram_ChatID();
+	if(Return_TelegramEnabled()) telegram.telegramenabled = true;
+	else						 telegram.telegramenabled = false;
+		
 	return true;
 }

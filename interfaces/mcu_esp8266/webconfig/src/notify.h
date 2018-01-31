@@ -213,23 +213,23 @@ void send_notify_settings_values_html(AsyncWebServerRequest *request)
 #ifndef ASYNCWEBSERVER
 	yield();
 #endif
-	String values ="";
-	values += "pushettaapikey|" + (String) pushetta.pushettaapikey + "|input\n";
-	values += "pushettachannel|" +  (String) pushetta.pushettachannel + "|input\n";
-	values += "pushettaenabled|" +  (String) (pushetta.pushettaenabled ? "checked" : "") + "|chk\n";
-	values += "pushoverapitoken|" + (String) pushover.pushoverapitoken + "|input\n";
-	values += "pushoveruserkey|" +  (String) pushover.pushoveruserkey + "|input\n";
-	values += "pushoverdevice|" +  (String) pushover.pushoverdevice + "|input\n";
-	values += "pushoversound|" +  (String) pushover.pushoversound + "|input\n";
-	values += "pushoverenabled|" +  (String) (pushover.pushoverenabled ? "checked" : "") + "|chk\n";
-	values += "telegrambottoken|" + (String) telegram.telegrambottoken + "|input\n";
-	values += "telegramchatgroup|" +  (String) telegram.telegramchatgroup + "|input\n";
-	values += "telegramchatid|" +  (String) telegram.telegramchatid + "|input\n";
-	values += "telegramenabled|" +  (String) (telegram.telegramenabled ? "checked" : "") + "|chk\n";
+	String notifyvalues ="";
+	notifyvalues += "pushettaapikey|" + (String) pushetta.pushettaapikey + "|input\n";
+	notifyvalues += "pushettachannel|" +  (String) pushetta.pushettachannel + "|input\n";
+	notifyvalues += "pushettaenabled|" +  (String) (pushetta.pushettaenabled ? "checked" : "") + "|chk\n";
+	notifyvalues += "pushoverapitoken|" + (String) pushover.pushoverapitoken + "|input\n";
+	notifyvalues += "pushoveruserkey|" +  (String) pushover.pushoveruserkey + "|input\n";
+	notifyvalues += "pushoverdevice|" +  (String) pushover.pushoverdevice + "|input\n";
+	notifyvalues += "pushoversound|" +  (String) pushover.pushoversound + "|input\n";
+	notifyvalues += "pushoverenabled|" +  (String) (pushover.pushoverenabled ? "checked" : "") + "|chk\n";
+	notifyvalues += "telegrambottoken|" + (String) telegram.telegrambottoken + "|input\n";
+	notifyvalues += "telegramchatgroup|" +  (String) telegram.telegramchatgroup + "|input\n";
+	notifyvalues += "telegramchatid|" +  (String) telegram.telegramchatid + "|input\n";
+	notifyvalues += "telegramenabled|" +  (String) (telegram.telegramenabled ? "checked" : "") + "|chk\n";
 #ifndef ASYNCWEBSERVER
-	server.send ( 200, "text/plain", values);
+	server.send ( 200, "text/plain", notifyvalues);
 #else
-	request->send ( 200, "text/plain", values);
+	request->send ( 200, "text/plain", notifyvalues);
 #endif	
 	
 }
