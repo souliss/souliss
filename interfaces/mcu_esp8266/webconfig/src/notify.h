@@ -14,13 +14,23 @@ const char PAGE_NotifyConfiguration[] PROGMEM = R"=====(
 <hr>
 Enter your credential and API:<br><p>
 Please at the moment use only one system at time.
-
 <form action="" method="get">
+<table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
+<tr><br><td colspan="2" align="left"><strong>Notify Message: </strong></td></tr>
+<tr><td align="left">Messaggio:</td><td><input type="text" id="notifymessage" name="notifymessage" value="" size="30"></td></tr>
+<br><p>
+<tr><br><td colspan="2" align="left"><strong>Souliss VNET Address for Hardcoded communication: </strong></td></tr>
+<tr><td align="left">Address: </td><td>0x<input type="text" id="soulissaddress" name="soulissaddress" value="" size="4"></td></tr>
+<tr><td align="left">Gateway:</td><td>0x<input type="text" id="soulissgateway" name="soulissgateway" value="" size="4"></td></tr>
+<tr><td colspan="2"><input type="checkbox" id="deletesubscription" name="deletesubscription">Delete Subscription</td></tr>
+<tr><td colspan="2" align="left"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Save"></td></tr>
+</table>
+<hr size=1>
+
 <table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
 <tr><br><td align="left"><strong>Pushetta: </strong></td></tr>
 <tr><td><input type="checkbox" id="pushettaenabled" name="pushettaenabled">Enable</td></tr>
 <br>
-
 <tr><td align="left">API Key:</td><td><input type="text" id="pushettaapikey" name="pushettaapikey" value="" size="30"></td></tr>
 <tr><td align="left">Channel:</td><td><input type="text" id="pushettachannel" name="pushettachannel" value=""></td></tr>
 <br>
@@ -37,9 +47,9 @@ Please at the moment use only one system at time.
 <tr><td align="left">APIToken:</td><td><input type="text" id="pushoverapitoken" name="pushoverapitoken" value="" size="30"></td></tr>
 <tr><td align="left">USERKey:</td><td><input type="text" id="pushoveruserkey" name="pushoveruserkey" value="" size="30"></td></tr>
 <tr><td align="left">Device:</td><td><input type="text" id="pushoverdevice" name="pushoverdevice" value=""></td></tr>
-<tr><td></td>Leave Empty for all<td></td></tr>
+<tr><td colspan="2" align="left">Leave Empty for all</td></tr>
 <tr><td align="left">Sound:</td><td><input type="text" id="pushoversound" name="pushoversound" value=""></td></tr>
-<tr><td></td>Use "pushover" as default<td></td></tr>
+<tr><td colspan="2" align="left">Use "pushover" as default<td></td></tr>
 <tr><td colspan="2" align="left">Please register at <a href="https://pushover.net/" target="_blank">www.pushover.net</a></td></tr>
 <tr><td colspan="2" align="left">Download APP :  <a href="https://play.google.com/store/apps/details?id=net.superblock.pushover&hl=it" target="_blank">Android</a> - <a href="https://itunes.apple.com/it/app/pushover-notifications/id506088175?mt=8" target="_blank">Apple IOS</a></td></tr>
 <tr><td colspan="2" align="left"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Save"></td></tr>
@@ -77,6 +87,8 @@ window.onload = function ()
 					//setTimeout(GetState,3000);
 		});
 	});
+
+
 }
 function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
 
@@ -124,6 +136,10 @@ void send_notify_settings_html(AsyncWebServerRequest *request)
 		telegram.telegramchatgroup = "";
 		telegram.telegramchatid = "";
 		telegram.telegramenabled = false;
+		notify.notifymessage = "";
+		notify.soulissaddress = 0;
+		notify.soulissgateway = 0;
+		notify.deletesubscription = false;
 		
 		
 #ifndef ASYNCWEBSERVER	
@@ -136,7 +152,7 @@ void send_notify_settings_html(AsyncWebServerRequest *request)
 		for ( uint8_t i = 0; i < request->params(); i++ ) {
 			AsyncWebParameter* p = request->getParam(i);
 			if (p->name() == "pushettaapikey") pushetta.pushettaapikey =   urldecode(p->value());
-			if (p->name() == "pushettachannel") pushetta.pushettachannel =    urldecode(p->value());
+			if (p->name() == "pushettachannel") pushetta.pushettachannel = urldecode(p->value());
 			if (p->name() == "pushettaenabled") pushetta.pushettaenabled = true;
 		}
 #endif
@@ -177,6 +193,42 @@ void send_notify_settings_html(AsyncWebServerRequest *request)
 		}
 #endif
 
+			
+#ifndef ASYNCWEBSERVER	
+		for ( uint8_t i = 0; i < server.args(); i++ ) {
+			if (server.argName(i) == "notifymessage") 		notify.notifymessage  =   urldecode(server.arg(i));
+			if (server.argName(i) == "soulissaddress"){
+				char soulissaddresstemp[5];
+				server.arg(i).toCharArray(soulissaddresstemp,sizeof(soulissaddresstemp));
+				notify.soulissaddress = strtoul(soulissaddresstemp, NULL, 16);
+				//sscanf(soulissaddresstemp, "%x", &notify.soulissaddress);  //converts HEX string to a DEC int
+			}
+			if (server.argName(i) == "soulissgateway"){
+				char soulissgatewaytemp[5];
+				server.arg(i).toCharArray(soulissgatewaytemp,sizeof(soulissgatewaytemp));
+				notify.soulissgateway = strtoul(soulissgatewaytemp, NULL, 16);
+			}
+			if (server.argName(i) == "deletesubscription") notify.deletesubscription = true;
+		}
+
+#else
+		for ( uint8_t i = 0; i < request->params(); i++ ) {
+			AsyncWebParameter* p = request->getParam(i);
+			if (p->name() == "notifymessage") 	notify.notifymessage =   urldecode(p->value());
+			if (p->name() == "soulissaddress") {
+				char soulissaddresstemp[5];
+				p->value().toCharArray(soulissaddresstemp,sizeof(soulissaddresstemp));
+				notify.soulissaddress =  trtoul(soulissaddresstemp, NULL, 16);
+			}	
+			
+			if (p->name() == "soulissgateway") {
+				char soulissgatewaytemp[5];
+				p->value().toCharArray(soulissgatewaytemp,sizeof(soulissgatewaytemp));
+				notify.soulissgateway = strtoul(soulissgatewaytemp, NULL, 16);
+			}
+			if (p->name() == "deletesubscription") 	notify.deletesubscription = true;
+		}
+#endif
 	
 		// Save the configuration
 		WriteConfig();
@@ -226,6 +278,12 @@ void send_notify_settings_values_html(AsyncWebServerRequest *request)
 	notifyvalues += "telegramchatgroup|" +  (String) telegram.telegramchatgroup + "|input\n";
 	notifyvalues += "telegramchatid|" +  (String) telegram.telegramchatid + "|input\n";
 	notifyvalues += "telegramenabled|" +  (String) (telegram.telegramenabled ? "checked" : "") + "|chk\n";
+	notifyvalues += "notifymessage|" +  (String) notify.notifymessage + "|input\n";
+	String soulissaddresshex = String (notify.soulissaddress,HEX);
+	String soulissgatewayhex = String (notify.soulissgateway,HEX);
+	notifyvalues += "soulissaddress|" +  soulissaddresshex + "|input\n";
+	notifyvalues += "soulissgateway|" +  soulissgatewayhex + "|input\n";
+	notifyvalues += "deletesubscription|" +  (String) (notify.deletesubscription ? "checked" : "") + "|chk\n";
 #ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/plain", notifyvalues);
 #else

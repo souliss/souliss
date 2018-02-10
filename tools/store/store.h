@@ -2,6 +2,7 @@
 	Souliss
 
 	Modified by Dario Di Maio
+	Modified by Dario Cdj for Notify Functions
 	
 ***************************************************************************/
 
@@ -62,12 +63,20 @@
 #define	STORE__TELEGRAMCHATID_f	(STORE__TELEGRAMCHATID_s+20)
 #define	STORE__TELEGRAMENABLED_s	(STORE__TELEGRAMCHATID_f+1)								
 #define	STORE__TELEGRAMENABLED_f	(STORE__TELEGRAMENABLED_s+1)
+#define	STORE__NOTIFYMESSAGE_s	(STORE__TELEGRAMENABLED_f+1)								
+#define	STORE__NOTIFYMESSAGE_f	(STORE__NOTIFYMESSAGE_s+40)
+#define	STORE__SOULISSVNETADDRESS_s	(STORE__NOTIFYMESSAGE_f+1)								
+#define	STORE__SOULISSVNETADDRESS_f	(STORE__SOULISSVNETADDRESS_s+2) // 2 bytes
+#define	STORE__SOULISSVNETGATEWAY_s	(STORE__SOULISSVNETADDRESS_f+1)								
+#define	STORE__SOULISSVNETGATEWAY_f	(STORE__SOULISSVNETGATEWAY_s+2) // 2 bytes
+#define	STORE__DELETESUBSCRIPTION_s	(STORE__SOULISSVNETGATEWAY_f+1)								
+#define	STORE__DELETESUBSCRIPTION_f	(STORE__DELETESUBSCRIPTION_s+1)
 
-#define	STORE__USABLESIZE	(STORE__TELEGRAMENABLED_f+1)
+#define	STORE__USABLESIZE	(STORE__DELETESUBSCRIPTION_f+1)
 #define	STORE__SIZE			(STORE__INDEX+STORE__USABLESIZE)
 
 #if(DYNAMICADDRESSING)
-#	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__TELEGRAMENABLED_s)
+#	define	FIRST_EEPROM_BYTE	(STORE__INDEX+STORE__DELETESUBSCRIPTION_s)
 #else
 #	define	FIRST_EEPROM_BYTE	(STORE__INDEX+1)	
 #endif
@@ -136,7 +145,14 @@ void Store_Telegram_ChatID(String string);
 String Read_Telegram_ChatID();
 void Store_TelegramEnabled(uint8_t mode);
 uint8_t Return_TelegramEnabled();
-
+void Store_NotifyMessage(String string);
+String Read_NotifyMessage();
+void Store_SoulissVNETAddress(uint16_t value);
+uint16_t Read_SoulissVNETAddress();
+void Store_SoulissVNETGateway(uint16_t value);
+uint16_t Read_SoulissVNETGateway();
+void Store_DeleteSubscription(uint8_t mode);
+uint8_t Return_DeleteSubscription();
 
 void Store_Commit();
 

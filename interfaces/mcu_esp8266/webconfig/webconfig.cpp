@@ -30,7 +30,7 @@
 /***
 	
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
-	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram) 
+	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram)
 
 ***/
 
@@ -173,8 +173,13 @@ void WriteConfig()
 	if(telegram.telegramenabled)	Store_TelegramEnabled(SET_TRUE);
 	else							Store_TelegramEnabled(SET_FALSE);
 
-	
-	
+	// Store Notify Message and Souliss Address for Hardcoded Peer (Battery powered node)
+	Store_NotifyMessage 	(notify.notifymessage);
+	Store_SoulissVNETAddress 	(notify.soulissaddress);
+	Store_SoulissVNETGateway 	(notify.soulissgateway);
+	if(notify.deletesubscription)	Store_DeleteSubscription(SET_TRUE);
+	else							Store_DeleteSubscription(SET_FALSE);
+
 	// Commit changes
 	Store_Commit();
 }
@@ -231,6 +236,12 @@ boolean ReadConfig()
 	telegram.telegramchatid = Read_Telegram_ChatID();
 	if(Return_TelegramEnabled()) telegram.telegramenabled = true;
 	else						 telegram.telegramenabled = false;
-		
+	
+	notify.notifymessage= Read_NotifyMessage();
+	notify.soulissaddress= Read_SoulissVNETAddress();
+	notify.soulissgateway= Read_SoulissVNETGateway();
+	if(Return_DeleteSubscription()) notify.deletesubscription = true;
+	else						 	notify.deletesubscription = false;
+
 	return true;
 }

@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	
 	Originally developed by Dario Di Maio
+	Modified by Dario Cdj for Notify Functions
 	
 ***************************************************************************/
 /*!
@@ -427,7 +428,55 @@ uint8_t Return_TelegramEnabled()
 {
 	return Return_8bit(STORE__TELEGRAMENABLED_s);
 }
+// Store the Notify Message
+void Store_NotifyMessage(String string)
+{
+	Store_String(STORE__NOTIFYMESSAGE_s, string);
+}
 
+// Return the Notify Message
+String Read_NotifyMessage()
+{
+	return Return_String(STORE__NOTIFYMESSAGE_s, 40);
+}
+
+// Store the Souliss Address for Hardcoded Peer
+void Store_SoulissVNETAddress(uint16_t address)
+{
+	//Store_16bit(STORE__SOULISSVNETADDRESS_s, address+2);
+	Store_16bit(STORE__SOULISSVNETADDRESS_s, address);
+}
+
+// Return the Souliss Address for Hardcoded Peer
+uint16_t Read_SoulissVNETAddress()
+{
+	return Return_16bit(STORE__SOULISSVNETADDRESS_s);
+}
+
+// Store the Souliss Address for Hardcoded Peer
+void Store_SoulissVNETGateway(uint16_t address)
+{
+	//Store_16bit(STORE__SOULISSVNETGATEWAY_s, address+2);
+	Store_16bit(STORE__SOULISSVNETGATEWAY_s, address);
+}
+
+// Return the Souliss Address for Hardcoded Peer
+uint16_t Read_SoulissVNETGateway()
+{
+	return Return_16bit(STORE__SOULISSVNETGATEWAY_s);
+}
+
+// Store the Delete Subscription Flag  
+void Store_DeleteSubscription(uint8_t mode)
+{
+	Store_8bit(STORE__DELETESUBSCRIPTION_s, mode);
+}
+
+// Read the Delete Subscription (If Enabled or not)
+uint8_t Return_DeleteSubscription()
+{
+	return Return_8bit(STORE__DELETESUBSCRIPTION_s);
+}
 
 // Commit to EEPROM
 void Store_Commit()

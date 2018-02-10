@@ -87,6 +87,12 @@ struct strTelegram {
 	boolean telegramenabled; 
 }   telegram;
 
+struct strNotify {
+	String notifymessage;
+	U16 soulissaddress;
+	U16 soulissgateway;
+	boolean deletesubscription;
+} notify;
 
 void defaultWebConfig();
 void startWebServer();
