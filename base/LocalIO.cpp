@@ -145,11 +145,8 @@ inline U8 Souliss_DigIn_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U
 		InPin[pin] = PINSET;
 
 		// Copy the value in the memory map
-		if(!filteractive && memory_map)
-		{
-			memory_map[MaCaco_IN_s + slot] = value;
-			return value;
-		}
+		if(!filteractive && memory_map) memory_map[MaCaco_IN_s + slot] = value;
+		return value;
 
 	}
 	else if(filteractive && pin_value && InPin[pin]==PINSET)
@@ -158,11 +155,8 @@ inline U8 Souliss_DigIn_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U
 		InPin[pin] = PINACTIVE;
 
 		// Copy the value in the memory map
-		if(memory_map)
-		{
-			memory_map[MaCaco_IN_s + slot] = value;
-			return value;
-		}
+		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
+		return value;
 	}
 	else if(filteractive && !pin_value && InPin[pin]==PINACTIVE)
 		InPin[pin] = PINRELEASED;
