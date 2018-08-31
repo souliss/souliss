@@ -38,7 +38,6 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <h2>Souliss Node Administration</h2>
 <hr>
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
-<a href="notify.html" style="width:250px" class="btn btn--m btn--blue" >Notify Settings</a><br>
 <a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Restart Your Node</a><br>
 <hr>
 <strong> <div id="mydynamicdata"> </div> </strong> <!-- added a DIV, where the dynamic data goes to -->
