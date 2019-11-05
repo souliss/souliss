@@ -1,5 +1,2 @@
-Example of use of 
-Set_SimpleLight (Typical T11)
-with bistable relay
-
-on Ex-Store ESP8266 WiFi Relay V3
+Example gateway node using several typicals, in order to test client interfaces.
+The only 'working' device will be a switch (T14) on SLOT 0 and board's PIN 5 (Olimex integrated relay)
