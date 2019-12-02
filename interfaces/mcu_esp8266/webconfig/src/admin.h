@@ -38,12 +38,32 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <h2>Souliss Node Administration</h2>
 <hr>
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
-<a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Restart Your Node</a><br>
+<a href="notify.html" style="width:250px" class="btn btn--m btn--blue" >Notify Settings</a><br>
+<a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Home</a><br>
+<a href="reboot.html"   style="width:250px"  class="btn btn--m btn--blue" >Reboot Node</a><br>
 <hr>
-<strong> <div id="mydynamicdata"> </div> </strong> <!-- added a DIV, where the dynamic data goes to -->
-<strong>Clicking Main Interface Button will leaving Access Point Mode, </strong>
-<p>Please take note of your IP Address Node in Network Information, read the wiki at http://www.souliss.net for Getting started information </p>
-<p>This "default" configuration interface is only available if the node doesn't connect to your WiFi network.</p>
+<table width="500" border="1">
+<strong> <div id="mydynamicdata"> </div> </strong>
+<strong> <div id="mynodename"> </div> </strong>
+<strong> <div id="mywifiapmac"> </div> </strong>
+<strong> <div id="mywifissid"> </div> </strong>
+<strong> <div id="mywifichan"> </div> </strong>
+<strong> <div id="mywifimac"> </div> </strong>
+<strong> <div id="mywifiip"> </div> </strong>
+<strong> <div id="mywifisubnet"> </div> </strong>
+<strong> <div id="mywifigw"> </div> </strong>
+<strong> <div id="mywifisignal"> </div> </strong>
+<strong> <div id="mywifibars"> </div> </strong>
+<strong> <div id="mysketchsize"> </div> </strong>
+<strong> <div id="myfreesize"> </div> </strong>
+<strong> <div id="myflash"> </div> </strong>
+<strong> <div id="mylastreboot"> </div> </strong>
+<strong> <div id="mynodestat"> </div> </strong>
+
+</table>
+ <p><strong><a href="http://www.souliss.net" target=_blank>http://www.souliss.net</a> for Getting started information </p>
+<p>
+
 
 <script>
 window.onload = function ()
@@ -75,9 +95,48 @@ void filldynamicdata(AsyncWebServerRequest *request)
 #ifndef ASYNCWEBSERVER
 	yield();
 #endif	
+
+//Cdj for wifi signal	
+	int mybars;
+	if (WiFi.RSSI() > -55) {
+    mybars = 5;
+  }
+  else if (WiFi.RSSI() < -55 & WiFi.RSSI() >= -65) {
+    mybars = 4;
+  }
+  else if (WiFi.RSSI() < -65 & WiFi.RSSI() >= -70) {
+    mybars = 3;
+  }
+  else if (WiFi.RSSI() < -70 & WiFi.RSSI() >= -78) {
+    mybars = 2;
+  }
+  else if (WiFi.RSSI() < -78 & WiFi.RSSI() > -82) {
+    mybars = 1;
+  }
+  else {
+    mybars = 0;
+  }
+// end wifisignal
+	
 	String values ="";
-	values += "mydynamicdata|" + (String) + "Souliss Node, Millis since start: " + (String) millis() + "|div\n";   // Build a string, like this:  ID|VALUE|TYPE
-#ifndef ASYNCWEBSERVER
+	values += "mydynamicdata|" + (String) + "<th scope='row'>Running time millis: </th><td>" +(String) millis() + "</td></tr>|div\n";   // Build a string, like this:  ID|VALUE|TYPE
+	values += "mynodename|" + (String) + "<th scope='row'>Node Name: </th><td>" + String(Read_NodeName()) + "</td></tr>|div\n";
+	values += "mywifiapmac|" + (String) + "AP Mac Address: " + WiFi.BSSIDstr() + "|div\n";
+	values += "mywifissid|" + (String) + "WiFi SSID: " + WiFi.SSID()+ "|div\n";
+	values += "mywifichan|" + (String) + "WiFi Channel: " + String(WiFi.channel())+ "|div\n";
+	values += "mywifiip|" + (String) + "IP Address: " + WiFi.localIP().toString()+ "|div\n";
+	values += "mywifisubnet|" + (String) + "Subnet Mask: " + WiFi.subnetMask().toString()+"|div\n";
+	values += "mywifigw|" + (String) + "Ip Gateway: " + WiFi.gatewayIP().toString() + "|div\n";
+	values += "mywifimac|" + (String) + "MAC Address: " + WiFi.macAddress()+ "|div\n";
+	values += "mysketchsize|" + (String) + "Sketch Size: " + String(ESP.getSketchSize())+ " bytes |div\n";
+	values += "myfreesize|" + (String) + "Free Sketch Space: " + String(ESP.getFreeSketchSpace())+ " bytes|div\n";
+	values += "myflash|" + (String) + "Flash Size: " + String(ESP.getFlashChipSize())+ " bytes|div\n";
+	values += "mywifisignal|" + (String) + "WiFI Signal: " + WiFi.RSSI() + " dB" + "|div\n";
+	values += "mywifibars|" + (String) + "WiFi Bars: " + String(mybars) + " / 5"+ "|div\n";
+	values += "mylastreboot|" + (String) + "Last Reboot Reason: " + ESP.getResetReason()+ "|div\n";
+	
+
+	#ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/plain", values);   
 #else
 	request->send ( 200, "text/plain", values);
