@@ -163,7 +163,7 @@ void Souliss_SetIPAddress(U8* ip_address, U8* subnet_mask, U8* ip_gateway)
 	DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
 	#if((MCU_TYPE == 0x02) || (MCU_TYPE == 0x03))	// Expressif ESP8266 or ESP32
-		U8 timeout=40;
+		U8 timeout=20;
 	
 		// If is the first time that we connect to WiFi.SSID
 		if(strcmp(WiFi.SSID().c_str(), WiFi_SSID) || strcmp(WiFi.psk().c_str(), WiFi_Password))
@@ -300,22 +300,24 @@ String Souliss_SetAccessPoint(const char ap_name[32] = "", const char ap_pass[32
 	
 	// Set the access point name with the last 3 bytes of the WiFi MAC address
 	char _apname[32];
-
-	if (ap_name[0] == 0) {
-
-		// get the MAC address
+	
+	//Cdj read AP name from Notify Settings
+	String APNameTemp = Read_NodeName();
+	APNameTemp.toCharArray(_apname,sizeof(_apname));
+	
+	// get the MAC address
 		byte mac[6];
 	    char _macaddr[18];
 
 	    WiFi.softAPmacAddress(mac);
-
+	
+	if (APNameTemp == "") {
 	    sprintf(_apname, "Souliss_%02X%02X%02X", mac[3],mac[4],mac[5]);
-
-	} else {
-		strncpy(_apname, ap_name, 31);
-		_apname[31] ='\0';
 	}
-
+	else {
+		ap_name = _apname ; 
+	}
+	
 	
 	WiFi.mode(WIFI_AP);
 	WiFi.softAP(_apname, ap_pass);

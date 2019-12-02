@@ -129,12 +129,12 @@ U8 Souliss_Logic_T31(U8 *memory_map, U8 slot, U8 *trigger)
 	i_trigger = Souliss_TRIGGED;
 	
 	// Store actual value as difference with requested setpoint
-	if((abs(in_setpnt-actual_setpnt) > Souliss_T3n_SetPointDeadBand) && (in_setpnt > 1)) {
+	if((abs(in_setpnt-actual_setpnt) > Souliss_T3n_DeadBand) && (in_setpnt > 1)) {
 		actual_setpnt = in_setpnt;									// Set the new setpoint value
 	}	
 
 	// If there is a change in the new temperature
-	if((abs(in_temp-actual_temp) > Souliss_T3n_DeadBand) && (in_temp > 1) && !isnan(in_temp)) {	// Sometimes during changes a "0" temperature is reported. In this case we don't want this to cause things to turn on and off. So we make sure the measured temperature is > 0
+	if((abs(in_temp-actual_temp) > Souliss_T3n_DeadBand) && (in_temp > 1)) {	// Sometimes during changes a "0" temperature is reported. In this case we don't want this to cause things to turn on and off. So we make sure the measured temperature is > 0
 		actual_temp = in_temp;									// Set the new temperature value
 	}
 		
