@@ -66,6 +66,6 @@
 #define	m_pblshdata(maddress, topic, data, len)		Souliss_MulticastPublishData(maddress, memory_map, topic, data, len)
 #define sbscrb(topic)								Souliss_Subscribe(memory_map, topic)
 #define	sbscrbdata(topic, data, len)				Souliss_SubscribeData(memory_map, topic, data, len)
-#define sbscrb_reset()								Souliss_SubscribeReset()
+#define sbscrb_reset()								Souliss_SubscribeReset(memory_map)
 
 #endif
