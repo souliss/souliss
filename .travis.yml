@@ -2,20 +2,20 @@ language: c
 branches:
   only:
     - friariello
-    - 721_rc
+    - test-travis-ci
  
 before_install:
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16
   - sleep 3
   - export DISPLAY=:1.0
-  - wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz
-  - tar xf arduino-1.8.5-linux64.tar.xz
-  - sudo mv arduino-1.8.5 $HOME/arduino_ide
+  - wget http://downloads.arduino.cc/arduino-1.8.10-linux64.tar.xz
+  - tar xf arduino-1.8.10-linux64.tar.xz
+  - sudo mv arduino-1.8.10 $HOME/arduino_ide
   - ln -s $PWD $HOME/arduino_ide/libraries/souliss
   - export PATH="$HOME/arduino_ide:$PATH"
 install:
   - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
-  - arduino --install-boards esp8266:esp8266:2.3.0 --save-prefs
+  - arduino --install-boards esp8266:esp8266:2.6.3 --save-prefs
 
 script:
 
@@ -44,8 +44,6 @@ script:
   - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e07_TwinLights_n1/e07_TwinLights_n1.ino
   - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e07_TwinLights_n2/e07_TwinLights_n2.ino
 
-#  Include LYT88 libraries to compile this sketch
-#  - arduino --verify --board arduino:avr:uno $PWD/examples/LYTBulb/e01_LYTBulb_Arduino/e01_LYTBulb_Arduino.ino
 
   - arduino --board esp8266:esp8266:generic
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e01_LYTBulb_ESP8266/e01_LYTBulb_ESP8266.ino
@@ -61,7 +59,6 @@ script:
 
   - arduino --board esp8266:esp8266:generic
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/Olimex/e04_Olimex_ESP8266-EVB/e04_Olimex_ESP8266-EVB.ino
-#  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/Olimex/e05_Olimex_ESP8266-EVB_MOD-MPU6050/e05_Olimex_ESP8266-EVB_MOD-MPU6050.ino
 
   - arduino --board arduino:avr:uno
   - arduino --verify --board arduino:avr:uno $PWD/examples/usart/e01_GarageDoor_n1/e01_GarageDoor_n1.ino

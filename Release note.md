@@ -3,6 +3,13 @@
 > Open source framework for Smart Home based on Arduino compatible devices (AVR, ESP8266) released as GPLv3.
 > Copyright (C) 2011-2016
 
+### Release note for revision v7.3.0,   on 06/01/2020
+
+Preliminary support for ESP32 (WiFi and multi-core), migrating to latest ESP8266 cores (2.3.0) and Arduino IDE (1.8.1)
+- The ESP32 is actually supported (preliminary) - Dario Cdj
+- Multiple stability and functional bugfix by @fazioa, @ribico, @juanpintom, @dpeddi, @alvarolobato, @lucarui, @FulvioSpelta, @dariocdj, @loox, @marcolino7, @elminister83, @shineangelic, @plinioseniore
+
+
 ### Release note for revision v7.2.1,   on 30/10/2016
 
 Completed support for KMP Electronics PRODINo WiFi-ESP WROOM-2

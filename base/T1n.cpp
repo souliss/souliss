@@ -636,6 +636,8 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		
+		i_trigger = Souliss_TRIGGED;									//Trig the change on color changes
 
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)		// Toggle Command
@@ -726,6 +728,7 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 				memory_map[MaCaco_OUT_s + slot + 3] += Souliss_T1n_BrightValue;
 
         	}
+			
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightUp)				// Increase the light value
 	{
@@ -756,6 +759,8 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		else											memory_map[MaCaco_OUT_s + slot + 3] = b;
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
+		
+		i_trigger = Souliss_TRIGGED;												//Trig the change on brightness changes
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
@@ -786,6 +791,9 @@ U8 Souliss_Logic_T16(U8 *memory_map, U8 slot, U8 *trigger)
 		else											memory_map[MaCaco_OUT_s + slot + 3] = b;
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;						// Reset
+		
+		i_trigger = Souliss_TRIGGED;												//Trig the change on brightness changes
+		
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
@@ -1137,6 +1145,8 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_OUT_s + slot + 1] += Souliss_T1n_BrightValue;
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+
+		i_trigger = Souliss_TRIGGED;
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
@@ -1145,6 +1155,8 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 			memory_map[MaCaco_OUT_s + slot + 1] -= Souliss_T1n_BrightValue;
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+
+		i_trigger = Souliss_TRIGGED;
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_Flash)					// Turn ON and OFF at each cycle
 	{
