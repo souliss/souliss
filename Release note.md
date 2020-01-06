@@ -5,7 +5,7 @@
 
 ### Release note for revision v7.3.0,   on 06/01/2020
 
-Preliminary support for ESP32 (WiFi and multi-core), migrating to latest ESP8266 cores (2.3.0) and Arduino IDE (1.8.1)
+Preliminary support for ESP32 (WiFi and multi-core), migrating to latest ESP8266 cores (2.6.3) and Arduino IDE (1.8.1)
 - The ESP32 is actually supported (preliminary) - Dario Cdj
 - Multiple stability and functional bugfix by @fazioa, @ribico, @juanpintom, @dpeddi, @alvarolobato, @lucarui, @FulvioSpelta, @dariocdj, @loox, @marcolino7, @elminister83, @shineangelic, @plinioseniore
 
