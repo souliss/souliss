@@ -44,10 +44,10 @@ script:
   - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e07_TwinLights_n1/e07_TwinLights_n1.ino
   - arduino --verify --board arduino:avr:uno $PWD/examples/ethernet/e07_TwinLights_n2/e07_TwinLights_n2.ino
 
-#  Include LYT88 libraries to compile this sketch
-#  - arduino --verify --board arduino:avr:uno $PWD/examples/LYTBulb/e01_LYTBulb_Arduino/e01_LYTBulb_Arduino.ino
 
   - arduino --board esp8266:esp8266:generic
+  
+   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/demoNode/SoulissApp_demoNode.ino 
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e01_LYTBulb_ESP8266/e01_LYTBulb_ESP8266.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Bulb/e02_LYT8266_WiFi_Bulb.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Erase/e02_LYT8266_WiFi_Erase.ino
@@ -61,7 +61,6 @@ script:
 
   - arduino --board esp8266:esp8266:generic
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/Olimex/e04_Olimex_ESP8266-EVB/e04_Olimex_ESP8266-EVB.ino
-#  - arduino --verify --board esp8266:esp8266:generic $PWD/examples/Olimex/e05_Olimex_ESP8266-EVB_MOD-MPU6050/e05_Olimex_ESP8266-EVB_MOD-MPU6050.ino
 
   - arduino --board arduino:avr:uno
   - arduino --verify --board arduino:avr:uno $PWD/examples/usart/e01_GarageDoor_n1/e01_GarageDoor_n1.ino
