@@ -240,6 +240,10 @@ U8 Souliss_Logic_T12(U8 *memory_map, U8 slot, U8 *trigger)
 {
 	U8 i_trigger=0;														// Internal trigger
 
+	if( memory_map[MaCaco_IN_s + slot] == Souliss_T1n_RstCmd )
+		return i_trigger;
+
+		
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 
