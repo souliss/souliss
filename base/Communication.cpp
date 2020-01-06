@@ -412,6 +412,23 @@ U8 Souliss_SubscribeData(U8 *memory_map, U16 message, U8 action, U8* data, U8* l
 
 /**************************************************************************/
 /*!
+    Reset the queue once all messages has been processed
+*/
+/**************************************************************************/
+U8 Souliss_SubscribeReset(U8 *memory_map)
+{
+	// Reset the queue 
+	for(U8 i=0; i<MaCaco_QUEUELEN; i++)
+		*(memory_map + MaCaco_QUEUE_s + i) = 0;
+				
+	return 1;		// Trigger the action
+
+	
+	return 0;			// Nothing to do
+}
+
+/**************************************************************************/
+/*!
     Request data from another node at every run
 */
 /**************************************************************************/
