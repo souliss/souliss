@@ -15,7 +15,7 @@ before_install:
   - export PATH="$HOME/arduino_ide:$PATH"
 install:
   - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
-  - arduino --install-boards esp8266:esp8266:2.3.0 --save-prefs
+  - arduino --install-boards esp8266:esp8266:2.6.3 --save-prefs
 
 script:
 
