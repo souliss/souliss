@@ -46,8 +46,6 @@ script:
 
 
   - arduino --board esp8266:esp8266:generic
-  
-   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/demoNode/SoulissApp_demoNode.ino 
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e01_LYTBulb_ESP8266/e01_LYTBulb_ESP8266.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Bulb/e02_LYT8266_WiFi_Bulb.ino
   - arduino --verify --board esp8266:esp8266:generic $PWD/examples/LYTBulb/e02_LYT8266_WiFi_Erase/e02_LYT8266_WiFi_Erase.ino

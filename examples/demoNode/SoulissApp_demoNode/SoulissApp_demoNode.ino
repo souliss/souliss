@@ -12,11 +12,6 @@
 
 // Configure the framework
 
-#include "DHT.h"
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-#define DHTPIN 11
-DHT dht(DHTPIN, DHTTYPE);
-
 #include <SoulissFramework.h>
 
 #include "bconf/Olimex_ESP8266EVB.h"    // Load the code directly on the ESP8266
@@ -26,8 +21,8 @@ DHT dht(DHTPIN, DHTTYPE);
 
 // Define the WiFi name and password
 #define WIFICONF_INSKETCH
-#define WiFi_SSID               "FASTWEB"
-#define WiFi_Password           "yourown"    
+#define WiFi_SSID               "mywifi"
+#define WiFi_Password           "mypassword"    
 
 // Include framework code and libraries
 #include <ESP8266WiFi.h>
@@ -40,35 +35,34 @@ DHT dht(DHTPIN, DHTTYPE);
 #define RELAY_PIN           5
 
 // This identify the number of the LED logic
-#define MYLEDLOGIC          0 
+#define MYLEDLOGIC             0
 #define USED_SLOT1_N1          1
 #define USED_SLOT3_N1          3
 #define USED_SLOT5_N1          5
 #define USED_SLOT7_N1          7
-#define HUM             9               // Leave 2 slots for T58
-#define TEMP0                 11               // Leave 2 slots for T52
-#define USED_SLOT13_N1          13
+#define HUM                    9                // Leave 2 slots for T58
+#define TEMP0                  11               // Leave 2 slots for T52
+#define USED_SLOT13_N1         13
 
 void setup()
 {
 	Serial.begin(115200);
 	Initialize();
-	//dht.begin();
 	
 	// Connect to the WiFi network and get an address from DHCP
 	GetIPAddress();
 
 	Serial.println(myvNet_dhcp);
-	SetAsGateway(myvNet_dhcp);// Set this node as gateway for SoulissApp  
+	SetAsGateway(myvNet_dhcp);  // Set this node as gateway for SoulissApp  
 
 	// This node will serve all the others in the network providing an address
 	SetAddressingServer();
 
 	Set_T14(MYLEDLOGIC);        // Define a simple LED light logic
-	Set_T12( USED_SLOT1_N1);
-	Set_T32( USED_SLOT3_N1);
-	Set_T16( USED_SLOT5_N1);
-	Set_T15( USED_SLOT7_N1);
+	Set_T12(USED_SLOT1_N1);
+	Set_T32(USED_SLOT3_N1);
+	Set_T16(USED_SLOT5_N1);
+	Set_T15(USED_SLOT7_N1);
 	Set_T19(USED_SLOT13_N1);
 	Set_Humidity(HUM);
 	Set_Temperature(TEMP0);
@@ -108,9 +102,8 @@ void loop()
 		}
 
 		SLOW_50s() {
-			float h = 65;//dht.readHumidity();
-			// Read temperature as Celsius (the default)
-			float t = 22;// dht.readTemperature();
+			float h = 65;
+			float t = 22;
 			ImportAnalog(HUM, &h);
 			ImportAnalog(TEMP0, &t);
 		}
