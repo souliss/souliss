@@ -1,5 +1,5 @@
 /* 
-  ESP_WebConfig - Notify Section by DarioCdj
+  ESP_WebConfig - Notify and Settings Section by DarioCdj
 
 */
 
@@ -18,50 +18,25 @@ Please at the moment use only one system at time.
 <table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
 <tr><br><td colspan="2" align="left"><strong>Node Name: </strong></td></tr>
 <tr><td align="left">Node Name:</td><td><input type="text" id="nodename" name="nodename" value="" size="30"></td></tr>
+<tr><td></td><td>This name will be used also for hostname in OTA.</td></tr>
+<tr><td align="left">OTA Password:</td><td><input type="password" id="otapassword" name="otapassword" value="" size="30"></td></tr>
+<tr><td></td><td>This This password will protect OTA from hackering your node.</td></tr> 
 <tr><br><td colspan="2" align="left"><strong>Notify Message: </strong></td></tr>
-<tr><td align="left">Messagge:</td><td><input type="text" id="notifymessage" name="notifymessage" value="" size="30"></td></tr>
+<tr><td align="left">Messagge:</td><td><input type="text" id="notifymessage" name="notifymessage" value="" size="50"></td></tr>
 <br><p>
-<tr><br><td colspan="2" align="left"><strong>Souliss VNET Address for Hardcoded communication: </strong></td></tr>
+<tr><br><td colspan="2" align="left"><strong>Souliss VNET Address: </strong></td></tr>
+<tr><td></td><td>Also for Hardcoded communication (Battery Nodes)</td></tr>
 <tr><td align="left">Address: </td><td>0x<input type="text" id="soulissaddress" name="soulissaddress" value="" size="4"></td></tr>
 <tr><td align="left">Gateway:</td><td>0x<input type="text" id="soulissgateway" name="soulissgateway" value="" size="4"></td></tr>
 <tr><td colspan="2"><input type="checkbox" id="deletesubscription" name="deletesubscription">Delete Subscription</td></tr>
 <tr><td colspan="2" align="left"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Save"></td></tr>
 </table>
 <hr size=1>
-
-<table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
-<tr><br><td align="left"><strong>Pushetta: </strong></td></tr>
-<tr><td><input type="checkbox" id="pushettaenabled" name="pushettaenabled">Enable</td></tr>
-<br>
-<tr><td align="left">API Key:</td><td><input type="text" id="pushettaapikey" name="pushettaapikey" value="" size="30"></td></tr>
-<tr><td align="left">Channel:</td><td><input type="text" id="pushettachannel" name="pushettachannel" value=""></td></tr>
-<br>
-<tr><td colspan="2" align="left">Please register at <a href="www.pushetta.com" target="_blank">www.pushetta.com</a></td></tr>
-<tr><td colspan="2" align="left">Download APP :  <a href="https://play.google.com/store/apps/details?id=com.gumino.pushetta&hl=it" target="_blank">Android</a> - <a href="https://itunes.apple.com/it/app/pushetta/id930851629?mt=8" target="_blank">Apple IOS</a></td></tr>
-<tr><td colspan="2" align="left"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Save"></td></tr>
-</table>
-<hr size=1>
-
-<table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
-<tr><br><td align="left"><strong>Pushover:</strong></td></tr>
-<tr><td><input type="checkbox" id="pushoverenabled" name="pushoverenabled">Enable</td></tr>
-<br>
-<tr><td align="left">APIToken:</td><td><input type="text" id="pushoverapitoken" name="pushoverapitoken" value="" size="30"></td></tr>
-<tr><td align="left">USERKey:</td><td><input type="text" id="pushoveruserkey" name="pushoveruserkey" value="" size="30"></td></tr>
-<tr><td align="left">Device:</td><td><input type="text" id="pushoverdevice" name="pushoverdevice" value=""></td></tr>
-<tr><td colspan="2" align="left">Leave Empty for all</td></tr>
-<tr><td align="left">Sound:</td><td><input type="text" id="pushoversound" name="pushoversound" value=""></td></tr>
-<tr><td colspan="2" align="left">Use "pushover" as default<td></td></tr>
-<tr><td colspan="2" align="left">Please register at <a href="https://pushover.net/" target="_blank">www.pushover.net</a></td></tr>
-<tr><td colspan="2" align="left">Download APP :  <a href="https://play.google.com/store/apps/details?id=net.superblock.pushover&hl=it" target="_blank">Android</a> - <a href="https://itunes.apple.com/it/app/pushover-notifications/id506088175?mt=8" target="_blank">Apple IOS</a></td></tr>
-<tr><td colspan="2" align="left"><input type="submit" style="width:150px" class="btn btn--m btn--blue" value="Save"></td></tr>
-</table>
-
 <table border="0"  cellspacing="0" cellpadding="3" style="width:310px" >
 <tr><br><td align="left"><strong>Telegram:</strong></td></tr>
 <tr><td><input type="checkbox" id="telegramenabled" name="telegramenabled">Enabled</td></tr>
 <br>
-<tr><td align="left">BOT Token:</td><td><input type="text" id="telegrambottoken" name="telegrambottoken" value="" size="35"></td></tr>
+<tr><td align="left">BOT Token:</td><td><input type="text" id="telegrambottoken" name="telegrambottoken" value="" size="45"></td></tr>
 <tr><td align="left">Chat Group:</td><td><input type="text" id="telegramchatgroup" name="telegramchatgroup" value=""></td></tr>
 <tr><td align="left">Chat ID:</td><td><input type="text" id="telegramchatid" name="telegramchatid" value=""></td></tr>
 <tr><td></td><td>You can find "Chat Group" and "Chat ID" codes easily going to : https://api.telegram.org/bot<putyourtokenhere>/getUpdates and sending some message to bot or group, and then refresh web page.</td></tr>
@@ -126,59 +101,18 @@ void send_notify_settings_html(AsyncWebServerRequest *request)
 #endif
 	{
 		String temp = "";
-		pushetta.pushettaapikey = "";
-		pushetta.pushettachannel = "";
-		pushetta.pushettaenabled = false;
-		pushover.pushoverapitoken = "";
-		pushover.pushoveruserkey = "";
-		pushover.pushoverdevice = "";
-		pushover.pushoversound = "";
-		pushover.pushoverenabled = false;
 		telegram.telegrambottoken = "";
 		telegram.telegramchatgroup = "";
 		telegram.telegramchatid = "";
 		telegram.telegramenabled = false;
 		notify.nodename= "" ;
+		notify.otapassword= "" ;
 		notify.notifymessage = "";
 		notify.soulissaddress = 0;
 		notify.soulissgateway = 0;
 		notify.deletesubscription = false;
 		
 		
-#ifndef ASYNCWEBSERVER	
-		for ( uint8_t i = 0; i < server.args(); i++ ) {
-			if (server.argName(i) == "pushettaapikey") pushetta.pushettaapikey  =   urldecode(server.arg(i));
-			if (server.argName(i) == "pushettachannel") pushetta.pushettachannel =    urldecode(server.arg(i)); 
-			if (server.argName(i) == "pushettaenabled") pushetta.pushettaenabled = true;
-		}
-#else
-		for ( uint8_t i = 0; i < request->params(); i++ ) {
-			AsyncWebParameter* p = request->getParam(i);
-			if (p->name() == "pushettaapikey") pushetta.pushettaapikey =   urldecode(p->value());
-			if (p->name() == "pushettachannel") pushetta.pushettachannel = urldecode(p->value());
-			if (p->name() == "pushettaenabled") pushetta.pushettaenabled = true;
-		}
-#endif
-
-#ifndef ASYNCWEBSERVER	
-		for ( uint8_t i = 0; i < server.args(); i++ ) {
-			if (server.argName(i) == "pushoverapitoken") 	pushover.pushoverapitoken  =   urldecode(server.arg(i));
-			if (server.argName(i) == "pushoveruserkey") 	pushover.pushoveruserkey =    urldecode(server.arg(i)); 
-			if (server.argName(i) == "pushoverdevice") 		pushover.pushoverdevice =    urldecode(server.arg(i)); 
-			if (server.argName(i) == "pushoversound") 		pushover.pushoversound =    urldecode(server.arg(i)); 
-			if (server.argName(i) == "pushoverenabled") 	pushover.pushoverenabled = true;
-		}
-#else
-		for ( uint8_t i = 0; i < request->params(); i++ ) {
-			AsyncWebParameter* p = request->getParam(i);
-			if (p->name() == "pushoverapitoken") 	pushover.pushoverapitoken =   urldecode(p->value());
-			if (p->name() == "pushoveruserkey") 	pushover.pushoveruserkey =    urldecode(p->value());
-			if (p->name() == "pushoverdevice") 		pushover.pushoverdevice =    urldecode(p->value());
-			if (p->name() == "pushoversound") 		pushover.pushoversound =    urldecode(p->value());
-			if (p->name() == "pushoverenabled") 	pushover.pushoverenabled = true;
-		}
-#endif
-
 #ifndef ASYNCWEBSERVER	
 		for ( uint8_t i = 0; i < server.args(); i++ ) {
 			if (server.argName(i) == "telegrambottoken") 	telegram.telegrambottoken  =   urldecode(server.arg(i));
@@ -200,6 +134,7 @@ void send_notify_settings_html(AsyncWebServerRequest *request)
 #ifndef ASYNCWEBSERVER	
 		for ( uint8_t i = 0; i < server.args(); i++ ) {
 			if (server.argName(i) == "nodename") 		notify.nodename  =   urldecode(server.arg(i));
+			if (server.argName(i) == "otapassword") 		notify.otapassword  =   urldecode(server.arg(i));
 			if (server.argName(i) == "notifymessage") 		notify.notifymessage  =   urldecode(server.arg(i));
 			if (server.argName(i) == "soulissaddress"){
 				char soulissaddresstemp[5];
@@ -218,7 +153,8 @@ void send_notify_settings_html(AsyncWebServerRequest *request)
 #else
 		for ( uint8_t i = 0; i < request->params(); i++ ) {
 			AsyncWebParameter* p = request->getParam(i);
-			if (p->name() == "nodename") 	notify.notifymessage =   urldecode(p->value());
+			if (p->name() == "nodename") 	notify.nodename =   urldecode(p->value());
+			if (p->name() == "otapassword") 	notify.otapassword =   urldecode(p->value());
 			if (p->name() == "notifymessage") 	notify.notifymessage =   urldecode(p->value());
 			if (p->name() == "soulissaddress") {
 				char soulissaddresstemp[5];
@@ -271,19 +207,12 @@ void send_notify_settings_values_html(AsyncWebServerRequest *request)
 	yield();
 #endif
 	String notifyvalues ="";
-	notifyvalues += "pushettaapikey|" + (String) pushetta.pushettaapikey + "|input\n";
-	notifyvalues += "pushettachannel|" +  (String) pushetta.pushettachannel + "|input\n";
-	notifyvalues += "pushettaenabled|" +  (String) (pushetta.pushettaenabled ? "checked" : "") + "|chk\n";
-	notifyvalues += "pushoverapitoken|" + (String) pushover.pushoverapitoken + "|input\n";
-	notifyvalues += "pushoveruserkey|" +  (String) pushover.pushoveruserkey + "|input\n";
-	notifyvalues += "pushoverdevice|" +  (String) pushover.pushoverdevice + "|input\n";
-	notifyvalues += "pushoversound|" +  (String) pushover.pushoversound + "|input\n";
-	notifyvalues += "pushoverenabled|" +  (String) (pushover.pushoverenabled ? "checked" : "") + "|chk\n";
 	notifyvalues += "telegrambottoken|" + (String) telegram.telegrambottoken + "|input\n";
 	notifyvalues += "telegramchatgroup|" +  (String) telegram.telegramchatgroup + "|input\n";
 	notifyvalues += "telegramchatid|" +  (String) telegram.telegramchatid + "|input\n";
 	notifyvalues += "telegramenabled|" +  (String) (telegram.telegramenabled ? "checked" : "") + "|chk\n";
 	notifyvalues += "nodename|" +  (String) notify.nodename + "|input\n";
+	notifyvalues += "otapassword|" +  (String) notify.otapassword + "|input\n";
 	notifyvalues += "notifymessage|" +  (String) notify.notifymessage + "|input\n";
 	String soulissaddresshex = String (notify.soulissaddress,HEX);
 	String soulissgatewayhex = String (notify.soulissgateway,HEX);

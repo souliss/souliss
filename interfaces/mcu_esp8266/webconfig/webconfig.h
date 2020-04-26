@@ -30,7 +30,7 @@
 /***
 	
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
-	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram)
+	Modified by Dario Cdj for Notify and Settings System integrated (Telegram)																				 
 
 ***/
 #ifndef WEBCONFIG_H
@@ -66,20 +66,6 @@ struct strConfig {
 	boolean RuntimeGateway; //test node mode as gateway or peer
 }   config;
 
-struct strPushetta {
-	String pushettaapikey;
-	String pushettachannel;
-	boolean pushettaenabled; 
-}   pushetta;
-
-struct strPushover {
-	String pushoverapitoken;
-	String pushoveruserkey;
-	String pushoverdevice;
-	String pushoversound;
-	boolean pushoverenabled; 
-}   pushover;
-
 struct strTelegram {
 	String telegrambottoken;
 	String telegramchatgroup;
@@ -89,6 +75,7 @@ struct strTelegram {
 
 struct strNotify {
 	String nodename;
+	String otapassword;
 	String notifymessage;
 	U16 soulissaddress;
 	U16 soulissgateway;

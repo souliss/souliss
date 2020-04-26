@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	
 	Originally developed by Dario Di Maio
-	Modified by Dario Cdj for Notify Functions
+	Modified by Dario Cdj for Notify and Settigs Functions									   
 	
 ***************************************************************************/
 /*!
@@ -94,6 +94,7 @@ uint16_t Return_16bit(int addr)
 void Store_String(int addr, String string)
 {
 	char  charBuf[string.length()+1];
+	
 	string.toCharArray(charBuf, string.length()+1);
 
 	for (int t=  0; t<sizeof(charBuf);t++)
@@ -292,97 +293,6 @@ String Read_Password()
 	return Return_String(STORE__WIFIPSW_s, 64);
 }
 
-// Store the Pushetta APIKEY
-void Store_Pushetta_ApiKey(String string)
-{
-	Store_String(STORE__PUSHETTAAPIKEY_s, string);
-}
-// Return the Pushetta APIKEY
-String Read_Pushetta_ApiKey()
-{
-	return Return_String(STORE__PUSHETTAAPIKEY_s, 40);
-}
-// Store the Pushetta CHANNEL
-void Store_Pushetta_Channel(String string)
-{
-	Store_String(STORE__PUSHETTACHANNEL_s, string);
-}
-
-// Return the Pushetta CHANNEL
-String Read_Pushetta_Channel()
-{
-	return Return_String(STORE__PUSHETTACHANNEL_s, 20);
-}
-
-// Store the Pushetta Enabled 
-void Store_PushettaEnabled(uint8_t mode)
-{
-	Store_8bit(STORE__PUSHETTAENABLED_s, mode);
-}
-
-// Read the Pushetta Enabled (If Enabled or not)
-uint8_t Return_PushettaEnabled()
-{
-	return Return_8bit(STORE__PUSHETTAENABLED_s);
-}
-
-// Store the Pushover APITOKEN
-void Store_Pushover_ApiToken(String string)
-{
-	Store_String(STORE__PUSHOVERAPITOKEN_s, string);
-}
-// Return the Pushover APIKEY
-String Read_Pushover_ApiToken()
-{
-	return Return_String(STORE__PUSHOVERAPITOKEN_s, 30);
-}
-
-// Store the Pushover USERKEY
-void Store_Pushover_UserKey(String string)
-{
-	Store_String(STORE__PUSHOVERUSERKEY_s, string);
-}
-// Return the Pushover USERKEY
-String Read_Pushover_UserKey()
-{
-	return Return_String(STORE__PUSHOVERUSERKEY_s, 30);
-}
-
-// Store the Pushover DEVICE
-void Store_Pushover_Device(String string)
-{
-	Store_String(STORE__PUSHOVERDEVICE_s, string);
-}
-
-// Return the Pushover DEVICE
-String Read_Pushover_Device()
-{
-	return Return_String(STORE__PUSHOVERDEVICE_s, 20);
-}
-// Store the Pushover SOUND
-void Store_Pushover_Sound(String string)
-{
-	Store_String(STORE__PUSHOVERSOUND_s, string);
-}
-
-// Return the Pushover SOUND
-String Read_Pushover_Sound()
-{
-	return Return_String(STORE__PUSHOVERSOUND_s, 20);
-}
-
-// Store the Pushover Enabled 
-void Store_PushoverEnabled(uint8_t mode)
-{
-	Store_8bit(STORE__PUSHOVERENABLED_s, mode);
-}
-
-// Read the Pushover Enabled (If Enabled or not)
-uint8_t Return_PushoverEnabled()
-{
-	return Return_8bit(STORE__PUSHOVERENABLED_s);
-}
-
 // Store the Telegram BOT TOKEN
 void Store_Telegram_BOTtoken(String string)
 {
@@ -438,6 +348,17 @@ String Read_NodeName()
 {
 	return Return_String(STORE__NODENAME_s, 30);
 }
+// Store the Ota Password
+void Store_OtaPassword(String string)
+{
+	Store_String(STORE__OTAPASSWORD_s, string);
+}
+// Return the Ota Password
+String Read_OtaPassword()
+{
+	return Return_String(STORE__OTAPASSWORD_s, 64);
+}
+
 // Store the Notify Message
 void Store_NotifyMessage(String string)
 {
@@ -487,7 +408,6 @@ uint8_t Return_DeleteSubscription()
 {
 	return Return_8bit(STORE__DELETESUBSCRIPTION_s);
 }
-
 // Commit to EEPROM
 void Store_Commit()
 {

@@ -38,12 +38,12 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 <h2>Souliss Node Administration</h2>
 <hr>
 <a href="config.html" style="width:250px" class="btn btn--m btn--blue" >Network Configuration</a><br>
-<a href="notify.html" style="width:250px" class="btn btn--m btn--blue" >Notify Settings</a><br>
+<a href="notify.html" style="width:250px" class="btn btn--m btn--blue" >Notify and Settings</a><br>
 <a href="main.html"   style="width:250px"  class="btn btn--m btn--blue" >Home</a><br>
-<a href="reboot.html"   style="width:250px"  class="btn btn--m btn--blue" >Reboot Node</a><br>
+<a href="reboot.html"   style="width:250px"  class="btn btn--m btn--blue" >Reboot Node</a><br>				  
 <hr>
 <table width="500" border="1">
-<strong> <div id="mydynamicdata"> </div> </strong>
+<strong> <div id="mydynamicdata"> </div> </strong><!-- added a DIV, where the dynamic data goes to -->
 <strong> <div id="mynodename"> </div> </strong>
 <strong> <div id="mywifiapmac"> </div> </strong>
 <strong> <div id="mywifissid"> </div> </strong>
@@ -63,7 +63,9 @@ const char PAGE_AdminMainPage[] PROGMEM = R"=====(
 </table>
  <p><strong><a href="http://www.souliss.net" target=_blank>http://www.souliss.net</a> for Getting started information </p>
 <p>
-
+<strong>Access Point Mode is available only if Network is not configured </strong>
+<p>Please take note of your IP Address Node in Network Information, read the wiki at http://www.souliss.net for Getting started information </p>
+<p>This interface is always available accessing your node with ip address.</p>
 
 <script>
 window.onload = function ()
@@ -117,7 +119,7 @@ void filldynamicdata(AsyncWebServerRequest *request)
     mybars = 0;
   }
 // end wifisignal
-	
+
 	String values ="";
 	values += "mydynamicdata|" + (String) + "<th scope='row'>Running time millis: </th><td>" +(String) millis() + "</td></tr>|div\n";   // Build a string, like this:  ID|VALUE|TYPE
 	values += "mynodename|" + (String) + "<th scope='row'>Node Name: </th><td>" + String(Read_NodeName()) + "</td></tr>|div\n";
@@ -136,9 +138,10 @@ void filldynamicdata(AsyncWebServerRequest *request)
 	values += "mylastreboot|" + (String) + "Last Reboot Reason: " + ESP.getResetReason()+ "|div\n";
 	
 
-	#ifndef ASYNCWEBSERVER
+#ifndef ASYNCWEBSERVER
 	server.send ( 200, "text/plain", values);   
 #else
 	request->send ( 200, "text/plain", values);
 #endif
 }
+

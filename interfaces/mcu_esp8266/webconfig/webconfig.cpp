@@ -30,7 +30,8 @@
 /***
 	
 	Modified by Juan Pinto and Lesjaw Ardi to be used with Souliss
-	Modified by Dario Cdj for Notify System integrated (Pushetta, Pushover and Telegram)
+	Modified by Dario Cdj for Notify and Settings System integrated (Telegram)
+																				 
 
 ***/
 
@@ -50,9 +51,9 @@ boolean AdminEnabled = true;		// Enable Admin Mode for a given Time
 #include "src/script.js.h"
 #include "src/style.css.h"
 #include "src/main.h"
-#include "src/reboot.h"
+#include "src/reboot.h"					   
 #include "src/netconfig.h"
-#include "src/notify.h"
+#include "src/notify.h"					   
 
 // Apply default configuration
 void defaultWebConfig()
@@ -65,17 +66,25 @@ void defaultWebConfig()
 	config.Netmask[0] = SUBBYTE_1;config.Netmask[1] = SUBBYTE_2;config.Netmask[2] = SUBBYTE_3;config.Netmask[3] = SUBBYTE_4;
 	config.Gateway[0] = IPABYTE_1;config.Gateway[1] = IPABYTE_2;config.Gateway[2] = IPABYTE_3;config.Gateway[3] = IPABYTE_4;
 }
-//Cdj reboot button
+//Reboot button
+
+#ifndef ASYNCWEBSERVER
 void send_reboot()
 {
-#ifndef ASYNCWEBSERVER
+					  
 	server.send ( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_reboot)); 
+delay(5000);
+ESP.restart();
+}	
 #else
+void send_reboot( AsyncWebServerRequest *request)
+{
 	request->send( 200, "text/html", reinterpret_cast<const __FlashStringHelper *>(PAGE_reboot));
-#endif		
+		
 delay(5000);
 ESP.restart();
 }
+#endif		
 
 // Start the webserver
 void startWebServer()
@@ -102,27 +111,22 @@ void startWebServer()
 #endif
 	server.on ( "/config.html", send_network_configuration_html );
 	server.on ( "/notify.html", send_notify_settings_html );
-	//server.on ( "/reboot.html",  []() { 	server.send ( 200, "text/html", PAGE_reboot );  });
 	server.on ( "/reboot.html", send_reboot  );
-	
 	server.on ( "/main.html", processMain  );
 #ifndef ASYNCWEBSERVER
 	server.on ( "/main.html", []() { server.send ( 200, "text/html", PAGE_main );  } );
-	
+
 	server.on ( "/style.css", []() { server.send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
 	server.on ( "/microajax.js", []() { server.send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
-
 #else
 	server.on ( "/main.html", [](AsyncWebServerRequest *request) { request->send ( 200, "text/html", PAGE_main );  } );
-	server.on ( "/reboot.html", [](AsyncWebServerRequest *request) { request->send ( 200, "text/html", PAGE_reboot );  } );
+	server.on ( "/reboot.html", [](AsyncWebServerRequest *request) { request->send ( 200, "text/html", PAGE_reboot );  } );																																									  
 	server.on ( "/style.css", [](AsyncWebServerRequest *request) { request->send ( 200, "text/plain", reinterpret_cast<const __FlashStringHelper *>( PAGE_Style_css ));  } );
 	server.on ( "/microajax.js", [](AsyncWebServerRequest *request) { request->send ( 200, "text/plain",  reinterpret_cast<const __FlashStringHelper *>(PAGE_microajax_js ));  } );
-	
-#endif
+#endif	
 	server.on ( "/admin/values", send_network_configuration_values_html );
 	server.on ( "/admin/reboot", send_reboot );
-	server.on ( "/admin/notifyvalues", send_notify_settings_values_html );
-	server.on ( "/admin/connectionstate", send_connection_state_values_html );
+	server.on ( "/admin/notifyvalues", send_notify_settings_values_html );server.on ( "/admin/connectionstate", send_connection_state_values_html );
 	server.on ( "/admin/rstvalues", send_reset_values_html);
 	
 	// Start the webserver
@@ -170,21 +174,6 @@ void WriteConfig()
 	// Store WiFi SSID and Password
 	Store_SSID(config.ssid);
 	Store_Password(config.password);
-	
-	// Store Pushetta 
-	Store_Pushetta_ApiKey 		(pushetta.pushettaapikey);
-	Store_Pushetta_Channel 		(pushetta.pushettachannel);
-	if(pushetta.pushettaenabled)	Store_PushettaEnabled(SET_TRUE);
-	else							Store_PushettaEnabled(SET_FALSE);
-
-	// Store Pushover 
-	Store_Pushover_ApiToken  	(pushover.pushoverapitoken);
-	Store_Pushover_UserKey 		(pushover.pushoveruserkey);
-	Store_Pushover_Device  		(pushover.pushoverdevice);
-	Store_Pushover_Sound   		(pushover.pushoversound);
-	if(pushover.pushoverenabled)	Store_PushoverEnabled(SET_TRUE);
-	else							Store_PushoverEnabled(SET_FALSE);
-
 	// Store Telegram 
 	Store_Telegram_BOTtoken 	(telegram.telegrambottoken);
 	Store_Telegram_ChatGroup 	(telegram.telegramchatgroup);
@@ -194,12 +183,12 @@ void WriteConfig()
 
 	// Store Notify Message and Souliss Address for Hardcoded Peer (Battery powered node)
 	Store_NodeName		 	(notify.nodename);
+	Store_OtaPassword	 	(notify.otapassword);
 	Store_NotifyMessage 	(notify.notifymessage);
 	Store_SoulissVNETAddress 	(notify.soulissaddress);
 	Store_SoulissVNETGateway 	(notify.soulissgateway);
 	if(notify.deletesubscription)	Store_DeleteSubscription(SET_TRUE);
 	else							Store_DeleteSubscription(SET_FALSE);
-
 	// Commit changes
 	Store_Commit();
 }
@@ -239,18 +228,6 @@ boolean ReadConfig()
 	config.password = Read_Password();
 
 	// Read Notify Settings
-	pushetta.pushettaapikey = Read_Pushetta_ApiKey();
-	pushetta.pushettachannel= Read_Pushetta_Channel();
-	if(Return_PushettaEnabled()) pushetta.pushettaenabled = true;
-	else						 pushetta.pushettaenabled = false;
-	
-	pushover.pushoverapitoken = Read_Pushover_ApiToken();
-	pushover.pushoveruserkey = Read_Pushover_UserKey();
-	pushover.pushoverdevice = Read_Pushover_Device();
-	pushover.pushoversound = Read_Pushover_Sound();
-	if(Return_PushoverEnabled()) pushover.pushoverenabled = true;
-	else						 pushover.pushoverenabled = false;
-	
 	telegram.telegrambottoken = Read_Telegram_BOTtoken();
 	telegram.telegramchatgroup = Read_Telegram_ChatGroup();
 	telegram.telegramchatid = Read_Telegram_ChatID();
@@ -258,13 +235,11 @@ boolean ReadConfig()
 	else						 telegram.telegramenabled = false;
 	
 	notify.nodename= Read_NodeName();
+	notify.otapassword= Read_OtaPassword();
 	notify.notifymessage= Read_NotifyMessage();
 	notify.soulissaddress= Read_SoulissVNETAddress();
 	notify.soulissgateway= Read_SoulissVNETGateway();
 	if(Return_DeleteSubscription()) notify.deletesubscription = true;
 	else						 	notify.deletesubscription = false;
-
 	return true;
 }
-
-

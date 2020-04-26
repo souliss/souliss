@@ -99,8 +99,7 @@ const char PAGE_WaitAndReload[] PROGMEM = R"=====(
 <meta http-equiv="refresh" content="5; URL=config.html">
 <tr><br><td align="left"><strong>Please Wait....Configuring and Restarting</strong></td></tr>
 <br>
-<tr><br><td align="left">Now you can connect to your web interface pointing your browser to ip address choosed, because the node will connect to your router and join your WiFi. Start SoulissApp and have fun!</td></tr>
-<meta http-equiv="refresh" content="5; URL=main.html">
+<tr><br><td align="left">This page won't be available any longer, because the node will connect to your router and join your WiFi. Start SoulissApp and have fun!</td></tr>
 )=====";
 
 
