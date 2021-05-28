@@ -28,23 +28,23 @@
 #include <Arduino.h>
 
 #include "tools/types.h"
-#include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
+#include "GetConfig.h" // need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 #include "Souliss.h"
 
-#define	PINRESET			0x0
-#define	PINSET				0x1
-#define	PINACTIVE			0x2
-#define	PINRELEASED			0x3
-#define	PIN_2STATE_RESET	0x4
-#define	PIN_2STATE_SET		0x5
-#define PINUSED				0x6
+#define PINRESET 0x0
+#define PINSET 0x1
+#define PINACTIVE 0x2
+#define PINRELEASED 0x3
+#define PIN_2STATE_RESET 0x4
+#define PIN_2STATE_SET 0x5
+#define PINUSED 0x6
 
 // Use local defines to redefine the IO methods
-#ifndef	LOCAL_IO
-#	define	dRead	digitalRead
-#	define	dWrite	digitalWrite
-#	define	aRead	analogRead
-#	define	aWrite	analogWrite
+#ifndef LOCAL_IO
+#define dRead digitalRead
+#define dWrite digitalWrite
+#define aRead analogRead
+#define aWrite analogWrite
 #endif
 
 U8 InPin[MAXINPIN];
@@ -58,10 +58,10 @@ static unsigned long souliss_time;
 /**************************************************************************/
 void Souliss_Initialize(U8 *memory_map)
 {
-	for(U8 i=0; i<MAXINPIN; i++)
+	for (U8 i = 0; i < MAXINPIN; i++)
 	{
-		InPin[i]  = PINRESET;
-	    OutPin[i] = PINRESET;
+		InPin[i] = PINRESET;
+		OutPin[i] = PINRESET;
 	}
 
 	// Init MaCaco
@@ -105,11 +105,11 @@ void Souliss_ResetInput(U8 *memory_map, U8 slot)
 /**************************************************************************/
 void Souliss_LinkIO(U8 *memory_map, U8 input_slot, U8 output_slot, U8 *trigger)
 {
-	if(memory_map[MaCaco_IN_s + input_slot] != 0x00)
+	if (memory_map[MaCaco_IN_s + input_slot] != 0x00)
 	{
-		memory_map[MaCaco_OUT_s + output_slot] = memory_map[MaCaco_IN_s + input_slot];	// Link IO
-		memory_map[MaCaco_IN_s + input_slot] = Souliss_RstCmd;							// Reset
-		*trigger = Souliss_TRIGGED;														// Trig change
+		memory_map[MaCaco_OUT_s + output_slot] = memory_map[MaCaco_IN_s + input_slot]; // Link IO
+		memory_map[MaCaco_IN_s + input_slot] = Souliss_RstCmd;						   // Reset
+		*trigger = Souliss_TRIGGED;													   // Trig change
 	}
 }
 
@@ -120,8 +120,8 @@ void Souliss_LinkIO(U8 *memory_map, U8 input_slot, U8 output_slot, U8 *trigger)
 /**************************************************************************/
 void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot)
 {
-	if(memory_map[MaCaco_OUT_s + output_slot] != 0x00)
-		memory_map[MaCaco_IN_s + input_slot] = memory_map[MaCaco_OUT_s + output_slot];	// Link IO
+	if (memory_map[MaCaco_OUT_s + output_slot] != 0x00)
+		memory_map[MaCaco_IN_s + input_slot] = memory_map[MaCaco_OUT_s + output_slot]; // Link IO
 }
 
 /**************************************************************************/
@@ -136,52 +136,51 @@ void Souliss_LinkOI(U8 *memory_map, U8 input_slot, U8 output_slot)
 	inputs
 */
 /**************************************************************************/
-inline U8 Souliss_DigIn_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
+inline U8 Souliss_DigIn_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot, bool filteractive = false)
 {
 	// If pin is ON, set the flag. If at next cycle the pin will still
 	// be ON the requested action will be performed
-	if(pin_value && (InPin[pin]==PINRESET))
+	if (pin_value && (InPin[pin] == PINRESET))
 	{
 		InPin[pin] = PINSET;
 
 		// Copy the value in the memory map
-		if(!filteractive && memory_map)
+		if (!filteractive && memory_map)
 		{
 			memory_map[MaCaco_IN_s + slot] = value;
 			return value;
 		}
-
 	}
-	else if(filteractive && pin_value && InPin[pin]==PINSET)
+	else if (filteractive && pin_value && InPin[pin] == PINSET)
 	{
 		// Flag that action is executed
 		InPin[pin] = PINACTIVE;
 
 		// Copy the value in the memory map
-		if(memory_map)
+		if (memory_map)
 		{
 			memory_map[MaCaco_IN_s + slot] = value;
 			return value;
 		}
 	}
-	else if(filteractive && !pin_value && InPin[pin]==PINACTIVE)
+	else if (filteractive && !pin_value && InPin[pin] == PINACTIVE)
 		InPin[pin] = PINRELEASED;
-	else if(filteractive && !pin_value && InPin[pin]==PINRELEASED)
+	else if (filteractive && !pin_value && InPin[pin] == PINRELEASED)
 		InPin[pin] = PINRESET;
-	else if(filteractive && !pin_value && InPin[pin]==PINSET)
+	else if (filteractive && !pin_value && InPin[pin] == PINSET)
 		InPin[pin] = PINRESET;
-	else if(!filteractive && !pin_value)
+	else if (!filteractive && !pin_value)
 		InPin[pin] = PINRESET;
 
 	return MaCaco_NODATACHANGED;
 }
 
-U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
+U8 Souliss_DigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive = false)
 {
 	return Souliss_DigIn_Helper(pin, dRead(pin), value, memory_map, slot, filteractive);
 }
 
-U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive=false)
+U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive = false)
 {
 	return Souliss_DigIn_Helper(pin, !dRead(pin), value, memory_map, slot, filteractive);
 }
@@ -199,16 +198,18 @@ U8 Souliss_LowDigIn(U8 pin, U8 value, U8 *memory_map, U8 slot, bool filteractive
 inline U8 Souliss_DigIn2State_Helper(U8 pin, U8 pin_value, U8 value_state_on, U8 value_state_off, U8 *memory_map, U8 slot)
 {
 	// If pin is on, set the "value"
-	if(pin_value && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_RESET)))
+	if (pin_value && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_RESET)))
 	{
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_on;
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value_state_on;
 
 		InPin[pin] = PIN_2STATE_SET;
 		return value_state_on;
 	}
-	else if(!pin_value && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_SET)))
+	else if (!pin_value && ((!InPin[pin]) || (InPin[pin] == PIN_2STATE_SET)))
 	{
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_state_off;
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value_state_off;
 
 		InPin[pin] = PIN_2STATE_RESET;
 		return value_state_off;
@@ -241,46 +242,46 @@ U8 Souliss_LowDigIn2State(U8 pin, U8 value_state_on, U8 value_state_off, U8 *mem
 U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memory_map, U8 slot)
 {
 	uint16_t iPinValue = 0;
-	bool bState=false;
-	bool bMiddle=false;
+	bool bState = false;
+	bool bMiddle = false;
 
 	iPinValue = aRead(pin);
 
 	if (iPinValue >= AIN2S_TOP)
 	{
-	  bState=true;
-	  bMiddle=false;
+		bState = true;
+		bMiddle = false;
 	}
 	else if (iPinValue <= AIN2S_BOTTOM)
 	{
-	  bState=false;
-	  bMiddle=false;
+		bState = false;
+		bMiddle = false;
 	}
 	else
-		bMiddle=true;
-
+		bMiddle = true;
 
 	// If pin is on, set the "value"
-    if(bState && !InPin[pin] && !bMiddle)
-    {
-        if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_button1;
+	if (bState && !InPin[pin] && !bMiddle)
+	{
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value_button1;
 
 		InPin[pin] = PINSET;
-        return value_button1;
-    }
-    else if(!bState && !InPin[pin] && !bMiddle)
-    {
-        if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_button2;
+		return value_button1;
+	}
+	else if (!bState && !InPin[pin] && !bMiddle)
+	{
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value_button2;
 
 		InPin[pin] = PINSET;
-        return value_button2;
-    }
-	else if(bMiddle)
+		return value_button2;
+	}
+	else if (bMiddle)
 		InPin[pin] = PINRESET;
 
 	return MaCaco_NODATACHANGED;
 }
-
 
 /**************************************************************************/
 /*!
@@ -292,45 +293,47 @@ U8 Souliss_AnalogIn2Buttons(U8 pin, U8 value_button1, U8 value_button2, U8 *memo
 	falling edge inputs
 */
 /**************************************************************************/
-inline U8 Souliss_DigInHold_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+inline U8 Souliss_DigInHold_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime = 1500)
 {
 	// If pin is on, set the "value"
-	if(pin_value && (InPin[pin]==PINRESET))
+	if (pin_value && (InPin[pin] == PINRESET))
 	{
-		souliss_time = millis();								// Record time
+		souliss_time = millis(); // Record time
 		InPin[pin] = PINSET;
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(pin_value && (abs(millis()-souliss_time) > holdtime) && (InPin[pin]==PINSET))
+	else if (pin_value && (abs((U8)(millis() - souliss_time)) > holdtime) && (InPin[pin] == PINSET))
 	{
-		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
+		InPin[pin] = PINACTIVE; // Stay there till pushbutton is released
 
 		// Write timer value in memory map
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value_hold;
 
 		return value_hold;
 	}
-	else if(!pin_value && (InPin[pin]==PINSET))
+	else if (!pin_value && (InPin[pin] == PINSET))
 	{
 		// Write input value in memory map
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value;
 
 		InPin[pin] = PINRESET;
 		return value;
 	}
-	else if(!pin_value && (InPin[pin]==PINACTIVE))
+	else if (!pin_value && (InPin[pin] == PINACTIVE))
 		InPin[pin] = PINRESET;
 
 	return MaCaco_NODATACHANGED;
 }
 
-U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+U8 Souliss_DigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime = 1500)
 {
 	return Souliss_DigInHold_Helper(pin, dRead(pin), value, value_hold, memory_map, slot, holdtime);
 }
 
-U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime = 1500)
 {
 	return Souliss_DigInHold_Helper(pin, !dRead(pin), value, value_hold, memory_map, slot, holdtime);
 }
@@ -347,46 +350,48 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 	falling edge inputs
 */
 /**************************************************************************/
-inline U8 Souliss_DigKeepHold_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+inline U8 Souliss_DigKeepHold_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime = 1500)
 {
 	// If pin is on, set the "value"
-	if(pin_value && (InPin[pin]==PINRESET))
+	if (pin_value && (InPin[pin] == PINRESET))
 	{
-		souliss_time = millis();								// Record time
+		souliss_time = millis(); // Record time
 		InPin[pin] = PINSET;
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(pin_value && (abs(millis()-souliss_time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
+	else if (pin_value && (abs((U8)(millis() - souliss_time)) > holdtime) && ((InPin[pin] == PINSET) || (InPin[pin] == PINACTIVE)))
 	{
 		souliss_time = millis();
-		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
+		InPin[pin] = PINACTIVE; // Stay there till pushbutton is released
 
 		// Write timer value in memory map
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value_hold;
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value_hold;
 
 		return value_hold;
 	}
-	else if(!pin_value && (InPin[pin]==PINSET))
+	else if (!pin_value && (InPin[pin] == PINSET))
 	{
 		// Write input value in memory map
-		if(memory_map)	memory_map[MaCaco_IN_s + slot] = value;
+		if (memory_map)
+			memory_map[MaCaco_IN_s + slot] = value;
 
 		InPin[pin] = PINRESET;
 		return value;
 	}
-	else if(!pin_value && (InPin[pin]==PINACTIVE))
+	else if (!pin_value && (InPin[pin] == PINACTIVE))
 		InPin[pin] = PINRESET;
 
 	return MaCaco_NODATACHANGED;
 }
 
-U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+U8 Souliss_DigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime = 1500)
 {
 	return Souliss_DigKeepHold_Helper(pin, dRead(pin), value, value_hold, memory_map, slot, holdtime);
 }
 
-U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime=1500)
+U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot, U16 holdtime = 1500)
 {
 	return Souliss_DigKeepHold_Helper(pin, !dRead(pin), value, value_hold, memory_map, slot, holdtime);
 }
@@ -397,7 +402,7 @@ U8 Souliss_LowDigKeepHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 sl
 	as half-precision floating point
 */
 /**************************************************************************/
-void Souliss_ImportAnalog(U8* memory_map, U8 slot, float* analogvalue)
+void Souliss_ImportAnalog(U8 *memory_map, U8 slot, float *analogvalue)
 {
 	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), analogvalue);
 }
@@ -417,7 +422,6 @@ void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias
 
 	// Convert from single-precision to half-precision
 	Souliss_HalfPrecisionFloating((memory_map + MaCaco_IN_s + slot), &inval);
-
 }
 
 /**************************************************************************/
@@ -431,7 +435,7 @@ void Souliss_AnalogIn(U8 pin, U8 *memory_map, U8 slot, float scaling, float bias
 inline void Souliss_DigOut_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot)
 {
 	// If output is active switch on the pin, else off
-	if(memory_map[MaCaco_OUT_s + slot] == value)
+	if (memory_map[MaCaco_OUT_s + slot] == value)
 		dWrite(pin, pin_value);
 	else
 		dWrite(pin, !pin_value);
@@ -447,7 +451,6 @@ void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	Souliss_DigOut_Helper(pin, LOW, value, memory_map, slot);
 }
 
-
 /**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin
@@ -459,12 +462,12 @@ void Souliss_LowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 inline void Souliss_PulseDigOut_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot)
 {
 	// If output is active switch on the pin, else off
-	if((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINRESET)
+	if ((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINRESET)
 	{
 		OutPin[pin] = PINSET;
 		dWrite(pin, pin_value);
 	}
-	else if((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINSET)
+	else if ((memory_map[MaCaco_OUT_s + slot] == value) && OutPin[pin] == PINSET)
 	{
 		dWrite(pin, !pin_value);
 	}
@@ -497,7 +500,7 @@ void Souliss_PulseLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 inline void Souliss_nDigOut_Helper(U8 pin, U8 pin_value, U8 value, U8 *memory_map, U8 slot)
 {
 	// If output is active switch on the pin, else off
-	if(memory_map[MaCaco_OUT_s + slot] & value)
+	if (memory_map[MaCaco_OUT_s + slot] & value)
 		dWrite(pin, pin_value);
 	else
 		dWrite(pin, !pin_value);
@@ -513,7 +516,6 @@ void Souliss_nLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 	Souliss_nDigOut_Helper(pin, LOW, value, memory_map, slot);
 }
 
-
 /**************************************************************************/
 /*!
 	Link the shared memory map to an hardware pin, toggle the output value
@@ -521,10 +523,10 @@ void Souliss_nLowDigOut(U8 pin, U8 value, U8 *memory_map, U8 slot)
 /**************************************************************************/
 void Souliss_DigOutToggle(U8 pin, U8 value, U8 *memory_map, U8 slot)
 {
-	if(memory_map[MaCaco_OUT_s + slot] == value)
+	if (memory_map[MaCaco_OUT_s + slot] == value)
 	{
 		// If output is active toggle the pin, else off
-		if(dRead(pin))
+		if (dRead(pin))
 			dWrite(pin, LOW);
 		else
 			dWrite(pin, HIGH);
@@ -541,9 +543,9 @@ void Souliss_DigOutToggle(U8 pin, U8 value, U8 *memory_map, U8 slot)
 void Souliss_DigOutLessThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8 slot)
 {
 	// If output is active switch on the pin, else off
-	if(memory_map[MaCaco_OUT_s + slot] < value - deadband)
+	if (memory_map[MaCaco_OUT_s + slot] < value - deadband)
 		dWrite(pin, HIGH);
-	else if(memory_map[MaCaco_OUT_s + slot] > value + deadband)
+	else if (memory_map[MaCaco_OUT_s + slot] > value + deadband)
 		dWrite(pin, LOW);
 }
 
@@ -555,12 +557,11 @@ void Souliss_DigOutLessThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8 sl
 void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8 slot)
 {
 	// If output is active switch on the pin, else off
-	if(memory_map[MaCaco_OUT_s + slot] > value + deadband)
-			dWrite(pin, HIGH);
-	else if(memory_map[MaCaco_OUT_s + slot] < value - deadband)
+	if (memory_map[MaCaco_OUT_s + slot] > value + deadband)
+		dWrite(pin, HIGH);
+	else if (memory_map[MaCaco_OUT_s + slot] < value - deadband)
 		dWrite(pin, LOW);
 }
-
 
 /**************************************************************************/
 /*!
@@ -587,29 +588,29 @@ void Souliss_DigOutGreaterThan(U8 pin, U8 value, U8 deadband, U8 *memory_map, U8
 inline U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8 firstSlot, U8 lastSlot, U16 step_duration)
 {
 	// HANDLE BUTTON RELEASE EVENT
-	if( pin_value == PINRESET ) // unpressed button
+	if (pin_value == PINRESET) // unpressed button
 	{
 		// handle button release on short press
-		if( InPin[pin] == PINSET )
+		if (InPin[pin] == PINSET)
 		{
 			// button is unpressed and it was a single press.
 			InPin[pin] = PINRESET;
 
 			// verify if some of the lights in the group are ON
 			U8 bLightsOn = false;
-			for(U8 i=firstSlot; i<=lastSlot; i++)
+			for (U8 i = firstSlot; i <= lastSlot; i++)
 			{
-				if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OnCoil)
+				if (memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OnCoil)
 				{
 					bLightsOn = true;
 				}
 			}
 
-			if( bLightsOn )
+			if (bLightsOn)
 			{
 				// it was a single press with some lights ON
 				// set all light to OFF
-				for(U8 i=firstSlot; i<=lastSlot; i++)
+				for (U8 i = firstSlot; i <= lastSlot; i++)
 					memory_map[MaCaco_IN_s + i] = Souliss_T1n_OffCmd;
 			}
 			else
@@ -628,60 +629,60 @@ inline U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8
 
 	// HANDLE BUTTON PRESS EVENT
 	// if here the button is pressed (pin_value != PINRESET)
-	if( InPin[pin] == PINRESET ) // it was unpressed before
+	if (InPin[pin] == PINRESET) // it was unpressed before
 	{
 		// this is the first cycle detecting the button press: current input=1, previous input=0
 		InPin[pin] = PINSET;
-		souliss_time = millis();								// Record time
+		souliss_time = millis(); // Record time
 
 		// no nothing here
 		// short presses are handled on button release event
 		return MaCaco_NODATACHANGED;
 	}
-	else if( (InPin[pin]==PINSET) && (abs(millis()-souliss_time) < step_duration) )
+	else if ((InPin[pin] == PINSET) && (abs((U8)(millis() - souliss_time)) < step_duration))
 	{
 		// still short press -> do nothing
 		return MaCaco_NODATACHANGED;
 	}
-	else if( (InPin[pin]==PINSET) && (abs(millis()-souliss_time) > step_duration) )
+	else if ((InPin[pin] == PINSET) && (abs((U8)(millis() - souliss_time)) > step_duration))
 	{
 		// long press -> do nothing now, but remember it with InPin value
-		InPin[pin]=PINACTIVE;
+		InPin[pin] = PINACTIVE;
 		return MaCaco_NODATACHANGED;
 	}
-	else if( (InPin[pin]==PINACTIVE || InPin[pin]==PINUSED) && (abs(millis()-souliss_time) > step_duration) )
+	else if ((InPin[pin] == PINACTIVE || InPin[pin] == PINUSED) && (abs((U8)(millis() - souliss_time)) > step_duration))
 	{
 		// this cycle is executed while the button is kept pressed
 		// the current input is 1, the previous input was 1 and some time passed from the first press
-		U8 powered_lights_count = (U8) ( abs(millis()-souliss_time) / step_duration );
+		U8 powered_lights_count = (U8)(abs((U8)(millis() - souliss_time)) / step_duration);
 
-		if( InPin[pin]==PINACTIVE )
+		if (InPin[pin] == PINACTIVE)
 		{
 			// first time here
 			// detect if any light is already ON
 			U8 i = firstSlot;
-			for(; i<=lastSlot; i++)
+			for (; i <= lastSlot; i++)
 			{
-				if(memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OffCoil)
+				if (memory_map[MaCaco_OUT_s + i] == Souliss_T1n_OffCoil)
 					break;
 			}
 			// here i contains the first OFF light (group offset)
 			// store it for following cycles
-			OutPin[pin] = i-firstSlot;
+			OutPin[pin] = i - firstSlot;
 
 			InPin[pin] = PINUSED;
 		}
 
 		powered_lights_count += OutPin[pin];
 
-		if ( powered_lights_count > lastSlot - firstSlot + 1 )
+		if (powered_lights_count > lastSlot - firstSlot + 1)
 			powered_lights_count = lastSlot - firstSlot + 1;
 
 		U8 MaCaco_STATUS = MaCaco_NODATACHANGED;
 
-		for(U8 i=0; i<powered_lights_count; i++)
+		for (U8 i = 0; i < powered_lights_count; i++)
 		{
-			if(memory_map[MaCaco_OUT_s + firstSlot + i] == Souliss_T1n_OffCoil)
+			if (memory_map[MaCaco_OUT_s + firstSlot + i] == Souliss_T1n_OffCoil)
 			{
 				// only if the light is not powered, turn it on
 				memory_map[MaCaco_IN_s + firstSlot + i] = Souliss_T1n_OnCmd;
@@ -718,7 +719,7 @@ U8 Souliss_LowDigInHoldSteps(U8 pin, U8 *memory_map, U8 firstSlot, U8 lastSlot, 
 /**************************************************************************/
 U8 Souliss_isTrigged(U8 *memory_map, U8 slot)
 {
-	if(memory_map[MaCaco_AUXIN_s + slot] == Souliss_TRIGGED)
+	if (memory_map[MaCaco_AUXIN_s + slot] == Souliss_TRIGGED)
 	{
 		// Reset the trigger and return that trigger was there
 		memory_map[MaCaco_AUXIN_s + slot] = Souliss_NOTTRIGGED;
@@ -751,6 +752,6 @@ void Souliss_HalfPrecisionFloating(U8 *output, float *input)
 
 	float16(&output16, input);
 
-	*(output)   = C16TO8L(output16);
-	*(output+1) = C16TO8H(output16);
+	*(output) = C16TO8L(output16);
+	*(output + 1) = C16TO8H(output16);
 }
