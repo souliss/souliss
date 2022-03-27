@@ -330,48 +330,6 @@ U8 Souliss_LowDigInHold(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot
 	return Souliss_DigInHold_Helper(pin, !dRead(pin), value, value_hold, memory_map, slot, holdtime);
 }
 
-inline U8 Souliss_DigInHold2_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hold, U8 *memory_map, U8 slot1, U8 slot2, U16 holdtime=1500)
-{
-	// If pin is on, set the "value"
-	if(pin_value && (InPin[pin]==PINRESET))
-	{
-		souliss_time = millis();								// Record time
-		InPin[pin] = PINSET;
-
-		return MaCaco_NODATACHANGED;
-	}
-	else if(pin_value && (abs(millis()-souliss_time) > holdtime) && (InPin[pin]==PINSET))
-	{
-		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
-
-		// Write timer value in memory map
-		if(memory_map)	memory_map[MaCaco_IN_s + slot2] = value_hold;
-
-		return value_hold;
-	}
-	else if(!pin_value && (InPin[pin]==PINSET))
-	{
-		// Write input value in memory map
-		if(memory_map)	memory_map[MaCaco_IN_s + slot1] = value;
-
-		InPin[pin] = PINRESET;
-		return value;
-	}
-	else if(!pin_value && (InPin[pin]==PINACTIVE))
-		InPin[pin] = PINRESET;
-
-	return MaCaco_NODATACHANGED;
-}
-
-U8 Souliss_DigInHold2(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot1, U8 slot2, U16 holdtime=1500)
-{
-	return Souliss_DigInHold2_Helper(pin, dRead(pin), value, value_hold, memory_map, slot1, slot2, holdtime);
-}
-
-U8 Souliss_DLowDigInHold2(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 slot1, U8 slot2, U16 holdtime=1500)
-{
-	return Souliss_DigInHold2_Helper(pin, !dRead(pin), value, value_hold, memory_map, slot1, slot2, holdtime);
-}
 /**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on rising edge
