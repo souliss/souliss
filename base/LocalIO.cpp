@@ -372,6 +372,7 @@ U8 Souliss_DLowDigInHold2(U8 pin, U8 value, U8 value_hold, U8 *memory_map, U8 sl
 {
 	return Souliss_DigInHold2_Helper(pin, !dRead(pin), value, value_hold, memory_map, slot1, slot2, holdtime);
 }
+
 /**************************************************************************/
 /*!
 	Link an hardware pin to the shared memory map, active on rising edge
