@@ -261,7 +261,6 @@ uint8_t Souliss_GetIPAddress(U8 timeout=20)
 	// The last byte of the IP address is used as vNet address
 	myvNet_dhcp = ip[3];	
 	return 1;
-//TODO INIT DHCP ETH ESP32
 #elif((MCU_TYPE == 0x02 && WIFI_ESP8266) || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32
 	
 	// If is the first time that we connect to WiFi.SSID
