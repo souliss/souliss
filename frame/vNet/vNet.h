@@ -34,28 +34,36 @@
 #include "GetConfig.h"		// need : vNet_Config.h, ethUsrCfg.h
 
 #if (VNET_MEDIA1_ENABLE)
-	// Driver for Wiznet W5100
-	#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
-		#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.h"	
-	#endif
-	
-	// Driver for Microchip ENC28J60
-	#if (ETH_ENC28J60)
-		#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.h"	
-	#endif
-	
-	// Driver for Microchip MRF2WB0MA
-	#if (WIFI_MRF24)
-		#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.h"	
-	#endif
-
-	// Driver for Expressif ESP8266 WiFi
-	#if (WIFI_ESP8266)
-		#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.h"	
-	#endif	
-	// Driver for Expressif ESP32 WiFi
-	#if (WIFI_ESP32)
-		#include "drivers/mcu_esp32/ethESP32/vNetDriver_eth.h"	
+	#if(MCU_TYPE == 0x01) 	// Atmel AVR Atmega
+		// Driver for Wiznet W5100
+		#if (ETH_W5100 || ETH_W5200 || ETH_W5500)
+			#include "drivers/mcu_avr/ethW5x00/vNetDriver_eth.h"	
+		#endif
+		
+		// Driver for Microchip ENC28J60
+		#if (ETH_ENC28J60)
+			#include "drivers/mcu_avr/ethENC28J60/vNetDriver_eth.h"	
+		#endif
+		
+		// Driver for Microchip MRF2WB0MA
+		#if (WIFI_MRF24)
+			#include "drivers/mcu_avr/ethMRF24/vNetDriver_eth.h"	
+		#endif
+	#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
+		// Driver for Expressif ESP8266 WiFi
+		#if (WIFI_ESP8266)
+			#include "drivers/mcu_esp8266/ethESP8266/vNetDriver_eth.h"	
+		#endif	
+	#elif(MCU_TYPE == 0x03)	// Expressif ESP32	
+		// Driver for Expressif ESP32 WiFi
+		#if (WIFI_ESP32)
+			#include "drivers/mcu_esp32/ethESP32/vNetDriver_eth.h"	
+		#endif	
+		
+		// Driver for Expressif ESP32 with Wiznet W5100 / W5200
+		#if (ETH_ESP32)
+			#include "drivers/mcu_esp32/ethW5x00ESP32/vNetDriver_eth.h"	
+		#endif
 	#endif	
 	
 #endif

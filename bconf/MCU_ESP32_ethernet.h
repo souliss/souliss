@@ -22,23 +22,37 @@
     \file 
     \ingroup
 */
-#ifndef bconf_IPBROADCAST_H
-#define bconf_IPBROADCAST_H
+#ifndef bconf_ssMCUESP32_H
+#define bconf_ssMCUESP32_H
 
-#if(MCU_TYPE == 0x01 || MCU_TYPE == 0x03 && ETH_ESP32 == 1)	// Atmel AVR Atmega or ESP32 with ethernet
-#	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway
-#		define VNET_MEDIA3_ENABLE  			1
-#	elif(VNET_MEDIA1_ENABLE)
-#		define	VNET_MEDIA1_ENABLE  		0
-#		define	VNET_MEDIA3_ENABLE  		1
-#	else
-#		define	VNET_MEDIA3_ENABLE  		0
-#		define	IPBROADCAST					0
-#	endif
-#elif(MCU_TYPE == 0x02)	// Expressif ESP8266
-#		define VNET_MEDIA3_ENABLE  			1
-#elif(MCU_TYPE == 0x03)	// Expressif ESP32
-#		define VNET_MEDIA3_ENABLE  			1
-#endif
+// Expressif ESP32 Board
+#define MCU_TYPE_INSKETCH
+#define	MCU_TYPE					3
+
+#define BOARD_MODEL_INSKETCH
+#define	COMMS_MODEL_INSKETCH
+#define VNET_MEDIA_INSKETCH
+#define ETH_INSKETCH	
+
+#define	BOARD_MODEL					9		
+#define	COMMS_MODEL					7
+#define ETH_W5100  					0
+#define ETH_W5200  					0
+#define ETH_W5500					0
+#define ETH_ENC28J60  				0
+#define WIFI_MRF24					0
+#define WIFI_ESP8266				0
+#define WIFI_ESP32					0
+#define ETH_ESP32					1
+
+// The ESP32 works always with two media, it use Media 3 to
+// remove dependence between vNet address and IP address from DHCP
+#define VNET_MEDIA1_ENABLE  		1
+#define VNET_MEDIA3_ENABLE  		1
+
+#define USARTDRIVER_INSKETCH
+#define USART_TXENABLE				0
+#define USART_TXENPIN				2
+#define	USARTDRIVER					Serial
 
 #endif

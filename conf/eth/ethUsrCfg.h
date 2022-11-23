@@ -56,6 +56,7 @@
 #	define WIFI_MRF24		0
 #	define WIFI_ESP8266		0
 #	define WIFI_ESP32		0
+#   define ETH_ESP32		0
 #endif
 /**************************************************************************/
 /*!
