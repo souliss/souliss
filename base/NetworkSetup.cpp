@@ -420,7 +420,7 @@ uint8_t Souliss_ReadIPConfiguration()
 	}
 
 	// Setup the SSID and Password
-	#if((MCU_TYPE == 0x02 && WIFI_ESP8266 || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32	
+	#if((MCU_TYPE == 0x02 && WIFI_ESP8266) || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32	
 	String SSID = Read_SSID();
 	String PSW  = Read_Password();
 
@@ -569,7 +569,7 @@ uint8_t Souliss_ReadIPConfiguration()
 		myvNet_dhcp = (U16)_ip_address[i-1];			// The last byte of the IP address is the vNet one
 		DEFAULT_BASEIPADDRESS[i-1]=0;						// The BASEIPADDRESS has last byte always zero
 
-		#if((MCU_TYPE == 0x02 && WIFI_ESP8266 || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32
+		#if((MCU_TYPE == 0x02 && WIFI_ESP8266) || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32
 
 			#if (SOULISS_DEBUG)
 			// Print debug messages
@@ -607,7 +607,7 @@ uint8_t Souliss_ReadIPConfiguration()
 		Souliss_SetAddress(myvNet_dhcp, DYNAMICADDR_SUBNETMASK, 0);
 	}
 
-	#if((MCU_TYPE == 0x02 && WIFI_ESP8266 || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32
+	#if((MCU_TYPE == 0x02 && WIFI_ESP8266) || (MCU_TYPE == 0x03 && WIFI_ESP32))	// Expressif ESP8266 or ESP32
 	if(WiFi.status() != WL_CONNECTED) 
 	{
 		// Print debug messages
