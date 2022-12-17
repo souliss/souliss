@@ -296,7 +296,7 @@ inline U8 Souliss_DigInHold_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hold
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(pin_value && (abs(millis()-souliss_time) > holdtime) && (InPin[pin]==PINSET))
+	else if(pin_value && (abs((long)(millis()-souliss_time)) > holdtime) && (InPin[pin]==PINSET))
 	{
 		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
 
@@ -340,7 +340,7 @@ inline U8 Souliss_DigInHold2_Helper(U8 pin, U8 pin_value, U8 value, U8 value_hol
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(pin_value && (abs(millis()-souliss_time) > holdtime) && (InPin[pin]==PINSET))
+	else if(pin_value && (abs((long)(millis()-souliss_time)) > holdtime) && (InPin[pin]==PINSET))
 	{
 		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
 
@@ -395,7 +395,7 @@ inline U8 Souliss_DigKeepHold_Helper(U8 pin, U8 pin_value, U8 value, U8 value_ho
 
 		return MaCaco_NODATACHANGED;
 	}
-	else if(pin_value && (abs(millis()-souliss_time) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
+	else if(pin_value && (abs((long)(millis()-souliss_time)) > holdtime) && ((InPin[pin]==PINSET) || (InPin[pin]==PINACTIVE)))
 	{
 		souliss_time = millis();
 		InPin[pin] = PINACTIVE;								// Stay there till pushbutton is released
@@ -676,22 +676,22 @@ inline U8 Souliss_DigInHoldSteps_Helper(U8 pin, U8 pin_value, U8 *memory_map, U8
 		// short presses are handled on button release event
 		return MaCaco_NODATACHANGED;
 	}
-	else if( (InPin[pin]==PINSET) && (abs(millis()-souliss_time) < step_duration) )
+	else if( (InPin[pin]==PINSET) && (abs((long)(millis()-souliss_time)) < step_duration) )
 	{
 		// still short press -> do nothing
 		return MaCaco_NODATACHANGED;
 	}
-	else if( (InPin[pin]==PINSET) && (abs(millis()-souliss_time) > step_duration) )
+	else if( (InPin[pin]==PINSET) && (abs((long)(millis()-souliss_time)) > step_duration) )
 	{
 		// long press -> do nothing now, but remember it with InPin value
 		InPin[pin]=PINACTIVE;
 		return MaCaco_NODATACHANGED;
 	}
-	else if( (InPin[pin]==PINACTIVE || InPin[pin]==PINUSED) && (abs(millis()-souliss_time) > step_duration) )
+	else if( (InPin[pin]==PINACTIVE || InPin[pin]==PINUSED) && (abs((long)(millis()-souliss_time)) > step_duration) )
 	{
 		// this cycle is executed while the button is kept pressed
 		// the current input is 1, the previous input was 1 and some time passed from the first press
-		U8 powered_lights_count = (U8) ( abs(millis()-souliss_time) / step_duration );
+		U8 powered_lights_count = (U8) ( abs((long)(millis()-souliss_time)) / step_duration );
 
 		if( InPin[pin]==PINACTIVE )
 		{
