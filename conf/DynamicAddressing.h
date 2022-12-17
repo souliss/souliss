@@ -41,7 +41,7 @@
 #define USEEEPROM							1
 #define	IPBROADCAST							1
 
-#if(MCU_TYPE == 0x01)	// Atmel AVR Atmega
+#if(MCU_TYPE == 0x01 || MCU_TYPE == 0x03 && ETH_ESP32 == 1)	// Atmel AVR Atmega or ESP32 with ethernet
 #	if  (MaCaco_USERMODE && VNET_MEDIA1_ENABLE)	// If is a gateway
 #		define VNET_MEDIA3_ENABLE  			1
 #	elif(VNET_MEDIA1_ENABLE)

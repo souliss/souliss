@@ -28,7 +28,9 @@
 
 // Include configuration files
 #include "conf/frame/MaCacoCfg.h"
-#include "conf/uIP/uIPopt.h"
+#if(MCU_TYPE != 0x03) //Not needed for ESP32
+    #include "conf/uIP/uIPopt.h"
+#endif
 #include "conf/chibi/chibiUsrCfg.h"
 #include "conf/nRF24/nRF24UsrCfg.h"
 #include "conf/RFM69/RFM69UsrCfg.h"

@@ -43,6 +43,7 @@
 #define WIFI_MRF24					0
 #define WIFI_ESP8266				0
 #define WIFI_ESP32					1
+#define ETH_ESP32					0
 
 // The ESP32 works always with two media, it use Media 3 to
 // remove dependence between vNet address and IP address from DHCP
