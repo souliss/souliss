@@ -1144,6 +1144,8 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 		if(memory_map[MaCaco_OUT_s + slot + 1] < 255 - Souliss_T1n_BrightValue)
 			memory_map[MaCaco_OUT_s + slot + 1] += Souliss_T1n_BrightValue;
 
+		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;
+
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 
 		i_trigger = Souliss_TRIGGED;
@@ -1151,8 +1153,16 @@ U8 Souliss_Logic_T19(U8 *memory_map, U8 slot, U8 *trigger)
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_BrightDown)				// Decrease the light value
 	{
 		// Decrease the light value
-		if(memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue)
+		if(memory_map[MaCaco_OUT_s + slot + 1] > Souliss_T1n_BrightValue){
 			memory_map[MaCaco_OUT_s + slot + 1] -= Souliss_T1n_BrightValue;
+		}else{
+			memory_map[MaCaco_OUT_s + slot + 1] = 0;
+			
+		}
+
+		if(memory_map[MaCaco_OUT_s + slot + 1] == 0){
+			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;
+		}
 
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 
