@@ -1,6 +1,4 @@
-# souliss [![Build Status](https://travis-ci.org/souliss/souliss.svg?branch=esp8266_core2)](https://travis-ci.org/souliss/souliss)
-
-[![](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orgs/souliss/rooms#)
+# souliss
 
 Souliss is a **networking framework** for interconnected Things, smart homes and automated appliances. It includes a network layer that gives virtualization over the communication media, an event based protocol and datastructure and user interfaces based on Android and openHAB.
 
